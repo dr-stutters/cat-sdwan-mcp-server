@@ -20,7 +20,7 @@ class SdwanApp:
         self.api = ApiClient(
             settings.url,
             product="SD-WAN Manager",
-            env_prefix="SDWAN_",
+            env_prefix="CATSDWAN_",
             verify=settings.verify,
             timeout=settings.timeout,
             retries=settings.retries,
@@ -31,7 +31,7 @@ class SdwanApp:
         await self.api.aclose()
 
     async def status(self) -> dict[str, Any]:
-        """What sdwan_status reports. No API call yet: the login and version probe are roadmap items."""
+        """What catsdwan_status reports. No API call yet: the login and version probe are roadmap items."""
         return {
             "stage": STAGE,
             "api": "not implemented yet: no SD-WAN Manager calls are made",

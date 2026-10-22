@@ -6,19 +6,19 @@ from tests.unit.conftest import make_server
 
 async def test_contract_all_tiers() -> None:
     server = make_server(mcp_enable_writes=True, mcp_enable_dangerous=True)
-    await assert_tool_contract(server, "sdwan")
-    await assert_prompt_contract(server, "sdwan")
+    await assert_tool_contract(server, "catsdwan")
+    await assert_prompt_contract(server, "catsdwan")
 
 
 async def test_contract_read_only() -> None:
     server = make_server()
-    await assert_tool_contract(server, "sdwan")
-    await assert_prompt_contract(server, "sdwan")
+    await assert_tool_contract(server, "catsdwan")
+    await assert_prompt_contract(server, "catsdwan")
 
 
 async def test_status_reports_the_scaffold() -> None:
     async with Client(make_server()) as c:
         names = {t.name for t in await c.list_tools()}
-        result = await c.call_tool("sdwan_status", {})
-    assert "sdwan_status" in names
+        result = await c.call_tool("catsdwan_status", {})
+    assert "catsdwan_status" in names
     assert "scaffold" in str(result.data or result.structured_content or result.content)

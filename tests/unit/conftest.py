@@ -7,7 +7,7 @@ from fastmcp import FastMCP
 from cat_sdwan_mcp.config import Settings
 from cat_sdwan_mcp.server import create_server
 
-BASE = "https://sdwan.test"
+BASE = "https://catsdwan.test"
 
 
 def make_settings(**kw: Any) -> Settings:

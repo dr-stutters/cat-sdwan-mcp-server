@@ -12,16 +12,16 @@ from cat_sdwan_mcp.config import Settings
 
 INSTRUCTIONS = """
 Tools for Catalyst SD-WAN Manager (formerly vManage): fabric inventory and health, tunnels, BFD and
-app-route state, configuration groups and policies. This server is a scaffold (plan only): sdwan_status
+app-route state, configuration groups and policies. This server is a scaffold (plan only): catsdwan_status
 is the only tool so far and it makes no SD-WAN Manager API calls. The planned tools are in the server's
 ROADMAP.md; until they exist, say so instead of guessing.
 """
 
 SPEC = ServerSpec(
     name="cat-sdwan-mcp-server",
-    prefix="sdwan",
+    prefix="catsdwan",
     product="Cisco Catalyst SD-WAN Manager",
-    env_prefix="SDWAN_",
+    env_prefix="CATSDWAN_",
     instructions=INSTRUCTIONS,
 )
 

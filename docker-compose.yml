@@ -1,6 +1,6 @@
 # cat-sdwan-mcp-server: docker compose for one SD-WAN Manager (host port 8041).
 #
-#   cp .env.example .env    # set SDWAN_URL/USERNAME/PASSWORD and MCP_AUTH_TOKENS (cat-sdwan-mcp-server token <name>)
+#   cp .env.example .env    # set CATSDWAN_URL/USERNAME/PASSWORD and MCP_AUTH_TOKENS (cat-sdwan-mcp-server token <name>)
 #   docker compose up -d    # pulls ghcr.io/dr-stutters/cat-sdwan-mcp-server (MCP_IMAGE_TAG, default latest)
 #   docker compose up -d --build   # or build from this checkout instead (then MCP_PULL_POLICY=build keeps it)
 #   (credentials as Docker secrets instead of .env: see docker-compose.secrets.yml)
