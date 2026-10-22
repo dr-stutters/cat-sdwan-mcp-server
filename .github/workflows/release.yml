@@ -1,0 +1,11 @@
+name: release
+on: {push: {tags: ["v*"]}}
+permissions: {contents: write, packages: write, id-token: write}   # required: callers must grant these
+jobs:
+  release:   # wheel + sdist (core bundled) + Python SBOM on the GitHub release; a -rc tag makes a pre-release
+    uses: dr-stutters/stutters-mcp-core/.github/workflows/python-release.yml@main
+    with: {bundle-core: true}
+    secrets: inherit
+  image:     # ghcr.io/dr-stutters/cat-sdwan-mcp-server, amd64 + arm64, cosign keyless, SBOM attestation
+    needs: release
+    uses: dr-stutters/stutters-mcp-core/.github/workflows/publish-image.yml@main
