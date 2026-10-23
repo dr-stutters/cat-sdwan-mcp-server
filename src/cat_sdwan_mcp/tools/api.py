@@ -21,6 +21,7 @@ from cat_sdwan_mcp._core import Confirm, InvalidRequest, Plan, ToolRegistrar, pr
 from cat_sdwan_mcp._core.audit import redact_value
 from cat_sdwan_mcp._core.formatting import compact, dumps
 from cat_sdwan_mcp._core.spec import get_specs
+from cat_sdwan_mcp.configuration import mask_config_leaves
 from cat_sdwan_mcp.spec import api_path, classify, match_operation
 
 NAME = "catsdwan_api_call"
@@ -42,7 +43,8 @@ Body = Annotated[
 
 
 def _shape(result: Any) -> Any:
-    return redact_value(compact(result, keep_empty=True))
+    """Secret-named fields masked, and secrets in configuration text (running configs, CLI templates)."""
+    return mask_config_leaves(redact_value(compact(result, keep_empty=True)))
 
 
 async def _checked(ctx: Context, method: str, path: str) -> tuple[str, str, list[str]]:

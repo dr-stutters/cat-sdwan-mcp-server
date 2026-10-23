@@ -44,6 +44,8 @@ PATHS = [
     "/template/config/running/{deviceId}",
     "/template/config/attached/{deviceId}",
     "/template/device/config/attachfeature",
+    "/template/device/config/attached/{masterTemplateId}",
+    "/template/config/diff/{deviceId}",
     "/v1/config-group",
     "/v1/config-group/{configGroupId}",
     "/v1/config-group/{configGroupId}/device/associate",

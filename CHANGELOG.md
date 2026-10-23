@@ -67,6 +67,17 @@ All notable changes to this project are documented here. The format follows
   as for every other call, secrets masked. When the Manager won't serve the spec, GETs go through unchecked with a
   note and writes are refused (a bundled per-release copy as fallback is not shipped yet). `scripts/spec_subset.py`
   cuts the test fixture out of a recorded document.
+- W7 (#8): configuration reads. `catsdwan_list_config_groups` (`GET /dataservice/v1/config-group`, deploy state from
+  the Manager's `state` or the up-to-date count, associated devices from `.../device/associate`),
+  `catsdwan_get_config_group` (feature profiles from `GET /v1/feature-profile/sdwan/<type>/{id}` with each parcel's
+  values flattened, variables and secrets masked; the devices' variables from `GET .../device/variables?device-id=`,
+  which answers 400 without `device-id` although the spec calls it optional), `catsdwan_list_policy_groups`
+  (`GET /v1/policy-group`), `catsdwan_list_templates` (`GET /template/device?feature=all` and `/template/feature`,
+  factory defaults hidden by default, attached devices from `/template/device/config/attached/{id}`) and
+  `catsdwan_get_device_config` (`GET /template/config/running/{chassis}` and `/template/config/attached/{chassis}`,
+  secrets masked; `diff=true` compares by top-level block since the Manager renders the intended configuration
+  indented and in another order; the device's configuration mode and sync status). `catsdwan_api_call` also masks
+  secrets inside configuration text.
 - `cat-sdwan-mcp-server check`: reachability, TLS, auth and version (tested 20.18 and 26.x, minimum 20.15).
 - Unit tests on recorded, redacted 20.18 payloads (`tests/fixtures/20.18/`).
 - Scaffold on stutters-mcp-core v0.14.4 (bundled as `cat_sdwan_mcp._core`, ADR-005): `catsdwan_status` (reports the

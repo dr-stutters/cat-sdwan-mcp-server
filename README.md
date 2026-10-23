@@ -6,8 +6,8 @@ An [MCP](https://modelcontextprotocol.io) server for **Cisco Catalyst SD-WAN Man
 
 > **Status: early.** The client (JWT and session login, throttling, error mapping), `catsdwan_status` and the
 > `check` preflight (W1), the inventory and device health tools (W2), the control-plane tools (W3), the data-plane
-> and app-route tools (W4), the alarm, event and audit tools (W5) and API discovery over the Manager's own OpenAPI
-> document (W6) exist, unit-tested against recorded 20.18 payloads; nothing is proven live yet. The rest is planned in [ROADMAP.md](ROADMAP.md) (item W0 is the lab fabric in CML) and tracked on the suite board.
+> and app-route tools (W4), the alarm, event and audit tools (W5), API discovery over the Manager's own OpenAPI
+> document (W6) and the configuration reads (W7) exist, unit-tested against recorded 20.18 payloads; nothing is proven live yet. The rest is planned in [ROADMAP.md](ROADMAP.md) (item W0 is the lab fabric in CML) and tracked on the suite board.
 
 ## What it will do
 
@@ -35,6 +35,11 @@ servers, the production gate and the external prerequisites.
 | `catsdwan_list_events` | read | Device events (BFD, control and OMP state changes, interface changes, reboots, logins, validator rejections, ...) with their details, filtered by device, site, event name, component, severity; `by_event` counts |
 | `catsdwan_audit_log` | read | Who did what on the Manager (user, source IP, module, message, device); `changes_only` drops logins and logouts, `device` finds lines that name it, `include_details` adds the bodies with secrets masked |
 | `catsdwan_recent_activity` | read | One newest-first timeline of alarms, events and audit lines for a device, a site or the whole fabric; a source that fails is reported and the others still answer |
+| `catsdwan_list_config_groups` | read | Configuration groups: solution, feature profiles, devices associated and up to date, deploy state (never deployed, partly, up to date), last change and by whom, the associated devices by host name |
+| `catsdwan_get_config_group` | read | One group by name ('did you mean') or id: each feature profile with its parcels and values (variables as `{{name}}`, defaults left out, secrets masked), the associated devices (in sync, up to date with the group, deployable) and each device's variable values |
+| `catsdwan_list_policy_groups` | read | Policy groups: profiles, devices, deploy state, last change |
+| `catsdwan_list_templates` | read | Device templates (CLI or feature-based, device model, devices attached and which) or feature templates (type, device models, devices attached, device templates using them); factory defaults hidden unless `include_defaults` |
+| `catsdwan_get_device_config` | read | A device's running or intended configuration (`template/config/running` and `/attached`), secrets masked (passwords, secrets, keys, pre-shared keys, SNMP communities and user keys), `section` filter; `diff=true` compares the two by block, order-independent (only on the device, only intended, changed lines); says whether the device is in a configuration group, on a template or in CLI mode |
 | `catsdwan_search_spec` | read | Search the Manager's own OpenAPI document (`GET /apidocs/vmanageapi.json`, OpenAPI 3, about 2800 paths on 20.18) for operations and schemas; paths shown as `/dataservice/...`; indexed once per Manager release and cached in `MCP_CACHE_DIR` |
 | `catsdwan_get_definition` | read | One operation (parameters, request fields, required fields; `examples=true` for the spec's examples) or schema |
 | `catsdwan_api_call` | read / write / dangerous | Any endpoint, the path checked against the spec ('did you mean' when it isn't there). GET and the query POSTs of `/statistics/<index>`, `/alarms`, `/event`, `/auditlog` are reads; with `MCP_ENABLE_WRITES` other POST/PUT/DELETE calls are preview-first; `/device/action/*` writes (reboot, software) need `MCP_ENABLE_DANGEROUS`. Secrets masked |

@@ -1,0 +1,44 @@
+{
+  "devices": [
+    {
+      "id": "REDACTED-16",
+      "site-name": "SITE_200",
+      "host-name": "br1",
+      "site-id": "200",
+      "deviceModel": "vedge-C8000V",
+      "tags": [],
+      "device-lock": "No",
+      "addedByRule": false,
+      "configStatusMessage": "In Sync",
+      "deviceIP": "10.0.0.2",
+      "configGroupLastUpdatedOn": "",
+      "unsupportedFeatures": [],
+      "hierarchyNamePath": "Global/SITE_200",
+      "hierarchyTypePath": "GLOBAL/SITE",
+      "groupTopologyLabel": "",
+      "configGroupUpToDate": "False",
+      "isDeployable": true,
+      "licenseStatus": "Unlicensed"
+    },
+    {
+      "id": "REDACTED-17",
+      "site-name": "SITE_100",
+      "host-name": "hub1",
+      "site-id": "100",
+      "deviceModel": "vedge-C8000V",
+      "tags": [],
+      "device-lock": "No",
+      "addedByRule": false,
+      "configStatusMessage": "In Sync",
+      "deviceIP": "10.0.0.1",
+      "configGroupLastUpdatedOn": "",
+      "unsupportedFeatures": [],
+      "hierarchyNamePath": "Global/SITE_100",
+      "hierarchyTypePath": "GLOBAL/SITE",
+      "groupTopologyLabel": "",
+      "configGroupUpToDate": "False",
+      "isDeployable": true,
+      "licenseStatus": "Unlicensed"
+    }
+  ]
+}
