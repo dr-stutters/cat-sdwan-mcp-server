@@ -31,6 +31,13 @@ All notable changes to this project are documented here. The format follows
   controllers; install body per the spec's `ProcessInstallReq`, activation by `changepartition` when the version is
   installed already). Recorded 20.18.3.1 fixtures for the empty repository, installed software, reboot history,
   action types and running tasks; spec subset extended.
+- W13 (#14): SLA history and reports. `catsdwan_sla_history` (the Manager's hourly or daily histogram per tunnel from
+  `POST /statistics/approute/aggregation`, recorded on 20.18.3.1; SLA class by name or from the app-route policy for
+  an `app`; miss periods merged across buckets; site, device or tunnel scope), `catsdwan_top_applications` (DPI
+  aggregation per application and family; an empty answer says application visibility is off and how to turn it
+  on) and `catsdwan_site_report` (devices, availability and SLA misses per transport with a verdict, control
+  drops per colour, top alarms, top applications). The two long ones are core tasks; the aggregations run on the
+  statistics semaphore. Recorded aggregation and empty DPI fixtures; spec subset extended.
 
 ## [0.2.0] - 2026-10-23
 

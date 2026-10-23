@@ -93,6 +93,10 @@ PATHS = [
     "/device/software",
     "/device/reboothistory",
     "/device/system/status",
+    # W13 history
+    "/statistics/dpi",
+    "/statistics/dpi/aggregation",
+    "/device/control/connectionshistory",
 ]
 
 

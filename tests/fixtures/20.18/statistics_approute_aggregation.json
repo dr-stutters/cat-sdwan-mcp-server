@@ -1,0 +1,838 @@
+{
+  "header": {
+    "generatedOn": 1792757027329,
+    "columns": [
+      {
+        "property": "entry_time",
+        "title": "Entry_time",
+        "dataType": "date",
+        "isDisplay": true
+      },
+      {
+        "property": "jitter",
+        "title": "Jitter",
+        "dataType": "double",
+        "isDisplay": true
+      },
+      {
+        "property": "loss_percentage",
+        "title": "Loss_percentage",
+        "dataType": "double",
+        "isDisplay": true
+      },
+      {
+        "property": "latency",
+        "title": "Latency",
+        "dataType": "double",
+        "isDisplay": true
+      },
+      {
+        "property": "name",
+        "title": "Name",
+        "dataType": "string",
+        "isDisplay": true
+      }
+    ],
+    "fields": [
+      {
+        "property": "entry_time",
+        "dataType": "date"
+      },
+      {
+        "property": "jitter",
+        "dataType": "double"
+      },
+      {
+        "property": "loss_percentage",
+        "dataType": "double"
+      },
+      {
+        "property": "latency",
+        "dataType": "double"
+      },
+      {
+        "property": "name",
+        "dataType": "string"
+      }
+    ]
+  },
+  "entryTimeList": [
+    1792735200000,
+    1792738800000,
+    1792742400000,
+    1792746000000,
+    1792749600000,
+    1792753200000,
+    1792756800000
+  ],
+  "data": [
+    {
+      "entry_time": 1792742400000,
+      "latency": 1.0,
+      "loss_percentage": 0.03,
+      "jitter": 0.4,
+      "name": "10.0.0.3:mpls-10.0.0.1:biz-internet",
+      "count": 5
+    },
+    {
+      "entry_time": 1792742400000,
+      "latency": 0.0,
+      "loss_percentage": 0.0,
+      "jitter": 0.0,
+      "name": "10.0.0.1:mpls-10.0.0.3:mpls",
+      "count": 5
+    },
+    {
+      "entry_time": 1792742400000,
+      "latency": 0.0,
+      "loss_percentage": 0.03,
+      "jitter": 0.0,
+      "name": "10.0.0.3:mpls-10.0.0.2:mpls",
+      "count": 5
+    },
+    {
+      "entry_time": 1792742400000,
+      "latency": 1.0,
+      "loss_percentage": 0.0,
+      "jitter": 1.0,
+      "name": "10.0.0.1:biz-internet-10.0.0.2:mpls",
+      "count": 5
+    },
+    {
+      "entry_time": 1792742400000,
+      "latency": 0.0,
+      "loss_percentage": 0.06,
+      "jitter": 0.2,
+      "name": "10.0.0.2:mpls-10.0.0.1:mpls",
+      "count": 5
+    },
+    {
+      "entry_time": 1792742400000,
+      "latency": 1.0,
+      "loss_percentage": 0.0,
+      "jitter": 1.0,
+      "name": "10.0.0.1:mpls-10.0.0.3:biz-internet",
+      "count": 5
+    },
+    {
+      "entry_time": 1792742400000,
+      "latency": 1.0,
+      "loss_percentage": 0.03,
+      "jitter": 1.0,
+      "name": "10.0.0.3:mpls-10.0.0.2:biz-internet",
+      "count": 5
+    },
+    {
+      "entry_time": 1792742400000,
+      "latency": 1.0,
+      "loss_percentage": 0.06,
+      "jitter": 0.8,
+      "name": "10.0.0.2:biz-internet-10.0.0.1:mpls",
+      "count": 5
+    },
+    {
+      "entry_time": 1792742400000,
+      "latency": 1.0,
+      "loss_percentage": 0.0,
+      "jitter": 1.0,
+      "name": "10.0.0.1:mpls-10.0.0.2:biz-internet",
+      "count": 5
+    },
+    {
+      "entry_time": 1792742400000,
+      "latency": 0.0,
+      "loss_percentage": 0.0,
+      "jitter": 0.0,
+      "name": "10.0.0.1:mpls-10.0.0.2:mpls",
+      "count": 5
+    },
+    {
+      "entry_time": 1792742400000,
+      "latency": 1.0,
+      "loss_percentage": 0.03,
+      "jitter": 1.0,
+      "name": "10.0.0.2:mpls-10.0.0.1:biz-internet",
+      "count": 5
+    },
+    {
+      "entry_time": 1792742400000,
+      "latency": 1.0,
+      "loss_percentage": 0.0,
+      "jitter": 0.8,
+      "name": "10.0.0.2:biz-internet-10.0.0.3:mpls",
+      "count": 5
+    },
+    {
+      "entry_time": 1792742400000,
+      "latency": 0.0,
+      "loss_percentage": 0.06,
+      "jitter": 0.0,
+      "name": "10.0.0.2:biz-internet-10.0.0.1:biz-internet",
+      "count": 5
+    },
+    {
+      "entry_time": 1792742400000,
+      "latency": 0.0,
+      "loss_percentage": 0.0,
+      "jitter": 0.0,
+      "name": "10.0.0.1:biz-internet-10.0.0.3:biz-internet",
+      "count": 5
+    },
+    {
+      "entry_time": 1792742400000,
+      "latency": 0.0,
+      "loss_percentage": 0.0,
+      "jitter": 0.0,
+      "name": "10.0.0.2:mpls-10.0.0.3:mpls",
+      "count": 5
+    },
+    {
+      "entry_time": 1792742400000,
+      "latency": 0.0,
+      "loss_percentage": 0.03,
+      "jitter": 0.0,
+      "name": "10.0.0.3:mpls-10.0.0.1:mpls",
+      "count": 5
+    },
+    {
+      "entry_time": 1792742400000,
+      "latency": 1.0,
+      "loss_percentage": 0.0,
+      "jitter": 1.0,
+      "name": "10.0.0.1:biz-internet-10.0.0.3:mpls",
+      "count": 5
+    },
+    {
+      "entry_time": 1792742400000,
+      "latency": 0.0,
+      "loss_percentage": 0.03,
+      "jitter": 0.0,
+      "name": "10.0.0.3:biz-internet-10.0.0.1:biz-internet",
+      "count": 5
+    },
+    {
+      "entry_time": 1792742400000,
+      "latency": 0.0,
+      "loss_percentage": 0.0,
+      "jitter": 0.0,
+      "name": "10.0.0.1:biz-internet-10.0.0.2:biz-internet",
+      "count": 5
+    },
+    {
+      "entry_time": 1792742400000,
+      "latency": 1.0,
+      "loss_percentage": 0.03,
+      "jitter": 1.0,
+      "name": "10.0.0.3:biz-internet-10.0.0.1:mpls",
+      "count": 5
+    },
+    {
+      "entry_time": 1792742400000,
+      "latency": 0.0,
+      "loss_percentage": 0.0,
+      "jitter": 0.0,
+      "name": "10.0.0.2:biz-internet-10.0.0.3:biz-internet",
+      "count": 5
+    },
+    {
+      "entry_time": 1792742400000,
+      "latency": 0.0,
+      "loss_percentage": 0.03,
+      "jitter": 0.0,
+      "name": "10.0.0.3:biz-internet-10.0.0.2:biz-internet",
+      "count": 5
+    },
+    {
+      "entry_time": 1792742400000,
+      "latency": 1.0,
+      "loss_percentage": 0.0,
+      "jitter": 1.0,
+      "name": "10.0.0.2:mpls-10.0.0.3:biz-internet",
+      "count": 5
+    },
+    {
+      "entry_time": 1792742400000,
+      "latency": 1.0,
+      "loss_percentage": 0.03,
+      "jitter": 0.8,
+      "name": "10.0.0.3:biz-internet-10.0.0.2:mpls",
+      "count": 5
+    },
+    {
+      "entry_time": 1792746000000,
+      "latency": 0.0,
+      "loss_percentage": 0.0,
+      "jitter": 0.0,
+      "name": "10.0.0.1:mpls-10.0.0.2:mpls",
+      "count": 6
+    },
+    {
+      "entry_time": 1792746000000,
+      "latency": 239.333,
+      "loss_percentage": 0.327,
+      "jitter": 8.333,
+      "name": "10.0.0.1:mpls-10.0.0.2:biz-internet",
+      "count": 6
+    },
+    {
+      "entry_time": 1792746000000,
+      "latency": 0.0,
+      "loss_percentage": 0.0,
+      "jitter": 0.0,
+      "name": "10.0.0.2:mpls-10.0.0.1:mpls",
+      "count": 6
+    },
+    {
+      "entry_time": 1792746000000,
+      "latency": 238.167,
+      "loss_percentage": 0.403,
+      "jitter": 7.5,
+      "name": "10.0.0.1:biz-internet-10.0.0.2:biz-internet",
+      "count": 6
+    },
+    {
+      "entry_time": 1792746000000,
+      "latency": 238.167,
+      "loss_percentage": 0.327,
+      "jitter": 8.0,
+      "name": "10.0.0.2:biz-internet-10.0.0.1:biz-internet",
+      "count": 6
+    },
+    {
+      "entry_time": 1792746000000,
+      "latency": 0.0,
+      "loss_percentage": 5.331,
+      "jitter": 0.0,
+      "name": "10.0.0.2:mpls-10.0.0.3:mpls",
+      "count": 5
+    },
+    {
+      "entry_time": 1792746000000,
+      "latency": 0.0,
+      "loss_percentage": 5.367,
+      "jitter": 0.0,
+      "name": "10.0.0.1:mpls-10.0.0.3:mpls",
+      "count": 5
+    },
+    {
+      "entry_time": 1792746000000,
+      "latency": 0.8,
+      "loss_percentage": 5.37,
+      "jitter": 0.6,
+      "name": "10.0.0.1:mpls-10.0.0.3:biz-internet",
+      "count": 5
+    },
+    {
+      "entry_time": 1792746000000,
+      "latency": 0.0,
+      "loss_percentage": 5.353,
+      "jitter": 0.0,
+      "name": "10.0.0.1:biz-internet-10.0.0.3:biz-internet",
+      "count": 5
+    },
+    {
+      "entry_time": 1792746000000,
+      "latency": 0.0,
+      "loss_percentage": 0.037,
+      "jitter": 0.0,
+      "name": "10.0.0.3:mpls-10.0.0.1:mpls",
+      "count": 4
+    },
+    {
+      "entry_time": 1792746000000,
+      "latency": 400.333,
+      "loss_percentage": 0.804,
+      "jitter": 12.667,
+      "name": "10.0.0.3:biz-internet-10.0.0.2:biz-internet",
+      "count": 3
+    },
+    {
+      "entry_time": 1792746000000,
+      "latency": 1.0,
+      "loss_percentage": 0.0,
+      "jitter": 0.5,
+      "name": "10.0.0.1:biz-internet-10.0.0.2:mpls",
+      "count": 6
+    },
+    {
+      "entry_time": 1792746000000,
+      "latency": 301.5,
+      "loss_percentage": 0.604,
+      "jitter": 10.0,
+      "name": "10.0.0.3:mpls-10.0.0.2:biz-internet",
+      "count": 4
+    },
+    {
+      "entry_time": 1792746000000,
+      "latency": 238.333,
+      "loss_percentage": 0.452,
+      "jitter": 7.833,
+      "name": "10.0.0.2:biz-internet-10.0.0.1:mpls",
+      "count": 6
+    },
+    {
+      "entry_time": 1792746000000,
+      "latency": 0.8,
+      "loss_percentage": 5.331,
+      "jitter": 0.4,
+      "name": "10.0.0.2:mpls-10.0.0.3:biz-internet",
+      "count": 5
+    },
+    {
+      "entry_time": 1792746000000,
+      "latency": 240.8,
+      "loss_percentage": 5.761,
+      "jitter": 8.2,
+      "name": "10.0.0.2:biz-internet-10.0.0.3:mpls",
+      "count": 5
+    },
+    {
+      "entry_time": 1792746000000,
+      "latency": 1.0,
+      "loss_percentage": 0.037,
+      "jitter": 1.0,
+      "name": "10.0.0.3:biz-internet-10.0.0.2:mpls",
+      "count": 4
+    },
+    {
+      "entry_time": 1792746000000,
+      "latency": 1.0,
+      "loss_percentage": 0.0,
+      "jitter": 0.667,
+      "name": "10.0.0.2:mpls-10.0.0.1:biz-internet",
+      "count": 6
+    },
+    {
+      "entry_time": 1792746000000,
+      "latency": 1.0,
+      "loss_percentage": 0.075,
+      "jitter": 1.0,
+      "name": "10.0.0.3:mpls-10.0.0.1:biz-internet",
+      "count": 4
+    },
+    {
+      "entry_time": 1792746000000,
+      "latency": 0.0,
+      "loss_percentage": 0.05,
+      "jitter": 0.0,
+      "name": "10.0.0.3:biz-internet-10.0.0.1:biz-internet",
+      "count": 3
+    },
+    {
+      "entry_time": 1792746000000,
+      "latency": 1.0,
+      "loss_percentage": 0.038,
+      "jitter": 1.0,
+      "name": "10.0.0.3:biz-internet-10.0.0.1:mpls",
+      "count": 4
+    },
+    {
+      "entry_time": 1792746000000,
+      "latency": 0.8,
+      "loss_percentage": 5.347,
+      "jitter": 0.6,
+      "name": "10.0.0.1:biz-internet-10.0.0.3:mpls",
+      "count": 5
+    },
+    {
+      "entry_time": 1792746000000,
+      "latency": 240.2,
+      "loss_percentage": 5.754,
+      "jitter": 7.2,
+      "name": "10.0.0.2:biz-internet-10.0.0.3:biz-internet",
+      "count": 5
+    },
+    {
+      "entry_time": 1792746000000,
+      "latency": 0.0,
+      "loss_percentage": 0.038,
+      "jitter": 0.0,
+      "name": "10.0.0.3:mpls-10.0.0.2:mpls",
+      "count": 4
+    },
+    {
+      "entry_time": 1792749600000,
+      "latency": 0.8,
+      "loss_percentage": 0.06,
+      "jitter": 0.0,
+      "name": "10.0.0.2:mpls-10.0.0.1:biz-internet",
+      "count": 5
+    },
+    {
+      "entry_time": 1792749600000,
+      "latency": 0.6,
+      "loss_percentage": 0.0,
+      "jitter": 0.0,
+      "name": "10.0.0.2:biz-internet-10.0.0.1:mpls",
+      "count": 5
+    },
+    {
+      "entry_time": 1792749600000,
+      "latency": 0.5,
+      "loss_percentage": 0.0,
+      "jitter": 0.0,
+      "name": "10.0.0.1:biz-internet-10.0.0.3:mpls",
+      "count": 6
+    },
+    {
+      "entry_time": 1792749600000,
+      "latency": 4.667,
+      "loss_percentage": 0.501,
+      "jitter": 0.333,
+      "name": "10.0.0.3:biz-internet-10.0.0.2:biz-internet",
+      "count": 6
+    },
+    {
+      "entry_time": 1792749600000,
+      "latency": 0.0,
+      "loss_percentage": 0.0,
+      "jitter": 0.0,
+      "name": "10.0.0.1:mpls-10.0.0.3:mpls",
+      "count": 6
+    },
+    {
+      "entry_time": 1792749600000,
+      "latency": 0.0,
+      "loss_percentage": 0.05,
+      "jitter": 0.0,
+      "name": "10.0.0.3:biz-internet-10.0.0.1:biz-internet",
+      "count": 6
+    },
+    {
+      "entry_time": 1792749600000,
+      "latency": 0.5,
+      "loss_percentage": 0.05,
+      "jitter": 0.0,
+      "name": "10.0.0.3:mpls-10.0.0.1:biz-internet",
+      "count": 6
+    },
+    {
+      "entry_time": 1792749600000,
+      "latency": 5.5,
+      "loss_percentage": 0.777,
+      "jitter": 0.333,
+      "name": "10.0.0.3:mpls-10.0.0.2:biz-internet",
+      "count": 6
+    },
+    {
+      "entry_time": 1792749600000,
+      "latency": 5.5,
+      "loss_percentage": 0.0,
+      "jitter": 0.333,
+      "name": "10.0.0.2:biz-internet-10.0.0.3:mpls",
+      "count": 6
+    },
+    {
+      "entry_time": 1792749600000,
+      "latency": 0.333,
+      "loss_percentage": 0.678,
+      "jitter": 0.0,
+      "name": "10.0.0.1:biz-internet-10.0.0.2:mpls",
+      "count": 6
+    },
+    {
+      "entry_time": 1792749600000,
+      "latency": 0.167,
+      "loss_percentage": 0.727,
+      "jitter": 0.0,
+      "name": "10.0.0.1:mpls-10.0.0.2:biz-internet",
+      "count": 6
+    },
+    {
+      "entry_time": 1792749600000,
+      "latency": 0.833,
+      "loss_percentage": 0.05,
+      "jitter": 0.0,
+      "name": "10.0.0.2:mpls-10.0.0.3:biz-internet",
+      "count": 6
+    },
+    {
+      "entry_time": 1792749600000,
+      "latency": 0.0,
+      "loss_percentage": 0.45,
+      "jitter": 0.0,
+      "name": "10.0.0.1:biz-internet-10.0.0.2:biz-internet",
+      "count": 6
+    },
+    {
+      "entry_time": 1792749600000,
+      "latency": 0.833,
+      "loss_percentage": 0.731,
+      "jitter": 0.0,
+      "name": "10.0.0.3:biz-internet-10.0.0.2:mpls",
+      "count": 6
+    },
+    {
+      "entry_time": 1792749600000,
+      "latency": 4.667,
+      "loss_percentage": 0.075,
+      "jitter": 0.333,
+      "name": "10.0.0.2:biz-internet-10.0.0.3:biz-internet",
+      "count": 6
+    },
+    {
+      "entry_time": 1792749600000,
+      "latency": 0.0,
+      "loss_percentage": 0.075,
+      "jitter": 0.0,
+      "name": "10.0.0.2:mpls-10.0.0.3:mpls",
+      "count": 6
+    },
+    {
+      "entry_time": 1792749600000,
+      "latency": 0.333,
+      "loss_percentage": 0.05,
+      "jitter": 0.0,
+      "name": "10.0.0.3:biz-internet-10.0.0.1:mpls",
+      "count": 6
+    },
+    {
+      "entry_time": 1792749600000,
+      "latency": 0.833,
+      "loss_percentage": 0.0,
+      "jitter": 0.0,
+      "name": "10.0.0.1:mpls-10.0.0.3:biz-internet",
+      "count": 6
+    },
+    {
+      "entry_time": 1792749600000,
+      "latency": 0.0,
+      "loss_percentage": 0.728,
+      "jitter": 0.0,
+      "name": "10.0.0.3:mpls-10.0.0.2:mpls",
+      "count": 6
+    },
+    {
+      "entry_time": 1792749600000,
+      "latency": 0.0,
+      "loss_percentage": 0.68,
+      "jitter": 0.0,
+      "name": "10.0.0.1:mpls-10.0.0.2:mpls",
+      "count": 6
+    },
+    {
+      "entry_time": 1792749600000,
+      "latency": 0.0,
+      "loss_percentage": 0.06,
+      "jitter": 0.0,
+      "name": "10.0.0.2:mpls-10.0.0.1:mpls",
+      "count": 5
+    },
+    {
+      "entry_time": 1792749600000,
+      "latency": 0.0,
+      "loss_percentage": 0.0,
+      "jitter": 0.0,
+      "name": "10.0.0.1:biz-internet-10.0.0.3:biz-internet",
+      "count": 6
+    },
+    {
+      "entry_time": 1792749600000,
+      "latency": 0.0,
+      "loss_percentage": 0.05,
+      "jitter": 0.0,
+      "name": "10.0.0.3:mpls-10.0.0.1:mpls",
+      "count": 6
+    },
+    {
+      "entry_time": 1792749600000,
+      "latency": 0.0,
+      "loss_percentage": 0.06,
+      "jitter": 0.0,
+      "name": "10.0.0.2:biz-internet-10.0.0.1:biz-internet",
+      "count": 5
+    },
+    {
+      "entry_time": 1792753200000,
+      "latency": 0.0,
+      "loss_percentage": 0.0,
+      "jitter": 0.0,
+      "name": "10.0.0.1:biz-internet-10.0.0.2:biz-internet",
+      "count": 6
+    },
+    {
+      "entry_time": 1792753200000,
+      "latency": 0.0,
+      "loss_percentage": 0.0,
+      "jitter": 0.0,
+      "name": "10.0.0.3:biz-internet-10.0.0.1:biz-internet",
+      "count": 5
+    },
+    {
+      "entry_time": 1792753200000,
+      "latency": 0.6,
+      "loss_percentage": 0.03,
+      "jitter": 0.0,
+      "name": "10.0.0.1:biz-internet-10.0.0.3:mpls",
+      "count": 5
+    },
+    {
+      "entry_time": 1792753200000,
+      "latency": 0.75,
+      "loss_percentage": 0.037,
+      "jitter": 0.0,
+      "name": "10.0.0.2:biz-internet-10.0.0.3:mpls",
+      "count": 4
+    },
+    {
+      "entry_time": 1792753200000,
+      "latency": 0.0,
+      "loss_percentage": 0.0,
+      "jitter": 0.0,
+      "name": "10.0.0.2:biz-internet-10.0.0.1:biz-internet",
+      "count": 5
+    },
+    {
+      "entry_time": 1792753200000,
+      "latency": 0.833,
+      "loss_percentage": 0.0,
+      "jitter": 0.0,
+      "name": "10.0.0.1:mpls-10.0.0.2:biz-internet",
+      "count": 6
+    },
+    {
+      "entry_time": 1792753200000,
+      "latency": 0.6,
+      "loss_percentage": 0.0,
+      "jitter": 0.0,
+      "name": "10.0.0.3:biz-internet-10.0.0.1:mpls",
+      "count": 5
+    },
+    {
+      "entry_time": 1792753200000,
+      "latency": 0.0,
+      "loss_percentage": 0.03,
+      "jitter": 0.0,
+      "name": "10.0.0.1:biz-internet-10.0.0.3:biz-internet",
+      "count": 5
+    },
+    {
+      "entry_time": 1792753200000,
+      "latency": 0.8,
+      "loss_percentage": 0.0,
+      "jitter": 0.0,
+      "name": "10.0.0.3:mpls-10.0.0.1:biz-internet",
+      "count": 5
+    },
+    {
+      "entry_time": 1792753200000,
+      "latency": 0.667,
+      "loss_percentage": 0.0,
+      "jitter": 0.0,
+      "name": "10.0.0.1:biz-internet-10.0.0.2:mpls",
+      "count": 6
+    },
+    {
+      "entry_time": 1792753200000,
+      "latency": 0.0,
+      "loss_percentage": 0.0,
+      "jitter": 0.0,
+      "name": "10.0.0.3:biz-internet-10.0.0.2:biz-internet",
+      "count": 5
+    },
+    {
+      "entry_time": 1792753200000,
+      "latency": 0.0,
+      "loss_percentage": 0.0,
+      "jitter": 0.0,
+      "name": "10.0.0.1:mpls-10.0.0.2:mpls",
+      "count": 6
+    },
+    {
+      "entry_time": 1792753200000,
+      "latency": 0.0,
+      "loss_percentage": 0.037,
+      "jitter": 0.0,
+      "name": "10.0.0.2:mpls-10.0.0.3:mpls",
+      "count": 4
+    },
+    {
+      "entry_time": 1792753200000,
+      "latency": 0.8,
+      "loss_percentage": 0.0,
+      "jitter": 0.0,
+      "name": "10.0.0.3:mpls-10.0.0.2:biz-internet",
+      "count": 5
+    },
+    {
+      "entry_time": 1792753200000,
+      "latency": 0.6,
+      "loss_percentage": 0.03,
+      "jitter": 0.0,
+      "name": "10.0.0.1:mpls-10.0.0.3:biz-internet",
+      "count": 5
+    },
+    {
+      "entry_time": 1792753200000,
+      "latency": 0.8,
+      "loss_percentage": 0.0,
+      "jitter": 0.0,
+      "name": "10.0.0.2:biz-internet-10.0.0.1:mpls",
+      "count": 5
+    },
+    {
+      "entry_time": 1792753200000,
+      "latency": 0.0,
+      "loss_percentage": 0.0,
+      "jitter": 0.0,
+      "name": "10.0.0.3:mpls-10.0.0.2:mpls",
+      "count": 5
+    },
+    {
+      "entry_time": 1792753200000,
+      "latency": 0.8,
+      "loss_percentage": 0.0,
+      "jitter": 0.0,
+      "name": "10.0.0.3:biz-internet-10.0.0.2:mpls",
+      "count": 5
+    },
+    {
+      "entry_time": 1792753200000,
+      "latency": 0.0,
+      "loss_percentage": 0.037,
+      "jitter": 0.0,
+      "name": "10.0.0.2:biz-internet-10.0.0.3:biz-internet",
+      "count": 4
+    },
+    {
+      "entry_time": 1792753200000,
+      "latency": 0.8,
+      "loss_percentage": 0.0,
+      "jitter": 0.0,
+      "name": "10.0.0.2:mpls-10.0.0.1:biz-internet",
+      "count": 5
+    },
+    {
+      "entry_time": 1792753200000,
+      "latency": 0.0,
+      "loss_percentage": 0.03,
+      "jitter": 0.0,
+      "name": "10.0.0.1:mpls-10.0.0.3:mpls",
+      "count": 5
+    },
+    {
+      "entry_time": 1792753200000,
+      "latency": 0.0,
+      "loss_percentage": 0.0,
+      "jitter": 0.0,
+      "name": "10.0.0.3:mpls-10.0.0.1:mpls",
+      "count": 5
+    },
+    {
+      "entry_time": 1792753200000,
+      "latency": 0.75,
+      "loss_percentage": 0.037,
+      "jitter": 0.0,
+      "name": "10.0.0.2:mpls-10.0.0.3:biz-internet",
+      "count": 4
+    },
+    {
+      "entry_time": 1792753200000,
+      "latency": 0.0,
+      "loss_percentage": 0.0,
+      "jitter": 0.0,
+      "name": "10.0.0.2:mpls-10.0.0.1:mpls",
+      "count": 5
+    }
+  ]
+}
