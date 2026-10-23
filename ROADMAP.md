@@ -87,7 +87,7 @@ Pull-only ([ADR-003](https://github.com/dr-stutters/stutters-mcp-core/blob/main/
 | `catsdwan_why_is_app_slow` (W10) | host's site from ISE or NetBox -> app-route SLA per transport -> the policy that picks the path -> optional FTD leg with `fmc_packet_tracer` -> where the delay is | ise (fmc, cml optional) | Next |
 | `catsdwan_sgt_path` (W24) | source and destination SGT at a site -> the edge's SGT map, SGACLs and counters -> `ise_get_egress_matrix` -> whether the edge enforces what ISE intends | ise | Later |
 
-Catalyst Center does not manage SD-WAN edges (an edge is managed by one controller), so no catc leg; the Manager's Catalyst Center SD-Access partner integration is read in W24, and `catsdwan_sgt_path` (W24) adds an ise leg for SGTs. FMC's own SD-WAN (F51–F54) is a different product and is never chained as if it were this one.
+Catalyst Center does not manage SD-WAN edges (an edge is managed by one controller); the one catc leg is the SD-Access handoff check ([W43](https://github.com/dr-stutters/cat-sdwan-mcp-server/issues/79), Wave 9); the Manager's Catalyst Center SD-Access partner integration is read in W24, and `catsdwan_sgt_path` (W24) adds an ise leg for SGTs. FMC's own SD-WAN (F51–F54) is a different product and is never chained as if it were this one.
 
 ## Production gate (server-specific)
 - [ ] **W14: Least-privilege user groups and safety rails** (`mcp-ro` / `mcp-rw` / `mcp-admin`, a tool-to-feature table, protected sites and hubs, tenant pinning). Links core [G2](https://github.com/dr-stutters/stutters-mcp-core/issues/19), [G3](https://github.com/dr-stutters/stutters-mcp-core/issues/20), [G7](https://github.com/dr-stutters/stutters-mcp-core/issues/24), [C28](https://github.com/dr-stutters/stutters-mcp-core/issues/80), [C29](https://github.com/dr-stutters/stutters-mcp-core/issues/81), [C32](https://github.com/dr-stutters/stutters-mcp-core/issues/84). Size M.
@@ -112,7 +112,6 @@ Left to `catsdwan_api_call` (with `catsdwan_search_spec` / `catsdwan_get_definit
 - **vEdge (Viptela OS) edges.** The image is in CML, but vEdge is end-of-life; reads work through the same APIs, and nothing is proven or written for it.
 - **Event ingestion of any kind**: alarm webhooks, streaming telemetry, data-stream export, SNMP traps (ADR-003).
 - **Manager administration changes**: cluster setup and removal, disaster recovery registration and failover, restores, Manager upgrades, certificate authority settings, licence assignment, user and tenant creation (beyond W14's user-group script). Health, backups, users, AAA and licences are read in W25, W26 and W28; controller upgrades are W27.
-- **Security policy on the edges** (UTD/Snort, URL filtering, zone-based firewall, SSL proxy, IPS signature sets): read through `catsdwan_get_policy` (W11) and `catsdwan_security_status` / `catsdwan_security_events` (W23), never written here; firewalling in this suite belongs to FMC.
 - **Areas of the spec the lab cannot prove** are no longer here: they are built in the spec-proven track (W29–W39) with proof levels.
 - **Left to `catsdwan_api_call`** (40 tags, about 250 operations; see [docs/spec-coverage.md](docs/spec-coverage.md)): Manager settings, network design, segments and circuits, alarm notification rules, the Manager's own scheduled reports, IPS signature sets and SSL proxy certificates, packet capture, speed test and log streaming (they need a browser session), and Manager utility endpoints.
 - **Direct device access.** Edge CLI goes through `cml_run_commands` in the lab; an edge in SD-WAN mode is managed only through the Manager, so this server never SSHes to edges.
@@ -137,7 +136,39 @@ Left to `catsdwan_api_call` (with `catsdwan_search_spec` / `catsdwan_get_definit
 ## Owner decisions (2026-10-23)
 - **Spec-proven track:** areas the lab cannot prove are built anyway (W29–W39), with proof levels `live`, `spec` and `unproven`, writes below `live` dangerous, and items closing on `spec` proof with the `needs-live-proof` label.
 
+## Owner decisions (2026-10-23, Waves 7–10)
+- **Edge security writes** are in scope, all of it: zone and identity firewall, IPS/UTD, URL filtering, AMP, SSL proxy ([W47](https://github.com/dr-stutters/cat-sdwan-mcp-server/issues/73)–[W49](https://github.com/dr-stutters/cat-sdwan-mcp-server/issues/75)); the 'Security policy on the edges' line left Not planned.
+- **ISE path from the edges:** a service VPN with a loopback source (Cisco design guidance), not VPN 512.
+- **Open issues:** #30 retry the sync; #33 turn on Data Stream and trace; #35 create and deploy a test policy group; #39 parked (Later); #40 via RADIUS to ISE ([W40](https://github.com/dr-stutters/cat-sdwan-mcp-server/issues/66)); #41 closed on spec proof (`needs-live-proof`).
+- **Partial lab paths:** a multitenant Manager yes (W61, cml L66); no cloud account or Umbrella trial, so W30, W31 and the multicloud scenario stay spec-proven.
+
+## Waves 7–10 (planned 2026-10-23): Catalyst SD-WAN cross-architecture
+Suite plan: four waves of cross-architecture scenarios led by Catalyst SD-WAN, filed 2026-10-23 (draft `stutters-mcp-lab/planning/WAVE7-SDWAN-XARCH-DRAFT.md`). Waves: **7** foundation, identity and triage (Now) · **8** security and change safety · **9** topology and lifecycle (Next) · **10** reporting and reach (Later). Scenario epics in core: [C44](https://github.com/dr-stutters/stutters-mcp-core/issues/102), [C54](https://github.com/dr-stutters/stutters-mcp-core/issues/103), [C55](https://github.com/dr-stutters/stutters-mcp-core/issues/104), [C59](https://github.com/dr-stutters/stutters-mcp-core/issues/105), [C45](https://github.com/dr-stutters/stutters-mcp-core/issues/106), [C56](https://github.com/dr-stutters/stutters-mcp-core/issues/107), [C57](https://github.com/dr-stutters/stutters-mcp-core/issues/108), [C58](https://github.com/dr-stutters/stutters-mcp-core/issues/109), [C61](https://github.com/dr-stutters/stutters-mcp-core/issues/110), [C60](https://github.com/dr-stutters/stutters-mcp-core/issues/111).
+
+| # | Item | Wave | Milestone | Size | Scenario |
+|---|---|---|---|---|---|
+| [W40](https://github.com/dr-stutters/cat-sdwan-mcp-server/issues/66) | **Manager admin login through ISE: `catsdwan_test_login`, prompt `catsdwan_admin_access_via_ise`** | 7 | Now | M | [C44](https://github.com/dr-stutters/stutters-mcp-core/issues/102) |
+| [W41](https://github.com/dr-stutters/cat-sdwan-mcp-server/issues/67) | **ISE and pxGrid integration writes: `catsdwan_set_ise_integration`** | 7 | Now | M | [C44](https://github.com/dr-stutters/stutters-mcp-core/issues/102) |
+| [W42](https://github.com/dr-stutters/cat-sdwan-mcp-server/issues/68) | **`catsdwan_sgt_path` across the overlay (source edge → transport → destination edge)** | 7 | Now | M | [C44](https://github.com/dr-stutters/stutters-mcp-core/issues/102) |
+| [W44](https://github.com/dr-stutters/cat-sdwan-mcp-server/issues/69) | **`catsdwan_find_host(ip \| mac)`: which edge, site, VPN, interface and route a host sits behind** | 7 | Now | M | [C54](https://github.com/dr-stutters/stutters-mcp-core/issues/103) |
+| [W46](https://github.com/dr-stutters/cat-sdwan-mcp-server/issues/70) | **`catsdwan_snapshot` / `catsdwan_compare_snapshot` for C53** | 7 | Now | S | [C54](https://github.com/dr-stutters/stutters-mcp-core/issues/103) |
+| [W51](https://github.com/dr-stutters/cat-sdwan-mcp-server/issues/71) | **Triage prompts: `catsdwan_wifi_lan_or_wan`, `catsdwan_network_or_ise`, `catsdwan_site_down`, `catsdwan_brownout_drill`** | 7 | Now | L | [C54](https://github.com/dr-stutters/stutters-mcp-core/issues/103) |
+| [W45](https://github.com/dr-stutters/cat-sdwan-mcp-server/issues/72) | **WAN-edge containment (dangerous): drop a host at its edge, with release** | 8 | Next | M | [C55](https://github.com/dr-stutters/stutters-mcp-core/issues/104) |
+| [W47](https://github.com/dr-stutters/cat-sdwan-mcp-server/issues/73) | **Edge firewall writes: zone-based and identity-based firewall policy** | 8 | Next | L | [C55](https://github.com/dr-stutters/stutters-mcp-core/issues/104) |
+| [W48](https://github.com/dr-stutters/cat-sdwan-mcp-server/issues/74) | **UTD writes: IPS/IDS, URL filtering, AMP/file policy, UTD engine install and status** | 8 | Next | L | [C55](https://github.com/dr-stutters/stutters-mcp-core/issues/104) |
+| [W49](https://github.com/dr-stutters/cat-sdwan-mcp-server/issues/75) | **SSL proxy on the edges, CA from the lab CA** | 8 | Next | M | [C55](https://github.com/dr-stutters/stutters-mcp-core/issues/104) |
+| [W50](https://github.com/dr-stutters/cat-sdwan-mcp-server/issues/76) | **Service insertion: service chains to an FTD, prompt `catsdwan_trace_through_firewall`** | 8 | Next | M | [C55](https://github.com/dr-stutters/stutters-mcp-core/issues/104) |
+| [W55](https://github.com/dr-stutters/cat-sdwan-mcp-server/issues/77) | **`catsdwan_export_site`: a site as a twin spec** | 8 | Next | M | [C59](https://github.com/dr-stutters/stutters-mcp-core/issues/105) |
+| [W58](https://github.com/dr-stutters/cat-sdwan-mcp-server/issues/78) | **Enterprise CA renewal end to end: prompt `catsdwan_renew_with_enterprise_ca`** | 8 | Next | M | — |
+| [W43](https://github.com/dr-stutters/cat-sdwan-mcp-server/issues/79) | **SD-Access handoff reads and prompt `catsdwan_sda_handoff_check`** | 9 | Next | M | [C45](https://github.com/dr-stutters/stutters-mcp-core/issues/106) |
+| [W52](https://github.com/dr-stutters/cat-sdwan-mcp-server/issues/80) | **Migration: template → config group, `catsdwan_migrate_from_catc`, `catsdwan_compare_ftd_sdwan`** | 9 | Next | L | [C56](https://github.com/dr-stutters/stutters-mcp-core/issues/107) |
+| [W53](https://github.com/dr-stutters/cat-sdwan-mcp-server/issues/81) | **`catsdwan_remove_device` (invalidate + delete, dangerous) for C52** | 9 | Next | S | — |
+| [W54](https://github.com/dr-stutters/cat-sdwan-mcp-server/issues/82) | **Prompt `catsdwan_hub_failover_drill`** | 9 | Next | M | [C58](https://github.com/dr-stutters/stutters-mcp-core/issues/109) |
+| [W56](https://github.com/dr-stutters/cat-sdwan-mcp-server/issues/83) | **Prompt `catsdwan_why_is_voice_bad`** | 9 | Next | M | [C61](https://github.com/dr-stutters/stutters-mcp-core/issues/110) |
+| [W59](https://github.com/dr-stutters/cat-sdwan-mcp-server/issues/84) | **Branch DHCP relay to Windows and the onboarding Windows leg** | 9 | Next | M | [C57](https://github.com/dr-stutters/stutters-mcp-core/issues/108) |
+| [W60](https://github.com/dr-stutters/cat-sdwan-mcp-server/issues/85) | **IoT segmentation: IoT service VPN, policy and prompt `catsdwan_iot_segmentation`** | 9 | Next | M | [C57](https://github.com/dr-stutters/stutters-mcp-core/issues/108) |
+| [W57](https://github.com/dr-stutters/cat-sdwan-mcp-server/issues/86) | **Multicloud prompt `catsdwan_multicloud_path` (spec level)** | 10 | Later | M | [C60](https://github.com/dr-stutters/stutters-mcp-core/issues/111) |
+| [W61](https://github.com/dr-stutters/cat-sdwan-mcp-server/issues/87) | **Multitenancy to live: W35's tenant tools on a multitenant Manager** | 10 | Later | M | — |
+
 ## Open questions for the owner
-1. **Splunk:** C42's other half (a read-only Splunk server) is not part of this repo and stays an open decision on C42.
-2. **Proof levels suite-wide:** W29's levels and the `needs-live-proof` rule would suit fmc, catc and ise too (their plan-only items); proposed as a core item for `stutters-mcp-core`, not yet filed.
-3. **Partial lab paths:** a small AWS or Azure cloud account (W30), an Umbrella trial (W31) and a second Manager in multitenant mode (W35, about 40 GB RAM) would each move an area from `spec` to `live`.
+None open. Answered 2026-10-23: Splunk is its own server ([splunk-mcp-server](https://github.com/dr-stutters/splunk-mcp-server)); proof levels are suite-wide ([core C43](https://github.com/dr-stutters/stutters-mcp-core/issues/100)); partial lab paths as above.
