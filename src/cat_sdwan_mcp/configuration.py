@@ -9,8 +9,9 @@ Sources (recorded on 20.18.3.1 unless marked; paths checked against the Manager'
 - GET /dataservice/v1/config-group/{id}/device/associate: {devices: [{id (chassis), host-name, site-id,
   deviceIP, configStatusMessage, configGroupUpToDate "True"|"False", isDeployable, ...}]}.
 - GET /dataservice/v1/config-group/{id}/device/variables?device-id=<chassis,...>: answers 400 without
-  `device-id` (the spec lists it as optional). Body shape not recorded yet (the lab group has no profiles):
-  read as {devices: [{device-id, variables: [{name, value}]}]}, Cisco's documented shape.
+  `device-id` (the spec lists it as optional), and 400 CFGRP0012 while the group has no system profile.
+  {family: "sdwan", groups: [{name, group-variables}], devices: [{device-id, variables: [{name, value}]}]}:
+  native value types (site_id an integer, booleans); a variable with no value has no "value" key.
 - GET /dataservice/v1/feature-profile/sdwan/<type>/{id} (type system, transport, service, cli, other, ...):
   {profileName, profileType, associatedProfileParcels: [{parcelId, parcelType, payload: {name, description,
   data}, subparcels}]}, each value {optionType: global|variable|default, value} (spec; not recorded yet).
@@ -156,21 +157,26 @@ def associated(body: Any) -> list[dict[str, Any]]:
     return [associated_row(d) for d in _as_list(rows) if isinstance(d, dict)]
 
 
-def variables_by_device(body: Any) -> dict[str, dict[str, Any]]:
-    """{device id: {variable: value}} from the variables answer, secrets masked. Accepts the documented
-    {devices: [{device-id, variables: [{name, value}]}]} and a bare list of those devices."""
+def device_variable_lists(body: Any) -> dict[str, list[dict[str, Any]]]:
+    """{device id: [{name, value?}, ...]} as the Manager returned them (unmasked, native types; a variable
+    with no value has no "value" key). Accepts {devices: [{device-id, variables: [...]}]} and a bare list."""
     rows = body.get("devices") if isinstance(body, dict) else body
-    out: dict[str, dict[str, Any]] = {}
+    out: dict[str, list[dict[str, Any]]] = {}
     for d in _as_list(rows):
         if not isinstance(d, dict):
             continue
         dev = str(d.get("device-id") or d.get("deviceId") or d.get("id") or "")
-        values: dict[str, Any] = {}
-        for v in _as_list(d.get("variables")):
-            if isinstance(v, dict) and v.get("name"):
-                values[str(v["name"])] = v.get("value")
-        out[dev] = mask_secrets(values)
+        out[dev] = [v for v in _as_list(d.get("variables")) if isinstance(v, dict) and v.get("name")]
     return out
+
+
+def variables_by_device(body: Any) -> dict[str, dict[str, Any]]:
+    """{device id: {variable: value}} from the variables answer, secrets masked. Accepts the recorded
+    {family, groups, devices: [{device-id, variables: [{name, value}]}]} and a bare list of those devices."""
+    return {
+        dev: mask_secrets({str(v["name"]): v.get("value") for v in rows})
+        for dev, rows in device_variable_lists(body).items()
+    }
 
 
 # --- feature profiles ------------------------------------------------------------------------------

@@ -28,3 +28,11 @@ class Settings(BaseServerSettings):
     # CATSDWAN_TENANT: a tenant name or id for a provider login on a multi-tenant Manager; requests then carry
     # that tenant's VSessionId. Off by default (single-tenant Managers).
     tenant: str | None = None
+
+    # CATSDWAN_HUB_DEVICES: comma-separated hubs (host name, system IP or chassis). A configuration change
+    # (catsdwan_deploy_config_group, catsdwan_attach_device_template) touching a hub is dangerous tier.
+    hub_devices: str | None = None
+
+    # CATSDWAN_PROTECTED_SITES: comma-separated site ids (or site names). A configuration change touching a
+    # device at one of these sites is dangerous tier, like a hub.
+    protected_sites: str | None = None
