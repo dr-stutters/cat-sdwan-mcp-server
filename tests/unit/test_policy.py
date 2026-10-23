@@ -250,6 +250,10 @@ async def test_get_policy_in_plain_words(api: respx.MockRouter) -> None:
     assert bulk["match"][0].startswith("application list app list APP_BULK_DATA (ftp, ftp-data")
     assert bulk["action"] == ["SLA class Bulk-Data (loss <= 5%, latency <= 500 ms, jitter <= 500 ms)"]
     assert "not activated" in out["note"]
+    assert out["sequences"][0].startswith("mcp-test-app-route #1: if DSCP 46 -> SLA class")
+    async with Client(make_server()) as c:  # the markdown view shows the sequences, not just their names
+        md = (await c.call_tool("catsdwan_get_policy", {"policy": "mcp-test-policy"})).content[0]
+    assert "preferring mpls" in getattr(md, "text", "")
 
 
 async def test_get_policy_reads_lists_by_type_without_the_all_lists_api(api: respx.MockRouter) -> None:

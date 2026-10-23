@@ -304,6 +304,13 @@ def register(reg: ToolRegistrar) -> None:
             for a in parts
             if str(a.get("definitionId")) in defs
         ]
+        # the sequences again as one line each: the markdown view flattens nested definitions to their names
+        out["sequences"] = [
+            f"{d.get('name')} #{s.get('sequence') or i + 1}: {s['in_words']}"
+            for d in out["definitions"]
+            for i, s in enumerate(d.get("sequences") or [])
+            if s.get("in_words")
+        ]
         settings = parse_definition(definition).get("settings")
         if settings:
             out["settings"] = settings
