@@ -47,6 +47,16 @@ All notable changes to this project are documented here. The format follows
 - Client: query-body paging for the statistics-style APIs (`SdwanApp.query`: POST with `{"query", "size"}`, then the
   `pageInfo` scroll on `<path>/page?scrollId=`, cut to the caller's limit with `more` when rows were left out) and the
   `last_hours`/`rule` query builders, shared by W4 and W5.
+- W5 (#6): alarms, events and the audit log, pull-only. `catsdwan_list_alarms` (`POST /dataservice/alarms`: active
+  by default, severity-or-worse, device, site and type filters, cleared time, `by_type` counts), `catsdwan_list_events`
+  (`POST /dataservice/event`: device, site, event name, component and severity filters), `catsdwan_audit_log`
+  (`POST /dataservice/auditlog`, since a GET answers 400: user, module and device filters, `changes_only` without
+  logins and logouts, `include_details` with secrets masked) and `catsdwan_recent_activity` (the three merged into one
+  timeline for a device, site or the fabric; a failing source becomes a warning). Each reads the newest 2000 rows of
+  its window (1 h to 7 days) and says when the window held more.
+- `catsdwan_control_connections` adds `rejected_joins` for the fabric view and an edge that is down: the validator's
+  `vbond-reject-vedge-connection` and `control-connection-auth-fail` events of the last 24 h with the chassis and the
+  reason in plain words (`ERR_BID_NOT_VERIFIED` and friends).
 - `cat-sdwan-mcp-server check`: reachability, TLS, auth and version (tested 20.18 and 26.x, minimum 20.15).
 - Unit tests on recorded, redacted 20.18 payloads (`tests/fixtures/20.18/`).
 - Scaffold on stutters-mcp-core v0.14.4 (bundled as `cat_sdwan_mcp._core`, ADR-005): `catsdwan_status` (reports the

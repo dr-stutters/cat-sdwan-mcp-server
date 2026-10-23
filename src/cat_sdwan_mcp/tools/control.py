@@ -19,7 +19,7 @@ from cat_sdwan_mcp._core import (
     list_result,
 )
 from cat_sdwan_mcp._core.http import page_of
-from cat_sdwan_mcp.client import SdwanApp
+from cat_sdwan_mcp.client import SdwanApp, last_hours, rule
 from cat_sdwan_mcp.control import (
     BULK_CONTROL,
     CONNECTIONS_PATH,
@@ -41,6 +41,7 @@ from cat_sdwan_mcp.control import (
     summary_row,
     tloc_row,
 )
+from cat_sdwan_mcp.events import EVENTS_PATH, REJECT_EVENTS, rejection_row
 from cat_sdwan_mcp.fabric import (
     device_rows,
     fan_out,
@@ -56,6 +57,9 @@ from cat_sdwan_mcp.inventory import Inventory, load_inventory, resolve
 Device = Annotated[str, Field(description="Host name, system IP, chassis number or serial number")]
 PeerType = Literal["controller", "manager", "validator", "edge"]
 BULK_CAP = 5000  # rows read from the bulk state API for the fabric view
+REJECT_HOURS = 24  # how far back join rejections are searched in the event log
+REJECT_CAP = 200
+FETCH_CAP = 2000
 
 CONNECTION_COLUMNS = [
     "host",
@@ -86,11 +90,30 @@ def _state_filter(rows: list[dict[str, Any]], state: str | None) -> list[dict[st
     return [r for r in rows if str(r.get("state", "")).lower() == want]
 
 
+async def _rejected_joins(app: SdwanApp) -> dict[str, Any]:
+    """Join rejections from the event log (vbond-reject-vedge-connection, control-connection-auth-fail) in
+    the last REJECT_HOURS, with the chassis and the reason in plain words. The eventname rule is asked for
+    server-side; a Manager that refuses it is searched client-side over the newest events."""
+    query = last_hours(REJECT_HOURS, rule("eventname", list(REJECT_EVENTS)))
+    try:
+        result = await app.query(EVENTS_PATH, query, limit=REJECT_CAP)
+    except UpstreamError:
+        try:
+            result = await app.query(EVENTS_PATH, last_hours(REJECT_HOURS), limit=FETCH_CAP)
+        except UpstreamError as e:
+            return {"rejected_joins_error": f"POST {EVENTS_PATH} failed: {str(e)[:200]}"}
+    rows = [rejection_row(e) for e in result.rows if e.get("eventname") in REJECT_EVENTS]
+    rows.sort(key=lambda r: str(r.get("time") or ""), reverse=True)
+    return {"rejected_joins": rows[:25]} if rows else {}
+
+
 async def _validator_history(app: SdwanApp, inv: Inventory, hosts: dict[str, str]) -> dict[str, Any]:
-    """Failed attempts the reachable validators saw (an edge that never joins only ever reaches them)."""
+    """Failed attempts the reachable validators saw (an edge that never joins only ever reaches them), plus
+    the join rejections in the event log."""
+    rejected = await _rejected_joins(app)
     validators = reachable(inv, "validator")
     if not validators:
-        return {"failed_attempts_note": "no reachable validator to read connection history from"}
+        return {"failed_attempts_note": "no reachable validator to read connection history from", **rejected}
     got = await fan_out(validators, lambda v: device_rows(app, HISTORY_PATH, str(v["system_ip"])))
     rows: list[dict[str, Any]] = []
     errors = []
@@ -99,7 +122,7 @@ async def _validator_history(app: SdwanApp, inv: Inventory, hosts: dict[str, str
             errors.append(f"{v.get('host')}: GET {HISTORY_PATH} failed: {str(res)[:200]}")
         else:
             rows.extend(history_row(h, hosts) for h in res)
-    out: dict[str, Any] = {"failed_attempts": failed_attempts(rows)}
+    out: dict[str, Any] = {"failed_attempts": failed_attempts(rows), **rejected}
     if errors:
         out["history_errors"] = errors
     return out

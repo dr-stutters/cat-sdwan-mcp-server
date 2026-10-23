@@ -5,6 +5,7 @@ their bodies here are hand-built from the documented fields and marked so.
 """
 
 import copy
+import json
 from typing import Any
 
 import httpx
@@ -98,6 +99,7 @@ async def test_control_connections_unreachable_edge_reads_the_validator(api: res
         VALIDATOR,
         history(BID_FAIL, NORMAL, device=VALIDATOR, host="validator"),
     )
+    events = mock_events(api)
     out = await call("catsdwan_control_connections", {"device": "br2", "response_format": "json"})
     assert conns.call_count == 0 and out["total"] == 0
     assert out["realtime"].startswith("not read: the Manager reports br2 unreachable")
@@ -106,6 +108,38 @@ async def test_control_connections_unreachable_edge_reads_the_validator(api: res
     assert "peer_system_ip" not in failed  # '::' is no address
     assert failed["reason"].startswith("BIDNTVRFD: the peer's chassis/serial is not verified")
     assert "(Peer Board ID Cert not verified)" in failed["reason"]
+    # The recorded event log: the validator rejected edges (by chassis) while the serial file was missing.
+    assert events.call_count == 1
+    assert json.loads(events.calls[0].request.content)["query"]["rules"][1] == {
+        "value": ["vbond-reject-vedge-connection", "control-connection-auth-fail"],
+        "field": "eventname",
+        "type": "string",
+        "operator": "in",
+    }
+    rejected = out["rejected_joins"]
+    assert len(rejected) == 12 and {r["seen_by"] for r in rejected} == {"validator"}
+    reject = next(r for r in rejected if r["event"] == "vbond-reject-vedge-connection")
+    assert reject["chassis"].startswith("REDACTED-") and reject["reason"].startswith(
+        "ERR_BID_NOT_VERIFIED: the peer's"
+    )
+    auth = next(r for r in rejected if r["event"] == "control-connection-auth-fail")
+    assert auth["peer_type"] == "vedge" and "peer_system_ip" not in auth and auth["colour"] == "default"
+
+
+def mock_events(api: respx.MockRouter, *, refuse_rules: bool = False) -> respx.Route:
+    """POST /dataservice/event on the recorded event log, applying an `eventname` rule like the Manager; with
+    refuse_rules a query with extra rules answers 400 (the client then searches the newest events itself)."""
+    rows = fixture("events")["data"]
+
+    def answer(request: httpx.Request) -> httpx.Response:
+        rules = json.loads(request.content)["query"]["rules"][1:]
+        if rules and refuse_rules:
+            return httpx.Response(400, json={"error": {"message": "Invalid query", "code": "STATS0001"}})
+        names = next((r["value"] for r in rules if r["field"] == "eventname"), None)
+        data = [e for e in rows if names is None or e["eventname"] in names]
+        return httpx.Response(200, json={"data": data, "pageInfo": {"count": len(data)}})
+
+    return api.post("/dataservice/event").mock(side_effect=answer)
 
 
 def bulk_pages(router: respx.MockRouter) -> respx.Route:
@@ -129,7 +163,9 @@ async def test_control_connections_fabric_view_pages_the_bulk_api(api: respx.Moc
     mock_inventory(api)
     bulk = bulk_pages(api)
     rt(api, "control/connectionshistory", VALIDATOR, history(BID_FAIL, device=VALIDATOR, host="validator"))
+    events = mock_events(api, refuse_rules=True)
     out = await call("catsdwan_control_connections", {"response_format": "json"})
+    assert events.call_count == 2 and len(out["rejected_joins"]) == 12
     assert bulk.call_count == 2
     assert bulk.calls[1].request.url.params["startId"] == "7"
     assert out["total"] == 12 and out["by_state"] == {"down": 1, "up": 11}

@@ -5,9 +5,9 @@ An [MCP](https://modelcontextprotocol.io) server for **Cisco Catalyst SD-WAN Man
 (cml, ise, catc, fmc).
 
 > **Status: early.** The client (JWT and session login, throttling, error mapping), `catsdwan_status` and the
-> `check` preflight (W1), the inventory and device health tools (W2) the control-plane tools (W3) and the data-plane and app-route tools (W4) exist, unit-tested against recorded
-> 20.18 payloads; nothing is proven live yet. The
-> rest is planned in [ROADMAP.md](ROADMAP.md) (item W0 is the lab fabric in CML) and tracked on the suite board.
+> `check` preflight (W1), the inventory and device health tools (W2), the control-plane tools (W3), the data-plane
+> and app-route tools (W4) and the alarm, event and audit tools (W5) exist, unit-tested against recorded 20.18
+> payloads; nothing is proven live yet. The rest is planned in [ROADMAP.md](ROADMAP.md) (item W0 is the lab fabric in CML) and tracked on the suite board.
 
 ## What it will do
 
@@ -23,7 +23,7 @@ servers, the production gate and the external prerequisites.
 | `catsdwan_get_device` | read | One device by host name, system IP, chassis or serial ('did you mean'): the inventory record plus, read live from the device, CPU, memory, disk and load, interfaces, installed and active software, last reboots; a failed real-time read is reported in its section |
 | `catsdwan_list_controllers` | read | Manager, controller and validator nodes with reachability, certificate validity, serial, expiry and days left; invalid or soon-expiring certificates named in `attention` |
 | `catsdwan_device_health` | read | The Manager's device health (good, fair, poor), poor first, each with the reason (the Manager's, plus short control connections, BFD, TLOCs, OMP peers, high CPU or memory); computed from reachability and counters on a Manager without `/health/devices` |
-| `catsdwan_control_connections` | read | Control connections (peer, type, colours, DTLS/TLS, state, uptime) live from one device with its control summary, or the whole fabric from the bulk state API (devices not all up first); `failed_attempts` from the connection history with the error codes in plain words (serial not in the WAN edge list, certificate or organisation mismatch, clock skew, DTLS timeouts), read from the validators for an edge that is down or never joined |
+| `catsdwan_control_connections` | read | Control connections (peer, type, colours, DTLS/TLS, state, uptime) live from one device with its control summary, or the whole fabric from the bulk state API (devices not all up first); `failed_attempts` from the connection history with the error codes in plain words (serial not in the WAN edge list, certificate or organisation mismatch, clock skew, DTLS timeouts), read from the validators for an edge that is down or never joined; `rejected_joins` lists the validator's join rejections from the event log (chassis and reason) |
 | `catsdwan_omp_peers` | read | OMP peers live (peer and host, type, site, state, uptime, routes received/installed/sent where reported); no device = every reachable controller, i.e. the fabric's OMP sessions |
 | `catsdwan_omp_routes` | read | OMP routes received or advertised on one device (VPN, prefix, originating edge, TLOC, status flags explained, preference); `prefix` finds overlapping routes, `not_installed` names prefixes with no installed path |
 | `catsdwan_list_tlocs` | read | TLOCs received over OMP (edge, colour, encapsulation, site, public and private address, BFD status, preference, weight); no device = the first reachable controller's table, i.e. the whole fabric |
@@ -31,6 +31,10 @@ servers, the production gate and the external prerequisites.
 | `catsdwan_tunnel_stats` | read | Per-tunnel packet and byte counters on one edge (live, since the tunnel came up), MTU and TCP MSS; tunnels that send but never received are named |
 | `catsdwan_app_route_stats` | read | Loss %, latency and jitter per tunnel (avg, min, max over 1-24 h of the Manager's app-route statistics; `device`, `site`, `remote`, `colour` filters sent as query rules), worst first; `sla_class` adds a meets/misses verdict per tunnel; `source='realtime'` reads the device's own probe buckets now |
 | `catsdwan_list_sla_classes` | read | SLA classes (loss, latency, jitter limits; default or custom) with the app-route policies that use them and the centralized policies carrying those, activated or not |
+| `catsdwan_list_alarms` | read | Alarms over 1 h to 7 days (severity or worse, device, site, type), active only by default, newest first: severity, name, active or cleared (with the time), devices, site, message; `by_type` counts active and cleared per alarm |
+| `catsdwan_list_events` | read | Device events (BFD, control and OMP state changes, interface changes, reboots, logins, validator rejections, ...) with their details, filtered by device, site, event name, component, severity; `by_event` counts |
+| `catsdwan_audit_log` | read | Who did what on the Manager (user, source IP, module, message, device); `changes_only` drops logins and logouts, `device` finds lines that name it, `include_details` adds the bodies with secrets masked |
+| `catsdwan_recent_activity` | read | One newest-first timeline of alarms, events and audit lines for a device, a site or the whole fabric; a source that fails is reported and the others still answer |
 
 `cat-sdwan-mcp-server check` is the preflight: reachability (login and a `/dataservice` read), TLS trust,
 credentials (a wrong password reports `auth`, also on the session login whose failure is an HTML page), and the

@@ -1,0 +1,3099 @@
+{
+  "header": {
+    "generatedOn": 1792743432456,
+    "viewKeys": {
+      "uniqueKey": [],
+      "preferenceKey": "grid-Alarms"
+    },
+    "columns": [
+      {
+        "title": "view.alarms.clientViewAlarms.impactedEntiti",
+        "property": "values_short_display",
+        "minWidth": 250,
+        "dataType": "jsonArray"
+      },
+      {
+        "title": "view.alarms.clientViewAlarms.severity",
+        "property": "severity",
+        "display": "iconAndText",
+        "iconProperty": "severity",
+        "hideable": false,
+        "icon": [
+          {
+            "key": "Minor",
+            "value": "images/event_minor.png"
+          },
+          {
+            "key": "Major",
+            "value": "images/event_major.png"
+          },
+          {
+            "key": "Critical",
+            "value": "images/event_critical.png"
+          },
+          {
+            "key": "Medium",
+            "value": "images/event_other.png"
+          }
+        ],
+        "minWidth": 70,
+        "dataType": "string"
+      },
+      {
+        "title": "view.alarms.clientViewAlarms.alarmName",
+        "property": "rule_name_display",
+        "minWidth": 160,
+        "dataType": "string"
+      },
+      {
+        "title": "view.alarms.clientViewAlarms.message",
+        "property": "message",
+        "minWidth": 250,
+        "dataType": "string"
+      },
+      {
+        "title": "view.alarms.clientViewAlarms.dateTime",
+        "property": "entry_time",
+        "displayFormat": "DD MMM YYYY h:mm:ss A z",
+        "inputFormat": "unix-time",
+        "minWidth": 200,
+        "dataType": "date"
+      },
+      {
+        "title": "view.alarms.clientViewAlarms.clearedDateTi",
+        "property": "cleared_time",
+        "displayFormat": "DD MMM YYYY h:mm:ss A z",
+        "inputFormat": "unix-time",
+        "minWidth": 200,
+        "dataType": "date"
+      },
+      {
+        "title": "view.alarms.clientViewAlarms.tenantName",
+        "property": "tenant_name",
+        "minWidth": 100,
+        "dataType": "string"
+      }
+    ],
+    "fields": [
+      {
+        "property": "values_short_display",
+        "dataType": "jsonArray"
+      },
+      {
+        "property": "severity",
+        "dataType": "string",
+        "display": "iconAndText"
+      },
+      {
+        "property": "rule_name_display",
+        "dataType": "string"
+      },
+      {
+        "property": "message",
+        "dataType": "string"
+      },
+      {
+        "property": "possible_causes",
+        "dataType": "string"
+      },
+      {
+        "property": "entry_time",
+        "dataType": "date"
+      },
+      {
+        "property": "cleared_time",
+        "dataType": "date"
+      },
+      {
+        "property": "tenant_name",
+        "dataType": "string"
+      }
+    ],
+    "chart": {}
+  },
+  "pageInfo": {
+    "startTime": "1792743067301",
+    "endTime": "1792742299063",
+    "count": 57
+  },
+  "data": [
+    {
+      "entry_time": 1792743067301,
+      "uuid": "00000000-0000-4000-8000-000000000001",
+      "message": "System memory usage is above 75%",
+      "type": "memory-usage",
+      "component": "System",
+      "severity": "Major",
+      "severity_number": 2,
+      "devices": [
+        {
+          "system-ip": "1.1.1.1"
+        }
+      ],
+      "active": true,
+      "values": [
+        {
+          "system-ip": "1.1.1.1",
+          "host-name": "manager",
+          "memory-status": "usage-warning"
+        }
+      ],
+      "acknowledged": false,
+      "cleared_by": "",
+      "suppressed": false,
+      "suppressed_by": "",
+      "rulename": "memory-usage",
+      "rule_name_display": "Memory_Usage",
+      "values_short_display": [
+        {
+          "host-name": "manager",
+          "system-ip": "1.1.1.1",
+          "memory-status": "usage-warning"
+        }
+      ],
+      "cleared_time": 0,
+      "statcycletime": 1792743067301,
+      "tenant": "default",
+      "eventname": "memory-usage",
+      "receive_time": 1792743067304,
+      "system_ip": "1.1.1.1",
+      "host_name": "manager",
+      "site_id": "1",
+      "update_time": 1792743067309,
+      "tenant_name": "DefaultTenant",
+      "caused_events": [
+        "00000000-0000-4000-8000-000000000002"
+      ],
+      "device_uuid": "00000000-0000-4000-8000-000000000003",
+      "tenant_org_name": "default"
+    },
+    {
+      "entry_time": 1792742876549,
+      "uuid": "00000000-0000-4000-8000-000000000004",
+      "message": "vEdge serial file uploaded",
+      "type": "security-vedge-serial-file-uploaded",
+      "component": "Security",
+      "severity": "Critical",
+      "severity_number": 1,
+      "devices": [
+        {
+          "system-ip": "1.1.1.2"
+        }
+      ],
+      "active": true,
+      "values": [
+        {
+          "system-ip": "1.1.1.2",
+          "host-name": "validator"
+        }
+      ],
+      "acknowledged": false,
+      "cleared_by": "",
+      "suppressed": false,
+      "suppressed_by": "",
+      "rulename": "security-vedge-serial-file-uploaded",
+      "rule_name_display": "vEdge_Serial_File_Uploaded",
+      "values_short_display": [
+        {
+          "host-name": "validator",
+          "system-ip": "1.1.1.2"
+        }
+      ],
+      "cleared_time": 0,
+      "statcycletime": 1792742876549,
+      "tenant": "default",
+      "eventname": "security-vedge-serial-file-uploaded",
+      "receive_time": 1792742875759,
+      "system_ip": "1.1.1.2",
+      "host_name": "validator",
+      "site_id": "1",
+      "update_time": 1792742875765,
+      "tenant_name": "DefaultTenant",
+      "caused_events": [
+        "00000000-0000-4000-8000-000000000005"
+      ],
+      "device_uuid": "00000000-0000-4000-8000-000000000006",
+      "tenant_org_name": "default"
+    },
+    {
+      "entry_time": 1792742875987,
+      "uuid": "00000000-0000-4000-8000-000000000007",
+      "message": "vEdge serial file uploaded",
+      "type": "security-vedge-serial-file-uploaded",
+      "component": "Security",
+      "severity": "Critical",
+      "severity_number": 1,
+      "devices": [
+        {
+          "system-ip": "1.1.1.3"
+        }
+      ],
+      "active": true,
+      "values": [
+        {
+          "system-ip": "1.1.1.3",
+          "host-name": "controller"
+        }
+      ],
+      "acknowledged": false,
+      "cleared_by": "",
+      "suppressed": false,
+      "suppressed_by": "",
+      "rulename": "security-vedge-serial-file-uploaded",
+      "rule_name_display": "vEdge_Serial_File_Uploaded",
+      "values_short_display": [
+        {
+          "host-name": "controller",
+          "system-ip": "1.1.1.3"
+        }
+      ],
+      "cleared_time": 0,
+      "statcycletime": 1792742875987,
+      "tenant": "default",
+      "eventname": "security-vedge-serial-file-uploaded",
+      "receive_time": 1792742875548,
+      "system_ip": "1.1.1.3",
+      "host_name": "controller",
+      "site_id": "1",
+      "update_time": 1792742875553,
+      "tenant_name": "DefaultTenant",
+      "caused_events": [
+        "00000000-0000-4000-8000-000000000008"
+      ],
+      "device_uuid": "00000000-0000-4000-8000-000000000009",
+      "tenant_org_name": "default"
+    },
+    {
+      "entry_time": 1792742875235,
+      "uuid": "00000000-0000-4000-8000-000000000010",
+      "message": "vEdge serial file uploaded",
+      "type": "security-vedge-serial-file-uploaded",
+      "component": "Security",
+      "severity": "Critical",
+      "severity_number": 1,
+      "devices": [
+        {
+          "system-ip": "1.1.1.1"
+        }
+      ],
+      "active": true,
+      "values": [
+        {
+          "system-ip": "1.1.1.1",
+          "host-name": "manager"
+        }
+      ],
+      "acknowledged": false,
+      "cleared_by": "",
+      "suppressed": false,
+      "suppressed_by": "",
+      "rulename": "security-vedge-serial-file-uploaded",
+      "rule_name_display": "vEdge_Serial_File_Uploaded",
+      "values_short_display": [
+        {
+          "host-name": "manager",
+          "system-ip": "1.1.1.1"
+        }
+      ],
+      "cleared_time": 0,
+      "statcycletime": 1792742875235,
+      "tenant": "default",
+      "eventname": "security-vedge-serial-file-uploaded",
+      "receive_time": 1792742875238,
+      "system_ip": "1.1.1.1",
+      "host_name": "manager",
+      "site_id": "1",
+      "update_time": 1792742875246,
+      "tenant_name": "DefaultTenant",
+      "caused_events": [
+        "00000000-0000-4000-8000-000000000011"
+      ],
+      "device_uuid": "00000000-0000-4000-8000-000000000003",
+      "tenant_org_name": "default"
+    },
+    {
+      "entry_time": 1792742858102,
+      "uuid": "00000000-0000-4000-8000-000000000012",
+      "message": "Root cert chain installed",
+      "type": "security-root-cert-chain-installed",
+      "component": "Security",
+      "severity": "Minor",
+      "severity_number": 4,
+      "devices": [
+        {
+          "system-ip": "10.0.0.3"
+        }
+      ],
+      "active": true,
+      "values": [
+        {
+          "system-ip": "10.0.0.3",
+          "host-name": "br2"
+        }
+      ],
+      "acknowledged": false,
+      "cleared_by": "",
+      "suppressed": false,
+      "suppressed_by": "",
+      "rulename": "security-root-cert-chain-installed",
+      "rule_name_display": "Root_Cert_Chain_Installed",
+      "values_short_display": [
+        {
+          "host-name": "br2",
+          "system-ip": "10.0.0.3"
+        }
+      ],
+      "cleared_time": 0,
+      "statcycletime": 1792742858102,
+      "tenant": "default",
+      "eventname": "security-root-cert-chain-installed",
+      "receive_time": 1792742857534,
+      "system_ip": "10.0.0.3",
+      "host_name": "br2",
+      "site_id": "201",
+      "update_time": 1792742857562,
+      "tenant_name": "DefaultTenant",
+      "caused_events": [
+        "00000000-0000-4000-8000-000000000013"
+      ],
+      "device_uuid": "REDACTED-18",
+      "tenant_org_name": "default"
+    },
+    {
+      "entry_time": 1792742856540,
+      "uuid": "00000000-0000-4000-8000-000000000014",
+      "message": "Control connections for the site came up",
+      "type": "site_up",
+      "component": "Control",
+      "severity": "Medium",
+      "severity_number": 3,
+      "devices": [
+        {},
+        {
+          "system-ip": "10.0.0.2"
+        }
+      ],
+      "active": false,
+      "consumed_events": [
+        {
+          "eventId": "00000000-0000-4000-8000-000000000015",
+          "eventname": "control-connection-state-change",
+          "builtBy": "EventDataCollector",
+          "component": "Control",
+          "system-ip": "10.0.0.2",
+          "host-name": "br1",
+          "entry_time": 1792742856540,
+          "new-state": "up",
+          "severity-level": "major",
+          "system-ip-in-vmanage": "10.0.0.2",
+          "personality": "vedge",
+          "src-color": "mpls",
+          "peer-system-ip": "1.1.1.1",
+          "peer-vmanage-system-ip": "1.1.1.1",
+          "remote-color": "default"
+        }
+      ],
+      "values": [
+        {
+          "site-id": "200"
+        }
+      ],
+      "acknowledged": false,
+      "possible_causes": [
+        "Trying to determine possible root causes"
+      ],
+      "cleared_by": "",
+      "suppressed": false,
+      "suppressed_by": "",
+      "rulename": "site_up",
+      "rule_name_display": "Control_Site_Up",
+      "values_short_display": [
+        {
+          "site-id": "200"
+        }
+      ],
+      "cleared_time": 0,
+      "statcycletime": 0,
+      "tenant": "default",
+      "eventname": "rulename",
+      "receive_time": 1792742884580,
+      "system_ip": "",
+      "host_name": "",
+      "site_id": "200",
+      "update_time": 1792742884581,
+      "tenant_name": "DefaultTenant",
+      "caused_events": [
+        "00000000-0000-4000-8000-000000000015"
+      ],
+      "device_uuid": "",
+      "tenant_org_name": "default"
+    },
+    {
+      "entry_time": 1792742856540,
+      "uuid": "00000000-0000-4000-8000-000000000016",
+      "message": "Control connections for the node came up",
+      "type": "node_up",
+      "component": "Control",
+      "severity": "Medium",
+      "severity_number": 3,
+      "devices": [
+        {
+          "system-ip": "10.0.0.2"
+        }
+      ],
+      "active": false,
+      "consumed_events": [
+        {
+          "eventId": "00000000-0000-4000-8000-000000000015",
+          "eventname": "control-connection-state-change",
+          "builtBy": "EventDataCollector",
+          "component": "Control",
+          "system-ip": "10.0.0.2",
+          "host-name": "br1",
+          "entry_time": 1792742856540,
+          "new-state": "up",
+          "severity-level": "major",
+          "system-ip-in-vmanage": "10.0.0.2",
+          "personality": "vedge",
+          "src-color": "mpls",
+          "peer-system-ip": "1.1.1.1",
+          "peer-vmanage-system-ip": "1.1.1.1",
+          "remote-color": "default"
+        }
+      ],
+      "values": [
+        {
+          "system-ip": "10.0.0.2",
+          "host-name": "br1",
+          "site-id": "200"
+        }
+      ],
+      "acknowledged": false,
+      "possible_causes": [
+        "Trying to determine possible root causes"
+      ],
+      "cleared_by": "",
+      "suppressed": true,
+      "suppressed_by": "{\"site-id\":\"200\",\"component\":\"Control\"}",
+      "rulename": "node_up",
+      "rule_name_display": "Control_Node_Up",
+      "values_short_display": [
+        {
+          "system-ip": "10.0.0.2",
+          "host-name": "br1"
+        }
+      ],
+      "cleared_time": 0,
+      "statcycletime": 0,
+      "tenant": "default",
+      "eventname": "rulename",
+      "receive_time": 1792742884338,
+      "system_ip": "10.0.0.2",
+      "host_name": "br1",
+      "site_id": "200",
+      "update_time": 1792742884338,
+      "tenant_name": "DefaultTenant",
+      "caused_events": [
+        "00000000-0000-4000-8000-000000000015"
+      ],
+      "device_uuid": "REDACTED-08",
+      "tenant_org_name": "default"
+    },
+    {
+      "entry_time": 1792742856540,
+      "uuid": "00000000-0000-4000-8000-000000000017",
+      "message": "Control connections for the tloc came up",
+      "type": "tloc_up",
+      "component": "Control",
+      "severity": "Medium",
+      "severity_number": 3,
+      "devices": [
+        {
+          "system-ip": "10.0.0.2"
+        }
+      ],
+      "active": false,
+      "consumed_events": [
+        {
+          "eventId": "00000000-0000-4000-8000-000000000015",
+          "eventname": "control-connection-state-change",
+          "builtBy": "EventDataCollector",
+          "component": "Control",
+          "system-ip": "10.0.0.2",
+          "host-name": "br1",
+          "entry_time": 1792742856540,
+          "new-state": "up",
+          "severity-level": "major",
+          "system-ip-in-vmanage": "10.0.0.2",
+          "personality": "vedge",
+          "src-color": "mpls",
+          "peer-system-ip": "1.1.1.1",
+          "peer-vmanage-system-ip": "1.1.1.1",
+          "remote-color": "default"
+        }
+      ],
+      "values": [
+        {
+          "system-ip": "10.0.0.2",
+          "color": "mpls",
+          "host-name": "br1",
+          "site-id": "200"
+        }
+      ],
+      "acknowledged": false,
+      "possible_causes": [
+        "Trying to determine possible root causes"
+      ],
+      "cleared_by": "",
+      "suppressed": true,
+      "suppressed_by": "{\"system-ip\":\"10.0.0.2\",\"component\":\"Control\"}",
+      "rulename": "tloc_up",
+      "rule_name_display": "Control_TLOC_Up",
+      "values_short_display": [
+        {
+          "system-ip": "10.0.0.2",
+          "color": "mpls",
+          "host-name": "br1"
+        }
+      ],
+      "cleared_time": 0,
+      "statcycletime": 0,
+      "tenant": "default",
+      "eventname": "rulename",
+      "receive_time": 1792742868704,
+      "system_ip": "10.0.0.2",
+      "host_name": "br1",
+      "site_id": "200",
+      "update_time": 1792742868758,
+      "tenant_name": "DefaultTenant",
+      "caused_events": [
+        "00000000-0000-4000-8000-000000000015"
+      ],
+      "device_uuid": "REDACTED-08",
+      "tenant_org_name": "default"
+    },
+    {
+      "entry_time": 1792742849057,
+      "uuid": "00000000-0000-4000-8000-000000000018",
+      "message": "Root cert chain installed",
+      "type": "security-root-cert-chain-installed",
+      "component": "Security",
+      "severity": "Minor",
+      "severity_number": 4,
+      "devices": [
+        {
+          "system-ip": "10.0.0.3"
+        }
+      ],
+      "active": true,
+      "values": [
+        {
+          "system-ip": "10.0.0.3",
+          "host-name": "br2"
+        }
+      ],
+      "acknowledged": false,
+      "cleared_by": "",
+      "suppressed": false,
+      "suppressed_by": "",
+      "rulename": "security-root-cert-chain-installed",
+      "rule_name_display": "Root_Cert_Chain_Installed",
+      "values_short_display": [
+        {
+          "host-name": "br2",
+          "system-ip": "10.0.0.3"
+        }
+      ],
+      "cleared_time": 0,
+      "statcycletime": 1792742849057,
+      "tenant": "default",
+      "eventname": "security-root-cert-chain-installed",
+      "receive_time": 1792742848493,
+      "system_ip": "10.0.0.3",
+      "host_name": "br2",
+      "site_id": "",
+      "update_time": 1792742848504,
+      "tenant_name": "DefaultTenant",
+      "caused_events": [
+        "00000000-0000-4000-8000-000000000019"
+      ],
+      "device_uuid": "REDACTED-18",
+      "tenant_org_name": "default"
+    },
+    {
+      "entry_time": 1792742836838,
+      "uuid": "00000000-0000-4000-8000-000000000020",
+      "message": "New CSR Generated",
+      "type": "security-new-csr-generated",
+      "component": "Security",
+      "severity": "Minor",
+      "severity_number": 4,
+      "devices": [
+        {
+          "system-ip": "10.0.0.3"
+        }
+      ],
+      "active": true,
+      "values": [
+        {
+          "system-ip": "10.0.0.3",
+          "host-name": "br2"
+        }
+      ],
+      "acknowledged": false,
+      "cleared_by": "",
+      "suppressed": false,
+      "suppressed_by": "",
+      "rulename": "security-new-csr-generated",
+      "rule_name_display": "New_CSR_Generated",
+      "values_short_display": [
+        {
+          "host-name": "br2",
+          "system-ip": "10.0.0.3"
+        }
+      ],
+      "cleared_time": 0,
+      "statcycletime": 1792742836838,
+      "tenant": "default",
+      "eventname": "security-new-csr-generated",
+      "receive_time": 1792742836271,
+      "system_ip": "10.0.0.3",
+      "host_name": "br2",
+      "site_id": "",
+      "update_time": 1792742836288,
+      "tenant_name": "DefaultTenant",
+      "caused_events": [
+        "00000000-0000-4000-8000-000000000021"
+      ],
+      "device_uuid": "REDACTED-18",
+      "tenant_org_name": "default"
+    },
+    {
+      "entry_time": 1792742830616,
+      "uuid": "00000000-0000-4000-8000-000000000022",
+      "message": "vEdge serial file uploaded",
+      "type": "security-vedge-serial-file-uploaded",
+      "component": "Security",
+      "severity": "Critical",
+      "severity_number": 1,
+      "devices": [
+        {
+          "system-ip": "1.1.1.2"
+        }
+      ],
+      "active": true,
+      "values": [
+        {
+          "system-ip": "1.1.1.2",
+          "host-name": "validator"
+        }
+      ],
+      "acknowledged": false,
+      "cleared_by": "",
+      "suppressed": false,
+      "suppressed_by": "",
+      "rulename": "security-vedge-serial-file-uploaded",
+      "rule_name_display": "vEdge_Serial_File_Uploaded",
+      "values_short_display": [
+        {
+          "host-name": "validator",
+          "system-ip": "1.1.1.2"
+        }
+      ],
+      "cleared_time": 0,
+      "statcycletime": 1792742830616,
+      "tenant": "default",
+      "eventname": "security-vedge-serial-file-uploaded",
+      "receive_time": 1792742829829,
+      "system_ip": "1.1.1.2",
+      "host_name": "validator",
+      "site_id": "1",
+      "update_time": 1792742830174,
+      "tenant_name": "DefaultTenant",
+      "caused_events": [
+        "00000000-0000-4000-8000-000000000023"
+      ],
+      "device_uuid": "00000000-0000-4000-8000-000000000006",
+      "tenant_org_name": "default"
+    },
+    {
+      "entry_time": 1792742829933,
+      "uuid": "00000000-0000-4000-8000-000000000024",
+      "message": "vEdge serial file uploaded",
+      "type": "security-vedge-serial-file-uploaded",
+      "component": "Security",
+      "severity": "Critical",
+      "severity_number": 1,
+      "devices": [
+        {
+          "system-ip": "1.1.1.3"
+        }
+      ],
+      "active": true,
+      "values": [
+        {
+          "system-ip": "1.1.1.3",
+          "host-name": "controller"
+        }
+      ],
+      "acknowledged": false,
+      "cleared_by": "",
+      "suppressed": false,
+      "suppressed_by": "",
+      "rulename": "security-vedge-serial-file-uploaded",
+      "rule_name_display": "vEdge_Serial_File_Uploaded",
+      "values_short_display": [
+        {
+          "host-name": "controller",
+          "system-ip": "1.1.1.3"
+        }
+      ],
+      "cleared_time": 0,
+      "statcycletime": 1792742829933,
+      "tenant": "default",
+      "eventname": "security-vedge-serial-file-uploaded",
+      "receive_time": 1792742829541,
+      "system_ip": "1.1.1.3",
+      "host_name": "controller",
+      "site_id": "1",
+      "update_time": 1792742829606,
+      "tenant_name": "DefaultTenant",
+      "caused_events": [
+        "00000000-0000-4000-8000-000000000025"
+      ],
+      "device_uuid": "00000000-0000-4000-8000-000000000009",
+      "tenant_org_name": "default"
+    },
+    {
+      "entry_time": 1792742828965,
+      "uuid": "00000000-0000-4000-8000-000000000026",
+      "message": "vEdge serial file uploaded",
+      "type": "security-vedge-serial-file-uploaded",
+      "component": "Security",
+      "severity": "Critical",
+      "severity_number": 1,
+      "devices": [
+        {
+          "system-ip": "1.1.1.1"
+        }
+      ],
+      "active": true,
+      "values": [
+        {
+          "system-ip": "1.1.1.1",
+          "host-name": "manager"
+        }
+      ],
+      "acknowledged": false,
+      "cleared_by": "",
+      "suppressed": false,
+      "suppressed_by": "",
+      "rulename": "security-vedge-serial-file-uploaded",
+      "rule_name_display": "vEdge_Serial_File_Uploaded",
+      "values_short_display": [
+        {
+          "host-name": "manager",
+          "system-ip": "1.1.1.1"
+        }
+      ],
+      "cleared_time": 0,
+      "statcycletime": 1792742828965,
+      "tenant": "default",
+      "eventname": "security-vedge-serial-file-uploaded",
+      "receive_time": 1792742828972,
+      "system_ip": "1.1.1.1",
+      "host_name": "manager",
+      "site_id": "1",
+      "update_time": 1792742828982,
+      "tenant_name": "DefaultTenant",
+      "caused_events": [
+        "00000000-0000-4000-8000-000000000027"
+      ],
+      "device_uuid": "00000000-0000-4000-8000-000000000003",
+      "tenant_org_name": "default"
+    },
+    {
+      "entry_time": 1792742828773,
+      "uuid": "00000000-0000-4000-8000-000000000028",
+      "message": "All Control connections for the tloc are down",
+      "type": "tloc_down",
+      "component": "Control",
+      "severity": "Major",
+      "severity_number": 2,
+      "devices": [
+        {
+          "system-ip": "10.0.0.2"
+        }
+      ],
+      "active": false,
+      "consumed_events": [
+        {
+          "eventId": "00000000-0000-4000-8000-000000000029",
+          "eventname": "control-connection-state-change",
+          "builtBy": "EventDataCollector",
+          "component": "Control",
+          "system-ip": "10.0.0.2",
+          "host-name": "br1",
+          "entry_time": 1792742828773,
+          "new-state": "down",
+          "severity-level": "major",
+          "system-ip-in-vmanage": "10.0.0.2",
+          "personality": "vedge",
+          "src-color": "mpls",
+          "peer-system-ip": "1.1.1.1",
+          "peer-vmanage-system-ip": "1.1.1.1",
+          "remote-color": "default"
+        }
+      ],
+      "values": [
+        {
+          "system-ip": "10.0.0.2",
+          "color": "mpls",
+          "host-name": "br1",
+          "site-id": "200"
+        }
+      ],
+      "acknowledged": false,
+      "possible_causes": [
+        "Trying to determine possible root causes"
+      ],
+      "cleared_by": "00000000-0000-4000-8000-000000000017",
+      "suppressed": true,
+      "suppressed_by": "{\"system-ip\":\"10.0.0.2\",\"component\":\"Control\"}",
+      "rulename": "tloc_down",
+      "rule_name_display": "Control_TLOC_Down",
+      "values_short_display": [
+        {
+          "system-ip": "10.0.0.2",
+          "color": "mpls",
+          "host-name": "br1"
+        }
+      ],
+      "cleared_time": 1792742868779,
+      "statcycletime": 0,
+      "tenant": "default",
+      "eventname": "rulename",
+      "receive_time": 1792742837720,
+      "system_ip": "10.0.0.2",
+      "host_name": "br1",
+      "site_id": "200",
+      "update_time": 1792742868809,
+      "tenant_name": "DefaultTenant",
+      "caused_events": [
+        "00000000-0000-4000-8000-000000000029"
+      ],
+      "device_uuid": "REDACTED-08",
+      "tenant_org_name": "default"
+    },
+    {
+      "entry_time": 1792742828773,
+      "uuid": "00000000-0000-4000-8000-000000000030",
+      "message": "All Control connections for the node are down",
+      "type": "node_down",
+      "component": "Control",
+      "severity": "Critical",
+      "severity_number": 1,
+      "devices": [
+        {
+          "system-ip": "10.0.0.2"
+        }
+      ],
+      "active": false,
+      "consumed_events": [
+        {
+          "eventId": "00000000-0000-4000-8000-000000000029",
+          "eventname": "control-connection-state-change",
+          "builtBy": "EventDataCollector",
+          "component": "Control",
+          "system-ip": "10.0.0.2",
+          "host-name": "br1",
+          "entry_time": 1792742828773,
+          "new-state": "down",
+          "severity-level": "major",
+          "system-ip-in-vmanage": "10.0.0.2",
+          "personality": "vedge",
+          "src-color": "mpls",
+          "peer-system-ip": "1.1.1.1",
+          "peer-vmanage-system-ip": "1.1.1.1",
+          "remote-color": "default"
+        }
+      ],
+      "values": [
+        {
+          "system-ip": "10.0.0.2",
+          "host-name": "br1",
+          "site-id": "200"
+        }
+      ],
+      "acknowledged": false,
+      "possible_causes": [
+        "Trying to determine possible root causes"
+      ],
+      "cleared_by": "00000000-0000-4000-8000-000000000016",
+      "suppressed": true,
+      "suppressed_by": "{\"site-id\":\"200\",\"component\":\"Control\"}",
+      "rulename": "node_down",
+      "rule_name_display": "Control_Node_Down",
+      "values_short_display": [
+        {
+          "system-ip": "10.0.0.2",
+          "host-name": "br1"
+        }
+      ],
+      "cleared_time": 1792742884351,
+      "statcycletime": 0,
+      "tenant": "default",
+      "eventname": "rulename",
+      "receive_time": 1792742853257,
+      "system_ip": "10.0.0.2",
+      "host_name": "br1",
+      "site_id": "200",
+      "update_time": 1792742884379,
+      "tenant_name": "DefaultTenant",
+      "caused_events": [
+        "00000000-0000-4000-8000-000000000029"
+      ],
+      "device_uuid": "REDACTED-08",
+      "tenant_org_name": "default"
+    },
+    {
+      "entry_time": 1792742828773,
+      "uuid": "00000000-0000-4000-8000-000000000031",
+      "message": "All Control connections for the site are down",
+      "type": "site_down",
+      "component": "Control",
+      "severity": "Critical",
+      "severity_number": 1,
+      "devices": [
+        {},
+        {
+          "system-ip": "10.0.0.2"
+        }
+      ],
+      "active": false,
+      "consumed_events": [
+        {
+          "eventId": "00000000-0000-4000-8000-000000000029",
+          "eventname": "control-connection-state-change",
+          "builtBy": "EventDataCollector",
+          "component": "Control",
+          "system-ip": "10.0.0.2",
+          "host-name": "br1",
+          "entry_time": 1792742828773,
+          "new-state": "down",
+          "severity-level": "major",
+          "system-ip-in-vmanage": "10.0.0.2",
+          "personality": "vedge",
+          "src-color": "mpls",
+          "peer-system-ip": "1.1.1.1",
+          "peer-vmanage-system-ip": "1.1.1.1",
+          "remote-color": "default"
+        }
+      ],
+      "values": [
+        {
+          "site-id": "200"
+        }
+      ],
+      "acknowledged": false,
+      "possible_causes": [
+        "Trying to determine possible root causes"
+      ],
+      "cleared_by": "00000000-0000-4000-8000-000000000014",
+      "suppressed": false,
+      "suppressed_by": "",
+      "rulename": "site_down",
+      "rule_name_display": "Control_Site_Down",
+      "values_short_display": [
+        {
+          "site-id": "200"
+        }
+      ],
+      "cleared_time": 1792742884624,
+      "statcycletime": 0,
+      "tenant": "default",
+      "eventname": "rulename",
+      "receive_time": 1792742853354,
+      "system_ip": "",
+      "host_name": "",
+      "site_id": "200",
+      "update_time": 1792742884696,
+      "tenant_name": "DefaultTenant",
+      "caused_events": [
+        "00000000-0000-4000-8000-000000000029"
+      ],
+      "device_uuid": "",
+      "tenant_org_name": "default"
+    },
+    {
+      "entry_time": 1792742811455,
+      "uuid": "00000000-0000-4000-8000-000000000032",
+      "message": "Control connections for the tloc came up",
+      "type": "tloc_up",
+      "component": "Control",
+      "severity": "Medium",
+      "severity_number": 3,
+      "devices": [
+        {
+          "system-ip": "10.0.0.1"
+        }
+      ],
+      "active": false,
+      "consumed_events": [
+        {
+          "eventId": "00000000-0000-4000-8000-000000000033",
+          "eventname": "control-connection-state-change",
+          "builtBy": "EventDataCollector",
+          "component": "Control",
+          "system-ip": "10.0.0.1",
+          "host-name": "hub1",
+          "entry_time": 1792742811455,
+          "new-state": "up",
+          "severity-level": "major",
+          "system-ip-in-vmanage": "10.0.0.1",
+          "personality": "vedge",
+          "src-color": "mpls",
+          "peer-system-ip": "1.1.1.1",
+          "peer-vmanage-system-ip": "1.1.1.1",
+          "remote-color": "default"
+        }
+      ],
+      "values": [
+        {
+          "system-ip": "10.0.0.1",
+          "color": "mpls",
+          "host-name": "hub1",
+          "site-id": "100"
+        }
+      ],
+      "acknowledged": false,
+      "possible_causes": [
+        "Trying to determine possible root causes"
+      ],
+      "cleared_by": "",
+      "suppressed": true,
+      "suppressed_by": "{\"system-ip\":\"10.0.0.1\",\"component\":\"Control\"}",
+      "rulename": "tloc_up",
+      "rule_name_display": "Control_TLOC_Up",
+      "values_short_display": [
+        {
+          "system-ip": "10.0.0.1",
+          "color": "mpls",
+          "host-name": "hub1"
+        }
+      ],
+      "cleared_time": 0,
+      "statcycletime": 0,
+      "tenant": "default",
+      "eventname": "rulename",
+      "receive_time": 1792742821932,
+      "system_ip": "10.0.0.1",
+      "host_name": "hub1",
+      "site_id": "100",
+      "update_time": 1792742821987,
+      "tenant_name": "DefaultTenant",
+      "caused_events": [
+        "00000000-0000-4000-8000-000000000033"
+      ],
+      "device_uuid": "REDACTED-07",
+      "tenant_org_name": "default"
+    },
+    {
+      "entry_time": 1792742811455,
+      "uuid": "00000000-0000-4000-8000-000000000034",
+      "message": "Control connections for the node came up",
+      "type": "node_up",
+      "component": "Control",
+      "severity": "Medium",
+      "severity_number": 3,
+      "devices": [
+        {
+          "system-ip": "10.0.0.1"
+        }
+      ],
+      "active": false,
+      "consumed_events": [
+        {
+          "eventId": "00000000-0000-4000-8000-000000000033",
+          "eventname": "control-connection-state-change",
+          "builtBy": "EventDataCollector",
+          "component": "Control",
+          "system-ip": "10.0.0.1",
+          "host-name": "hub1",
+          "entry_time": 1792742811455,
+          "new-state": "up",
+          "severity-level": "major",
+          "system-ip-in-vmanage": "10.0.0.1",
+          "personality": "vedge",
+          "src-color": "mpls",
+          "peer-system-ip": "1.1.1.1",
+          "peer-vmanage-system-ip": "1.1.1.1",
+          "remote-color": "default"
+        }
+      ],
+      "values": [
+        {
+          "system-ip": "10.0.0.1",
+          "host-name": "hub1",
+          "site-id": "100"
+        }
+      ],
+      "acknowledged": false,
+      "possible_causes": [
+        "Trying to determine possible root causes"
+      ],
+      "cleared_by": "",
+      "suppressed": true,
+      "suppressed_by": "{\"site-id\":\"100\",\"component\":\"Control\"}",
+      "rulename": "node_up",
+      "rule_name_display": "Control_Node_Up",
+      "values_short_display": [
+        {
+          "system-ip": "10.0.0.1",
+          "host-name": "hub1"
+        }
+      ],
+      "cleared_time": 0,
+      "statcycletime": 0,
+      "tenant": "default",
+      "eventname": "rulename",
+      "receive_time": 1792742838029,
+      "system_ip": "10.0.0.1",
+      "host_name": "hub1",
+      "site_id": "100",
+      "update_time": 1792742838033,
+      "tenant_name": "DefaultTenant",
+      "caused_events": [
+        "00000000-0000-4000-8000-000000000033"
+      ],
+      "device_uuid": "REDACTED-07",
+      "tenant_org_name": "default"
+    },
+    {
+      "entry_time": 1792742811455,
+      "uuid": "00000000-0000-4000-8000-000000000035",
+      "message": "Control connections for the site came up",
+      "type": "site_up",
+      "component": "Control",
+      "severity": "Medium",
+      "severity_number": 3,
+      "devices": [
+        {},
+        {
+          "system-ip": "10.0.0.1"
+        }
+      ],
+      "active": false,
+      "consumed_events": [
+        {
+          "eventId": "00000000-0000-4000-8000-000000000033",
+          "eventname": "control-connection-state-change",
+          "builtBy": "EventDataCollector",
+          "component": "Control",
+          "system-ip": "10.0.0.1",
+          "host-name": "hub1",
+          "entry_time": 1792742811455,
+          "new-state": "up",
+          "severity-level": "major",
+          "system-ip-in-vmanage": "10.0.0.1",
+          "personality": "vedge",
+          "src-color": "mpls",
+          "peer-system-ip": "1.1.1.1",
+          "peer-vmanage-system-ip": "1.1.1.1",
+          "remote-color": "default"
+        }
+      ],
+      "values": [
+        {
+          "site-id": "100"
+        }
+      ],
+      "acknowledged": false,
+      "possible_causes": [
+        "Trying to determine possible root causes"
+      ],
+      "cleared_by": "",
+      "suppressed": false,
+      "suppressed_by": "",
+      "rulename": "site_up",
+      "rule_name_display": "Control_Site_Up",
+      "values_short_display": [
+        {
+          "site-id": "100"
+        }
+      ],
+      "cleared_time": 0,
+      "statcycletime": 0,
+      "tenant": "default",
+      "eventname": "rulename",
+      "receive_time": 1792742838134,
+      "system_ip": "",
+      "host_name": "",
+      "site_id": "100",
+      "update_time": 1792742838134,
+      "tenant_name": "DefaultTenant",
+      "caused_events": [
+        "00000000-0000-4000-8000-000000000033"
+      ],
+      "device_uuid": "",
+      "tenant_org_name": "default"
+    },
+    {
+      "entry_time": 1792742810007,
+      "uuid": "00000000-0000-4000-8000-000000000036",
+      "message": "Root cert chain installed",
+      "type": "security-root-cert-chain-installed",
+      "component": "Security",
+      "severity": "Minor",
+      "severity_number": 4,
+      "devices": [
+        {
+          "system-ip": "10.0.0.2"
+        }
+      ],
+      "active": true,
+      "values": [
+        {
+          "system-ip": "10.0.0.2",
+          "host-name": "br1"
+        }
+      ],
+      "acknowledged": false,
+      "cleared_by": "",
+      "suppressed": false,
+      "suppressed_by": "",
+      "rulename": "security-root-cert-chain-installed",
+      "rule_name_display": "Root_Cert_Chain_Installed",
+      "values_short_display": [
+        {
+          "host-name": "br1",
+          "system-ip": "10.0.0.2"
+        }
+      ],
+      "cleared_time": 0,
+      "statcycletime": 1792742810007,
+      "tenant": "default",
+      "eventname": "security-root-cert-chain-installed",
+      "receive_time": 1792742809452,
+      "system_ip": "10.0.0.2",
+      "host_name": "br1",
+      "site_id": "200",
+      "update_time": 1792742809459,
+      "tenant_name": "DefaultTenant",
+      "caused_events": [
+        "00000000-0000-4000-8000-000000000037"
+      ],
+      "device_uuid": "REDACTED-08",
+      "tenant_org_name": "default"
+    },
+    {
+      "entry_time": 1792742808964,
+      "uuid": "00000000-0000-4000-8000-000000000038",
+      "message": "SD-AVC Gateway server is configured and connected to SD-AVC",
+      "type": "vmanage-sdavc-state",
+      "component": "system",
+      "severity": "Minor",
+      "severity_number": 4,
+      "devices": [
+        {
+          "system-ip": "1.1.1.1"
+        }
+      ],
+      "active": false,
+      "values": [
+        {
+          "host-name": "manager",
+          "system-ip": "1.1.1.1",
+          "state": "connected"
+        }
+      ],
+      "acknowledged": false,
+      "cleared_events": [
+        "00000000-0000-4000-8000-000000000039"
+      ],
+      "cleared_by": "",
+      "suppressed": false,
+      "suppressed_by": "",
+      "rulename": "vmanage-sdavc-state",
+      "rule_name_display": "SD-AVC_State_Change",
+      "values_short_display": [
+        {
+          "host-name": "manager",
+          "system-ip": "1.1.1.1",
+          "state": "connected"
+        }
+      ],
+      "cleared_time": 0,
+      "statcycletime": 1792742808964,
+      "tenant": "default",
+      "eventname": "vmanage-sdavc-state",
+      "receive_time": 1792742808964,
+      "system_ip": "1.1.1.1",
+      "host_name": "manager",
+      "site_id": "1",
+      "update_time": 1792742809003,
+      "tenant_name": "DefaultTenant",
+      "device_uuid": "00000000-0000-4000-8000-000000000003",
+      "tenant_org_name": "default"
+    },
+    {
+      "entry_time": 1792742801557,
+      "uuid": "00000000-0000-4000-8000-000000000040",
+      "message": "Root cert chain installed",
+      "type": "security-root-cert-chain-installed",
+      "component": "Security",
+      "severity": "Minor",
+      "severity_number": 4,
+      "devices": [
+        {
+          "system-ip": "10.0.0.2"
+        }
+      ],
+      "active": true,
+      "values": [
+        {
+          "system-ip": "10.0.0.2",
+          "host-name": "br1"
+        }
+      ],
+      "acknowledged": false,
+      "cleared_by": "",
+      "suppressed": false,
+      "suppressed_by": "",
+      "rulename": "security-root-cert-chain-installed",
+      "rule_name_display": "Root_Cert_Chain_Installed",
+      "values_short_display": [
+        {
+          "host-name": "br1",
+          "system-ip": "10.0.0.2"
+        }
+      ],
+      "cleared_time": 0,
+      "statcycletime": 1792742801557,
+      "tenant": "default",
+      "eventname": "security-root-cert-chain-installed",
+      "receive_time": 1792742801001,
+      "system_ip": "10.0.0.2",
+      "host_name": "br1",
+      "site_id": "200",
+      "update_time": 1792742801006,
+      "tenant_name": "DefaultTenant",
+      "caused_events": [
+        "00000000-0000-4000-8000-000000000041"
+      ],
+      "device_uuid": "REDACTED-08",
+      "tenant_org_name": "default"
+    },
+    {
+      "entry_time": 1792742790521,
+      "uuid": "00000000-0000-4000-8000-000000000042",
+      "message": "New CSR Generated",
+      "type": "security-new-csr-generated",
+      "component": "Security",
+      "severity": "Minor",
+      "severity_number": 4,
+      "devices": [
+        {
+          "system-ip": "10.0.0.2"
+        }
+      ],
+      "active": true,
+      "values": [
+        {
+          "system-ip": "10.0.0.2",
+          "host-name": "br1"
+        }
+      ],
+      "acknowledged": false,
+      "cleared_by": "",
+      "suppressed": false,
+      "suppressed_by": "",
+      "rulename": "security-new-csr-generated",
+      "rule_name_display": "New_CSR_Generated",
+      "values_short_display": [
+        {
+          "host-name": "br1",
+          "system-ip": "10.0.0.2"
+        }
+      ],
+      "cleared_time": 0,
+      "statcycletime": 1792742790521,
+      "tenant": "default",
+      "eventname": "security-new-csr-generated",
+      "receive_time": 1792742789963,
+      "system_ip": "10.0.0.2",
+      "host_name": "br1",
+      "site_id": "200",
+      "update_time": 1792742789976,
+      "tenant_name": "DefaultTenant",
+      "caused_events": [
+        "00000000-0000-4000-8000-000000000043"
+      ],
+      "device_uuid": "REDACTED-08",
+      "tenant_org_name": "default"
+    },
+    {
+      "entry_time": 1792742786075,
+      "uuid": "00000000-0000-4000-8000-000000000044",
+      "message": "vEdge serial file uploaded",
+      "type": "security-vedge-serial-file-uploaded",
+      "component": "Security",
+      "severity": "Critical",
+      "severity_number": 1,
+      "devices": [
+        {
+          "system-ip": "1.1.1.2"
+        }
+      ],
+      "active": true,
+      "values": [
+        {
+          "system-ip": "1.1.1.2",
+          "host-name": "validator"
+        }
+      ],
+      "acknowledged": false,
+      "cleared_by": "",
+      "suppressed": false,
+      "suppressed_by": "",
+      "rulename": "security-vedge-serial-file-uploaded",
+      "rule_name_display": "vEdge_Serial_File_Uploaded",
+      "values_short_display": [
+        {
+          "host-name": "validator",
+          "system-ip": "1.1.1.2"
+        }
+      ],
+      "cleared_time": 0,
+      "statcycletime": 1792742786075,
+      "tenant": "default",
+      "eventname": "security-vedge-serial-file-uploaded",
+      "receive_time": 1792742785285,
+      "system_ip": "1.1.1.2",
+      "host_name": "validator",
+      "site_id": "1",
+      "update_time": 1792742785294,
+      "tenant_name": "DefaultTenant",
+      "caused_events": [
+        "00000000-0000-4000-8000-000000000045"
+      ],
+      "device_uuid": "00000000-0000-4000-8000-000000000006",
+      "tenant_org_name": "default"
+    },
+    {
+      "entry_time": 1792742785642,
+      "uuid": "00000000-0000-4000-8000-000000000046",
+      "message": "vEdge serial file uploaded",
+      "type": "security-vedge-serial-file-uploaded",
+      "component": "Security",
+      "severity": "Critical",
+      "severity_number": 1,
+      "devices": [
+        {
+          "system-ip": "1.1.1.3"
+        }
+      ],
+      "active": true,
+      "values": [
+        {
+          "system-ip": "1.1.1.3",
+          "host-name": "controller"
+        }
+      ],
+      "acknowledged": false,
+      "cleared_by": "",
+      "suppressed": false,
+      "suppressed_by": "",
+      "rulename": "security-vedge-serial-file-uploaded",
+      "rule_name_display": "vEdge_Serial_File_Uploaded",
+      "values_short_display": [
+        {
+          "host-name": "controller",
+          "system-ip": "1.1.1.3"
+        }
+      ],
+      "cleared_time": 0,
+      "statcycletime": 1792742785642,
+      "tenant": "default",
+      "eventname": "security-vedge-serial-file-uploaded",
+      "receive_time": 1792742785202,
+      "system_ip": "1.1.1.3",
+      "host_name": "controller",
+      "site_id": "1",
+      "update_time": 1792742785205,
+      "tenant_name": "DefaultTenant",
+      "caused_events": [
+        "00000000-0000-4000-8000-000000000047"
+      ],
+      "device_uuid": "00000000-0000-4000-8000-000000000009",
+      "tenant_org_name": "default"
+    },
+    {
+      "entry_time": 1792742785107,
+      "uuid": "00000000-0000-4000-8000-000000000048",
+      "message": "System memory usage is above 60%",
+      "type": "memory-usage",
+      "component": "System",
+      "severity": "Medium",
+      "severity_number": 3,
+      "devices": [
+        {
+          "system-ip": "1.1.1.1"
+        }
+      ],
+      "active": true,
+      "values": [
+        {
+          "system-ip": "1.1.1.1",
+          "host-name": "manager",
+          "memory-status": "usage-notice"
+        }
+      ],
+      "acknowledged": false,
+      "cleared_by": "",
+      "suppressed": false,
+      "suppressed_by": "",
+      "rulename": "memory-usage",
+      "rule_name_display": "Memory_Usage",
+      "values_short_display": [
+        {
+          "host-name": "manager",
+          "system-ip": "1.1.1.1",
+          "memory-status": "usage-notice"
+        }
+      ],
+      "cleared_time": 0,
+      "statcycletime": 1792742785107,
+      "tenant": "default",
+      "eventname": "memory-usage",
+      "receive_time": 1792742785109,
+      "system_ip": "1.1.1.1",
+      "host_name": "manager",
+      "site_id": "1",
+      "update_time": 1792742785114,
+      "tenant_name": "DefaultTenant",
+      "caused_events": [
+        "00000000-0000-4000-8000-000000000049"
+      ],
+      "device_uuid": "00000000-0000-4000-8000-000000000003",
+      "tenant_org_name": "default"
+    },
+    {
+      "entry_time": 1792742784597,
+      "uuid": "00000000-0000-4000-8000-000000000050",
+      "message": "vEdge serial file uploaded",
+      "type": "security-vedge-serial-file-uploaded",
+      "component": "Security",
+      "severity": "Critical",
+      "severity_number": 1,
+      "devices": [
+        {
+          "system-ip": "1.1.1.1"
+        }
+      ],
+      "active": true,
+      "values": [
+        {
+          "system-ip": "1.1.1.1",
+          "host-name": "manager"
+        }
+      ],
+      "acknowledged": false,
+      "cleared_by": "",
+      "suppressed": false,
+      "suppressed_by": "",
+      "rulename": "security-vedge-serial-file-uploaded",
+      "rule_name_display": "vEdge_Serial_File_Uploaded",
+      "values_short_display": [
+        {
+          "host-name": "manager",
+          "system-ip": "1.1.1.1"
+        }
+      ],
+      "cleared_time": 0,
+      "statcycletime": 1792742784597,
+      "tenant": "default",
+      "eventname": "security-vedge-serial-file-uploaded",
+      "receive_time": 1792742784600,
+      "system_ip": "1.1.1.1",
+      "host_name": "manager",
+      "site_id": "1",
+      "update_time": 1792742784611,
+      "tenant_name": "DefaultTenant",
+      "caused_events": [
+        "00000000-0000-4000-8000-000000000051"
+      ],
+      "device_uuid": "00000000-0000-4000-8000-000000000003",
+      "tenant_org_name": "default"
+    },
+    {
+      "entry_time": 1792742784426,
+      "uuid": "00000000-0000-4000-8000-000000000052",
+      "message": "All Control connections for the tloc are down",
+      "type": "tloc_down",
+      "component": "Control",
+      "severity": "Major",
+      "severity_number": 2,
+      "devices": [
+        {
+          "system-ip": "10.0.0.1"
+        }
+      ],
+      "active": false,
+      "consumed_events": [
+        {
+          "eventId": "00000000-0000-4000-8000-000000000053",
+          "eventname": "control-connection-state-change",
+          "builtBy": "EventDataCollector",
+          "component": "Control",
+          "system-ip": "10.0.0.1",
+          "host-name": "hub1",
+          "entry_time": 1792742784426,
+          "new-state": "down",
+          "severity-level": "major",
+          "system-ip-in-vmanage": "10.0.0.1",
+          "personality": "vedge",
+          "src-color": "mpls",
+          "peer-system-ip": "1.1.1.1",
+          "peer-vmanage-system-ip": "1.1.1.1",
+          "remote-color": "default"
+        }
+      ],
+      "values": [
+        {
+          "system-ip": "10.0.0.1",
+          "color": "mpls",
+          "host-name": "hub1",
+          "site-id": "100"
+        }
+      ],
+      "acknowledged": false,
+      "possible_causes": [
+        "Trying to determine possible root causes"
+      ],
+      "cleared_by": "00000000-0000-4000-8000-000000000032",
+      "suppressed": true,
+      "suppressed_by": "{\"system-ip\":\"10.0.0.1\",\"component\":\"Control\"}",
+      "rulename": "tloc_down",
+      "rule_name_display": "Control_TLOC_Down",
+      "values_short_display": [
+        {
+          "system-ip": "10.0.0.1",
+          "color": "mpls",
+          "host-name": "hub1"
+        }
+      ],
+      "cleared_time": 1792742821996,
+      "statcycletime": 0,
+      "tenant": "default",
+      "eventname": "rulename",
+      "receive_time": 1792742791141,
+      "system_ip": "10.0.0.1",
+      "host_name": "hub1",
+      "site_id": "100",
+      "update_time": 1792742822015,
+      "tenant_name": "DefaultTenant",
+      "caused_events": [
+        "00000000-0000-4000-8000-000000000053"
+      ],
+      "device_uuid": "REDACTED-07",
+      "tenant_org_name": "default"
+    },
+    {
+      "entry_time": 1792742784426,
+      "uuid": "00000000-0000-4000-8000-000000000054",
+      "message": "All Control connections for the node are down",
+      "type": "node_down",
+      "component": "Control",
+      "severity": "Critical",
+      "severity_number": 1,
+      "devices": [
+        {
+          "system-ip": "10.0.0.1"
+        }
+      ],
+      "active": false,
+      "values": [
+        {
+          "system-ip": "10.0.0.1",
+          "host-name": "hub1",
+          "site-id": "100"
+        }
+      ],
+      "acknowledged": false,
+      "possible_causes": [
+        "Trying to determine possible root causes"
+      ],
+      "cleared_by": "00000000-0000-4000-8000-000000000034",
+      "suppressed": true,
+      "suppressed_by": "{\"site-id\":\"100\",\"component\":\"Control\"}",
+      "rulename": "node_down",
+      "rule_name_display": "Control_Node_Down",
+      "values_short_display": [
+        {
+          "system-ip": "10.0.0.1",
+          "host-name": "hub1"
+        }
+      ],
+      "cleared_time": 1792742838055,
+      "statcycletime": 0,
+      "tenant": "default",
+      "eventname": "rulename",
+      "receive_time": 1792742806510,
+      "system_ip": "10.0.0.1",
+      "host_name": "hub1",
+      "site_id": "100",
+      "update_time": 1792742838074,
+      "tenant_name": "DefaultTenant",
+      "device_uuid": "REDACTED-07",
+      "tenant_org_name": "default"
+    },
+    {
+      "entry_time": 1792742784426,
+      "uuid": "00000000-0000-4000-8000-000000000055",
+      "message": "All Control connections for the site are down",
+      "type": "site_down",
+      "component": "Control",
+      "severity": "Critical",
+      "severity_number": 1,
+      "devices": [
+        {},
+        {
+          "system-ip": "10.0.0.1"
+        }
+      ],
+      "active": false,
+      "values": [
+        {
+          "site-id": "100"
+        }
+      ],
+      "acknowledged": false,
+      "possible_causes": [
+        "Trying to determine possible root causes"
+      ],
+      "cleared_by": "00000000-0000-4000-8000-000000000035",
+      "suppressed": false,
+      "suppressed_by": "",
+      "rulename": "site_down",
+      "rule_name_display": "Control_Site_Down",
+      "values_short_display": [
+        {
+          "site-id": "100"
+        }
+      ],
+      "cleared_time": 1792742838153,
+      "statcycletime": 0,
+      "tenant": "default",
+      "eventname": "rulename",
+      "receive_time": 1792742806675,
+      "system_ip": "",
+      "host_name": "",
+      "site_id": "100",
+      "update_time": 1792742838185,
+      "tenant_name": "DefaultTenant",
+      "device_uuid": "",
+      "tenant_org_name": "default"
+    },
+    {
+      "entry_time": 1792742767105,
+      "uuid": "00000000-0000-4000-8000-000000000056",
+      "message": "Root cert chain installed",
+      "type": "security-root-cert-chain-installed",
+      "component": "Security",
+      "severity": "Minor",
+      "severity_number": 4,
+      "devices": [
+        {
+          "system-ip": "10.0.0.1"
+        }
+      ],
+      "active": true,
+      "values": [
+        {
+          "system-ip": "10.0.0.1",
+          "host-name": "hub1"
+        }
+      ],
+      "acknowledged": false,
+      "cleared_by": "",
+      "suppressed": false,
+      "suppressed_by": "",
+      "rulename": "security-root-cert-chain-installed",
+      "rule_name_display": "Root_Cert_Chain_Installed",
+      "values_short_display": [
+        {
+          "host-name": "hub1",
+          "system-ip": "10.0.0.1"
+        }
+      ],
+      "cleared_time": 0,
+      "statcycletime": 1792742767105,
+      "tenant": "default",
+      "eventname": "security-root-cert-chain-installed",
+      "receive_time": 1792742766531,
+      "system_ip": "10.0.0.1",
+      "host_name": "hub1",
+      "site_id": "100",
+      "update_time": 1792742766539,
+      "tenant_name": "DefaultTenant",
+      "caused_events": [
+        "00000000-0000-4000-8000-000000000057"
+      ],
+      "device_uuid": "REDACTED-07",
+      "tenant_org_name": "default"
+    },
+    {
+      "entry_time": 1792742759130,
+      "uuid": "00000000-0000-4000-8000-000000000058",
+      "message": "Root cert chain installed",
+      "type": "security-root-cert-chain-installed",
+      "component": "Security",
+      "severity": "Minor",
+      "severity_number": 4,
+      "devices": [
+        {
+          "system-ip": "10.0.0.1"
+        }
+      ],
+      "active": true,
+      "values": [
+        {
+          "system-ip": "10.0.0.1",
+          "host-name": "hub1"
+        }
+      ],
+      "acknowledged": false,
+      "cleared_by": "",
+      "suppressed": false,
+      "suppressed_by": "",
+      "rulename": "security-root-cert-chain-installed",
+      "rule_name_display": "Root_Cert_Chain_Installed",
+      "values_short_display": [
+        {
+          "host-name": "hub1",
+          "system-ip": "10.0.0.1"
+        }
+      ],
+      "cleared_time": 0,
+      "statcycletime": 1792742759130,
+      "tenant": "default",
+      "eventname": "security-root-cert-chain-installed",
+      "receive_time": 1792742758554,
+      "system_ip": "10.0.0.1",
+      "host_name": "hub1",
+      "site_id": "100",
+      "update_time": 1792742758561,
+      "tenant_name": "DefaultTenant",
+      "caused_events": [
+        "00000000-0000-4000-8000-000000000059"
+      ],
+      "device_uuid": "REDACTED-07",
+      "tenant_org_name": "default"
+    },
+    {
+      "entry_time": 1792742747548,
+      "uuid": "00000000-0000-4000-8000-000000000060",
+      "message": "New CSR Generated",
+      "type": "security-new-csr-generated",
+      "component": "Security",
+      "severity": "Minor",
+      "severity_number": 4,
+      "devices": [
+        {
+          "system-ip": "10.0.0.1"
+        }
+      ],
+      "active": true,
+      "values": [
+        {
+          "system-ip": "10.0.0.1",
+          "host-name": "hub1"
+        }
+      ],
+      "acknowledged": false,
+      "cleared_by": "",
+      "suppressed": false,
+      "suppressed_by": "",
+      "rulename": "security-new-csr-generated",
+      "rule_name_display": "New_CSR_Generated",
+      "values_short_display": [
+        {
+          "host-name": "hub1",
+          "system-ip": "10.0.0.1"
+        }
+      ],
+      "cleared_time": 0,
+      "statcycletime": 1792742747548,
+      "tenant": "default",
+      "eventname": "security-new-csr-generated",
+      "receive_time": 1792742746989,
+      "system_ip": "10.0.0.1",
+      "host_name": "hub1",
+      "site_id": "100",
+      "update_time": 1792742747030,
+      "tenant_name": "DefaultTenant",
+      "caused_events": [
+        "00000000-0000-4000-8000-000000000061"
+      ],
+      "device_uuid": "REDACTED-07",
+      "tenant_org_name": "default"
+    },
+    {
+      "entry_time": 1792742718957,
+      "uuid": "00000000-0000-4000-8000-000000000062",
+      "message": "vSmart/vManage serial file uploaded",
+      "type": "security-vsmart-serial-file-uploaded",
+      "component": "Security",
+      "severity": "Critical",
+      "severity_number": 1,
+      "devices": [
+        {
+          "system-ip": "1.1.1.2"
+        }
+      ],
+      "active": true,
+      "values": [
+        {
+          "system-ip": "1.1.1.2",
+          "host-name": "validator"
+        }
+      ],
+      "acknowledged": false,
+      "cleared_by": "",
+      "suppressed": false,
+      "suppressed_by": "",
+      "rulename": "security-vsmart-serial-file-uploaded",
+      "rule_name_display": "vSmart/vManage_Serial_File_Uploaded",
+      "values_short_display": [
+        {
+          "host-name": "validator",
+          "system-ip": "1.1.1.2"
+        }
+      ],
+      "cleared_time": 0,
+      "statcycletime": 1792742718957,
+      "tenant": "default",
+      "eventname": "security-vsmart-serial-file-uploaded",
+      "receive_time": 1792742718168,
+      "system_ip": "1.1.1.2",
+      "host_name": "validator",
+      "site_id": "1",
+      "update_time": 1792742718171,
+      "tenant_name": "DefaultTenant",
+      "caused_events": [
+        "00000000-0000-4000-8000-000000000063"
+      ],
+      "device_uuid": "00000000-0000-4000-8000-000000000006",
+      "tenant_org_name": "default"
+    },
+    {
+      "entry_time": 1792742717731,
+      "uuid": "00000000-0000-4000-8000-000000000064",
+      "message": "vSmart/vManage serial file uploaded",
+      "type": "security-vsmart-serial-file-uploaded",
+      "component": "Security",
+      "severity": "Critical",
+      "severity_number": 1,
+      "devices": [
+        {
+          "system-ip": "1.1.1.1"
+        }
+      ],
+      "active": true,
+      "values": [
+        {
+          "system-ip": "1.1.1.1",
+          "host-name": "manager"
+        }
+      ],
+      "acknowledged": false,
+      "cleared_by": "",
+      "suppressed": false,
+      "suppressed_by": "",
+      "rulename": "security-vsmart-serial-file-uploaded",
+      "rule_name_display": "vSmart/vManage_Serial_File_Uploaded",
+      "values_short_display": [
+        {
+          "host-name": "manager",
+          "system-ip": "1.1.1.1"
+        }
+      ],
+      "cleared_time": 0,
+      "statcycletime": 1792742717731,
+      "tenant": "default",
+      "eventname": "security-vsmart-serial-file-uploaded",
+      "receive_time": 1792742717732,
+      "system_ip": "1.1.1.1",
+      "host_name": "manager",
+      "site_id": "1",
+      "update_time": 1792742717735,
+      "tenant_name": "DefaultTenant",
+      "caused_events": [
+        "00000000-0000-4000-8000-000000000065"
+      ],
+      "device_uuid": "00000000-0000-4000-8000-000000000003",
+      "tenant_org_name": "default"
+    },
+    {
+      "entry_time": 1792742700004,
+      "uuid": "00000000-0000-4000-8000-000000000066",
+      "message": "vEdge serial file uploaded",
+      "type": "security-vedge-serial-file-uploaded",
+      "component": "Security",
+      "severity": "Critical",
+      "severity_number": 1,
+      "devices": [
+        {
+          "system-ip": "1.1.1.2"
+        }
+      ],
+      "active": true,
+      "values": [
+        {
+          "system-ip": "1.1.1.2",
+          "host-name": "validator"
+        }
+      ],
+      "acknowledged": false,
+      "cleared_by": "",
+      "suppressed": false,
+      "suppressed_by": "",
+      "rulename": "security-vedge-serial-file-uploaded",
+      "rule_name_display": "vEdge_Serial_File_Uploaded",
+      "values_short_display": [
+        {
+          "host-name": "validator",
+          "system-ip": "1.1.1.2"
+        }
+      ],
+      "cleared_time": 0,
+      "statcycletime": 1792742700004,
+      "tenant": "default",
+      "eventname": "security-vedge-serial-file-uploaded",
+      "receive_time": 1792742699213,
+      "system_ip": "1.1.1.2",
+      "host_name": "validator",
+      "site_id": "1",
+      "update_time": 1792742699219,
+      "tenant_name": "DefaultTenant",
+      "caused_events": [
+        "00000000-0000-4000-8000-000000000067"
+      ],
+      "device_uuid": "00000000-0000-4000-8000-000000000006",
+      "tenant_org_name": "default"
+    },
+    {
+      "entry_time": 1792742699162,
+      "uuid": "00000000-0000-4000-8000-000000000068",
+      "message": "vEdge serial file uploaded",
+      "type": "security-vedge-serial-file-uploaded",
+      "component": "Security",
+      "severity": "Critical",
+      "severity_number": 1,
+      "devices": [
+        {
+          "system-ip": "1.1.1.3"
+        }
+      ],
+      "active": true,
+      "values": [
+        {
+          "system-ip": "1.1.1.3",
+          "host-name": "controller"
+        }
+      ],
+      "acknowledged": false,
+      "cleared_by": "",
+      "suppressed": false,
+      "suppressed_by": "",
+      "rulename": "security-vedge-serial-file-uploaded",
+      "rule_name_display": "vEdge_Serial_File_Uploaded",
+      "values_short_display": [
+        {
+          "host-name": "controller",
+          "system-ip": "1.1.1.3"
+        }
+      ],
+      "cleared_time": 0,
+      "statcycletime": 1792742699162,
+      "tenant": "default",
+      "eventname": "security-vedge-serial-file-uploaded",
+      "receive_time": 1792742698720,
+      "system_ip": "1.1.1.3",
+      "host_name": "controller",
+      "site_id": "1",
+      "update_time": 1792742698752,
+      "tenant_name": "DefaultTenant",
+      "caused_events": [
+        "00000000-0000-4000-8000-000000000069"
+      ],
+      "device_uuid": "00000000-0000-4000-8000-000000000009",
+      "tenant_org_name": "default"
+    },
+    {
+      "entry_time": 1792742698539,
+      "uuid": "00000000-0000-4000-8000-000000000070",
+      "message": "vEdge serial file uploaded",
+      "type": "security-vedge-serial-file-uploaded",
+      "component": "Security",
+      "severity": "Critical",
+      "severity_number": 1,
+      "devices": [
+        {
+          "system-ip": "1.1.1.1"
+        }
+      ],
+      "active": true,
+      "values": [
+        {
+          "system-ip": "1.1.1.1",
+          "host-name": "manager"
+        }
+      ],
+      "acknowledged": false,
+      "cleared_by": "",
+      "suppressed": false,
+      "suppressed_by": "",
+      "rulename": "security-vedge-serial-file-uploaded",
+      "rule_name_display": "vEdge_Serial_File_Uploaded",
+      "values_short_display": [
+        {
+          "host-name": "manager",
+          "system-ip": "1.1.1.1"
+        }
+      ],
+      "cleared_time": 0,
+      "statcycletime": 1792742698539,
+      "tenant": "default",
+      "eventname": "security-vedge-serial-file-uploaded",
+      "receive_time": 1792742698551,
+      "system_ip": "1.1.1.1",
+      "host_name": "manager",
+      "site_id": "1",
+      "update_time": 1792742698570,
+      "tenant_name": "DefaultTenant",
+      "caused_events": [
+        "00000000-0000-4000-8000-000000000071"
+      ],
+      "device_uuid": "00000000-0000-4000-8000-000000000003",
+      "tenant_org_name": "default"
+    },
+    {
+      "entry_time": 1792742682511,
+      "uuid": "00000000-0000-4000-8000-000000000072",
+      "message": "vEdge serial file uploaded",
+      "type": "security-vedge-serial-file-uploaded",
+      "component": "Security",
+      "severity": "Critical",
+      "severity_number": 1,
+      "devices": [
+        {
+          "system-ip": "1.1.1.3"
+        }
+      ],
+      "active": true,
+      "values": [
+        {
+          "system-ip": "1.1.1.3",
+          "host-name": "controller"
+        }
+      ],
+      "acknowledged": false,
+      "cleared_by": "",
+      "suppressed": false,
+      "suppressed_by": "",
+      "rulename": "security-vedge-serial-file-uploaded",
+      "rule_name_display": "vEdge_Serial_File_Uploaded",
+      "values_short_display": [
+        {
+          "host-name": "controller",
+          "system-ip": "1.1.1.3"
+        }
+      ],
+      "cleared_time": 0,
+      "statcycletime": 1792742682511,
+      "tenant": "default",
+      "eventname": "security-vedge-serial-file-uploaded",
+      "receive_time": 1792742682834,
+      "system_ip": "1.1.1.3",
+      "host_name": "controller",
+      "site_id": "",
+      "update_time": 1792742682896,
+      "tenant_name": "DefaultTenant",
+      "caused_events": [
+        "00000000-0000-4000-8000-000000000073"
+      ],
+      "device_uuid": "00000000-0000-4000-8000-000000000009",
+      "tenant_org_name": "default"
+    },
+    {
+      "entry_time": 1792742670523,
+      "uuid": "00000000-0000-4000-8000-000000000074",
+      "message": "vSmart/vManage serial file uploaded",
+      "type": "security-vsmart-serial-file-uploaded",
+      "component": "Security",
+      "severity": "Critical",
+      "severity_number": 1,
+      "devices": [
+        {
+          "system-ip": "1.1.1.2"
+        }
+      ],
+      "active": true,
+      "values": [
+        {
+          "system-ip": "1.1.1.2",
+          "host-name": "validator"
+        }
+      ],
+      "acknowledged": false,
+      "cleared_by": "",
+      "suppressed": false,
+      "suppressed_by": "",
+      "rulename": "security-vsmart-serial-file-uploaded",
+      "rule_name_display": "vSmart/vManage_Serial_File_Uploaded",
+      "values_short_display": [
+        {
+          "host-name": "validator",
+          "system-ip": "1.1.1.2"
+        }
+      ],
+      "cleared_time": 0,
+      "statcycletime": 1792742670523,
+      "tenant": "default",
+      "eventname": "security-vsmart-serial-file-uploaded",
+      "receive_time": 1792742669732,
+      "system_ip": "1.1.1.2",
+      "host_name": "validator",
+      "site_id": "1",
+      "update_time": 1792742669740,
+      "tenant_name": "DefaultTenant",
+      "caused_events": [
+        "00000000-0000-4000-8000-000000000075"
+      ],
+      "device_uuid": "00000000-0000-4000-8000-000000000006",
+      "tenant_org_name": "default"
+    },
+    {
+      "entry_time": 1792742669332,
+      "uuid": "00000000-0000-4000-8000-000000000076",
+      "message": "vSmart/vManage serial file uploaded",
+      "type": "security-vsmart-serial-file-uploaded",
+      "component": "Security",
+      "severity": "Critical",
+      "severity_number": 1,
+      "devices": [
+        {
+          "system-ip": "1.1.1.1"
+        }
+      ],
+      "active": true,
+      "values": [
+        {
+          "system-ip": "1.1.1.1",
+          "host-name": "manager"
+        }
+      ],
+      "acknowledged": false,
+      "cleared_by": "",
+      "suppressed": false,
+      "suppressed_by": "",
+      "rulename": "security-vsmart-serial-file-uploaded",
+      "rule_name_display": "vSmart/vManage_Serial_File_Uploaded",
+      "values_short_display": [
+        {
+          "host-name": "manager",
+          "system-ip": "1.1.1.1"
+        }
+      ],
+      "cleared_time": 0,
+      "statcycletime": 1792742669332,
+      "tenant": "default",
+      "eventname": "security-vsmart-serial-file-uploaded",
+      "receive_time": 1792742669335,
+      "system_ip": "1.1.1.1",
+      "host_name": "manager",
+      "site_id": "1",
+      "update_time": 1792742669341,
+      "tenant_name": "DefaultTenant",
+      "caused_events": [
+        "00000000-0000-4000-8000-000000000077"
+      ],
+      "device_uuid": "00000000-0000-4000-8000-000000000003",
+      "tenant_org_name": "default"
+    },
+    {
+      "entry_time": 1792742665287,
+      "uuid": "00000000-0000-4000-8000-000000000078",
+      "message": "vSmart/vManage serial file uploaded",
+      "type": "security-vsmart-serial-file-uploaded",
+      "component": "Security",
+      "severity": "Critical",
+      "severity_number": 1,
+      "devices": [
+        {
+          "system-ip": "1.1.1.2"
+        }
+      ],
+      "active": true,
+      "values": [
+        {
+          "system-ip": "1.1.1.2",
+          "host-name": "validator"
+        }
+      ],
+      "acknowledged": false,
+      "cleared_by": "",
+      "suppressed": false,
+      "suppressed_by": "",
+      "rulename": "security-vsmart-serial-file-uploaded",
+      "rule_name_display": "vSmart/vManage_Serial_File_Uploaded",
+      "values_short_display": [
+        {
+          "host-name": "validator",
+          "system-ip": "1.1.1.2"
+        }
+      ],
+      "cleared_time": 0,
+      "statcycletime": 1792742665287,
+      "tenant": "default",
+      "eventname": "security-vsmart-serial-file-uploaded",
+      "receive_time": 1792742664497,
+      "system_ip": "1.1.1.2",
+      "host_name": "validator",
+      "site_id": "1",
+      "update_time": 1792742664507,
+      "tenant_name": "DefaultTenant",
+      "caused_events": [
+        "00000000-0000-4000-8000-000000000079"
+      ],
+      "device_uuid": "00000000-0000-4000-8000-000000000006",
+      "tenant_org_name": "default"
+    },
+    {
+      "entry_time": 1792742663876,
+      "uuid": "00000000-0000-4000-8000-000000000080",
+      "message": "vSmart/vManage serial file uploaded",
+      "type": "security-vsmart-serial-file-uploaded",
+      "component": "Security",
+      "severity": "Critical",
+      "severity_number": 1,
+      "devices": [
+        {
+          "system-ip": "1.1.1.1"
+        }
+      ],
+      "active": true,
+      "values": [
+        {
+          "system-ip": "1.1.1.1",
+          "host-name": "manager"
+        }
+      ],
+      "acknowledged": false,
+      "cleared_by": "",
+      "suppressed": false,
+      "suppressed_by": "",
+      "rulename": "security-vsmart-serial-file-uploaded",
+      "rule_name_display": "vSmart/vManage_Serial_File_Uploaded",
+      "values_short_display": [
+        {
+          "host-name": "manager",
+          "system-ip": "1.1.1.1"
+        }
+      ],
+      "cleared_time": 0,
+      "statcycletime": 1792742663876,
+      "tenant": "default",
+      "eventname": "security-vsmart-serial-file-uploaded",
+      "receive_time": 1792742663877,
+      "system_ip": "1.1.1.1",
+      "host_name": "manager",
+      "site_id": "1",
+      "update_time": 1792742663888,
+      "tenant_name": "DefaultTenant",
+      "caused_events": [
+        "00000000-0000-4000-8000-000000000081"
+      ],
+      "device_uuid": "00000000-0000-4000-8000-000000000003",
+      "tenant_org_name": "default"
+    },
+    {
+      "entry_time": 1792742647958,
+      "uuid": "00000000-0000-4000-8000-000000000082",
+      "message": "vEdge serial file uploaded",
+      "type": "security-vedge-serial-file-uploaded",
+      "component": "Security",
+      "severity": "Critical",
+      "severity_number": 1,
+      "devices": [
+        {
+          "system-ip": "1.1.1.1"
+        }
+      ],
+      "active": true,
+      "values": [
+        {
+          "system-ip": "1.1.1.1",
+          "host-name": "manager"
+        }
+      ],
+      "acknowledged": false,
+      "cleared_by": "",
+      "suppressed": false,
+      "suppressed_by": "",
+      "rulename": "security-vedge-serial-file-uploaded",
+      "rule_name_display": "vEdge_Serial_File_Uploaded",
+      "values_short_display": [
+        {
+          "host-name": "manager",
+          "system-ip": "1.1.1.1"
+        }
+      ],
+      "cleared_time": 0,
+      "statcycletime": 1792742647958,
+      "tenant": "default",
+      "eventname": "security-vedge-serial-file-uploaded",
+      "receive_time": 1792742647965,
+      "system_ip": "1.1.1.1",
+      "host_name": "manager",
+      "site_id": "1",
+      "update_time": 1792742647968,
+      "tenant_name": "DefaultTenant",
+      "caused_events": [
+        "00000000-0000-4000-8000-000000000083"
+      ],
+      "device_uuid": "00000000-0000-4000-8000-000000000003",
+      "tenant_org_name": "default"
+    },
+    {
+      "entry_time": 1792742639260,
+      "uuid": "00000000-0000-4000-8000-000000000084",
+      "message": "vSmart/vManage serial file uploaded",
+      "type": "security-vsmart-serial-file-uploaded",
+      "component": "Security",
+      "severity": "Critical",
+      "severity_number": 1,
+      "devices": [
+        {
+          "system-ip": "1.1.1.2"
+        }
+      ],
+      "active": true,
+      "values": [
+        {
+          "system-ip": "1.1.1.2",
+          "host-name": "validator"
+        }
+      ],
+      "acknowledged": false,
+      "cleared_by": "",
+      "suppressed": false,
+      "suppressed_by": "",
+      "rulename": "security-vsmart-serial-file-uploaded",
+      "rule_name_display": "vSmart/vManage_Serial_File_Uploaded",
+      "values_short_display": [
+        {
+          "host-name": "validator",
+          "system-ip": "1.1.1.2"
+        }
+      ],
+      "cleared_time": 0,
+      "statcycletime": 1792742639260,
+      "tenant": "default",
+      "eventname": "security-vsmart-serial-file-uploaded",
+      "receive_time": 1792742639192,
+      "system_ip": "1.1.1.2",
+      "host_name": "validator",
+      "site_id": "",
+      "update_time": 1792742639532,
+      "tenant_name": "DefaultTenant",
+      "caused_events": [
+        "00000000-0000-4000-8000-000000000085"
+      ],
+      "device_uuid": "00000000-0000-4000-8000-000000000006",
+      "tenant_org_name": "default"
+    },
+    {
+      "entry_time": 1792742637894,
+      "uuid": "00000000-0000-4000-8000-000000000086",
+      "message": "vSmart/vManage serial file uploaded",
+      "type": "security-vsmart-serial-file-uploaded",
+      "component": "Security",
+      "severity": "Critical",
+      "severity_number": 1,
+      "devices": [
+        {
+          "system-ip": "1.1.1.1"
+        }
+      ],
+      "active": true,
+      "values": [
+        {
+          "system-ip": "1.1.1.1",
+          "host-name": "manager"
+        }
+      ],
+      "acknowledged": false,
+      "cleared_by": "",
+      "suppressed": false,
+      "suppressed_by": "",
+      "rulename": "security-vsmart-serial-file-uploaded",
+      "rule_name_display": "vSmart/vManage_Serial_File_Uploaded",
+      "values_short_display": [
+        {
+          "host-name": "manager",
+          "system-ip": "1.1.1.1"
+        }
+      ],
+      "cleared_time": 0,
+      "statcycletime": 1792742637894,
+      "tenant": "default",
+      "eventname": "security-vsmart-serial-file-uploaded",
+      "receive_time": 1792742637895,
+      "system_ip": "1.1.1.1",
+      "host_name": "manager",
+      "site_id": "1",
+      "update_time": 1792742637906,
+      "tenant_name": "DefaultTenant",
+      "caused_events": [
+        "00000000-0000-4000-8000-000000000087"
+      ],
+      "device_uuid": "00000000-0000-4000-8000-000000000003",
+      "tenant_org_name": "default"
+    },
+    {
+      "entry_time": 1792742637645,
+      "uuid": "00000000-0000-4000-8000-000000000088",
+      "message": "vEdge serial file uploaded",
+      "type": "security-vedge-serial-file-uploaded",
+      "component": "Security",
+      "severity": "Critical",
+      "severity_number": 1,
+      "devices": [
+        {
+          "system-ip": "1.1.1.2"
+        }
+      ],
+      "active": true,
+      "values": [
+        {
+          "system-ip": "1.1.1.2",
+          "host-name": "validator"
+        }
+      ],
+      "acknowledged": false,
+      "cleared_by": "",
+      "suppressed": false,
+      "suppressed_by": "",
+      "rulename": "security-vedge-serial-file-uploaded",
+      "rule_name_display": "vEdge_Serial_File_Uploaded",
+      "values_short_display": [
+        {
+          "host-name": "validator",
+          "system-ip": "1.1.1.2"
+        }
+      ],
+      "cleared_time": 0,
+      "statcycletime": 1792742637645,
+      "tenant": "default",
+      "eventname": "security-vedge-serial-file-uploaded",
+      "receive_time": 1792742639192,
+      "system_ip": "1.1.1.2",
+      "host_name": "validator",
+      "site_id": "",
+      "update_time": 1792742639511,
+      "tenant_name": "DefaultTenant",
+      "caused_events": [
+        "00000000-0000-4000-8000-000000000089"
+      ],
+      "device_uuid": "00000000-0000-4000-8000-000000000006",
+      "tenant_org_name": "default"
+    },
+    {
+      "entry_time": 1792742634003,
+      "uuid": "00000000-0000-4000-8000-000000000090",
+      "message": "vSmart/vManage serial file uploaded",
+      "type": "security-vsmart-serial-file-uploaded",
+      "component": "Security",
+      "severity": "Critical",
+      "severity_number": 1,
+      "devices": [
+        {
+          "system-ip": "1.1.1.2"
+        }
+      ],
+      "active": true,
+      "values": [
+        {
+          "system-ip": "1.1.1.2",
+          "host-name": "validator"
+        }
+      ],
+      "acknowledged": false,
+      "cleared_by": "",
+      "suppressed": false,
+      "suppressed_by": "",
+      "rulename": "security-vsmart-serial-file-uploaded",
+      "rule_name_display": "vSmart/vManage_Serial_File_Uploaded",
+      "values_short_display": [
+        {
+          "host-name": "validator",
+          "system-ip": "1.1.1.2"
+        }
+      ],
+      "cleared_time": 0,
+      "statcycletime": 1792742634003,
+      "tenant": "default",
+      "eventname": "security-vsmart-serial-file-uploaded",
+      "receive_time": 1792742639191,
+      "system_ip": "1.1.1.2",
+      "host_name": "validator",
+      "site_id": "",
+      "update_time": 1792742639493,
+      "tenant_name": "DefaultTenant",
+      "caused_events": [
+        "00000000-0000-4000-8000-000000000091"
+      ],
+      "device_uuid": "00000000-0000-4000-8000-000000000006",
+      "tenant_org_name": "default"
+    },
+    {
+      "entry_time": 1792742632710,
+      "uuid": "00000000-0000-4000-8000-000000000092",
+      "message": "vSmart/vManage serial file uploaded",
+      "type": "security-vsmart-serial-file-uploaded",
+      "component": "Security",
+      "severity": "Critical",
+      "severity_number": 1,
+      "devices": [
+        {
+          "system-ip": "1.1.1.1"
+        }
+      ],
+      "active": true,
+      "values": [
+        {
+          "system-ip": "1.1.1.1",
+          "host-name": "manager"
+        }
+      ],
+      "acknowledged": false,
+      "cleared_by": "",
+      "suppressed": false,
+      "suppressed_by": "",
+      "rulename": "security-vsmart-serial-file-uploaded",
+      "rule_name_display": "vSmart/vManage_Serial_File_Uploaded",
+      "values_short_display": [
+        {
+          "host-name": "manager",
+          "system-ip": "1.1.1.1"
+        }
+      ],
+      "cleared_time": 0,
+      "statcycletime": 1792742632710,
+      "tenant": "default",
+      "eventname": "security-vsmart-serial-file-uploaded",
+      "receive_time": 1792742632713,
+      "system_ip": "1.1.1.1",
+      "host_name": "manager",
+      "site_id": "1",
+      "update_time": 1792742632720,
+      "tenant_name": "DefaultTenant",
+      "caused_events": [
+        "00000000-0000-4000-8000-000000000093"
+      ],
+      "device_uuid": "00000000-0000-4000-8000-000000000003",
+      "tenant_org_name": "default"
+    },
+    {
+      "entry_time": 1792742606784,
+      "uuid": "00000000-0000-4000-8000-000000000094",
+      "message": "vBond state changed",
+      "type": "control-vbond-state-change",
+      "component": "Control",
+      "severity": "Major",
+      "severity_number": 2,
+      "devices": [
+        {
+          "system-ip": "1.1.1.2"
+        }
+      ],
+      "active": false,
+      "values": [
+        {
+          "system-ip": "1.1.1.2",
+          "new-state": "up",
+          "host-name": "validator"
+        }
+      ],
+      "acknowledged": false,
+      "cleared_events": [
+        "00000000-0000-4000-8000-000000000095"
+      ],
+      "cleared_by": "",
+      "suppressed": false,
+      "suppressed_by": "",
+      "rulename": "control-vbond-state-change",
+      "rule_name_display": "Control_vBond_State_Change",
+      "values_short_display": [
+        {
+          "host-name": "validator",
+          "system-ip": "1.1.1.2",
+          "new-state": "up"
+        }
+      ],
+      "cleared_time": 0,
+      "statcycletime": 1792742606784,
+      "tenant": "default",
+      "eventname": "control-vbond-state-change",
+      "receive_time": 1792742639191,
+      "system_ip": "1.1.1.2",
+      "host_name": "validator",
+      "site_id": "",
+      "update_time": 1792742639479,
+      "tenant_name": "DefaultTenant",
+      "caused_events": [
+        "00000000-0000-4000-8000-000000000096"
+      ],
+      "device_uuid": "00000000-0000-4000-8000-000000000006",
+      "tenant_org_name": "default"
+    },
+    {
+      "entry_time": 1792742489298,
+      "uuid": "00000000-0000-4000-8000-000000000097",
+      "message": "New CSR Generated",
+      "type": "security-new-csr-generated",
+      "component": "Security",
+      "severity": "Minor",
+      "severity_number": 4,
+      "devices": [
+        {
+          "system-ip": "1.1.1.3"
+        }
+      ],
+      "active": true,
+      "values": [
+        {
+          "system-ip": "1.1.1.3",
+          "host-name": "controller"
+        }
+      ],
+      "acknowledged": false,
+      "cleared_by": "",
+      "suppressed": false,
+      "suppressed_by": "",
+      "rulename": "security-new-csr-generated",
+      "rule_name_display": "New_CSR_Generated",
+      "values_short_display": [
+        {
+          "host-name": "controller",
+          "system-ip": "1.1.1.3"
+        }
+      ],
+      "cleared_time": 0,
+      "statcycletime": 1792742489298,
+      "tenant": "default",
+      "eventname": "security-new-csr-generated",
+      "receive_time": 1792742682820,
+      "system_ip": "1.1.1.3",
+      "host_name": "controller",
+      "site_id": "",
+      "update_time": 1792742682959,
+      "tenant_name": "DefaultTenant",
+      "caused_events": [
+        "00000000-0000-4000-8000-000000000098"
+      ],
+      "device_uuid": "00000000-0000-4000-8000-000000000009",
+      "tenant_org_name": "default"
+    },
+    {
+      "entry_time": 1792742486983,
+      "uuid": "00000000-0000-4000-8000-000000000099",
+      "message": "New CSR Generated",
+      "type": "security-new-csr-generated",
+      "component": "Security",
+      "severity": "Minor",
+      "severity_number": 4,
+      "devices": [
+        {
+          "system-ip": "1.1.1.1"
+        }
+      ],
+      "active": true,
+      "values": [
+        {
+          "system-ip": "1.1.1.1",
+          "host-name": "manager"
+        }
+      ],
+      "acknowledged": false,
+      "cleared_by": "",
+      "suppressed": false,
+      "suppressed_by": "",
+      "rulename": "security-new-csr-generated",
+      "rule_name_display": "New_CSR_Generated",
+      "values_short_display": [
+        {
+          "host-name": "manager",
+          "system-ip": "1.1.1.1"
+        }
+      ],
+      "cleared_time": 0,
+      "statcycletime": 1792742486983,
+      "tenant": "default",
+      "eventname": "security-new-csr-generated",
+      "receive_time": 1792742486985,
+      "system_ip": "1.1.1.1",
+      "host_name": "manager",
+      "site_id": "1",
+      "update_time": 1792742486988,
+      "tenant_name": "DefaultTenant",
+      "caused_events": [
+        "00000000-0000-4000-8000-000000000100"
+      ],
+      "device_uuid": "00000000-0000-4000-8000-000000000003",
+      "tenant_org_name": "default"
+    },
+    {
+      "entry_time": 1792742484083,
+      "uuid": "00000000-0000-4000-8000-000000000101",
+      "message": "Root cert chain installed",
+      "type": "security-root-cert-chain-installed",
+      "component": "Security",
+      "severity": "Minor",
+      "severity_number": 4,
+      "devices": [
+        {
+          "system-ip": "1.1.1.3"
+        }
+      ],
+      "active": true,
+      "values": [
+        {
+          "system-ip": "1.1.1.3",
+          "host-name": "controller"
+        }
+      ],
+      "acknowledged": false,
+      "cleared_by": "",
+      "suppressed": false,
+      "suppressed_by": "",
+      "rulename": "security-root-cert-chain-installed",
+      "rule_name_display": "Root_Cert_Chain_Installed",
+      "values_short_display": [
+        {
+          "host-name": "controller",
+          "system-ip": "1.1.1.3"
+        }
+      ],
+      "cleared_time": 0,
+      "statcycletime": 1792742484083,
+      "tenant": "default",
+      "eventname": "security-root-cert-chain-installed",
+      "receive_time": 1792742682820,
+      "system_ip": "1.1.1.3",
+      "host_name": "controller",
+      "site_id": "",
+      "update_time": 1792742682873,
+      "tenant_name": "DefaultTenant",
+      "caused_events": [
+        "00000000-0000-4000-8000-000000000102"
+      ],
+      "device_uuid": "00000000-0000-4000-8000-000000000009",
+      "tenant_org_name": "default"
+    },
+    {
+      "entry_time": 1792742483961,
+      "uuid": "00000000-0000-4000-8000-000000000103",
+      "message": "New CSR Generated",
+      "type": "security-new-csr-generated",
+      "component": "Security",
+      "severity": "Minor",
+      "severity_number": 4,
+      "devices": [
+        {
+          "system-ip": "1.1.1.2"
+        }
+      ],
+      "active": true,
+      "values": [
+        {
+          "system-ip": "1.1.1.2",
+          "host-name": "validator"
+        }
+      ],
+      "acknowledged": false,
+      "cleared_by": "",
+      "suppressed": false,
+      "suppressed_by": "",
+      "rulename": "security-new-csr-generated",
+      "rule_name_display": "New_CSR_Generated",
+      "values_short_display": [
+        {
+          "host-name": "validator",
+          "system-ip": "1.1.1.2"
+        }
+      ],
+      "cleared_time": 0,
+      "statcycletime": 1792742483961,
+      "tenant": "default",
+      "eventname": "security-new-csr-generated",
+      "receive_time": 1792742639190,
+      "system_ip": "1.1.1.2",
+      "host_name": "validator",
+      "site_id": "",
+      "update_time": 1792742639395,
+      "tenant_name": "DefaultTenant",
+      "caused_events": [
+        "00000000-0000-4000-8000-000000000104"
+      ],
+      "device_uuid": "00000000-0000-4000-8000-000000000006",
+      "tenant_org_name": "default"
+    },
+    {
+      "entry_time": 1792742482739,
+      "uuid": "00000000-0000-4000-8000-000000000105",
+      "message": "Root cert chain installed",
+      "type": "security-root-cert-chain-installed",
+      "component": "Security",
+      "severity": "Minor",
+      "severity_number": 4,
+      "devices": [
+        {
+          "system-ip": "1.1.1.2"
+        }
+      ],
+      "active": true,
+      "values": [
+        {
+          "system-ip": "1.1.1.2",
+          "host-name": "validator"
+        }
+      ],
+      "acknowledged": false,
+      "cleared_by": "",
+      "suppressed": false,
+      "suppressed_by": "",
+      "rulename": "security-root-cert-chain-installed",
+      "rule_name_display": "Root_Cert_Chain_Installed",
+      "values_short_display": [
+        {
+          "host-name": "validator",
+          "system-ip": "1.1.1.2"
+        }
+      ],
+      "cleared_time": 0,
+      "statcycletime": 1792742482739,
+      "tenant": "default",
+      "eventname": "security-root-cert-chain-installed",
+      "receive_time": 1792742639190,
+      "system_ip": "1.1.1.2",
+      "host_name": "validator",
+      "site_id": "",
+      "update_time": 1792742639361,
+      "tenant_name": "DefaultTenant",
+      "caused_events": [
+        "00000000-0000-4000-8000-000000000106"
+      ],
+      "device_uuid": "00000000-0000-4000-8000-000000000006",
+      "tenant_org_name": "default"
+    },
+    {
+      "entry_time": 1792742474225,
+      "uuid": "00000000-0000-4000-8000-000000000107",
+      "message": "Root cert chain installed",
+      "type": "security-root-cert-chain-installed",
+      "component": "Security",
+      "severity": "Minor",
+      "severity_number": 4,
+      "devices": [
+        {
+          "system-ip": "1.1.1.1"
+        }
+      ],
+      "active": true,
+      "values": [
+        {
+          "system-ip": "1.1.1.1",
+          "host-name": "manager"
+        }
+      ],
+      "acknowledged": false,
+      "cleared_by": "",
+      "suppressed": false,
+      "suppressed_by": "",
+      "rulename": "security-root-cert-chain-installed",
+      "rule_name_display": "Root_Cert_Chain_Installed",
+      "values_short_display": [
+        {
+          "host-name": "manager",
+          "system-ip": "1.1.1.1"
+        }
+      ],
+      "cleared_time": 0,
+      "statcycletime": 1792742474225,
+      "tenant": "default",
+      "eventname": "security-root-cert-chain-installed",
+      "receive_time": 1792742474226,
+      "system_ip": "1.1.1.1",
+      "host_name": "manager",
+      "site_id": "1",
+      "update_time": 1792742474235,
+      "tenant_name": "DefaultTenant",
+      "caused_events": [
+        "00000000-0000-4000-8000-000000000108"
+      ],
+      "device_uuid": "00000000-0000-4000-8000-000000000003",
+      "tenant_org_name": "default"
+    },
+    {
+      "entry_time": 1792742299063,
+      "uuid": "00000000-0000-4000-8000-000000000039",
+      "message": "Able to reach SD-AVC Gateway server, but server is not configured",
+      "type": "vmanage-sdavc-state",
+      "component": "system",
+      "severity": "Major",
+      "severity_number": 2,
+      "devices": [
+        {
+          "system-ip": "1.1.1.1"
+        }
+      ],
+      "active": false,
+      "values": [
+        {
+          "host-name": "manager",
+          "system-ip": "1.1.1.1",
+          "state": "unconfigured"
+        }
+      ],
+      "acknowledged": false,
+      "cleared_by": "00000000-0000-4000-8000-000000000038",
+      "suppressed": false,
+      "suppressed_by": "",
+      "rulename": "vmanage-sdavc-state",
+      "rule_name_display": "SD-AVC_State_Change",
+      "values_short_display": [
+        {
+          "host-name": "manager",
+          "system-ip": "1.1.1.1",
+          "state": "unconfigured"
+        }
+      ],
+      "cleared_time": 1792742808971,
+      "statcycletime": 1792742299063,
+      "tenant": "default",
+      "eventname": "vmanage-sdavc-state",
+      "receive_time": 1792742299063,
+      "system_ip": "1.1.1.1",
+      "host_name": "manager",
+      "site_id": "1",
+      "update_time": 1792742808990,
+      "tenant_name": "DefaultTenant",
+      "device_uuid": "00000000-0000-4000-8000-000000000003",
+      "tenant_org_name": "default"
+    }
+  ]
+}

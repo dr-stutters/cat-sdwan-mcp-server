@@ -9,7 +9,7 @@ from fastmcp.server.auth import AuthProvider
 from cat_sdwan_mcp._core import ServerSpec, build_server
 from cat_sdwan_mcp.client import SdwanApp
 from cat_sdwan_mcp.config import Settings
-from cat_sdwan_mcp.tools import control, dataplane, inventory
+from cat_sdwan_mcp.tools import control, dataplane, events, inventory
 
 INSTRUCTIONS = """
 Tools for Catalyst SD-WAN Manager (formerly vManage): fabric inventory and health, tunnels, BFD and
@@ -25,6 +25,9 @@ fabric); "why can't branch A reach B?" -> catsdwan_omp_routes(A, vpn, prefix) th
 catsdwan_omp_peers. Data plane: "which tunnels are down?" -> catsdwan_bfd_sessions(state='not_up');
 "which are lossy / is the voice SLA met?" -> catsdwan_app_route_stats(sla_class=...) (statistics every
 10 minutes; source='realtime' for now), catsdwan_list_sla_classes, catsdwan_tunnel_stats.
+Logs: "what changed and who did it?" -> catsdwan_audit_log(changes_only=true); "what has been breaking at
+this site?" -> catsdwan_recent_activity(site) (alarms, events and audit lines on one timeline);
+catsdwan_list_alarms (active by default), catsdwan_list_events (busy: keep since_hours short).
 Real-time reads go over the Manager's control connection, so an unreachable edge has none.
 Other planned tools are in the server's ROADMAP.md; until they exist, say so instead of guessing.
 """
@@ -48,7 +51,7 @@ def create_server(
         SPEC,
         settings,
         client_factory=lambda s: SdwanApp(s, transport=transport),
-        register=[inventory.register, control.register, dataplane.register],
+        register=[inventory.register, control.register, dataplane.register, events.register],
         status=SdwanApp.status,
         auth=auth,
     )
