@@ -6449,6 +6449,437 @@
     },
     "x-roles-required": "Manage Users-write"
    }
+  },
+  "/certificate/save/vedge/list": {
+   "post": {
+    "tags": [
+     "Certificate Management - Device"
+    ],
+    "summary": "change VedgeList Validity",
+    "description": "change VedgeList Validity",
+    "operationId": "saveVEdgeList",
+    "requestBody": {
+     "description": "JSON payload with RootCertChain and Certificate details.",
+     "content": {
+      "application/json": {
+       "schema": {
+        "type": "string"
+       },
+       "examples": {
+        "vEdge List": {
+         "description": "vEdge List",
+         "$ref": "examples/com/viptela/vmanage/server/CertificateApi/request_example/PostSaveVedgeListRequest.json"
+        },
+        "vEdge List with optional Serial Number parameter": {
+         "description": "vEdge List with optional Serial Number parameter",
+         "$ref": "examples/com/viptela/vmanage/server/CertificateApi/request_example/PostSaveVedgeListOptionalParameterRequest.json"
+        }
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": "Success",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "string"
+        },
+        "examples": {
+         "Save vEdge List Response": {
+          "description": "Save vEdge List Response",
+          "$ref": "examples/com/viptela/vmanage/server/CertificateApi/response_example/PostSaveVedgeListResponse.json"
+         }
+        }
+       }
+      }
+     },
+     "400": {
+      "description": "Bad Request"
+     },
+     "403": {
+      "description": "Forbidden"
+     },
+     "500": {
+      "description": "Internal Server"
+     }
+    }
+   }
+  },
+  "/certificate/vedge/list": {
+   "get": {
+    "tags": [
+     "Certificate Management - Device"
+    ],
+    "summary": "get vEdge list",
+    "description": "get vEdge list",
+    "operationId": "getvEdgeList",
+    "parameters": [
+     {
+      "name": "model",
+      "in": "query",
+      "description": "Device Model",
+      "schema": {
+       "type": "string"
+      },
+      "examples": {
+       "vEdge Cloud": {
+        "description": "vEdge Cloud",
+        "value": "vedge-cloud"
+       },
+       "C8300-1N1S-4T2X": {
+        "description": "C8300-1N1S-4T2X",
+        "value": "C8300-1N1S-4T2X"
+       },
+       "ASR1002-HX": {
+        "description": "ASR1002-HX",
+        "value": "ASR1002-HX"
+       },
+       "C8000v": {
+        "description": "C8000v",
+        "value": "vedge-C8000V"
+       }
+      }
+     },
+     {
+      "name": "state",
+      "in": "query",
+      "description": "Certificate State",
+      "schema": {
+       "type": "string"
+      },
+      "examples": {
+       "CSR Failed": {
+        "description": "CSR Failed",
+        "value": "csrfailed"
+       },
+       "Certificate Installed": {
+        "description": "Certificate Installed",
+        "value": "certinstalled"
+       },
+       "Token Generated": {
+        "description": "Token Generated",
+        "value": "tokengenerated"
+       },
+       "Certificate Installation Failed": {
+        "description": "Certificate Installation Failed",
+        "value": "certinstallfailed"
+       },
+       "Bootstrap Config Generated": {
+        "description": "Bootstrap Config Generated",
+        "value": "bootstrapconfiggenerated"
+       },
+       "CSR Generated": {
+        "description": "CSR Generated",
+        "value": "csrgenerated"
+       },
+       "Certificate serial number pushed to controllers": {
+        "description": "Certificate serial number pushed to controllers",
+        "value": "certserialpushedtocontrollers"
+       }
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Success",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "string"
+        },
+        "examples": {
+         "Vedge List Response": {
+          "description": "Vedge List Response",
+          "$ref": "examples/com/viptela/vmanage/server/CertificateApi/response_example/GetVedgeListResponse.json"
+         }
+        }
+       }
+      }
+     },
+     "400": {
+      "description": "Bad Request"
+     },
+     "403": {
+      "description": "Forbidden"
+     },
+     "500": {
+      "description": "Internal Server Error"
+     }
+    }
+   },
+   "post": {
+    "tags": [
+     "Certificate Management - Device"
+    ],
+    "summary": "Save vEdge list (send to controller)",
+    "description": "Save vEdge list (send to controller)",
+    "operationId": "setvEdgeList",
+    "parameters": [
+     {
+      "name": "action",
+      "in": "query",
+      "description": "Action Type",
+      "schema": {
+       "type": "string"
+      },
+      "examples": {
+       "Get": {
+        "description": "Get",
+        "value": "get"
+       },
+       "Save": {
+        "description": "Save",
+        "value": "save"
+       },
+       "Verify": {
+        "description": "Verify",
+        "value": "verify"
+       },
+       "Push": {
+        "description": "Push",
+        "value": "push"
+       }
+      }
+     }
+    ],
+    "requestBody": {
+     "description": "Required only for save action",
+     "content": {
+      "application/json": {
+       "schema": {
+        "type": "string"
+       },
+       "examples": {
+        "Vedge List": {
+         "description": "Vedge List",
+         "$ref": "examples/com/viptela/vmanage/server/CertificateApi/request_example/PostVedgeListSaveRequest.json"
+        }
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": "Success",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "string"
+        },
+        "examples": {
+         "Vedge List Push Response": {
+          "description": "Vedge List Push Response",
+          "$ref": "examples/com/viptela/vmanage/server/CertificateApi/response_example/PostVedgeListPushResponse.json"
+         }
+        }
+       }
+      }
+     },
+     "400": {
+      "description": "Bad Request"
+     },
+     "403": {
+      "description": "Forbidden"
+     },
+     "500": {
+      "description": "Internal Server"
+     }
+    }
+   }
+  },
+  "/system/device/bootstrap/device/{uuid}": {
+   "get": {
+    "tags": [
+     "Configuration - Device Inventory"
+    ],
+    "description": "Create vEdge device config",
+    "operationId": "generateBootstrapConfigForVedge",
+    "parameters": [
+     {
+      "name": "uuid",
+      "in": "path",
+      "description": "Device UUID",
+      "required": true,
+      "schema": {
+       "type": "string"
+      },
+      "example": "ESR-6300-LIC-K9-FAUSTEST126"
+     },
+     {
+      "name": "configtype",
+      "in": "query",
+      "description": "configtype",
+      "required": true,
+      "schema": {
+       "type": "string"
+      },
+      "example": "cloudinit"
+     },
+     {
+      "name": "inclDefRootCert",
+      "in": "query",
+      "required": true,
+      "schema": {
+       "type": "boolean",
+       "default": true
+      }
+     },
+     {
+      "name": "version",
+      "in": "query",
+      "schema": {
+       "type": "string",
+       "default": "v1"
+      }
+     },
+     {
+      "name": "wanif",
+      "in": "query",
+      "description": "wanif",
+      "schema": {
+       "type": "string"
+      },
+      "example": "GigabitEthernet1"
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Success",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/GenerateBootstrapConfigForVedge"
+        },
+        "examples": {
+         "Device bootstrap configuration": {
+          "description": "Device bootstrap configuration",
+          "$ref": "examples/com/viptela/vmanage/server/bootstrap/DeviceLifeCycleApi/response_example/GetBootstrapDevice.json"
+         }
+        }
+       }
+      }
+     },
+     "400": {
+      "description": "Bad Request"
+     },
+     "403": {
+      "description": "Forbidden"
+     },
+     "500": {
+      "description": "Internal Server Error"
+     }
+    }
+   }
+  },
+  "/system/device/fileupload": {
+   "post": {
+    "tags": [
+     "Configuration - Device Inventory"
+    ],
+    "description": "Upload file to vEdge",
+    "operationId": "formPost",
+    "requestBody": {
+     "description": "Request body for Upload file to vEdge",
+     "content": {
+      "multipart/form-data": {
+       "schema": {
+        "type": "object"
+       },
+       "examples": {
+        "Example Value": {
+         "description": "Example Value",
+         "$ref": "examples/com/viptela/vmanage/server/deviceconfig/system/device/SystemDeviceApi/request_example/FileUpload.json"
+        }
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": "Success",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/FormPostResp"
+        },
+        "examples": {
+         "Example": {
+          "description": "Example",
+          "$ref": "examples/com/viptela/vmanage/server/deviceconfig/system/device/SystemDeviceApi/response_example/FileUploadResp.json"
+         }
+        }
+       }
+      }
+     },
+     "400": {
+      "description": "Bad Request"
+     },
+     "403": {
+      "description": "Forbidden"
+     },
+     "500": {
+      "description": "Internal Server Error"
+     }
+    }
+   }
+  },
+  "/system/device/smartaccount/sync": {
+   "post": {
+    "tags": [
+     "Configuration - Device Inventory"
+    ],
+    "description": "Sync devices from Smart-Account",
+    "operationId": "syncDevices",
+    "requestBody": {
+     "description": "Request body for Sync devices from Smart-Account",
+     "content": {
+      "application/json": {
+       "schema": {
+        "type": "object"
+       },
+       "examples": {
+        "Example Value": {
+         "description": "Example Value",
+         "$ref": "examples/com/viptela/vmanage/server/deviceconfig/system/device/SystemDeviceApi/request_example/SmartAccountSync.json"
+        }
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": "Success",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/SyncDevicesResp"
+        },
+        "examples": {
+         "Example Value": {
+          "description": "Example Value",
+          "$ref": "examples/com/viptela/vmanage/server/deviceconfig/system/device/SystemDeviceApi/response_example/SmartAccountSyncResp.json"
+         }
+        }
+       }
+      }
+     },
+     "400": {
+      "description": "Bad Request"
+     },
+     "403": {
+      "description": "Forbidden"
+     },
+     "500": {
+      "description": "Internal Server Error"
+     }
+    }
+   }
   }
  },
  "components": {

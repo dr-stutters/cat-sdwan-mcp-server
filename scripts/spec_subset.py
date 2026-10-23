@@ -63,6 +63,11 @@ PATHS = [
     "/v1/feature-profile/sdwan/system/{systemId}",
     "/v1/feature-profile/sdwan/transport/{transportId}",
     "/admin/user",
+    "/certificate/save/vedge/list",
+    "/certificate/vedge/list",
+    "/system/device/bootstrap/device/{uuid}",
+    "/system/device/fileupload",
+    "/system/device/smartaccount/sync",
 ]
 
 

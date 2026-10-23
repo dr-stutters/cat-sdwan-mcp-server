@@ -10,7 +10,7 @@ from cat_sdwan_mcp._core import ServerSpec, ToolRegistrar, build_server
 from cat_sdwan_mcp.client import SdwanApp
 from cat_sdwan_mcp.config import Settings
 from cat_sdwan_mcp.spec import spec_sources
-from cat_sdwan_mcp.tools import api, changes, configuration, control, dataplane, events, inventory
+from cat_sdwan_mcp.tools import api, changes, configuration, control, dataplane, events, inventory, onboarding
 
 INSTRUCTIONS = """
 Tools for Catalyst SD-WAN Manager (formerly vManage): fabric inventory and health, tunnels, BFD and
@@ -40,6 +40,11 @@ catsdwan_deploy_config_group(group, devices) (preview = CLI and diff per device;
 success or failure per device) -> catsdwan_get_device_config(diff=true). Legacy templates:
 catsdwan_attach_device_template(template, devices, variables). One device is write tier; several devices, a
 hub or a protected-site device need MCP_ENABLE_DANGEROUS. Name the preview's devices before confirming.
+Onboarding: catsdwan_list_wan_edges(state='not_joined') -> catsdwan_onboard_edge(chassis, hostname, system_ip,
+site_id, config_group or template) (validity, association, variables; stops at the failing step) -> boot the
+edge with catsdwan_bootstrap_config(chassis) as its day-0, or the activate command it gives on a running
+C8000V -> catsdwan_control_connections(device). catsdwan_set_edge_validity: invalid drops a joined edge
+(dangerous). The one-time token is a secret: only catsdwan_bootstrap_config(reveal_otp=true) shows it.
 Anything without a tool: catsdwan_search_spec('bfd') -> catsdwan_get_definition(path) -> catsdwan_api_call
 (paths as /dataservice/..., checked against the Manager's own OpenAPI document; GET and the statistics, alarm,
 event and audit query POSTs are reads, other writes are preview-first, /device/action/* is dangerous).
@@ -74,6 +79,7 @@ def create_server(
             events.register,
             configuration.register,
             changes.register,
+            onboarding.register,
         ],
         status=SdwanApp.status,
         spec_sources=spec_sources,
