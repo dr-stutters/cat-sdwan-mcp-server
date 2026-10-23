@@ -1,0 +1,71 @@
+{
+  "parcelId": "00000000-0000-4000-8000-000000001034",
+  "parcelType": "basic",
+  "createdBy": "admin",
+  "origin": "user",
+  "lastUpdatedBy": "admin",
+  "createdOn": 1792752170615,
+  "lastUpdatedOn": 1792752170615,
+  "payload": {
+    "name": "mcp-test-basic",
+    "description": "seed_lab.py",
+    "data": {
+      "adminTechOnFailure": {
+        "optionType": "default",
+        "value": true
+      },
+      "clock": {
+        "timezone": {
+          "optionType": "default",
+          "value": "UTC"
+        }
+      },
+      "consoleBaudRate": {
+        "optionType": "default",
+        "value": "9600"
+      },
+      "description": {
+        "optionType": "default"
+      },
+      "deviceGroups": {
+        "optionType": "default"
+      },
+      "gpsLocation": {
+        "latitude": {
+          "optionType": "default"
+        },
+        "longitude": {
+          "optionType": "default"
+        }
+      },
+      "location": {
+        "optionType": "default"
+      },
+      "maxOmpSessions": {
+        "optionType": "default"
+      },
+      "onDemand": {
+        "onDemandEnable": {
+          "optionType": "default",
+          "value": false
+        },
+        "onDemandIdleTimeout": {
+          "optionType": "default",
+          "value": 10
+        }
+      },
+      "overlayId": {
+        "optionType": "default",
+        "value": 1
+      },
+      "portHop": {
+        "optionType": "default",
+        "value": true
+      },
+      "portOffset": {
+        "optionType": "default",
+        "value": 0
+      }
+    }
+  }
+}

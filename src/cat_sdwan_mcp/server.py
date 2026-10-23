@@ -20,6 +20,7 @@ from cat_sdwan_mcp.tools import (
     devops,
     events,
     history,
+    features,
     inventory,
     onboarding,
     policy,
@@ -53,7 +54,11 @@ catsdwan_config_history(device, at=<time> | version='previous' | diff=true).
 Changes (with MCP_ENABLE_WRITES; preview-first): catsdwan_set_device_variables (stores values only) ->
 catsdwan_deploy_config_group(group, devices) (preview = CLI and diff per device; confirm follows the action to
 success or failure per device) -> catsdwan_get_device_config(diff=true). Legacy templates:
-catsdwan_attach_device_template(template, devices, variables). One device is write tier; several devices, a
+catsdwan_attach_device_template(template, devices, variables). Change the group itself:
+catsdwan_get_feature_parcel(profile or group, parcel, fields=true) -> catsdwan_set_feature_parcel(profile,
+parcel, values | cli_replace) (schema-checked, stores only) -> deploy; catsdwan_associate_config_group(group,
+add, remove);
+catsdwan_deploy_policy_group(group, devices). One device is write tier; several devices, a
 hub or a protected-site device need MCP_ENABLE_DANGEROUS. Name the preview's devices before confirming.
 Onboarding: catsdwan_list_wan_edges(state='not_joined') -> catsdwan_onboard_edge(chassis, hostname, system_ip,
 site_id, config_group or template) (validity, association, variables; stops at the failing step) -> boot the
@@ -114,6 +119,7 @@ def create_server(
             devops.register,
             history.register,
             confighistory.register,
+            features.register,
             prompts.register,
         ],
         status=SdwanApp.status,

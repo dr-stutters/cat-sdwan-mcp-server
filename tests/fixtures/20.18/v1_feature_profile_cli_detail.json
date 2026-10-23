@@ -1,0 +1,30 @@
+{
+  "profileName": "mcp-test-cli",
+  "lastUpdatedBy": "admin",
+  "origin": "user",
+  "description": "seed_lab.py",
+  "profileParcelCount": 1,
+  "createdOn": 1792749948227,
+  "@rid": 3363,
+  "solution": "sdwan",
+  "profileType": "cli",
+  "createdBy": "admin",
+  "profileId": "00000000-0000-4000-8000-000000001038",
+  "tenantId": "default",
+  "lastUpdatedOn": 1792752307216,
+  "associatedProfileParcels": [
+    {
+      "parcelId": "00000000-0000-4000-8000-000000001039",
+      "parcelType": "config",
+      "createdBy": "admin",
+      "lastUpdatedBy": "admin",
+      "createdOn": 1792749965818,
+      "lastUpdatedOn": 1792752307231,
+      "payload": {
+        "name": "mcp-test-config",
+        "description": "hub1/br1 full CLI with {{variables}} (seed_lab.py)"
+      },
+      "subparcels": []
+    }
+  ]
+}

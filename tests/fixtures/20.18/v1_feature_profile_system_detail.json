@@ -1,0 +1,82 @@
+{
+  "profileName": "mcp-test-system",
+  "lastUpdatedBy": "admin",
+  "origin": "user",
+  "description": "seed_lab.py",
+  "profileParcelCount": 5,
+  "createdOn": 1792750032881,
+  "@rid": 3372,
+  "solution": "sdwan",
+  "profileType": "system",
+  "createdBy": "admin",
+  "profileId": "00000000-0000-4000-8000-000000001031",
+  "tenantId": "default",
+  "lastUpdatedOn": 1792753570612,
+  "associatedProfileParcels": [
+    {
+      "parcelId": "00000000-0000-4000-8000-000000001036",
+      "parcelType": "global",
+      "createdBy": "admin",
+      "lastUpdatedBy": "admin",
+      "createdOn": 1792752153108,
+      "lastUpdatedOn": 1792752153108,
+      "payload": {
+        "name": "mcp-test-global",
+        "description": "seed_lab.py"
+      },
+      "subparcels": []
+    },
+    {
+      "parcelId": "00000000-0000-4000-8000-000000001035",
+      "parcelType": "aaa",
+      "createdBy": "admin",
+      "lastUpdatedBy": "admin",
+      "createdOn": 1792752169914,
+      "lastUpdatedOn": 1792752169914,
+      "payload": {
+        "name": "mcp-test-aaa",
+        "description": "seed_lab.py"
+      },
+      "subparcels": []
+    },
+    {
+      "parcelId": "00000000-0000-4000-8000-000000001034",
+      "parcelType": "basic",
+      "createdBy": "admin",
+      "lastUpdatedBy": "admin",
+      "createdOn": 1792752170615,
+      "lastUpdatedOn": 1792752170615,
+      "payload": {
+        "name": "mcp-test-basic",
+        "description": "seed_lab.py"
+      },
+      "subparcels": []
+    },
+    {
+      "parcelId": "00000000-0000-4000-8000-000000001033",
+      "parcelType": "omp",
+      "createdBy": "admin",
+      "lastUpdatedBy": "admin",
+      "createdOn": 1792752171353,
+      "lastUpdatedOn": 1792752171353,
+      "payload": {
+        "name": "mcp-test-omp",
+        "description": "seed_lab.py"
+      },
+      "subparcels": []
+    },
+    {
+      "parcelId": "00000000-0000-4000-8000-000000001032",
+      "parcelType": "bfd",
+      "createdBy": "admin",
+      "lastUpdatedBy": "admin",
+      "createdOn": 1792752172049,
+      "lastUpdatedOn": 1792752172049,
+      "payload": {
+        "name": "mcp-test-bfd",
+        "description": "seed_lab.py"
+      },
+      "subparcels": []
+    }
+  ]
+}

@@ -10987,6 +10987,894 @@
     },
     "x-roles-required": "Template Configuration-read,Config Group-read,Policy Group-read"
    }
+  },
+  "/v1/feature-profile/sdwan/system/{systemId}/basic/{basicId}": {
+   "get": {
+    "tags": [
+     "Configuration - Feature Profile (SDWAN)"
+    ],
+    "description": "Get Basic Profile Feature by FeatureId for System feature profile",
+    "operationId": "GetBasicProfileFeatureByFeatureIdForSystem",
+    "parameters": [
+     {
+      "name": "systemId",
+      "in": "path",
+      "description": "Feature Profile ID",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     },
+     {
+      "name": "basicId",
+      "in": "path",
+      "description": "Profile Feature ID",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Success",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/getSingleSdwanSystemBasicPayload"
+        },
+        "examples": {
+         "get response example": {
+          "$ref": "#/components/examples/getSingleSdwanSystemBasicExample"
+         }
+        }
+       }
+      }
+     },
+     "400": {
+      "description": "Bad Request"
+     },
+     "403": {
+      "description": "Forbidden"
+     },
+     "500": {
+      "description": "Internal Server Error"
+     }
+    },
+    "x-roles-required": "Feature Profile > System > Basic-read"
+   },
+   "put": {
+    "tags": [
+     "Configuration - Feature Profile (SDWAN)"
+    ],
+    "description": "Update a Basic Profile Feature for System feature profile",
+    "operationId": "EditBasicProfileFeatureForSystem",
+    "parameters": [
+     {
+      "name": "systemId",
+      "in": "path",
+      "description": "Feature Profile ID",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     },
+     {
+      "name": "basicId",
+      "in": "path",
+      "description": "Profile Feature ID",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "description": "Basic Profile Feature",
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "schema/profileparcel/sdwan/system/basic/put/request_schema.json#/components/schemas/SchemaPayload"
+       },
+       "examples": {
+        "Cedge_CG1_System_basic_parcel1": {
+         "$ref": "schema/profileparcel/sdwan/system/basic/put/request_schema.json#/components/examples/Cedge_CG1_System_basic_parcel1"
+        }
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": "Success",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "schema/profileparcel/common/put/response_schema.json#/components/schemas/SchemaPayload"
+        },
+        "examples": {
+         "example_1": {
+          "$ref": "schema/profileparcel/common/put/response_schema.json#/components/examples/example_1"
+         }
+        }
+       }
+      }
+     },
+     "400": {
+      "description": "Bad Request"
+     },
+     "403": {
+      "description": "Forbidden"
+     },
+     "500": {
+      "description": "Internal Server Error"
+     }
+    },
+    "x-roles-required": "Feature Profile > System > Basic-write"
+   },
+   "delete": {
+    "tags": [
+     "Configuration - Feature Profile (SDWAN)"
+    ],
+    "description": "Delete a Basic Profile Feature for System feature profile",
+    "operationId": "DeleteBasicProfileFeatureForSystem",
+    "parameters": [
+     {
+      "name": "systemId",
+      "in": "path",
+      "description": "Feature Profile ID",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     },
+     {
+      "name": "basicId",
+      "in": "path",
+      "description": "Profile Feature ID",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Success"
+     },
+     "400": {
+      "description": "Bad Request"
+     },
+     "403": {
+      "description": "Forbidden"
+     },
+     "500": {
+      "description": "Internal Server Error"
+     }
+    },
+    "x-roles-required": "Feature Profile > System > Basic-write"
+   }
+  },
+  "/v1/feature-profile/sdwan/system/{systemId}/ntp": {
+   "get": {
+    "tags": [
+     "Configuration - Feature Profile (SDWAN)"
+    ],
+    "description": "Get Ntp Profile Parcels for System feature profile",
+    "operationId": "GetNtpProfileParcelForSystem",
+    "parameters": [
+     {
+      "name": "systemId",
+      "in": "path",
+      "description": "Feature Profile ID",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Success",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/getListSdwanSystemNtpPayload"
+        },
+        "examples": {
+         "get response example": {
+          "$ref": "#/components/examples/getListSdwanSystemNtpExample"
+         }
+        }
+       }
+      }
+     },
+     "400": {
+      "description": "Bad Request"
+     },
+     "403": {
+      "description": "Forbidden"
+     },
+     "500": {
+      "description": "Internal Server Error"
+     }
+    },
+    "x-roles-required": "Feature Profile > System > Ntp-read"
+   },
+   "post": {
+    "tags": [
+     "Configuration - Feature Profile (SDWAN)"
+    ],
+    "description": "Create a Ntp Profile Parcel for System feature profile",
+    "operationId": "CreateNtpProfileParcelForSystem",
+    "parameters": [
+     {
+      "name": "systemId",
+      "in": "path",
+      "description": "Feature Profile ID",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "description": "Ntp Profile Parcel",
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "schema/profileparcel/sdwan/system/ntp/post/request_schema.json#/components/schemas/SchemaPayload"
+       },
+       "examples": {
+        "example_1": {
+         "$ref": "schema/profileparcel/sdwan/system/ntp/post/request_schema.json#/components/examples/example_1"
+        },
+        "ntp_parcel_post1": {
+         "$ref": "schema/profileparcel/sdwan/system/ntp/post/request_schema.json#/components/examples/ntp_parcel_post1"
+        }
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": "Success",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "schema/profileparcel/common/post/response_schema.json#/components/schemas/SchemaPayload"
+        },
+        "examples": {
+         "example_1": {
+          "$ref": "schema/profileparcel/common/post/response_schema.json#/components/examples/example_1"
+         }
+        }
+       }
+      }
+     },
+     "400": {
+      "description": "Bad Request"
+     },
+     "403": {
+      "description": "Forbidden"
+     },
+     "500": {
+      "description": "Internal Server Error"
+     }
+    },
+    "x-roles-required": "Feature Profile > System > Ntp-write"
+   }
+  },
+  "/v1/feature-profile/sdwan/system/basic/schema": {
+   "get": {
+    "tags": [
+     "Configuration - Feature Profile (SDWAN)"
+    ],
+    "description": "Get a SDWAN System Basic Feature Schema by Schema Type",
+    "operationId": "GetSdwanSystemBasicFeatureSchemaBySchemaType",
+    "parameters": [
+     {
+      "name": "schemaType",
+      "in": "query",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "enum": [
+        "post",
+        "put"
+       ]
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Success",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "string"
+        },
+        "examples": {
+         "post": {
+          "$ref": "schema/profileparcel/sdwan/system/basic/post/request_schema.json#/components/examples/ResolvedSchema"
+         },
+         "put": {
+          "$ref": "schema/profileparcel/sdwan/system/basic/put/request_schema.json#/components/examples/ResolvedSchema"
+         }
+        }
+       }
+      }
+     },
+     "400": {
+      "description": "Bad Request"
+     },
+     "403": {
+      "description": "Forbidden"
+     },
+     "500": {
+      "description": "Internal Server Error"
+     }
+    },
+    "x-roles-required": "Feature Profile > System > Basic-read"
+   }
+  },
+  "/v1/feature-profile/sdwan/cli/{cliId}/config/{configId}": {
+   "get": {
+    "tags": [
+     "Configuration - Feature Profile (SDWAN)"
+    ],
+    "description": "Get config Profile Parcel by configId for cli feature profile",
+    "operationId": "GetConfigProfileParcelByParcelIdForCLI",
+    "parameters": [
+     {
+      "name": "cliId",
+      "in": "path",
+      "description": "Feature Profile ID",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     },
+     {
+      "name": "configId",
+      "in": "path",
+      "description": "Profile Parcel ID",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Success",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/getSingleSdwanCliConfigPayload"
+        },
+        "examples": {
+         "get response example": {
+          "$ref": "#/components/examples/getSingleSdwanCliConfigExample"
+         }
+        }
+       }
+      }
+     },
+     "400": {
+      "description": "Bad Request"
+     },
+     "403": {
+      "description": "Forbidden"
+     },
+     "500": {
+      "description": "Internal Server Error"
+     }
+    },
+    "x-roles-required": "Feature Profile > CLI Add On > Config-read"
+   },
+   "put": {
+    "tags": [
+     "Configuration - Feature Profile (SDWAN)"
+    ],
+    "description": "Update a config Profile Parcel for cli feature profile",
+    "operationId": "EditConfigProfileParcelForCLI",
+    "parameters": [
+     {
+      "name": "cliId",
+      "in": "path",
+      "description": "Feature Profile ID",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     },
+     {
+      "name": "configId",
+      "in": "path",
+      "description": "Profile Parcel ID",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "description": "cli config Profile Parcel",
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "schema/profileparcel/sdwan/cli/config/put/request_schema.json#/components/schemas/SchemaPayload"
+       },
+       "examples": {
+        "CliConfigFeature": {
+         "$ref": "schema/profileparcel/sdwan/cli/config/put/request_schema.json#/components/examples/CliConfigFeature"
+        }
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": "Success",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "schema/profileparcel/common/put/response_schema.json#/components/schemas/SchemaPayload"
+        },
+        "examples": {
+         "example_1": {
+          "$ref": "schema/profileparcel/common/put/response_schema.json#/components/examples/example_1"
+         }
+        }
+       }
+      }
+     },
+     "400": {
+      "description": "Bad Request"
+     },
+     "403": {
+      "description": "Forbidden"
+     },
+     "500": {
+      "description": "Internal Server Error"
+     }
+    },
+    "x-roles-required": "Feature Profile > CLI Add On > Config-write"
+   },
+   "delete": {
+    "tags": [
+     "Configuration - Feature Profile (SDWAN)"
+    ],
+    "description": "Delete a config Profile Parcel for cli feature profile",
+    "operationId": "DeleteConfigProfileParcelForCLI",
+    "parameters": [
+     {
+      "name": "cliId",
+      "in": "path",
+      "description": "Feature Profile ID",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     },
+     {
+      "name": "configId",
+      "in": "path",
+      "description": "Profile Parcel ID",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Success"
+     },
+     "400": {
+      "description": "Bad Request"
+     },
+     "403": {
+      "description": "Forbidden"
+     },
+     "500": {
+      "description": "Internal Server Error"
+     }
+    },
+    "x-roles-required": "Feature Profile > CLI Add On > Config-write"
+   }
+  },
+  "/v1/feature-profile/sdwan/cli/config/schema": {
+   "get": {
+    "tags": [
+     "Configuration - Feature Profile (SDWAN)"
+    ],
+    "description": "Get a Sdwan Cli Config feature Schema by Schema Type",
+    "operationId": "GetSdwanCliConfigFeatureSchemaBySchemaType",
+    "parameters": [
+     {
+      "name": "schemaType",
+      "in": "query",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "enum": [
+        "post",
+        "put"
+       ]
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Success",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "string"
+        },
+        "examples": {
+         "post": {
+          "$ref": "schema/profileparcel/sdwan/cli/config/post/request_schema.json#/components/examples/ResolvedSchema"
+         },
+         "put": {
+          "$ref": "schema/profileparcel/sdwan/cli/config/put/request_schema.json#/components/examples/ResolvedSchema"
+         }
+        }
+       }
+      }
+     },
+     "400": {
+      "description": "Bad Request"
+     },
+     "403": {
+      "description": "Forbidden"
+     },
+     "500": {
+      "description": "Internal Server Error"
+     }
+    },
+    "x-roles-required": "Feature Profile > CLI Add On > Config-read"
+   }
+  },
+  "/v1/policy-group/{policyGroupId}/device/associate": {
+   "get": {
+    "tags": [
+     "Policy - Policy Group"
+    ],
+    "description": "Get devices association with a policy group",
+    "operationId": "GetPolicyGroupAssociation",
+    "parameters": [
+     {
+      "name": "policyGroupId",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     },
+     {
+      "name": "associatedGroups",
+      "in": "query",
+      "schema": {
+       "type": "boolean"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Success"
+     },
+     "400": {
+      "description": "Bad Request"
+     },
+     "403": {
+      "description": "Forbidden"
+     },
+     "500": {
+      "description": "Internal Server Error"
+     }
+    },
+    "x-roles-required": "Policy Group > Device-read"
+   },
+   "put": {
+    "tags": [
+     "Policy - Policy Group"
+    ],
+    "description": "Move the devices from one policy group to another",
+    "operationId": "UpdatePolicyGroupAssociation",
+    "parameters": [
+     {
+      "name": "policyGroupId",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "schema/policygroup/common/associate/put/request_schema.json#/components/schemas/SchemaPayload"
+       },
+       "examples": {
+        "example_1": {
+         "$ref": "schema/policygroup/common/associate/put/request_schema.json#/components/examples/example_1"
+        },
+        "example_2": {
+         "$ref": "schema/policygroup/common/associate/put/request_schema.json#/components/examples/example_2"
+        }
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": "Success"
+     },
+     "400": {
+      "description": "Bad Request"
+     },
+     "403": {
+      "description": "Forbidden"
+     },
+     "500": {
+      "description": "Internal Server Error"
+     }
+    },
+    "x-roles-required": "Policy Group > Device-write"
+   },
+   "post": {
+    "tags": [
+     "Policy - Policy Group"
+    ],
+    "description": "Create associations with device and a policy group",
+    "operationId": "CreatePolicyGroupAssociation",
+    "parameters": [
+     {
+      "name": "policyGroupId",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "schema/policygroup/common/associate/post/request_schema.json#/components/schemas/SchemaPayload"
+       },
+       "examples": {
+        "example_1": {
+         "$ref": "schema/policygroup/common/associate/post/request_schema.json#/components/examples/example_1"
+        },
+        "example_2": {
+         "$ref": "schema/policygroup/common/associate/post/request_schema.json#/components/examples/example_2"
+        }
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": "Success"
+     },
+     "400": {
+      "description": "Bad Request"
+     },
+     "403": {
+      "description": "Forbidden"
+     },
+     "500": {
+      "description": "Internal Server Error"
+     }
+    },
+    "x-roles-required": "Policy Group > Device-write"
+   },
+   "delete": {
+    "tags": [
+     "Policy - Policy Group"
+    ],
+    "description": "Delete Policy Group Association from devices",
+    "operationId": "DeletePolicyGroupAssociation",
+    "parameters": [
+     {
+      "name": "policyGroupId",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "schema/policygroup/common/associate/delete/request_schema.json#/components/schemas/SchemaPayload"
+       },
+       "examples": {
+        "example_1": {
+         "$ref": "schema/policygroup/common/associate/delete/request_schema.json#/components/examples/example_1"
+        },
+        "example_2": {
+         "$ref": "schema/policygroup/common/associate/delete/request_schema.json#/components/examples/example_2"
+        }
+       }
+      }
+     }
+    },
+    "responses": {
+     "200": {
+      "description": "Success"
+     },
+     "400": {
+      "description": "Bad Request"
+     },
+     "403": {
+      "description": "Forbidden"
+     },
+     "500": {
+      "description": "Internal Server Error"
+     }
+    },
+    "x-roles-required": "Policy Group > Device-write"
+   }
+  },
+  "/v1/policy-group/{policyGroupId}/device/{deviceId}/preview": {
+   "post": {
+    "tags": [
+     "Policy - Policy Group"
+    ],
+    "description": "Get a preview of the configuration for a device",
+    "operationId": "getPolicyGroupDeviceConfigurationPreview",
+    "parameters": [
+     {
+      "name": "policyGroupId",
+      "in": "path",
+      "description": "Policy Group Id",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     },
+     {
+      "name": "deviceId",
+      "in": "path",
+      "description": "Device Id",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "schema/policygroup/common/preview/post/request_schema.json#/components/schemas/SchemaPayload"
+       },
+       "examples": {
+        "example_1": {
+         "$ref": "schema/policygroup/common/preview/post/request_schema.json#/components/examples/example_1"
+        },
+        "example_2": {
+         "$ref": "schema/policygroup/common/preview/post/request_schema.json#/components/examples/example_2"
+        },
+        "example_3": {
+         "$ref": "schema/policygroup/common/preview/post/request_schema.json#/components/examples/example_3"
+        }
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": "Success",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "schema/policygroup/common/preview/post/response_schema.json#/components/schemas/SchemaPayload"
+        },
+        "examples": {
+         "example_1": {
+          "$ref": "schema/policygroup/common/preview/post/response_schema.json#/components/examples/example_1"
+         }
+        }
+       }
+      }
+     },
+     "400": {
+      "description": "Bad Request"
+     },
+     "403": {
+      "description": "Forbidden"
+     },
+     "500": {
+      "description": "Internal Server Error"
+     }
+    },
+    "x-roles-required": "Policy Group > Device > Deploy-read"
+   }
+  },
+  "/v1/policy-group/{policyGroupId}/device/deploy": {
+   "post": {
+    "tags": [
+     "Policy - Policy Group"
+    ],
+    "description": "deploy policy group to devices",
+    "operationId": "deployPolicyGroup",
+    "parameters": [
+     {
+      "name": "policyGroupId",
+      "in": "path",
+      "description": "Policy Group Id",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "schema/policygroup/common/deploy/post/request_schema.json#/components/schemas/SchemaPayload"
+       },
+       "examples": {
+        "example_1": {
+         "$ref": "schema/policygroup/common/deploy/post/request_schema.json#/components/examples/example_1"
+        },
+        "example_2": {
+         "$ref": "schema/policygroup/common/deploy/post/request_schema.json#/components/examples/example_2"
+        },
+        "example_3": {
+         "$ref": "schema/policygroup/common/deploy/post/request_schema.json#/components/examples/example_3"
+        }
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": "Success",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "schema/policygroup/common/deploy/post/response_schema.json#/components/schemas/SchemaPayload"
+        },
+        "examples": {
+         "example_1": {
+          "$ref": "schema/policygroup/common/deploy/post/response_schema.json#/components/examples/example_1"
+         }
+        }
+       }
+      }
+     },
+     "400": {
+      "description": "Bad Request"
+     },
+     "403": {
+      "description": "Forbidden"
+     },
+     "500": {
+      "description": "Internal Server Error"
+     }
+    },
+    "x-roles-required": "Policy Group > Device > Deploy-write"
+   }
   }
  },
  "components": {
@@ -13081,6 +13969,122 @@
       "example": "2f876a33-9944-450a-91ee-f1f80eb68348"
      }
     }
+   },
+   "getListSdwanSystemNtpPayload": {
+    "type": "object",
+    "properties": {
+     "data": {
+      "type": "array",
+      "items": {
+       "type": "object",
+       "properties": {
+        "parcelId": {
+         "$ref": "schema/common/common_defs_schema.json#/components/schemas/uuidDef"
+        },
+        "parcelType": {
+         "type": "string"
+        },
+        "createdBy": {
+         "type": "string",
+         "description": "User who last created this.",
+         "readOnly": true
+        },
+        "createdOn": {
+         "type": "integer",
+         "description": "Timestamp of creation",
+         "format": "int64",
+         "readOnly": true
+        },
+        "lastUpdatedBy": {
+         "type": "string",
+         "description": "User who last updated this.",
+         "readOnly": true
+        },
+        "lastUpdatedOn": {
+         "type": "integer",
+         "description": "Timestamp of last update",
+         "format": "int64",
+         "readOnly": true
+        },
+        "payload": {
+         "$ref": "schema/profileparcel/sdwan/system/ntp/post/request_schema.json#/components/schemas/SchemaPayload"
+        }
+       }
+      }
+     }
+    }
+   },
+   "getSingleSdwanCliConfigPayload": {
+    "type": "object",
+    "properties": {
+     "parcelId": {
+      "$ref": "schema/common/common_defs_schema.json#/components/schemas/uuidDef"
+     },
+     "parcelType": {
+      "type": "string"
+     },
+     "createdBy": {
+      "type": "string",
+      "description": "User who last created this.",
+      "readOnly": true
+     },
+     "createdOn": {
+      "type": "integer",
+      "description": "Timestamp of creation",
+      "format": "int64",
+      "readOnly": true
+     },
+     "lastUpdatedBy": {
+      "type": "string",
+      "description": "User who last updated this.",
+      "readOnly": true
+     },
+     "lastUpdatedOn": {
+      "type": "integer",
+      "description": "Timestamp of last update",
+      "format": "int64",
+      "readOnly": true
+     },
+     "payload": {
+      "$ref": "schema/profileparcel/sdwan/cli/config/put/request_schema.json#/components/schemas/SchemaPayload"
+     }
+    }
+   },
+   "getSingleSdwanSystemBasicPayload": {
+    "type": "object",
+    "properties": {
+     "parcelId": {
+      "$ref": "schema/common/common_defs_schema.json#/components/schemas/uuidDef"
+     },
+     "parcelType": {
+      "type": "string"
+     },
+     "createdBy": {
+      "type": "string",
+      "description": "User who last created this.",
+      "readOnly": true
+     },
+     "createdOn": {
+      "type": "integer",
+      "description": "Timestamp of creation",
+      "format": "int64",
+      "readOnly": true
+     },
+     "lastUpdatedBy": {
+      "type": "string",
+      "description": "User who last updated this.",
+      "readOnly": true
+     },
+     "lastUpdatedOn": {
+      "type": "integer",
+      "description": "Timestamp of last update",
+      "format": "int64",
+      "readOnly": true
+     },
+     "payload": {
+      "$ref": "schema/profileparcel/sdwan/system/basic/put/request_schema.json#/components/schemas/SchemaPayload"
+     }
+    }
    }
   },
   "examples": {
@@ -13145,6 +14149,185 @@
       "lastUpdatedOn": 1702292120081
      }
     ]
+   },
+   "getSingleSdwanCliConfigExample": {
+    "value": {
+     "parcelId": "09fc54fe-ff36-4640-ae57-c9e71a103902",
+     "parcelType": "config",
+     "createdBy": "admin",
+     "lastUpdatedBy": "admin",
+     "createdOn": 1701866357838,
+     "lastUpdatedOn": 1701866357838,
+     "payload": {
+      "data": {
+       "config": "vrf definition 100"
+      }
+     }
+    }
+   },
+   "getSingleSdwanSystemBasicExample": {
+    "value": {
+     "parcelId": "09fc54fe-ff36-4640-ae57-c9e71a103902",
+     "parcelType": "basic",
+     "createdBy": "admin",
+     "lastUpdatedBy": "admin",
+     "createdOn": 1701866357838,
+     "lastUpdatedOn": 1701866357838,
+     "payload": {
+      "data": {
+       "clock": {
+        "timezone": {
+         "optionType": "default",
+         "value": "UTC"
+        }
+       },
+       "description": {
+        "optionType": "global",
+        "value": "nostrud ea"
+       },
+       "location": {
+        "optionType": "default"
+       },
+       "deviceGroups": {
+        "optionType": "default"
+       },
+       "overlayId": {
+        "optionType": "default",
+        "value": 1
+       },
+       "portOffset": {
+        "optionType": "global",
+        "value": 19
+       },
+       "portHop": {
+        "optionType": "default",
+        "value": true
+       },
+       "consoleBaudRate": {
+        "optionType": "global",
+        "value": "4800"
+       },
+       "maxOmpSessions": {
+        "optionType": "global",
+        "value": 24
+       },
+       "adminTechOnFailure": {
+        "optionType": "default",
+        "value": true
+       },
+       "idleTimeout": {
+        "optionType": "global",
+        "value": "10"
+       },
+       "onDemand": {
+        "onDemandEnable": {
+         "optionType": "global",
+         "value": true
+        },
+        "onDemandIdleTimeout": {
+         "optionType": "default",
+         "value": 10
+        }
+       },
+       "gpsLocation": {
+        "longitude": {
+         "optionType": "default"
+        },
+        "latitude": {
+         "optionType": "default"
+        },
+        "geoFencing": {
+         "enable": {
+          "optionType": "global",
+          "value": true
+         },
+         "range": {
+          "optionType": "global",
+          "value": 100
+         },
+         "sms": {
+          "enable": {
+           "optionType": "global",
+           "value": true
+          },
+          "mobileNumber": {
+           "number": {
+            "optionType": "global",
+            "value": "+11111233"
+           }
+          }
+         }
+        }
+       },
+       "transportGateway": {
+        "optionType": "default",
+        "value": false
+       }
+      }
+     }
+    }
+   },
+   "getListSdwanSystemNtpExample": {
+    "value": {
+     "header": {
+      "generatedOn": 1702438718825
+     },
+     "data": [
+      {
+       "parcelId": "09fc54fe-ff36-4640-ae57-c9e71a103902",
+       "parcelType": "ntp",
+       "createdBy": "admin",
+       "lastUpdatedBy": "admin",
+       "createdOn": 1701866357838,
+       "lastUpdatedOn": 1701866357838,
+       "payload": {
+        "data": {
+         "server": [
+          {
+           "name": {
+            "optionType": "variable",
+            "value": "{{m95__MEIdt}}"
+           },
+           "vpn": {
+            "optionType": "default",
+            "value": 0
+           },
+           "version": {
+            "optionType": "global",
+            "value": 4
+           },
+           "prefer": {
+            "optionType": "default",
+            "value": false
+           }
+          },
+          {
+           "name": {
+            "optionType": "variable",
+            "value": "{{btb66B}}"
+           },
+           "vpn": {
+            "optionType": "default",
+            "value": 0
+           },
+           "version": {
+            "optionType": "default",
+            "value": 4
+           },
+           "prefer": {
+            "optionType": "global",
+            "value": false
+           },
+           "sourceInterface": {
+            "optionType": "default"
+           }
+          }
+         ]
+        }
+       }
+      }
+     ]
+    }
    }
   }
  }

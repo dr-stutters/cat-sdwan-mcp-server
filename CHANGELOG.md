@@ -43,6 +43,13 @@ All notable changes to this project are documented here. The format follows
   `deviceId`, so the query carries a `system_ip` rule and `fields` keeps the text out of the list), one version
   (`/history/config/{id}`), the version in effect at a time, and a block diff of two versions
   (`/history/config/diff/list` answers both texts, not a diff); secrets masked.
+- W21 (#35): feature-profile and configuration-group authoring. `catsdwan_get_feature_parcel` (a parcel's values by
+  source, the CLI parcel's text, the groups and devices using the profile, `fields=true` for the Manager's schema of
+  the parcel type), `catsdwan_set_feature_parcel` (values, `cli_replace` for the CLI parcel, or a new parcel; every
+  value checked against `GET .../<parcel>/schema?schemaType=put|post` before the PUT/POST, all problems at once;
+  `blast_radius` = the devices of every group using the profile; stores only),
+  `catsdwan_associate_config_group` (`POST`/`DELETE .../device/associate`) and `catsdwan_deploy_policy_group` (the
+  Manager's policy-group preview, deploy and action status; W8's tiers).
 
 ## [0.2.0] - 2026-10-23
 

@@ -1,0 +1,14 @@
+[
+  {
+    "profileId": "00000000-0000-4000-8000-000000001031",
+    "profileName": "mcp-test-system",
+    "solution": "sdwan",
+    "profileType": "system",
+    "createdBy": "admin",
+    "lastUpdatedBy": "admin",
+    "createdOn": 1792750032881,
+    "description": "seed_lab.py",
+    "origin": "user",
+    "lastUpdatedOn": 1792753570612
+  }
+]

@@ -1,0 +1,30 @@
+{
+  "profileName": "mcp-test-transport",
+  "lastUpdatedBy": "admin",
+  "origin": "user",
+  "description": "seed_lab.py",
+  "profileParcelCount": 1,
+  "createdOn": 1792750811538,
+  "@rid": 3384,
+  "profileType": "transport",
+  "solution": "sdwan",
+  "createdBy": "admin",
+  "profileId": "00000000-0000-4000-8000-000000001029",
+  "tenantId": "default",
+  "lastUpdatedOn": 1792752102763,
+  "associatedProfileParcels": [
+    {
+      "parcelId": "00000000-0000-4000-8000-000000001030",
+      "parcelType": "wan/vpn",
+      "createdBy": "admin",
+      "lastUpdatedBy": "admin",
+      "createdOn": 1792752102488,
+      "lastUpdatedOn": 1792752102488,
+      "payload": {
+        "name": "mcp-test-wan-vpn",
+        "description": "seed_lab.py"
+      },
+      "subparcels": []
+    }
+  ]
+}

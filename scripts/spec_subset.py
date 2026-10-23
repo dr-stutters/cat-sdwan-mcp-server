@@ -101,6 +101,15 @@ PATHS = [
     "/device/history/config",
     "/device/history/config/{config_id}",
     "/device/history/config/diff/list",
+    # W21 feature profiles and policy groups
+    "/v1/feature-profile/sdwan/system/{systemId}/basic/{basicId}",
+    "/v1/feature-profile/sdwan/system/{systemId}/ntp",
+    "/v1/feature-profile/sdwan/system/basic/schema",
+    "/v1/feature-profile/sdwan/cli/{cliId}/config/{configId}",
+    "/v1/feature-profile/sdwan/cli/config/schema",
+    "/v1/policy-group/{policyGroupId}/device/associate",
+    "/v1/policy-group/{policyGroupId}/device/{deviceId}/preview",
+    "/v1/policy-group/{policyGroupId}/device/deploy",
 ]
 
 
