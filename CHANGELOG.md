@@ -50,6 +50,11 @@ All notable changes to this project are documented here. The format follows
   `blast_radius` = the devices of every group using the profile; stores only),
   `catsdwan_associate_config_group` (`POST`/`DELETE .../device/associate`) and `catsdwan_deploy_policy_group` (the
   Manager's policy-group preview, deploy and action status; W8's tiers).
+- W22 (#36): the Manager's own health model. `catsdwan_site_health` (`/statistics/sitehealth/common` with
+  `/sitehealth/topology`, `/health/devices/overview`, `/network/status`), `catsdwan_tunnel_health`
+  (`/statistics/tunnelhealth/overview`, `history=true` from `/tunnelhealth/history` as fair/poor periods),
+  `catsdwan_interface_stats` (`POST /statistics/interface/aggregation`, one metric per property; circuit capacity,
+  QoS drops) and `catsdwan_topology` (sites, devices, configuration intent, site-to-site tunnel links).
 
 ## [0.2.0] - 2026-10-23
 

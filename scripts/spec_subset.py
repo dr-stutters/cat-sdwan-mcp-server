@@ -110,6 +110,17 @@ PATHS = [
     "/v1/policy-group/{policyGroupId}/device/associate",
     "/v1/policy-group/{policyGroupId}/device/{deviceId}/preview",
     "/v1/policy-group/{policyGroupId}/device/deploy",
+    # W22 site, tunnel and interface health
+    "/statistics/sitehealth/common",
+    "/statistics/sitehealth/topology",
+    "/health/devices/overview",
+    "/network/status",
+    "/statistics/tunnelhealth/overview/{type}",
+    "/statistics/tunnelhealth/history",
+    "/statistics/interface/aggregation",
+    "/statistics/interface/ccapacity/distribution",
+    "/statistics/qos",
+    "/topology/device/site/{siteId}",
 ]
 
 

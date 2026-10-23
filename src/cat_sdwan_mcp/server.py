@@ -21,6 +21,7 @@ from cat_sdwan_mcp.tools import (
     events,
     history,
     features,
+    health,
     inventory,
     onboarding,
     policy,
@@ -40,7 +41,9 @@ catsdwan_control_connections(device) (failed attempts with the reason in plain w
 fabric); "why can't branch A reach B?" -> catsdwan_omp_routes(A, vpn, prefix) then catsdwan_list_tlocs and
 catsdwan_omp_peers. Data plane: "which tunnels are down?" -> catsdwan_bfd_sessions(state='not_up');
 "which are lossy / is the voice SLA met?" -> catsdwan_app_route_stats(sla_class=...) (statistics every
-10 minutes; source='realtime' for now), catsdwan_list_sla_classes, catsdwan_tunnel_stats.
+10 minutes; source='realtime' for now), catsdwan_list_sla_classes, catsdwan_tunnel_stats. The Manager's own
+health model: catsdwan_site_health(health='not_good'), catsdwan_tunnel_health(site, history=true: when was it
+bad?), catsdwan_interface_stats(device) ("is a WAN link full?"), catsdwan_topology(site).
 Logs: "what changed and who did it?" -> catsdwan_audit_log(changes_only=true); "what has been breaking at
 this site?" -> catsdwan_recent_activity(site) (alarms, events and audit lines on one timeline);
 catsdwan_list_alarms (active by default), catsdwan_list_events (busy: keep since_hours short).
@@ -120,6 +123,7 @@ def create_server(
             history.register,
             confighistory.register,
             features.register,
+            health.register,
             prompts.register,
         ],
         status=SdwanApp.status,

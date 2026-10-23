@@ -1,0 +1,279 @@
+{
+  "header": {
+    "generatedOn": 1792759023281,
+    "viewKeys": {
+      "uniqueKey": [],
+      "preferenceKey": "grid-site_health"
+    },
+    "columns": [
+      {
+        "title": "view.statistics.viewSiteHealth.siteId",
+        "property": "site_id",
+        "dataType": "string"
+      },
+      {
+        "title": "view.statistics.viewSiteHealth.siteName",
+        "property": "site_name",
+        "dataType": "string"
+      },
+      {
+        "title": "view.statistics.viewSiteHealth.siteHealth",
+        "property": "site_health",
+        "dataType": "string"
+      },
+      {
+        "title": "view.statistics.viewSiteHealth.devicesHealth",
+        "property": "devices_health",
+        "dataType": "string"
+      },
+      {
+        "title": "view.statistics.viewSiteHealth.tunnelsHealth",
+        "property": "tunnels_health",
+        "dataType": "string"
+      },
+      {
+        "title": "view.statistics.viewSiteHealth.appsHealth",
+        "property": "apps_health",
+        "dataType": "string"
+      },
+      {
+        "title": "view.statistics.viewSiteHealth.appsUsage",
+        "property": "apps_usage",
+        "dataType": "string"
+      }
+    ],
+    "fields": [
+      {
+        "property": "site_id",
+        "dataType": "string"
+      },
+      {
+        "property": "site_name",
+        "dataType": "string"
+      },
+      {
+        "property": "site_health",
+        "dataType": "string"
+      },
+      {
+        "property": "devices_health",
+        "dataType": "string"
+      },
+      {
+        "property": "tunnels_health",
+        "dataType": "string"
+      },
+      {
+        "property": "apps_health",
+        "dataType": "string"
+      },
+      {
+        "property": "apps_usage",
+        "dataType": "string"
+      }
+    ]
+  },
+  "data": [
+    {
+      "site_id": "1",
+      "site_name": "SITE_1",
+      "latitude": "37.666684",
+      "longitude": "-122.777023",
+      "fromGps": "false",
+      "site_health": "poor",
+      "devices_health": "poor",
+      "tunnels_health": "no_data",
+      "apps_health": "no_data",
+      "devices_health_score": 4.7382860195360195,
+      "tunnels_health_score": -1.0,
+      "apps_health_score": -1.0,
+      "apps_usage": 0.0,
+      "prev_apps_usage": 0.0,
+      "tunnel_summary": {
+        "poor_tunnel_count": 0,
+        "fair_tunnel_count": 0,
+        "good_tunnel_count": 0
+      },
+      "device_detail": [
+        {
+          "host_name": "manager",
+          "device-model": "vManage",
+          "device-role": null,
+          "system-ip": "1.1.1.1",
+          "tags": [],
+          "configGroupName": null,
+          "configGroupId": null,
+          "policyGroupId": null,
+          "policyGroupName": null,
+          "cloudOnRampSaaSDeviceRole": null,
+          "region_name": null,
+          "cellularBit": "0"
+        },
+        {
+          "host_name": "validator",
+          "device-model": "vEdge Cloud",
+          "device-role": null,
+          "system-ip": "1.1.1.2",
+          "tags": [],
+          "configGroupName": null,
+          "configGroupId": null,
+          "policyGroupId": null,
+          "policyGroupName": null,
+          "cloudOnRampSaaSDeviceRole": null,
+          "region_name": null,
+          "cellularBit": "0"
+        },
+        {
+          "host_name": "controller",
+          "device-model": "vSmart",
+          "device-role": null,
+          "system-ip": "1.1.1.3",
+          "tags": [],
+          "configGroupName": null,
+          "configGroupId": null,
+          "policyGroupId": null,
+          "policyGroupName": null,
+          "cloudOnRampSaaSDeviceRole": null,
+          "region_name": null,
+          "cellularBit": "0"
+        }
+      ],
+      "device_count": 3,
+      "region_list": [],
+      "role": [],
+      "device_type": []
+    },
+    {
+      "site_id": "200",
+      "site_name": "SITE_200",
+      "latitude": "37.666684",
+      "longitude": "-122.777023",
+      "fromGps": "false",
+      "site_health": "good",
+      "devices_health": "good",
+      "tunnels_health": "good",
+      "apps_health": "no_data",
+      "devices_health_score": 9.733333333333334,
+      "tunnels_health_score": 8.56,
+      "apps_health_score": -1.0,
+      "apps_usage": 0.0,
+      "prev_apps_usage": 0.0,
+      "tunnel_summary": {
+        "poor_tunnel_count": 0,
+        "fair_tunnel_count": 0,
+        "good_tunnel_count": 8
+      },
+      "device_detail": [
+        {
+          "host_name": "br1",
+          "device-model": "C8000v",
+          "device-role": "edge-router",
+          "system-ip": "10.0.0.2",
+          "tags": [],
+          "configGroupName": "mcp-test",
+          "configGroupId": "00000000-0000-4000-8000-000000000124",
+          "policyGroupId": null,
+          "policyGroupName": null,
+          "cloudOnRampSaaSDeviceRole": "none",
+          "region_name": null,
+          "cellularBit": "0"
+        }
+      ],
+      "device_count": 1,
+      "region_list": [],
+      "role": [],
+      "device_type": []
+    },
+    {
+      "site_id": "100",
+      "site_name": "SITE_100",
+      "latitude": "37.666684",
+      "longitude": "-122.777023",
+      "fromGps": "false",
+      "site_health": "good",
+      "devices_health": "good",
+      "tunnels_health": "good",
+      "apps_health": "no_data",
+      "devices_health_score": 9.733333333333334,
+      "tunnels_health_score": 8.86,
+      "apps_health_score": -1.0,
+      "apps_usage": 0.0,
+      "prev_apps_usage": 0.0,
+      "tunnel_summary": {
+        "poor_tunnel_count": 0,
+        "fair_tunnel_count": 0,
+        "good_tunnel_count": 8
+      },
+      "device_detail": [
+        {
+          "host_name": "hub1",
+          "device-model": "C8000v",
+          "device-role": "edge-router",
+          "system-ip": "10.0.0.1",
+          "tags": [],
+          "configGroupName": "mcp-test",
+          "configGroupId": "00000000-0000-4000-8000-000000000124",
+          "policyGroupId": null,
+          "policyGroupName": null,
+          "cloudOnRampSaaSDeviceRole": null,
+          "region_name": null,
+          "cellularBit": "0"
+        }
+      ],
+      "device_count": 1,
+      "region_list": [],
+      "role": [],
+      "device_type": []
+    },
+    {
+      "site_id": "201",
+      "site_name": "SITE_201",
+      "latitude": "37.666684",
+      "longitude": "-122.777023",
+      "fromGps": "false",
+      "site_health": "good",
+      "devices_health": "good",
+      "tunnels_health": "good",
+      "apps_health": "no_data",
+      "devices_health_score": 9.652777777777777,
+      "tunnels_health_score": 8.520833333333334,
+      "apps_health_score": -1.0,
+      "apps_usage": 0.0,
+      "prev_apps_usage": 0.0,
+      "tunnel_summary": {
+        "poor_tunnel_count": 0,
+        "fair_tunnel_count": 0,
+        "good_tunnel_count": 8
+      },
+      "device_detail": [
+        {
+          "host_name": "br2",
+          "device-model": "C8000v",
+          "device-role": "edge-router",
+          "system-ip": "10.0.0.3",
+          "tags": [],
+          "configGroupName": null,
+          "configGroupId": null,
+          "policyGroupId": null,
+          "policyGroupName": null,
+          "cloudOnRampSaaSDeviceRole": "none",
+          "region_name": null,
+          "cellularBit": "0"
+        }
+      ],
+      "device_count": 1,
+      "region_list": [],
+      "role": [],
+      "device_type": []
+    }
+  ],
+  "summary": {
+    "poor_site_count": 1,
+    "fair_site_count": 0,
+    "good_site_count": 3,
+    "poor_tunnel_count": 0,
+    "fair_tunnel_count": 0,
+    "good_tunnel_count": 24
+  },
+  "region": false
+}

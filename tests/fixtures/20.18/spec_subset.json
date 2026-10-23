@@ -11875,6 +11875,1380 @@
     },
     "x-roles-required": "Policy Group > Device > Deploy-write"
    }
+  },
+  "/statistics/sitehealth/common": {
+   "get": {
+    "tags": [
+     "Monitoring - SiteHealth Monitor"
+    ],
+    "summary": "sitehealth data",
+    "description": "Get all site health  ",
+    "operationId": "getSiteHealth",
+    "parameters": [
+     {
+      "name": "isHeatMap",
+      "in": "query",
+      "schema": {
+       "type": "string",
+       "default": "false"
+      }
+     },
+     {
+      "name": "last_n_hours",
+      "in": "query",
+      "schema": {
+       "type": "integer",
+       "format": "int32"
+      }
+     },
+     {
+      "name": "interval",
+      "in": "query",
+      "schema": {
+       "type": "integer",
+       "format": "int32",
+       "default": 30
+      }
+     },
+     {
+      "name": "health",
+      "in": "query",
+      "schema": {
+       "type": "string",
+       "enum": [
+        "GOOD",
+        "FAIR",
+        "POOR"
+       ]
+      }
+     },
+     {
+      "name": "start_time",
+      "in": "query",
+      "schema": {
+       "type": "integer",
+       "format": "int64"
+      }
+     },
+     {
+      "name": "end_time",
+      "in": "query",
+      "schema": {
+       "type": "integer",
+       "format": "int64"
+      }
+     },
+     {
+      "name": "includeDetails",
+      "in": "query",
+      "schema": {
+       "type": "string",
+       "default": "false"
+      }
+     },
+     {
+      "name": "includeRegion",
+      "in": "query",
+      "schema": {
+       "type": "string",
+       "default": "false"
+      }
+     },
+     {
+      "name": "regionName",
+      "in": "query",
+      "schema": {
+       "type": "string"
+      }
+     },
+     {
+      "name": "deviceType",
+      "in": "query",
+      "schema": {
+       "type": "string",
+       "enum": [
+        "controller",
+        "vedge",
+        "all"
+       ]
+      }
+     },
+     {
+      "name": "sortBy",
+      "in": "query",
+      "description": "To sort results by given field.device_count: To sort by device_count, includeDetails needs to be true.",
+      "schema": {
+       "type": "string",
+       "example": "device_count"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "search results matching criteria",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "array",
+         "items": {
+          "$ref": "#/components/schemas/SiteHealthItem"
+         }
+        }
+       }
+      }
+     },
+     "400": {
+      "description": "bad input parameter"
+     }
+    }
+   }
+  },
+  "/statistics/sitehealth/topology": {
+   "get": {
+    "tags": [
+     "Monitoring - SiteHealth Monitor"
+    ],
+    "summary": "sitehealth data",
+    "description": "Get all site health topology ",
+    "operationId": "getSiteHealthTopology",
+    "parameters": [
+     {
+      "name": "last_n_hours",
+      "in": "query",
+      "schema": {
+       "type": "integer",
+       "format": "int32"
+      }
+     },
+     {
+      "name": "start_time",
+      "in": "query",
+      "schema": {
+       "type": "integer",
+       "format": "int64"
+      }
+     },
+     {
+      "name": "end_time",
+      "in": "query",
+      "schema": {
+       "type": "integer",
+       "format": "int64"
+      }
+     },
+     {
+      "name": "interval",
+      "in": "query",
+      "schema": {
+       "type": "integer",
+       "format": "int32",
+       "default": 30
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "search results matching criteria",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "array",
+         "items": {
+          "$ref": "#/components/schemas/SiteHealthTopologyItem"
+         }
+        }
+       }
+      }
+     },
+     "400": {
+      "description": "bad input parameter"
+     }
+    }
+   }
+  },
+  "/health/devices/overview": {
+   "get": {
+    "tags": [
+     "Monitoring - Health"
+    ],
+    "description": "gets devices health overview",
+    "operationId": "getDevicesHealthOverview",
+    "parameters": [
+     {
+      "name": "vpn_id",
+      "in": "query",
+      "description": "Optional vpn ID to filter devices",
+      "schema": {
+       "type": "string"
+      }
+     },
+     {
+      "name": "vpnId",
+      "in": "query",
+      "description": "Optional vpn ID to filter devices",
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Success",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "object"
+        },
+        "examples": {
+         "devices health overview": {
+          "description": "devices health overview",
+          "value": {
+           "good": 3,
+           "fair": 3,
+           "poor": 0
+          }
+         }
+        }
+       }
+      }
+     },
+     "400": {
+      "description": "Bad Request"
+     },
+     "403": {
+      "description": "Forbidden"
+     },
+     "500": {
+      "description": "Internal Server Error"
+     }
+    },
+    "x-roles-required": "Device Monitoring-read,RBAC VPN-read,RBAC VPN-write,System-read"
+   }
+  },
+  "/network/status": {
+   "get": {
+    "tags": [
+     "Device - Network"
+    ],
+    "description": "Retrieve network status summary",
+    "operationId": "getNetworkStatusSummary",
+    "responses": {
+     "200": {
+      "description": "Success",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "array",
+         "items": {
+          "type": "object"
+         }
+        },
+        "examples": {
+         "Network status": {
+          "description": "Network status",
+          "value": {
+           "header": {
+            "generatedOn": 1635483849920
+           },
+           "data": [
+            {
+             "type": "vSmart",
+             "name": "vSmart",
+             "image": "images/vsmart.png",
+             "count": 3,
+             "detailView": "dialog",
+             "detailsURL": "/dataservice/device?personality=vsmart",
+             "statusList": [
+              {
+               "status": "error",
+               "name": "Error",
+               "detailView": "dialog",
+               "detailsURL": "/dataservice/device?personality=vsmart&status=error",
+               "color": "fa7c7d",
+               "icon": "images/device/device-error.png",
+               "count": 0
+              },
+              {
+               "status": "warning",
+               "name": "Warning",
+               "detailView": "dialog",
+               "detailsURL": "/dataservice/device?personality=vsmart&status=warning",
+               "color": "f2ce60",
+               "icon": "images/device/device-warning.png",
+               "count": 0
+              },
+              {
+               "status": "normal",
+               "name": "Normal",
+               "detailView": "dialog",
+               "detailsURL": "/dataservice/device?personality=vsmart&status=normal",
+               "color": "b0e276",
+               "icon": "images/device/device-normal.png",
+               "count": 3
+              },
+              {
+               "status": "new",
+               "name": "Discovered device",
+               "detailView": "dialog",
+               "detailsURL": "/dataservice/device?personality=vsmart&status=new",
+               "color": "7c8afa",
+               "icon": "images/device/device-new.png",
+               "count": 0
+              }
+             ]
+            }
+           ]
+          }
+         }
+        }
+       }
+      }
+     },
+     "400": {
+      "description": "Bad Request"
+     },
+     "403": {
+      "description": "Forbidden"
+     },
+     "500": {
+      "description": "Internal Server Error"
+     }
+    },
+    "x-roles-required": "Device Monitoring-read,System-read"
+   }
+  },
+  "/statistics/tunnelhealth/overview/{type}": {
+   "get": {
+    "tags": [
+     "Monitoring - Tunnel Health"
+    ],
+    "summary": "Tunnel health overview data",
+    "description": "Get all tunnel health overview ",
+    "operationId": "statisticsApprouteTunnelhealthOverviewTypeGet",
+    "parameters": [
+     {
+      "name": "type",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     },
+     {
+      "name": "last_n_hours",
+      "in": "query",
+      "schema": {
+       "type": "integer",
+       "format": "int32",
+       "default": 12
+      }
+     },
+     {
+      "name": "site",
+      "in": "query",
+      "schema": {
+       "type": "string"
+      }
+     },
+     {
+      "name": "limit",
+      "in": "query",
+      "schema": {
+       "type": "integer",
+       "format": "int32",
+       "default": 30
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "search results matching criteria",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/TunnelHealthOverview"
+        }
+       }
+      }
+     },
+     "400": {
+      "description": "bad input parameter"
+     }
+    }
+   }
+  },
+  "/statistics/tunnelhealth/history": {
+   "get": {
+    "tags": [
+     "Monitoring - Tunnel Health"
+    ],
+    "summary": "Tunnel health history data",
+    "description": "Get all tunnel health history ",
+    "operationId": "statisticsApprouteTunnelhealthHistoryGet",
+    "parameters": [
+     {
+      "name": "last_n_hours",
+      "in": "query",
+      "schema": {
+       "type": "integer",
+       "format": "int32",
+       "default": 12
+      }
+     },
+     {
+      "name": "start_time",
+      "in": "query",
+      "schema": {
+       "type": "integer",
+       "format": "int64"
+      }
+     },
+     {
+      "name": "end_time",
+      "in": "query",
+      "schema": {
+       "type": "integer",
+       "format": "int64"
+      }
+     },
+     {
+      "name": "time_interval_minutes",
+      "in": "query",
+      "schema": {
+       "type": "integer",
+       "format": "int32"
+      }
+     },
+     {
+      "name": "site",
+      "in": "query",
+      "schema": {
+       "type": "string"
+      }
+     },
+     {
+      "name": "limit",
+      "in": "query",
+      "schema": {
+       "type": "integer",
+       "format": "int32",
+       "default": 30
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "search results matching criteria",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "array",
+         "items": {
+          "$ref": "#/components/schemas/TunnelHealthHistoryItem"
+         }
+        }
+       }
+      }
+     },
+     "400": {
+      "description": "bad input parameter"
+     }
+    }
+   }
+  },
+  "/statistics/interface/aggregation": {
+   "get": {
+    "tags": [
+     "Monitoring - Interface Statistics"
+    ],
+    "description": "Get aggregated data based on input query and filters. The data can be filtered on time and other unique parameters based upon necessity and intended usage",
+    "operationId": "getAggregationDataByQuery_MonitoringInterfaceStatistics_3303",
+    "parameters": [
+     {
+      "name": "query",
+      "in": "query",
+      "required": true,
+      "schema": {
+       "type": "string"
+      },
+      "example": {
+       "query": {
+        "condition": "AND",
+        "rules": [
+         {
+          "value": [
+           "24000"
+          ],
+          "field": "entry_time",
+          "type": "date",
+          "operator": "last_n_hours"
+         },
+         {
+          "value": [
+           "172.16.255.16"
+          ],
+          "field": "vdevice_name",
+          "type": "string",
+          "operator": "in"
+         },
+         {
+          "value": [
+           "ge0/1",
+           "system",
+           "vmanage_system",
+           "eth0",
+           "loopback65528",
+           "ge0/0"
+          ],
+          "field": "interface",
+          "type": "string",
+          "operator": "in"
+         }
+        ]
+       },
+       "sort": [
+        {
+         "field": "entry_time",
+         "type": "date",
+         "order": "asc"
+        }
+       ],
+       "aggregation": {
+        "field": [
+         {
+          "property": "interface",
+          "sequence": 1
+         }
+        ],
+        "histogram": {
+         "property": "entry_time",
+         "type": "minute",
+         "interval": 30,
+         "order": "asc"
+        },
+        "metrics": [
+         {
+          "property": "rx_kbps",
+          "type": "avg"
+         },
+         {
+          "property": "tx_kbps",
+          "type": "avg"
+         }
+        ]
+       }
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Success",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "array",
+         "items": {
+          "$ref": "#/components/schemas/InterfaceAggRespWithPageInfo"
+         }
+        },
+        "examples": {
+         "Aggregated Data": {
+          "description": "Aggregated Data",
+          "value": [
+           {
+            "entry_time": 1673766000000,
+            "count": 1,
+            "interface": "eth0",
+            "tx_kbps": 0,
+            "rx_kbps": 1
+           },
+           {
+            "entry_time": 1673766000000,
+            "count": 1,
+            "interface": "ge0/0",
+            "tx_kbps": 0,
+            "rx_kbps": 0
+           },
+           {
+            "entry_time": 1673766000000,
+            "count": 1,
+            "interface": "ge0/1",
+            "tx_kbps": 0,
+            "rx_kbps": 0
+           },
+           {
+            "entry_time": 1673766000000,
+            "count": 1,
+            "interface": "loopback65528",
+            "tx_kbps": 0,
+            "rx_kbps": 0
+           },
+           {
+            "entry_time": 1673767800000,
+            "count": 6,
+            "interface": "eth0",
+            "tx_kbps": 0,
+            "rx_kbps": 0
+           },
+           {
+            "entry_time": 1673767800000,
+            "count": 6,
+            "interface": "ge0/0",
+            "tx_kbps": 0,
+            "rx_kbps": 0
+           },
+           {
+            "entry_time": 1673767800000,
+            "count": 6,
+            "interface": "ge0/1",
+            "tx_kbps": 0,
+            "rx_kbps": 0
+           },
+           {
+            "entry_time": 1673767800000,
+            "count": 6,
+            "interface": "loopback65528",
+            "tx_kbps": 0,
+            "rx_kbps": 0
+           },
+           {
+            "entry_time": 1673769600000,
+            "count": 6,
+            "interface": "eth0",
+            "tx_kbps": 1.8333333333333333,
+            "rx_kbps": 0.8333333333333334
+           },
+           {
+            "entry_time": 1673769600000,
+            "count": 6,
+            "interface": "ge0/0",
+            "tx_kbps": 0.3333333333333333,
+            "rx_kbps": 2.8333333333333335
+           },
+           {
+            "entry_time": 1673769600000,
+            "count": 6,
+            "interface": "ge0/1",
+            "tx_kbps": 0,
+            "rx_kbps": 0
+           },
+           {
+            "entry_time": 1673769600000,
+            "count": 6,
+            "interface": "loopback65528",
+            "tx_kbps": 0,
+            "rx_kbps": 0
+           },
+           {
+            "entry_time": 1673769600000,
+            "count": 2,
+            "interface": "system",
+            "tx_kbps": 0,
+            "rx_kbps": 0
+           },
+           {
+            "entry_time": 1673771400000,
+            "count": 6,
+            "interface": "eth0",
+            "tx_kbps": 0,
+            "rx_kbps": 0
+           },
+           {
+            "entry_time": 1673771400000,
+            "count": 6,
+            "interface": "ge0/0",
+            "tx_kbps": 5,
+            "rx_kbps": 48.833333333333336
+           },
+           {
+            "entry_time": 1673771400000,
+            "count": 6,
+            "interface": "ge0/1",
+            "tx_kbps": 0,
+            "rx_kbps": 0
+           }
+          ]
+         }
+        }
+       }
+      }
+     },
+     "400": {
+      "description": "Bad Request"
+     },
+     "403": {
+      "description": "Forbidden"
+     },
+     "500": {
+      "description": "Internal Server Error"
+     }
+    }
+   },
+   "post": {
+    "tags": [
+     "Monitoring - Interface Statistics"
+    ],
+    "description": "Get aggregated data based on input query and filters. The data can be filtered on time and other unique parameters based upon necessity and intended usage",
+    "operationId": "getPostAggregationDataByQuery_MonitoringInterfaceStatistics_3304",
+    "requestBody": {
+     "description": "Query filter",
+     "content": {
+      "application/json": {
+       "schema": {
+        "type": "object"
+       },
+       "examples": {
+        "Query filter": {
+         "description": "Query filter",
+         "value": {
+          "query": {
+           "condition": "AND",
+           "rules": [
+            {
+             "value": [
+              "168"
+             ],
+             "field": "entry_time",
+             "type": "date",
+             "operator": "last_n_hours"
+            },
+            {
+             "value": [
+              "172.16.255.11"
+             ],
+             "field": "vdevice_name",
+             "type": "string",
+             "operator": "in"
+            },
+            {
+             "value": [
+              "ge0/1",
+              "ge0/2",
+              "ge0/4",
+              "ge0/7",
+              "loopback1",
+              "loopback2"
+             ],
+             "field": "interface",
+             "type": "string",
+             "operator": "in"
+            }
+           ]
+          },
+          "sort": [
+           {
+            "field": "entry_time",
+            "type": "date",
+            "order": "asc"
+           }
+          ],
+          "aggregation": {
+           "field": [
+            {
+             "property": "interface",
+             "sequence": 1
+            }
+           ],
+           "histogram": {
+            "property": "entry_time",
+            "type": "hour",
+            "interval": 6,
+            "order": "asc"
+           },
+           "metrics": [
+            {
+             "property": "rx_kbps",
+             "type": "avg"
+            },
+            {
+             "property": "tx_kbps",
+             "type": "avg"
+            }
+           ]
+          }
+         }
+        }
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": "Success",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "array",
+         "items": {
+          "$ref": "#/components/schemas/InterfaceAggResp"
+         }
+        },
+        "examples": {
+         "Aggregated Data": {
+          "description": "Aggregated Data",
+          "value": [
+           {
+            "entry_time": 1673766000000,
+            "count": 1,
+            "interface": "eth0",
+            "tx_kbps": 0,
+            "rx_kbps": 1
+           },
+           {
+            "entry_time": 1673766000000,
+            "count": 1,
+            "interface": "ge0/0",
+            "tx_kbps": 0,
+            "rx_kbps": 0
+           },
+           {
+            "entry_time": 1673766000000,
+            "count": 1,
+            "interface": "ge0/1",
+            "tx_kbps": 0,
+            "rx_kbps": 0
+           },
+           {
+            "entry_time": 1673766000000,
+            "count": 1,
+            "interface": "loopback65528",
+            "tx_kbps": 0,
+            "rx_kbps": 0
+           },
+           {
+            "entry_time": 1673767800000,
+            "count": 6,
+            "interface": "eth0",
+            "tx_kbps": 0,
+            "rx_kbps": 0
+           },
+           {
+            "entry_time": 1673767800000,
+            "count": 6,
+            "interface": "ge0/0",
+            "tx_kbps": 0,
+            "rx_kbps": 0
+           },
+           {
+            "entry_time": 1673767800000,
+            "count": 6,
+            "interface": "ge0/1",
+            "tx_kbps": 0,
+            "rx_kbps": 0
+           },
+           {
+            "entry_time": 1673767800000,
+            "count": 6,
+            "interface": "loopback65528",
+            "tx_kbps": 0,
+            "rx_kbps": 0
+           },
+           {
+            "entry_time": 1673769600000,
+            "count": 6,
+            "interface": "eth0",
+            "tx_kbps": 1.8333333333333333,
+            "rx_kbps": 0.8333333333333334
+           },
+           {
+            "entry_time": 1673769600000,
+            "count": 6,
+            "interface": "ge0/0",
+            "tx_kbps": 0.3333333333333333,
+            "rx_kbps": 2.8333333333333335
+           },
+           {
+            "entry_time": 1673769600000,
+            "count": 6,
+            "interface": "ge0/1",
+            "tx_kbps": 0,
+            "rx_kbps": 0
+           },
+           {
+            "entry_time": 1673769600000,
+            "count": 6,
+            "interface": "loopback65528",
+            "tx_kbps": 0,
+            "rx_kbps": 0
+           },
+           {
+            "entry_time": 1673769600000,
+            "count": 2,
+            "interface": "system",
+            "tx_kbps": 0,
+            "rx_kbps": 0
+           },
+           {
+            "entry_time": 1673771400000,
+            "count": 6,
+            "interface": "eth0",
+            "tx_kbps": 0,
+            "rx_kbps": 0
+           },
+           {
+            "entry_time": 1673771400000,
+            "count": 6,
+            "interface": "ge0/0",
+            "tx_kbps": 5,
+            "rx_kbps": 48.833333333333336
+           },
+           {
+            "entry_time": 1673771400000,
+            "count": 6,
+            "interface": "ge0/1",
+            "tx_kbps": 0,
+            "rx_kbps": 0
+           }
+          ]
+         }
+        }
+       }
+      }
+     },
+     "400": {
+      "description": "Bad Request"
+     },
+     "403": {
+      "description": "Forbidden"
+     },
+     "500": {
+      "description": "Internal Server Error"
+     }
+    }
+   }
+  },
+  "/statistics/interface/ccapacity/distribution": {
+   "get": {
+    "tags": [
+     "Monitoring - Interface Statistics"
+    ],
+    "description": "Get bandwidth distribution",
+    "operationId": "getBandwidthDistribution",
+    "parameters": [
+     {
+      "name": "site-id",
+      "in": "query",
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Success",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/CapacityResp"
+        },
+        "examples": {
+         "Bandwidth Distribution": {
+          "description": "Bandwidth Distribution",
+          "value": {
+           "query": {
+            "condition": "AND",
+            "rules": [
+             {
+              "value": [
+               "24"
+              ],
+              "field": "entry_time",
+              "type": "date",
+              "operator": "last_n_hours"
+             },
+             {
+              "value": [
+               "1.1.60.7"
+              ],
+              "field": "vdevice_name",
+              "type": "string",
+              "operator": "in"
+             }
+            ]
+           },
+           "aggregation": {
+            "field": [
+             {
+              "property": "family",
+              "size": 200,
+              "sequence": 1
+             }
+            ],
+            "metrics": [
+             {
+              "property": "octets",
+              "type": "sum",
+              "order": "desc"
+             }
+            ]
+           }
+          }
+         }
+        }
+       }
+      }
+     },
+     "400": {
+      "description": "Bad Request"
+     },
+     "403": {
+      "description": "Forbidden"
+     },
+     "500": {
+      "description": "Internal Server Error"
+     }
+    }
+   }
+  },
+  "/statistics/qos": {
+   "get": {
+    "tags": [
+     "Monitoring - QoS"
+    ],
+    "description": "Get stats raw data",
+    "operationId": "getStatDataRawData_MonitoringQos_1503",
+    "parameters": [
+     {
+      "name": "query",
+      "in": "query",
+      "schema": {
+       "type": "string"
+      },
+      "example": {
+       "query": {
+        "condition": "AND",
+        "rules": [
+         {
+          "value": [
+           "12"
+          ],
+          "field": "entry_time",
+          "type": "date",
+          "operator": "last_n_hours"
+         },
+         {
+          "value": [
+           "172.16.255.11"
+          ],
+          "field": "vdevice_name",
+          "type": "string",
+          "operator": "in"
+         },
+         {
+          "value": [
+           "ge0/0"
+          ],
+          "field": "interface",
+          "type": "string",
+          "operator": "in"
+         }
+        ]
+       }
+      }
+     },
+     {
+      "name": "page",
+      "in": "query",
+      "schema": {
+       "type": "integer",
+       "format": "int32"
+      }
+     },
+     {
+      "name": "pageSize",
+      "in": "query",
+      "schema": {
+       "type": "integer",
+       "format": "int32"
+      }
+     },
+     {
+      "name": "sortBy",
+      "in": "query",
+      "schema": {
+       "type": "string"
+      }
+     },
+     {
+      "name": "sortOrder",
+      "in": "query",
+      "schema": {
+       "type": "string",
+       "enum": [
+        "asc",
+        "ASC",
+        "Asc",
+        "desc",
+        "DESC",
+        "Desc"
+       ]
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Success",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "array",
+         "items": {
+          "$ref": "#/components/schemas/QoSRespWithPageInfo"
+         }
+        },
+        "example": {
+         "data": [
+          {
+           "drop_in_kbps": 0,
+           "device_model": "vedge-cloud",
+           "interface": "ge0/0",
+           "time_interval": 300,
+           "queued_pkts": 0,
+           "tx_pkts": 0,
+           "statcycletime": 1676971800123,
+           "drop_in_bytes": 0,
+           "tx_bytes": 0,
+           "tenant": "default",
+           "entry_time": 1676971204628,
+           "drop_in_pkts": 0,
+           "vip_time": 1676971204628,
+           "tail_drop_bytes": 0,
+           "tx_bytes_in_pps": 0,
+           "vmanage_system_ip": "172.16.255.11",
+           "queued_bytes": 0,
+           "queue_name": "Queue4",
+           "red_drop_bytes": 0,
+           "queued_bytes_in_kbps": 0,
+           "red_drop_pkts": 0,
+           "vdevice_name": "172.16.255.11",
+           "vip_idx": 1448708,
+           "drop_in_pps": 0,
+           "tail_drop_pkts": 0,
+           "tx_bytes_in_kbps": 0,
+           "host_name": "vm1",
+           "id": "z7ROc4YB8aNY7Lff9mZW"
+          }
+         ],
+         "pageInfo": {
+          "startTime": "1589073783045",
+          "endTime": "1589072535795",
+          "count": 15
+         }
+        }
+       }
+      }
+     },
+     "400": {
+      "description": "Bad Request"
+     },
+     "403": {
+      "description": "Forbidden"
+     },
+     "500": {
+      "description": "Internal Server Error"
+     }
+    }
+   },
+   "post": {
+    "tags": [
+     "Monitoring - QoS"
+    ],
+    "description": "Get stats raw data",
+    "operationId": "getStatsRawData12",
+    "parameters": [
+     {
+      "name": "page",
+      "in": "query",
+      "schema": {
+       "type": "integer",
+       "format": "int32"
+      }
+     },
+     {
+      "name": "pageSize",
+      "in": "query",
+      "schema": {
+       "type": "integer",
+       "format": "int32"
+      }
+     },
+     {
+      "name": "sortBy",
+      "in": "query",
+      "schema": {
+       "type": "string"
+      }
+     },
+     {
+      "name": "sortOrder",
+      "in": "query",
+      "schema": {
+       "type": "string",
+       "enum": [
+        "asc",
+        "ASC",
+        "Asc",
+        "desc",
+        "DESC",
+        "Desc"
+       ]
+      }
+     }
+    ],
+    "requestBody": {
+     "description": "Stats query string",
+     "content": {
+      "application/json": {
+       "schema": {
+        "type": "object"
+       },
+       "examples": {
+        "Stats query string": {
+         "description": "Stats query string",
+         "value": {
+          "query": {
+           "condition": "AND",
+           "rules": [
+            {
+             "value": [
+              "12"
+             ],
+             "field": "entry_time",
+             "type": "date",
+             "operator": "last_n_hours"
+            },
+            {
+             "value": [
+              "172.16.255.11"
+             ],
+             "field": "vdevice_name",
+             "type": "string",
+             "operator": "in"
+            },
+            {
+             "value": [
+              "ge0/0"
+             ],
+             "field": "interface",
+             "type": "string",
+             "operator": "in"
+            }
+           ]
+          }
+         }
+        }
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": "Success",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "array",
+         "items": {
+          "$ref": "#/components/schemas/QoSRespWithPageInfo"
+         }
+        },
+        "example": {
+         "data": [
+          {
+           "drop_in_kbps": 0,
+           "device_model": "vedge-cloud",
+           "interface": "ge0/0",
+           "time_interval": 300,
+           "queued_pkts": 0,
+           "tx_pkts": 0,
+           "statcycletime": 1676971800123,
+           "drop_in_bytes": 0,
+           "tx_bytes": 0,
+           "tenant": "default",
+           "entry_time": 1676971204628,
+           "drop_in_pkts": 0,
+           "vip_time": 1676971204628,
+           "tail_drop_bytes": 0,
+           "tx_bytes_in_pps": 0,
+           "vmanage_system_ip": "172.16.255.11",
+           "queued_bytes": 0,
+           "queue_name": "Queue4",
+           "red_drop_bytes": 0,
+           "queued_bytes_in_kbps": 0,
+           "red_drop_pkts": 0,
+           "vdevice_name": "172.16.255.11",
+           "vip_idx": 1448708,
+           "drop_in_pps": 0,
+           "tail_drop_pkts": 0,
+           "tx_bytes_in_kbps": 0,
+           "host_name": "vm1",
+           "id": "z7ROc4YB8aNY7Lff9mZW"
+          }
+         ],
+         "pageInfo": {
+          "startTime": "1589073783045",
+          "endTime": "1589072535795",
+          "count": 15
+         }
+        }
+       }
+      }
+     },
+     "400": {
+      "description": "Bad Request"
+     },
+     "403": {
+      "description": "Forbidden"
+     },
+     "500": {
+      "description": "Internal Server Error"
+     }
+    }
+   }
+  },
+  "/topology/device/site/{siteId}": {
+   "get": {
+    "tags": [
+     "Configuration - Topology"
+    ],
+    "description": "Get topology for a given site id",
+    "operationId": "getSiteTopology",
+    "parameters": [
+     {
+      "name": "siteId",
+      "in": "path",
+      "description": "Site Id",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Success",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "object"
+        }
+       }
+      }
+     },
+     "400": {
+      "description": "Bad Request"
+     },
+     "403": {
+      "description": "Forbidden"
+     },
+     "500": {
+      "description": "Internal Server Error"
+     }
+    },
+    "x-roles-required": "Template Deploy-read,Template Deploy-write,System-read"
+   }
   }
  },
  "components": {
@@ -14083,6 +15457,552 @@
      },
      "payload": {
       "$ref": "schema/profileparcel/sdwan/system/basic/put/request_schema.json#/components/schemas/SchemaPayload"
+     }
+    }
+   },
+   "SiteHealthItem": {
+    "required": [
+     "apps_health",
+     "apps_usage",
+     "devices_health",
+     "site_health",
+     "site_id",
+     "tunnels_health"
+    ],
+    "type": "object",
+    "properties": {
+     "apps_health": {
+      "type": "string",
+      "example": "good",
+      "enum": [
+       "good",
+       "fair",
+       "poor"
+      ]
+     },
+     "apps_usage": {
+      "type": "number",
+      "example": 1000
+     },
+     "devices_health": {
+      "type": "string",
+      "example": "good",
+      "enum": [
+       "good",
+       "fair",
+       "poor"
+      ]
+     },
+     "site_health": {
+      "type": "string",
+      "example": "good",
+      "enum": [
+       "good",
+       "fair",
+       "poor"
+      ]
+     },
+     "site_id": {
+      "type": "string",
+      "example": "600"
+     },
+     "tunnels_health": {
+      "type": "string",
+      "example": "good",
+      "enum": [
+       "good",
+       "fair",
+       "poor"
+      ]
+     }
+    }
+   },
+   "SiteHealthTopologyItem": {
+    "required": [
+     "fair_site_count",
+     "good_site_count",
+     "poor_site_count"
+    ],
+    "type": "object",
+    "properties": {
+     "fair_site_count": {
+      "type": "number",
+      "example": 20
+     },
+     "good_site_count": {
+      "type": "number",
+      "example": 30
+     },
+     "poor_site_count": {
+      "type": "number",
+      "example": 10
+     }
+    }
+   },
+   "InterfaceAggResp": {
+    "type": "object",
+    "properties": {
+     "count": {
+      "type": "integer",
+      "format": "int32"
+     },
+     "entry_time": {
+      "type": "string"
+     },
+     "interface": {
+      "type": "string"
+     },
+     "rx_kbps": {
+      "type": "number"
+     },
+     "tx_kbps": {
+      "type": "number"
+     },
+     "vdevice_name": {
+      "type": "string"
+     }
+    }
+   },
+   "InterfaceAggRespWithPageInfo": {
+    "type": "object",
+    "properties": {
+     "data": {
+      "type": "array",
+      "items": {
+       "$ref": "#/components/schemas/InterfaceAggResp"
+      }
+     },
+     "pageInfo": {
+      "$ref": "#/components/schemas/PageInfo"
+     }
+    },
+    "description": "interface aggregation response with page info"
+   },
+   "CapacityResp": {
+    "type": "object",
+    "properties": {
+     "data": {
+      "type": "array",
+      "items": {
+       "$ref": "#/components/schemas/CapacityRespData"
+      }
+     },
+     "distribution": {
+      "$ref": "#/components/schemas/CapDistribution"
+     }
+    }
+   },
+   "CapacityRespData": {
+    "type": "object",
+    "properties": {
+     "avg_down_capacity_percentage": {
+      "type": "number"
+     },
+     "avg_up_capacity_percentage": {
+      "type": "number"
+     },
+     "bw_down": {
+      "type": "integer",
+      "format": "int64"
+     },
+     "bw_up": {
+      "type": "number"
+     },
+     "count": {
+      "type": "integer",
+      "format": "int64"
+     },
+     "interface": {
+      "type": "string"
+     },
+     "max_down_capacity_percentage": {
+      "type": "number"
+     },
+     "max_up_capacity_percentage": {
+      "type": "number"
+     },
+     "min_down_capacity_percentage": {
+      "type": "number"
+     },
+     "min_up_capacity_percentage": {
+      "type": "integer",
+      "format": "int32"
+     },
+     "range": {
+      "type": "string"
+     },
+     "vdevice_name": {
+      "type": "string"
+     }
+    }
+   },
+   "QoSRespWithPageInfo": {
+    "type": "object",
+    "properties": {
+     "data": {
+      "type": "array",
+      "items": {
+       "$ref": "#/components/schemas/QoSResp"
+      }
+     },
+     "pageInfo": {
+      "$ref": "#/components/schemas/PageInfo"
+     }
+    },
+    "description": "QoS response with page info"
+   },
+   "CapDistribution": {
+    "type": "object",
+    "properties": {
+     "0-25": {
+      "type": "integer",
+      "format": "int64"
+     },
+     "100": {
+      "type": "integer",
+      "format": "int64"
+     },
+     "25-50": {
+      "type": "integer",
+      "format": "int64"
+     },
+     "50-75": {
+      "type": "integer",
+      "format": "int64"
+     },
+     "75-100": {
+      "type": "integer",
+      "format": "int64"
+     },
+     "uncategorized": {
+      "type": "integer",
+      "format": "int64"
+     }
+    }
+   },
+   "TunnelHealthOverview": {
+    "type": "object",
+    "properties": {
+     "detail": {
+      "$ref": "#/components/schemas/TunnelHealthOverviewDetail"
+     },
+     "total": {
+      "$ref": "#/components/schemas/TunnelHealthOverviewTotal"
+     }
+    }
+   },
+   "TunnelHealthHistoryItem": {
+    "type": "object",
+    "properties": {
+     "health": {
+      "type": "string",
+      "example": "good",
+      "enum": [
+       "good",
+       "fair",
+       "poor",
+       "n/a"
+      ]
+     },
+     "health_score": {
+      "type": "number",
+      "format": "double"
+     },
+     "history": {
+      "type": "array",
+      "items": {
+       "$ref": "#/components/schemas/DeviceHealthEntryItem"
+      }
+     },
+     "local_color": {
+      "type": "string",
+      "example": "lte"
+     },
+     "local_system_ip": {
+      "type": "string",
+      "example": "172.16.255.21"
+     },
+     "name": {
+      "type": "string",
+      "example": "vm11:lte-vm6:lte"
+     },
+     "remote_color": {
+      "type": "string",
+      "example": "lte"
+     },
+     "remote_system_ip": {
+      "type": "string",
+      "example": "172.16.255.16"
+     },
+     "summary": {
+      "$ref": "#/components/schemas/TunnelHealthData"
+     }
+    }
+   },
+   "QoSResp": {
+    "type": "object",
+    "properties": {
+     "device_model": {
+      "type": "string"
+     },
+     "drop_in_bytes": {
+      "type": "number"
+     },
+     "drop_in_kbps": {
+      "type": "integer",
+      "format": "int32"
+     },
+     "drop_in_pkts": {
+      "type": "integer",
+      "format": "int32"
+     },
+     "drop_in_pps": {
+      "type": "integer",
+      "format": "int64"
+     },
+     "entry_time": {
+      "type": "string"
+     },
+     "host_name": {
+      "type": "string"
+     },
+     "id": {
+      "type": "string"
+     },
+     "interface": {
+      "type": "string"
+     },
+     "queue_name": {
+      "type": "string"
+     },
+     "queued_bytes": {
+      "type": "number"
+     },
+     "queued_bytes_in_kbps": {
+      "type": "number"
+     },
+     "queued_pkts": {
+      "type": "number"
+     },
+     "red_drop_bytes": {
+      "type": "number"
+     },
+     "red_drop_pkts": {
+      "type": "number"
+     },
+     "statcycletime": {
+      "type": "string"
+     },
+     "tail_drop_bytes": {
+      "type": "integer",
+      "format": "int64"
+     },
+     "tail_drop_pkts": {
+      "type": "integer",
+      "format": "int64"
+     },
+     "tenant": {
+      "type": "string"
+     },
+     "time_interval": {
+      "type": "integer",
+      "format": "int32"
+     },
+     "tx_bytes": {
+      "type": "number"
+     },
+     "tx_bytes_in_kbps": {
+      "type": "integer",
+      "format": "int64"
+     },
+     "tx_bytes_in_pps": {
+      "type": "integer",
+      "format": "int64"
+     },
+     "tx_pkts": {
+      "type": "number"
+     },
+     "vdevice_name": {
+      "type": "string"
+     },
+     "vip_idx": {
+      "type": "string"
+     },
+     "vip_time": {
+      "type": "string"
+     },
+     "vmanage_system_ip": {
+      "type": "string"
+     }
+    },
+    "description": "QOS specific response"
+   },
+   "TunnelHealthOverviewTotal": {
+    "type": "object",
+    "properties": {
+     "fair": {
+      "type": "number",
+      "example": 100
+     },
+     "good": {
+      "type": "number",
+      "example": 100
+     },
+     "poor": {
+      "type": "number",
+      "example": 100
+     }
+    }
+   },
+   "TunnelHealthOverviewDetail": {
+    "type": "object",
+    "properties": {
+     "fair": {
+      "type": "array",
+      "items": {
+       "$ref": "#/components/schemas/TunnelHealthOverviewEntry"
+      }
+     },
+     "good": {
+      "type": "array",
+      "items": {
+       "$ref": "#/components/schemas/TunnelHealthOverviewEntry"
+      }
+     },
+     "poor": {
+      "type": "array",
+      "items": {
+       "$ref": "#/components/schemas/TunnelHealthOverviewEntry"
+      }
+     }
+    }
+   },
+   "TunnelHealthOverviewEntry": {
+    "type": "object",
+    "properties": {
+     "health": {
+      "type": "string",
+      "example": "good",
+      "enum": [
+       "good",
+       "fair",
+       "poor",
+       "n/a"
+      ]
+     },
+     "health_score": {
+      "type": "number",
+      "format": "double"
+     },
+     "jitter": {
+      "type": "number",
+      "format": "double"
+     },
+     "latency": {
+      "type": "number",
+      "format": "double"
+     },
+     "local_color": {
+      "type": "string",
+      "example": "lte"
+     },
+     "local_system_ip": {
+      "type": "string",
+      "example": "172.16.255.21"
+     },
+     "loss_percentage": {
+      "type": "number",
+      "format": "double"
+     },
+     "name": {
+      "type": "string",
+      "example": "vm11:lte-vm6:lte"
+     },
+     "remote_color": {
+      "type": "string",
+      "example": "lte"
+     },
+     "remote_system_ip": {
+      "type": "string",
+      "example": "172.16.255.16"
+     },
+     "rx_octets": {
+      "type": "number"
+     },
+     "state": {
+      "type": "string",
+      "enum": [
+       "Up",
+       "Down"
+      ]
+     },
+     "tx_octets": {
+      "type": "number"
+     },
+     "vqoe_score": {
+      "type": "number",
+      "format": "double"
+     }
+    }
+   },
+   "TunnelHealthData": {
+    "type": "object",
+    "properties": {
+     "jitter": {
+      "type": "number",
+      "format": "double"
+     },
+     "latency": {
+      "type": "number",
+      "format": "double"
+     },
+     "loss_percentage": {
+      "type": "number",
+      "format": "double"
+     },
+     "rx_octets": {
+      "type": "number"
+     },
+     "state": {
+      "type": "string",
+      "enum": [
+       "Up",
+       "Down"
+      ]
+     },
+     "tx_octets": {
+      "type": "number"
+     },
+     "vqoe_score": {
+      "type": "number",
+      "format": "double"
+     }
+    }
+   },
+   "DeviceHealthEntryItem": {
+    "type": "object",
+    "properties": {
+     "data": {
+      "$ref": "#/components/schemas/TunnelHealthData"
+     },
+     "entry_time": {
+      "type": "number",
+      "example": 1657780200000
+     },
+     "health": {
+      "type": "string",
+      "example": "good",
+      "enum": [
+       "good",
+       "fair",
+       "poor",
+       "n/a"
+      ]
+     },
+     "health_score": {
+      "type": "number",
+      "format": "double",
+      "example": 10
      }
     }
    }
