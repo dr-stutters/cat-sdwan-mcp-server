@@ -1,0 +1,92 @@
+{
+  "header": {
+    "generatedOn": 1792757027376,
+    "viewKeys": {
+      "uniqueKey": [],
+      "preferenceKey": "grid-raw_dpistatistics"
+    },
+    "columns": [],
+    "fields": [
+      {
+        "property": "vip_idx",
+        "dataType": "number"
+      },
+      {
+        "property": "entry_time",
+        "dataType": "date"
+      },
+      {
+        "property": "vpn_id",
+        "dataType": "number"
+      },
+      {
+        "property": "source_ip",
+        "dataType": "string"
+      },
+      {
+        "property": "dest_ip",
+        "dataType": "string"
+      },
+      {
+        "property": "source_port",
+        "dataType": "number"
+      },
+      {
+        "property": "dest_port",
+        "dataType": "number"
+      },
+      {
+        "property": "octets",
+        "dataType": "number"
+      },
+      {
+        "property": "packets",
+        "dataType": "number"
+      },
+      {
+        "property": "application",
+        "dataType": "string"
+      },
+      {
+        "property": "family",
+        "dataType": "string"
+      },
+      {
+        "property": "create_time",
+        "dataType": "date"
+      },
+      {
+        "property": "expire_time",
+        "dataType": "date"
+      },
+      {
+        "property": "ip_proto",
+        "dataType": "number"
+      },
+      {
+        "property": "tunnel_encap",
+        "dataType": "string"
+      }
+    ],
+    "chart": {
+      "xAxis": [
+        "entry_time"
+      ],
+      "yAxis": [
+        "octets",
+        "packets"
+      ],
+      "series": [
+        "family",
+        "application"
+      ],
+      "title": "view.rawdata.clientViewDpistatistics.dpi",
+      "xAxisLabel": "view.rawdata.clientViewDpistatistics.time",
+      "yAxisLabel": ""
+    }
+  },
+  "pageInfo": {
+    "count": 0
+  },
+  "data": []
+}

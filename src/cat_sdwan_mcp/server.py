@@ -18,6 +18,7 @@ from cat_sdwan_mcp.tools import (
     dataplane,
     devops,
     events,
+    history,
     inventory,
     onboarding,
     policy,
@@ -66,6 +67,10 @@ Device operations (dangerous): catsdwan_list_software (repository, per edge inst
 ceiling) -> catsdwan_upgrade_software(devices, version, activate) / catsdwan_reboot_devices(devices); the
 previews name each device's site and role and refuse both edges of one site in one run.
 catsdwan_list_device_actions shows the Manager's running actions (upgrades started in the GUI too).
+History: "is this site getting worse?" -> catsdwan_site_report(site, days) (availability and SLA misses per
+transport, control drops, top alarms and applications) or catsdwan_sla_history(site or tunnel, sla_class or
+app, days) (hourly/daily buckets, the periods each tunnel missed its SLA); "what is using the link?" ->
+catsdwan_top_applications(site) (needs application visibility (DPI) on the edges; says so when it is off).
 Prompts: catsdwan_branch_health(site) (a verdict per transport), catsdwan_onboard_branch(site) (NetBox ->
 onboard -> boot -> deploy -> prove), catsdwan_why_is_app_slow(host, app) (ISE, app-route SLA, FMC, CML).
 Anything without a tool: catsdwan_search_spec('bfd') -> catsdwan_get_definition(path) -> catsdwan_api_call
@@ -105,6 +110,7 @@ def create_server(
             onboarding.register,
             policy.register,
             devops.register,
+            history.register,
             prompts.register,
         ],
         status=SdwanApp.status,
