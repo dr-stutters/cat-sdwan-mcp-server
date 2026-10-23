@@ -1,0 +1,117 @@
+{
+  "header": {
+    "generatedOn": 1792760094455,
+    "viewKeys": {
+      "uniqueKey": [
+        "vdevice-dataKey"
+      ],
+      "preferenceKey": "grid-CEdgeBGPNeighbor"
+    },
+    "columns": [
+      {
+        "title": "device.bgp.dataCedgeBgpNeighbors.vrfName",
+        "property": "vpn-id",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.bgp.dataCedgeBgpNeighbors.as",
+        "property": "as",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.bgp.dataCedgeBgpNeighbors.neighborAddres",
+        "property": "peer-addr",
+        "width": 220,
+        "dataType": "string"
+      },
+      {
+        "title": "device.bgp.dataCedgeBgpNeighbors.messageSent",
+        "property": "sent-opens",
+        "width": 150,
+        "dataType": "number"
+      },
+      {
+        "title": "device.bgp.dataCedgeBgpNeighbors.messageReceive",
+        "property": "rcvd-opens",
+        "width": 150,
+        "dataType": "number"
+      },
+      {
+        "title": "device.bgp.dataCedgeBgpNeighbors.outQ",
+        "property": "outq-depth",
+        "width": 100,
+        "dataType": "number"
+      },
+      {
+        "title": "device.bgp.dataCedgeBgpNeighbors.state",
+        "property": "state",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.bgp.dataCedgeBgpNeighbors.afiName",
+        "property": "afi-safi",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.bgp.dataCedgeBgpNeighbors.lastUpdated",
+        "property": "lastupdated",
+        "displayFormat": "DD MMM YYYY h:mm:ss A z",
+        "inputFormat": "unix-time",
+        "hideable": false,
+        "minWidth": 200,
+        "dataType": "date"
+      }
+    ],
+    "fields": [
+      {
+        "property": "vdevice-name",
+        "dataType": "string"
+      },
+      {
+        "property": "vdevice-host-name",
+        "dataType": "string"
+      },
+      {
+        "property": "vpn-id",
+        "dataType": "string"
+      },
+      {
+        "property": "as",
+        "dataType": "string"
+      },
+      {
+        "property": "peer-addr",
+        "dataType": "string"
+      },
+      {
+        "property": "sent-opens",
+        "dataType": "number"
+      },
+      {
+        "property": "rcvd-opens",
+        "dataType": "number"
+      },
+      {
+        "property": "outq-depth",
+        "dataType": "number"
+      },
+      {
+        "property": "state",
+        "dataType": "string"
+      },
+      {
+        "property": "afi-safi",
+        "dataType": "string"
+      },
+      {
+        "property": "lastupdated",
+        "dataType": "date"
+      }
+    ]
+  },
+  "data": []
+}

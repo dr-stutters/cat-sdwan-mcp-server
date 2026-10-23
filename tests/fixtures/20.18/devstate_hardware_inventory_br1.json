@@ -1,0 +1,181 @@
+{
+  "header": {
+    "generatedOn": 1792760107612,
+    "viewKeys": {
+      "uniqueKey": [
+        "vdevice-dataKey"
+      ],
+      "preferenceKey": "grid-CEdgeHardwareInventory"
+    },
+    "columns": [
+      {
+        "title": "device.hardware.cedgeHardwareInventory.hardwareType",
+        "property": "hw-type",
+        "width": 150,
+        "dataType": "string"
+      },
+      {
+        "title": "device.hardware.cedgeHardwareInventory.devName",
+        "property": "dev_name",
+        "width": 150,
+        "dataType": "string"
+      },
+      {
+        "title": "device.hardware.cedgeHardwareInventory.fieldReplacabl",
+        "property": "field_replaceable",
+        "width": 150,
+        "dataType": "string"
+      },
+      {
+        "title": "device.hardware.cedgeHardwareInventory.hardwareClass",
+        "property": "hw_class",
+        "width": 150,
+        "dataType": "string"
+      },
+      {
+        "title": "device.hardware.cedgeHardwareInventory.hardwareDevInd",
+        "property": "hw-dev-index",
+        "width": 200,
+        "dataType": "string"
+      },
+      {
+        "title": "device.hardware.cedgeHardwareInventory.version",
+        "property": "version",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.hardware.cedgeHardwareInventory.partNumber",
+        "property": "part-number",
+        "width": 150,
+        "dataType": "string"
+      },
+      {
+        "title": "device.hardware.cedgeHardwareInventory.serialNumber",
+        "property": "serial-number",
+        "dataType": "string"
+      },
+      {
+        "title": "device.hardware.cedgeHardwareInventory.description",
+        "property": "hw-description",
+        "width": 200,
+        "dataType": "string"
+      },
+      {
+        "title": "device.hardware.cedgeHardwareInventory.lastUpdated",
+        "property": "lastupdated",
+        "displayFormat": "DD MMM YYYY h:mm:ss A z",
+        "inputFormat": "unix-time",
+        "hideable": false,
+        "minWidth": 200,
+        "dataType": "date"
+      }
+    ],
+    "fields": [
+      {
+        "property": "vdevice-name",
+        "dataType": "string"
+      },
+      {
+        "property": "vdevice-host-name",
+        "dataType": "string"
+      },
+      {
+        "property": "hw-type",
+        "dataType": "string"
+      },
+      {
+        "property": "dev_name",
+        "dataType": "string"
+      },
+      {
+        "property": "field_replaceable",
+        "dataType": "string"
+      },
+      {
+        "property": "hw_class",
+        "dataType": "string"
+      },
+      {
+        "property": "hw-dev-index",
+        "dataType": "string"
+      },
+      {
+        "property": "version",
+        "dataType": "string"
+      },
+      {
+        "property": "part-number",
+        "dataType": "string"
+      },
+      {
+        "property": "serial-number",
+        "dataType": "string"
+      },
+      {
+        "property": "hw-description",
+        "dataType": "string"
+      },
+      {
+        "property": "lastupdated",
+        "dataType": "date"
+      }
+    ]
+  },
+  "data": [
+    {
+      "hw-type": "hw-type-chassis",
+      "vdevice-dataKey": "10.0.0.2-hw-type-chassis-0",
+      "vdevice-name": "10.0.0.2",
+      "hw-dev-index": "0",
+      "serial-number": "REDACTED-HW-01",
+      "part-number": "C8000V",
+      "lastupdated": 1792760107604,
+      "version": "V00",
+      "vdevice-host-name": "br1",
+      "hw-description": "Cisco Catalyst 8000V Edge Chassis"
+    },
+    {
+      "hw-type": "hw-type-pim",
+      "vdevice-dataKey": "10.0.0.2-hw-type-pim-1",
+      "vdevice-name": "10.0.0.2",
+      "hw-dev-index": "1",
+      "serial-number": "REDACTED-HW-02",
+      "part-number": "C8000V",
+      "lastupdated": 1792760107604,
+      "version": "V00",
+      "vdevice-host-name": "br1",
+      "hw-description": "Cisco Catalyst 8000V Edge Route Processor"
+    },
+    {
+      "hw-type": "hw-type-pim",
+      "vdevice-dataKey": "10.0.0.2-hw-type-pim-2",
+      "vdevice-name": "10.0.0.2",
+      "hw-dev-index": "2",
+      "part-number": "C8000V",
+      "lastupdated": 1792760107604,
+      "vdevice-host-name": "br1",
+      "hw-description": "Cisco Catalyst 8000V Edge Embedded Services Processor"
+    },
+    {
+      "hw-type": "hw-type-dram",
+      "vdevice-dataKey": "10.0.0.2-hw-type-dram-3",
+      "vdevice-name": "10.0.0.2",
+      "hw-dev-index": "3",
+      "lastupdated": 1792760107604,
+      "vdevice-host-name": "br1",
+      "hw-description": "Physical Memory"
+    },
+    {
+      "hw-type": "hw-type-cpu",
+      "vdevice-dataKey": "10.0.0.2-hw-type-cpu-4",
+      "vdevice-name": "10.0.0.2",
+      "hw-dev-index": "4",
+      "part-number": " GenuineIntel",
+      "lastupdated": 1792760107604,
+      "version": " 6",
+      "vdevice-host-name": "br1",
+      "hw-description": " Intel(R) Xeon(R) CPU E7- 2830  @ 2.13G"
+    }
+  ]
+}

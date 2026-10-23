@@ -1,0 +1,439 @@
+{
+  "header": {
+    "generatedOn": 1792760093136,
+    "viewKeys": {
+      "uniqueKey": [
+        "vdevice-dataKey"
+      ],
+      "preferenceKey": "grid-CEdgeIPRoutes"
+    },
+    "columns": [
+      {
+        "title": "device.ip.deviceDataCedgeIpRoutes.outgoingInterf",
+        "property": "next-hop-outgoing-interface",
+        "width": 150,
+        "dataType": "string"
+      },
+      {
+        "title": "device.ip.deviceDataCedgeIpRoutes.destinationPre",
+        "property": "route-destination-prefix",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.ip.deviceDataCedgeIpRoutes.vpnId",
+        "property": "routing-instance-name",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.ip.deviceDataCedgeIpRoutes.sourceProtocol",
+        "property": "route-source-protocol",
+        "width": 150,
+        "dataType": "string"
+      },
+      {
+        "title": "device.ip.deviceDataCedgeIpRoutes.nextHopAddress",
+        "property": "next-hop-next-hop-address-list",
+        "width": 150,
+        "dataType": "string"
+      },
+      {
+        "title": "device.ip.deviceDataCedgeIpRoutes.deviceIp",
+        "property": "vdevice-name",
+        "dataType": "string"
+      },
+      {
+        "title": "device.ip.deviceDataCedgeIpRoutes.hostName",
+        "property": "vdevice-host-name",
+        "dataType": "string"
+      },
+      {
+        "title": "device.ip.deviceDataCedgeIpRoutes.afType",
+        "property": "rib-address-family",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.ip.deviceDataCedgeIpRoutes.defaultRib",
+        "property": "rib-default-rib",
+        "width": 150,
+        "dataType": "string"
+      },
+      {
+        "title": "device.ip.deviceDataCedgeIpRoutes.routePreferenc",
+        "property": "route-route-preference",
+        "width": 50,
+        "dataType": "string"
+      },
+      {
+        "title": "device.ip.deviceDataCedgeIpRoutes.metric",
+        "property": "route-metric",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.ip.deviceDataCedgeIpRoutes.lastUpdated",
+        "property": "lastupdated",
+        "displayFormat": "DD MMM YYYY h:mm:ss A z",
+        "inputFormat": "unix-time",
+        "hideable": false,
+        "minWidth": 220,
+        "dataType": "date"
+      }
+    ],
+    "fields": [
+      {
+        "property": "next-hop-outgoing-interface",
+        "dataType": "string"
+      },
+      {
+        "property": "route-destination-prefix",
+        "dataType": "string"
+      },
+      {
+        "property": "routing-instance-name",
+        "dataType": "string"
+      },
+      {
+        "property": "route-source-protocol",
+        "dataType": "string"
+      },
+      {
+        "property": "next-hop-next-hop-address",
+        "dataType": "string"
+      },
+      {
+        "property": "next-hop-next-hop-address-list",
+        "dataType": "string"
+      },
+      {
+        "property": "vdevice-name",
+        "dataType": "string"
+      },
+      {
+        "property": "vdevice-host-name",
+        "dataType": "string"
+      },
+      {
+        "property": "rib-address-family",
+        "dataType": "string"
+      },
+      {
+        "property": "rib-default-rib",
+        "dataType": "string"
+      },
+      {
+        "property": "route-route-preference",
+        "dataType": "string"
+      },
+      {
+        "property": "route-metric",
+        "dataType": "string"
+      },
+      {
+        "property": "lastupdated",
+        "dataType": "date"
+      }
+    ]
+  },
+  "data": [
+    {
+      "protocol-type": "direct",
+      "vdevice-name": "10.0.0.2",
+      "route-destination-prefix": "0.0.0.0/0",
+      "route-source-protocol": "static",
+      "next-hop-next-hop-address": "10.60.2.254",
+      "routing-instance-name": "default",
+      "next-hop-next-hop-address-list": "10.60.2.254, 10.60.1.254",
+      "route-route-preference": "1",
+      "protocol-name": "0",
+      "vdevice-host-name": "br1",
+      "rib-default-rib": "false",
+      "rib-address-family": "ipv4",
+      "vdevice-dataKey": "10.0.0.2--",
+      "router-id": "0.0.0.0",
+      "route-metric": "0",
+      "lastupdated": 1792760093120
+    },
+    {
+      "protocol-type": "direct",
+      "vdevice-name": "10.0.0.2",
+      "route-destination-prefix": "10.60.1.0/24",
+      "route-source-protocol": "direct",
+      "next-hop-next-hop-address": "0.0.0.0",
+      "routing-instance-name": "default",
+      "next-hop-next-hop-address-list": "0.0.0.0",
+      "route-route-preference": "0",
+      "protocol-name": "0",
+      "vdevice-host-name": "br1",
+      "rib-default-rib": "false",
+      "rib-address-family": "ipv4",
+      "vdevice-dataKey": "10.0.0.2--",
+      "router-id": "0.0.0.0",
+      "next-hop-outgoing-interface": "GigabitEthernet1",
+      "route-metric": "0",
+      "lastupdated": 1792760093120
+    },
+    {
+      "protocol-type": "direct",
+      "vdevice-name": "10.0.0.2",
+      "route-destination-prefix": "10.60.1.14/32",
+      "route-source-protocol": "direct",
+      "routing-instance-name": "default",
+      "route-route-preference": "0",
+      "protocol-name": "0",
+      "vdevice-host-name": "br1",
+      "rib-default-rib": "false",
+      "rib-address-family": "ipv4",
+      "vdevice-dataKey": "10.0.0.2--",
+      "router-id": "0.0.0.0",
+      "route-metric": "0",
+      "lastupdated": 1792760093120
+    },
+    {
+      "protocol-type": "direct",
+      "vdevice-name": "10.0.0.2",
+      "route-destination-prefix": "10.60.2.0/24",
+      "route-source-protocol": "direct",
+      "next-hop-next-hop-address": "0.0.0.0",
+      "routing-instance-name": "default",
+      "next-hop-next-hop-address-list": "0.0.0.0",
+      "route-route-preference": "0",
+      "protocol-name": "0",
+      "vdevice-host-name": "br1",
+      "rib-default-rib": "false",
+      "rib-address-family": "ipv4",
+      "vdevice-dataKey": "10.0.0.2--",
+      "router-id": "0.0.0.0",
+      "next-hop-outgoing-interface": "GigabitEthernet2",
+      "route-metric": "0",
+      "lastupdated": 1792760093120
+    },
+    {
+      "protocol-type": "direct",
+      "vdevice-name": "10.0.0.2",
+      "route-destination-prefix": "10.60.2.14/32",
+      "route-source-protocol": "direct",
+      "routing-instance-name": "default",
+      "route-route-preference": "0",
+      "protocol-name": "0",
+      "vdevice-host-name": "br1",
+      "rib-default-rib": "false",
+      "rib-address-family": "ipv4",
+      "vdevice-dataKey": "10.0.0.2--",
+      "router-id": "0.0.0.0",
+      "route-metric": "0",
+      "lastupdated": 1792760093120
+    },
+    {
+      "protocol-type": "direct",
+      "vdevice-name": "10.0.0.2",
+      "route-destination-prefix": "ff00::/8",
+      "route-source-protocol": "direct",
+      "routing-instance-name": "default",
+      "route-route-preference": "0",
+      "protocol-name": "0",
+      "vdevice-host-name": "br1",
+      "rib-default-rib": "false",
+      "rib-address-family": "ipv6",
+      "vdevice-dataKey": "10.0.0.2--",
+      "router-id": "0.0.0.0",
+      "route-metric": "0",
+      "lastupdated": 1792760093120
+    },
+    {
+      "protocol-type": "direct",
+      "vdevice-name": "10.0.0.2",
+      "route-destination-prefix": "192.168.1.1/32",
+      "route-source-protocol": "direct",
+      "routing-instance-name": "65528",
+      "route-route-preference": "0",
+      "protocol-name": "0",
+      "vdevice-host-name": "br1",
+      "rib-default-rib": "false",
+      "rib-address-family": "ipv4",
+      "vdevice-dataKey": "10.0.0.2--",
+      "router-id": "0.0.0.0",
+      "route-metric": "0",
+      "lastupdated": 1792760093120
+    },
+    {
+      "protocol-type": "direct",
+      "vdevice-name": "10.0.0.2",
+      "route-destination-prefix": "11.1.0.2/32",
+      "route-source-protocol": "direct",
+      "routing-instance-name": "65529",
+      "route-route-preference": "0",
+      "protocol-name": "0",
+      "vdevice-host-name": "br1",
+      "rib-default-rib": "false",
+      "rib-address-family": "ipv4",
+      "vdevice-dataKey": "10.0.0.2--",
+      "router-id": "0.0.0.0",
+      "route-metric": "0",
+      "lastupdated": 1792760093120
+    },
+    {
+      "protocol-type": "direct",
+      "vdevice-name": "10.0.0.2",
+      "route-destination-prefix": "10.61.100.0/24",
+      "route-source-protocol": "rt-ext:omp",
+      "next-hop-next-hop-address": "10.0.0.1",
+      "routing-instance-name": "10",
+      "next-hop-next-hop-address-list": "10.0.0.1",
+      "route-route-preference": "251",
+      "protocol-name": "0",
+      "vdevice-host-name": "br1",
+      "rib-default-rib": "false",
+      "rib-address-family": "ipv4",
+      "vdevice-dataKey": "10.0.0.2--",
+      "router-id": "0.0.0.0",
+      "next-hop-outgoing-interface": "Sdwan-system-intf",
+      "route-metric": "0",
+      "lastupdated": 1792760093120
+    },
+    {
+      "protocol-type": "direct",
+      "vdevice-name": "10.0.0.2",
+      "route-destination-prefix": "10.61.200.0/24",
+      "route-source-protocol": "direct",
+      "next-hop-next-hop-address": "0.0.0.0",
+      "routing-instance-name": "10",
+      "next-hop-next-hop-address-list": "0.0.0.0",
+      "route-route-preference": "0",
+      "protocol-name": "0",
+      "vdevice-host-name": "br1",
+      "rib-default-rib": "false",
+      "rib-address-family": "ipv4",
+      "vdevice-dataKey": "10.0.0.2--",
+      "router-id": "0.0.0.0",
+      "next-hop-outgoing-interface": "GigabitEthernet3",
+      "route-metric": "0",
+      "lastupdated": 1792760093120
+    },
+    {
+      "protocol-type": "direct",
+      "vdevice-name": "10.0.0.2",
+      "route-destination-prefix": "10.61.200.1/32",
+      "route-source-protocol": "direct",
+      "routing-instance-name": "10",
+      "route-route-preference": "0",
+      "protocol-name": "0",
+      "vdevice-host-name": "br1",
+      "rib-default-rib": "false",
+      "rib-address-family": "ipv4",
+      "vdevice-dataKey": "10.0.0.2--",
+      "router-id": "0.0.0.0",
+      "route-metric": "0",
+      "lastupdated": 1792760093120
+    },
+    {
+      "protocol-type": "direct",
+      "vdevice-name": "10.0.0.2",
+      "route-destination-prefix": "10.61.201.0/24",
+      "route-source-protocol": "rt-ext:omp",
+      "next-hop-next-hop-address": "10.0.0.3",
+      "routing-instance-name": "10",
+      "next-hop-next-hop-address-list": "10.0.0.3",
+      "route-route-preference": "251",
+      "protocol-name": "0",
+      "vdevice-host-name": "br1",
+      "rib-default-rib": "false",
+      "rib-address-family": "ipv4",
+      "vdevice-dataKey": "10.0.0.2--",
+      "router-id": "0.0.0.0",
+      "next-hop-outgoing-interface": "Sdwan-system-intf",
+      "route-metric": "0",
+      "lastupdated": 1792760093120
+    },
+    {
+      "protocol-type": "direct",
+      "vdevice-name": "10.0.0.2",
+      "route-destination-prefix": "0.0.0.0/0",
+      "route-source-protocol": "static",
+      "next-hop-next-hop-address": "198.18.128.1",
+      "routing-instance-name": "Mgmt-intf",
+      "next-hop-next-hop-address-list": "198.18.128.1",
+      "route-route-preference": "1",
+      "protocol-name": "0",
+      "vdevice-host-name": "br1",
+      "rib-default-rib": "false",
+      "rib-address-family": "ipv4",
+      "vdevice-dataKey": "10.0.0.2--",
+      "router-id": "0.0.0.0",
+      "route-metric": "0",
+      "lastupdated": 1792760093120
+    },
+    {
+      "protocol-type": "direct",
+      "vdevice-name": "10.0.0.2",
+      "route-destination-prefix": "198.18.128.0/18",
+      "route-source-protocol": "direct",
+      "next-hop-next-hop-address": "0.0.0.0",
+      "routing-instance-name": "Mgmt-intf",
+      "next-hop-next-hop-address-list": "0.0.0.0",
+      "route-route-preference": "0",
+      "protocol-name": "0",
+      "vdevice-host-name": "br1",
+      "rib-default-rib": "false",
+      "rib-address-family": "ipv4",
+      "vdevice-dataKey": "10.0.0.2--",
+      "router-id": "0.0.0.0",
+      "next-hop-outgoing-interface": "GigabitEthernet4",
+      "route-metric": "0",
+      "lastupdated": 1792760093120
+    },
+    {
+      "protocol-type": "direct",
+      "vdevice-name": "10.0.0.2",
+      "route-destination-prefix": "198.18.129.14/32",
+      "route-source-protocol": "direct",
+      "routing-instance-name": "Mgmt-intf",
+      "route-route-preference": "0",
+      "protocol-name": "0",
+      "vdevice-host-name": "br1",
+      "rib-default-rib": "false",
+      "rib-address-family": "ipv4",
+      "vdevice-dataKey": "10.0.0.2--",
+      "router-id": "0.0.0.0",
+      "route-metric": "0",
+      "lastupdated": 1792760093120
+    },
+    {
+      "protocol-type": "direct",
+      "vdevice-name": "10.0.0.2",
+      "route-destination-prefix": "192.168.1.4/30",
+      "route-source-protocol": "direct",
+      "next-hop-next-hop-address": "0.0.0.0",
+      "routing-instance-name": "__Platform_iVRF:_ID00_",
+      "next-hop-next-hop-address-list": "0.0.0.0",
+      "route-route-preference": "0",
+      "protocol-name": "0",
+      "vdevice-host-name": "br1",
+      "rib-default-rib": "false",
+      "rib-address-family": "ipv4",
+      "vdevice-dataKey": "10.0.0.2--",
+      "router-id": "0.0.0.0",
+      "next-hop-outgoing-interface": "LIIN0",
+      "route-metric": "0",
+      "lastupdated": 1792760093120
+    },
+    {
+      "protocol-type": "direct",
+      "vdevice-name": "10.0.0.2",
+      "route-destination-prefix": "192.168.1.6/32",
+      "route-source-protocol": "direct",
+      "routing-instance-name": "__Platform_iVRF:_ID00_",
+      "route-route-preference": "0",
+      "protocol-name": "0",
+      "vdevice-host-name": "br1",
+      "rib-default-rib": "false",
+      "rib-address-family": "ipv4",
+      "vdevice-dataKey": "10.0.0.2--",
+      "router-id": "0.0.0.0",
+      "route-metric": "0",
+      "lastupdated": 1792760093120
+    }
+  ]
+}

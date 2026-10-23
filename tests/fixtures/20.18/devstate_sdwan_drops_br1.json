@@ -1,0 +1,3728 @@
+{
+  "header": {
+    "generatedOn": 1792760115461,
+    "viewKeys": {
+      "uniqueKey": [
+        "vdevice-dataKey"
+      ],
+      "preferenceKey": "grid-CEdgeSdwanGlobalDropStatistics"
+    },
+    "columns": [
+      {
+        "title": "device.sdwan.system.badUidbIdxPkts",
+        "property": "bad-uidb-idx-pkts",
+        "width": 100,
+        "dataType": "number"
+      },
+      {
+        "title": "device.sdwan.system.badUidbIdxOctets",
+        "property": "bad-uidb-idx-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.badUidbSubIdxPkts",
+        "property": "bad-uidb-sub-idx-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.badUidbSubIdxOctets",
+        "property": "bad-uidb-sub-idx-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.unknownEncapPkts",
+        "property": "unknown-encap-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.unknownEncapOctets",
+        "property": "unknown-encap-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.invl2hdrpkts",
+        "property": "inv-l2-hdr-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.invl2hdroctets",
+        "property": "inv-l2-hdr-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.badLenPkts",
+        "property": "bad-len-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.badLenOctets",
+        "property": "bad-len-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.tcpBadfragPkts",
+        "property": "tcp-badfrag-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.tcpBadfragOctets",
+        "property": "tcp-badfrag-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.ipv4AclPkts",
+        "property": "ipv4-acl-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.ipv4AclOctets",
+        "property": "ipv4-acl-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.ipv4AclLookupMissPkts",
+        "property": "ipv4-acl-lookup-miss-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.ipv4AclLookupMissOctets",
+        "property": "ipv4-acl-lookup-miss-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.badIpChecksumPkts",
+        "property": "bad-ip-checksum-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.badIpChecksumOctets",
+        "property": "bad-ip-checksum-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.ipFormatErrPkts",
+        "property": "ip-format-err-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.ipFormatErrOctets",
+        "property": "ip-format-err-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.ipBadOptionsPkts",
+        "property": "ip-bad-options-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.ipBadOptionsOctets",
+        "property": "ip-bad-options-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.ipv4MartianPkts",
+        "property": "ipv4-martian-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.ipv4MartianOctets",
+        "property": "ipv4-martian-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.mpassErrPkts",
+        "property": "mpass-err-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.mpassErrOctets",
+        "property": "mpass-err-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.ipv4PbrPkts",
+        "property": "ipv4-pbr-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.ipv4PbrOctets",
+        "property": "ipv4-pbr-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.invHdrErrPkts",
+        "property": "inv-hdr-err-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.invHdrErrOctets",
+        "property": "inv-hdr-err-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.puntErrPkts",
+        "property": "punt-err-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.injectErrPkts",
+        "property": "inject-err-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.injectErrOctets",
+        "property": "inject-err-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.ipv4NoRoutePkts",
+        "property": "ipv4-no-route-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.ipv4NoRouteOctets",
+        "property": "ipv4-no-route-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.qosPolicingPkts",
+        "property": "qos-policing-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.qosPolicingOctets",
+        "property": "qos-policing-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.qosActionsPkts",
+        "property": "qos-actions-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.qosActionsOctets",
+        "property": "qos-actions-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.nullJibHdrPkts",
+        "property": "null-jib-hdr-tbl-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.tailDropPkts",
+        "property": "tail-drop-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.tailDropOctets",
+        "property": "tail-drop-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.wredPkts",
+        "property": "wred-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.wredOctets",
+        "property": "wred-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.invalidQueuePkts",
+        "property": "invalid-queue-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.invalidQueueOctets",
+        "property": "invalid-queue-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.invalidWredPkts",
+        "property": "invalid-wred-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.invalidWredOctets",
+        "property": "invalid-wred-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.mplsPkts",
+        "property": "mpls-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.mplsOctets",
+        "property": "mpls-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.ipv6TruncatedpktsPkts",
+        "property": "ipv6-truncatedpkts-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.ipv6TruncatedpktsOctets",
+        "property": "ipv6-truncatedpkts-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.ipv6FormaterrPkts",
+        "property": "ipv6-formaterr-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.ipv6FormaterrOctets",
+        "property": "ipv6-formaterr-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.ipv6BadsourcePkts",
+        "property": "ipv6-badsource-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.ipv6BadsourceOctets",
+        "property": "ipv6-badsource-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.ipv6BadhopPkts",
+        "property": "ipv6-badhop-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.ipv6BadhopOctets",
+        "property": "ipv6-badhop-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.ipv6ToobigpacketPkts",
+        "property": "ipv6-toobigpacket-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.ipv6ToobigpacketOctets",
+        "property": "ipv6-toobigpacket-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.ipv6NoRoutePkts",
+        "property": "ipv6-no-route-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.ipv6NoRouteOctets",
+        "property": "ipv6-no-route-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.ipv6AclLookupMissPkts",
+        "property": "ipv6-acl-lookup-miss-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.ipv6AclLookupMissOctets",
+        "property": "ipv6-acl-lookup-miss-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.ipv6AclPkts",
+        "property": "ipv6-acl-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.ipv6AclPkts",
+        "property": "ipv6-acl-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.ipv6AclOctets",
+        "property": "ipv6-acl-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.ipvAclErrPkts",
+        "property": "ip-acl-err-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.ipvAclErrOctets",
+        "property": "ip-acl-err-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.macAclPkts",
+        "property": "mac-acl-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.macAclOctets",
+        "property": "mac-acl-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.macAclLookupMissPkts",
+        "property": "mac-acl-lookup-miss-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.macAclLookupMissOctets",
+        "property": "mac-acl-lookup-miss-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.ipv4mcNoRoutePkts",
+        "property": "ipv4mc-no-route-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.ipv4mcNoRouteOctets",
+        "property": "ipv4mc-no-route-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.unknownExtHeaderPkts",
+        "property": "unknown-ext-header-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.ipv4mcRpfFailedPkts",
+        "property": "ipv4mc-rpf-failed-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.ipv4mcRpfFailedOctets",
+        "property": "ipv4mc-rpf-failed-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.ipv4mcInvalidRecordPkts",
+        "property": "ipv4mc-invalid-replica-record-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.ipv4mcInvalidRecordOctets",
+        "property": "ipv4mc-invalid-replica-record-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.ipv4mcTtlChkFailedPkts",
+        "property": "ipv4mc-ttl-threshold-chk-failed-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.ipv4mcTtlChkFailedOctets",
+        "property": "ipv4mc-ttl-threshold-chk-failed-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.ipv4mcExtraReplicaePkts",
+        "property": "ipv4mc-extra-replicae-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.ipv4mcExtraReplicaeOctets",
+        "property": "ipv4mc-extra-replicae-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.ipv4MtrPkts",
+        "property": "ipv4-mtr-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.ipv4MtrOctets",
+        "property": "ipv4-mtr-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.internalCtlPkts",
+        "property": "internal-ctl-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.internalCtlOctets",
+        "property": "internal-ctl-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.frfabWredDropPkts",
+        "property": "frfab-wred-drop-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.frfabWredDropOctets",
+        "property": "frfab-wred-drop-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.firewallNonsessionPkts",
+        "property": "firewall-nonsession-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.firewallNonsessionOctets",
+        "property": "firewall-nonsession-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.firewallInvalidZonePkts",
+        "property": "firewall-invalid-zone-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.firewallBackpressurePkts",
+        "property": "firewall-backpressure-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.firewallBackpressureOctets",
+        "property": "firewall-backpressure-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.firewalll4inspPkts",
+        "property": "firewall-l4-insp-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.firewalll4inspOctets",
+        "property": "firewall-l4-insp-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.ipFragErrPkts",
+        "property": "ip-frag-err-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.ipFragErrOctets",
+        "property": "ip-frag-err-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.noGpmMemoryErrPkts",
+        "property": "no-gpm-memory-err-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.noGpmMemoryErrOctets",
+        "property": "no-gpm-memory-err-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.forUsPkts",
+        "property": "for-us-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.forUsOctets",
+        "property": "for-us-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.ipsecInputPkts",
+        "property": "ipsec-input-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.ipsecInputOctets",
+        "property": "ipsec-input-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.ipsecIkeIndicatePkts",
+        "property": "ipsec-ike-indicate-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.ipsecIkeIndicateOctets",
+        "property": "ipsec-ike-indicate-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.ipsecInvalidSaPkts",
+        "property": "ipsec-invalid-sa-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.ipsecInvalidSaOctets",
+        "property": "ipsec-invalid-sa-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.ipsecTailDropPkts",
+        "property": "ipsec-tail-drop-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.ipsecTailDropOctets",
+        "property": "ipsec-tail-drop-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.layer2NoRoutePkts",
+        "property": "layer2-no-route-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.layer2NoRouteOctets",
+        "property": "layer2-no-route-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.icmpPkts",
+        "property": "icmp-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.icmpOctets",
+        "property": "icmp-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.ipTtlExceededPkts",
+        "property": "ip-ttl-exceeded-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.ipTtlExceededOctets",
+        "property": "ip-ttl-exceeded-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.tunnelBadGreChecksumPkts",
+        "property": "tunnel-bad-gre-checksum-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.tunnelBadGreChecksumOctets",
+        "property": "tunnel-bad-gre-checksum-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.tunnelMisconfigurationPkts",
+        "property": "tunnel-misconfiguration-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.tunnelMisconfigurationOctets",
+        "property": "tunnel-misconfiguration-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.greBadOptionsPkts",
+        "property": "gre-bad-options-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.greBadOptionsOctets",
+        "property": "gre-bad-options-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.fragTailDropPkts",
+        "property": "frag-tail-drop-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.fragTailDropOctets",
+        "property": "frag-tail-drop-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.unconfiguredFiaPkts",
+        "property": "unconfigured-fia-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.unconfiguredFiaOctets",
+        "property": "unconfigured-fia-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.ipv4FpmPkts",
+        "property": "ipv4-fpm-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.ipv4FpmOctets",
+        "property": "ipv4-fpm-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.natIn2outPkts",
+        "property": "nat-in2out-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.natIn2outOctets",
+        "property": "nat-in2out-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.natOut2inPkts",
+        "property": "nat-out2in-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.natOut2inOctets",
+        "property": "nat-out2in-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.paWalkErrPkts",
+        "property": "pa-walk-err-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.paWalkErrOctets",
+        "property": "pa-walk-err-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.ipv4RoutingErrPkts",
+        "property": "ipv4-routing-err-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.ipv4RoutingErrOctets",
+        "property": "ipv4-routing-err-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.ipv6RoutingErrPkts",
+        "property": "ipv6-routing-err-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.ipv6RoutingErrOctets",
+        "property": "ipv6-routing-err-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.mpassInvalidFsVectorPkts",
+        "property": "mpass-invalid-fs-vector-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.mpassInvalidFsVectorOctets",
+        "property": "mpass-invalid-fs-vector-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.reassDropPkts",
+        "property": "reass-drop-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.reassDropOctets",
+        "property": "reass-drop-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.reassFragTooBigPkts",
+        "property": "reass-frag-too-big-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.reassFragTooBigOctets",
+        "property": "reass-frag-too-big-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.reassNoFragInfoPkts",
+        "property": "reass-no-frag-info-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.reassNoFragInfoOctets",
+        "property": "reass-no-frag-info-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.reassNoFragInfoLowPkts",
+        "property": "reass-no-frag-info-low-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.reassNoFragInfoLowOctets",
+        "property": "reass-no-frag-info-low-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.reassBadLenPkts",
+        "property": "reass-bad-len-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.reassBadLenOctets",
+        "property": "reass-bad-len-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.reassTooManyFragsPkts",
+        "property": "reass-too-many-frags-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.reassTooManyFragsOctets",
+        "property": "reass-too-many-frags-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.reassNoFragsLeftPkts",
+        "property": "reass-no-frags-left-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.reassNoFragsLeftOctets",
+        "property": "reass-no-frags-left-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.reassOverlapPkts",
+        "property": "reass-overlap-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.reassOverlapPkts",
+        "property": "reass-overlap-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.reassOverlapOctets",
+        "property": "reass-overlap-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.reassTimeoutpkts",
+        "property": "reass-timeout-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.reassTimeoutOctets",
+        "property": "reass-timeout-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.noMemPkts",
+        "property": "no-mem-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.noMemOctets",
+        "property": "no-mem-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.vfrErrPkts",
+        "property": "vfr-err-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.vfrErrOctets",
+        "property": "vfr-err-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.vfrTailDropPkts",
+        "property": "vfr-tail-drop-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.vfrTailDropOctets",
+        "property": "vfr-tail-drop-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.iphcPkts",
+        "property": "iphc-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.iphcOctets",
+        "property": "iphc-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.multilinkCfgPkts",
+        "property": "multilink-cfg-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.multilinkCfgOctets",
+        "property": "multilink-cfg-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.mlpPkts",
+        "property": "mlp-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.mlpOctets",
+        "property": "mlp-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.minTuPkts",
+        "property": "min-tu-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.minTuOctets",
+        "property": "min-tu-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.maxTuPkts",
+        "property": "max-tu-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.maxTuOctets",
+        "property": "max-tu-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.ipv4UnclassifiedPkts",
+        "property": "ipv4-unclassified-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.ipv4UnclassifiedOctets",
+        "property": "ipv4-unclassified-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.ipv6UnclassifiedPkts",
+        "property": "ipv6-unclassified-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.ipv6UnclassifiedOctets",
+        "property": "ipv6-unclassified-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.ipv4NoAdjPkts",
+        "property": "ipv4-no-adj-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.ipv4NoAdjOctets",
+        "property": "ipv4-no-adj-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.ipv4Null0Pkts",
+        "property": "ipv4-null0-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.ipv4Null0Octets",
+        "property": "ipv4-null0-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.mplsMismatchLinktypePkts",
+        "property": "mpls-mismatch-linktype-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.mplsMismatchLinktypeOctets",
+        "property": "mpls-mismatch-linktype-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.mplsFragReqPkts",
+        "property": "mpls-frag-req-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.mplsFragReqOctets",
+        "property": "mpls-frag-req-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.choiceOcePkts",
+        "property": "choice-oce-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.choiceOceOctets",
+        "property": "choice-oce-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.unsupportedOcePkts",
+        "property": "unsupported-oce-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.unsupportedOceOctets",
+        "property": "unsupported-oce-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.attnInvalidSpidPkts",
+        "property": "attn-invalid-spid-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.attnInvalidSpidOctets",
+        "property": "attn-invalid-spid-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.invCommonPreamblePkts",
+        "property": "inv-common-preamble-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.invCommonPreambleOctets",
+        "property": "inv-common-preamble-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.extDropPathPkts",
+        "property": "ext-drop-path-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.extDropPathOctets",
+        "property": "ext-drop-path-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.frrOceNoBackupPkts",
+        "property": "frr-oce-no-backup-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.frrOceNoBackupOctets",
+        "property": "frr-oce-no-backup-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.frrOceInvalidStatePkts",
+        "property": "frr-oce-invalid-state-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.frrOceInvalidStateOctets",
+        "property": "frr-oce-invalid-state-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.bqsOorPkts",
+        "property": "bqs-oor-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.bqsOorOctets",
+        "property": "bqs-oor-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.ipv6Null0Pkts",
+        "property": "ipv6-null0-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.ipv6Null0Octets",
+        "property": "ipv6-null0-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.ipsecOutputPkts",
+        "property": "ipsec-output-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.ipsecOutputOctets",
+        "property": "ipsec-output-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.ipsecTedIndicatePkts",
+        "property": "ipsec-ted-indicate-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.ipsecTedIndicateOctets",
+        "property": "ipsec-ted-indicate-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.ipsecDenyDropPkts",
+        "property": "ipsec-deny-drop-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.ipsecDenyDropOctets",
+        "property": "ipsec-deny-drop-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.disabledPkts",
+        "property": "disabled-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.disabledOctets",
+        "property": "disabled-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.ipv6NoAdjPkts",
+        "property": "ipv6-no-adj-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.ipv6NoAdjOctets",
+        "property": "ipv6-no-adj-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.notEnabledPkts",
+        "property": "not-enabled-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.notEnabledOctets",
+        "property": "not-enabled-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.illegalObjPkts",
+        "property": "illegal-obj-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.illegalObjOctets",
+        "property": "illegal-obj-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.unresolvedPkts",
+        "property": "unresolved-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.unresolvedOctets",
+        "property": "unresolved-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.discardPkts",
+        "property": "discard-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.discardOctets",
+        "property": "discard-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.internalIntfErrPkts",
+        "property": "internal-intf-err-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.internalIntfErrOctets",
+        "property": "internal-intf-err-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.gleanAdjUnsupportLinktypePkts",
+        "property": "glean-adj-unsupport-linktype-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.gleanAdjUnsupportLinktypeOctets",
+        "property": "glean-adj-unsupport-linktype-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.lookupShouldDropPkts",
+        "property": "lookup-oce-should-drop-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.lookupShouldDropOctets",
+        "property": "lookup-oce-should-drop-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.lookupUnsupportLinktypePkts",
+        "property": "lookup-oce-unsupport-linktype-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.lookupUnsupportLinktypeOctets",
+        "property": "lookup-oce-unsupport-linktype-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.unsupportLinktypeRoutePkts",
+        "property": "unsupport-linktype-no-route-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.unsupportLinktypeRouteOctets",
+        "property": "unsupport-linktype-no-route-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.unsupportLinktypeNullPkts",
+        "property": "unsupport-linktype-null0-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.unsupportLinktypeNullOctets",
+        "property": "unsupport-linktype-null0-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.ipv4AdjDropPkts",
+        "property": "ipv4-adj-drop-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.ipv4AdjDropOctets",
+        "property": "ipv4-adj-drop-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.ipv6AdjDropPkts",
+        "property": "ipv6-adj-drop-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.ipv6AdjDropOctets",
+        "property": "ipv6-adj-drop-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.mplsAdjDropOctets",
+        "property": "mpls-adj-drop-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.mplsAdjDropOctets",
+        "property": "mpls-adj-drop-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.badAdjPkts",
+        "property": "bad-adj-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.badAdjOctets",
+        "property": "bad-adj-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.puntPolicerDropPkts",
+        "property": "punt-policer-drop-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.puntPolicerDropOctets",
+        "property": "punt-policer-drop-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.puntGlobalPolicerDropPkts",
+        "property": "punt-global-policer-drop-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.puntGlobalPolicerDropOctets",
+        "property": "punt-global-policer-drop-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.unconfiguredIpv4FiaPkts",
+        "property": "unconfigured-ipv4-fia-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.unconfiguredIpv4FiaOctets",
+        "property": "unconfigured-ipv4-fia-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.unconfiguredIpv6FiaPkts",
+        "property": "unconfigured-ipv6-fia-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.unconfiguredIpv6FiaOctets",
+        "property": "unconfigured-ipv6-fia-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.unconfiguredMplsFiaPkts",
+        "property": "unconfigured-mpls-fia-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.unconfiguredMplsFiaOctets",
+        "property": "unconfigured-mpls-fia-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.oceDropAdjPkts",
+        "property": "oce-drop-adj-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.oceDropAdjOctets",
+        "property": "oce-drop-adj-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.tcpPkts",
+        "property": "tcp-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.tcpOctets",
+        "property": "tcp-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.invalidEncapPkts",
+        "property": "invalid-encap-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.invalidEncapOctets",
+        "property": "invalid-encap-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.lispEligCcePkts",
+        "property": "lisp-elig-oce-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.lispEligCceOctets",
+        "property": "lisp-elig-oce-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.lispMisconfigurationPkts",
+        "property": "lisp-misconfiguration-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.lispMisconfigurationOctets",
+        "property": "lisp-misconfiguration-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.lispDisabledPkts",
+        "property": "lisp-disabled-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.lispDisabledOctets",
+        "property": "lisp-disabled-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.lispDecapFailedPkts",
+        "property": "lisp-decap-failed-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.lispDecapFailedOctets",
+        "property": "lisp-decap-failed-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.lispHashLkupFailedPkts",
+        "property": "lisp-hash-lkup-failed-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.lispHashLkupFailedOctets",
+        "property": "lisp-hash-lkup-failed-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.lispFailedLsbMismatchPkts",
+        "property": "lisp-failed-to-punt-lsb-mismatch-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.lispFailedLsbMismatchOctets",
+        "property": "lisp-failed-to-punt-lsb-mismatch-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.nat64V6tov4Pkts",
+        "property": "nat64-v6tov4-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.nat64V6tov4Octets",
+        "property": "nat64-v6tov4-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.tunnelSecFailPkts",
+        "property": "tunnel-sec-chk-fail-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.tunnelSecFailOctets",
+        "property": "tunnel-sec-chk-fail-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.fiaErrorPkts",
+        "property": "fia-error-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.fiaErrorOctets",
+        "property": "fia-error-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.ctsFormatPkts",
+        "property": "cts-format-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.ctsFormatOctets",
+        "property": "cts-format-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.ctsNotEnablePkts",
+        "property": "cts-not-enable-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.ctsNotEnableOctets",
+        "property": "cts-not-enable-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.idlePacketPkts",
+        "property": "idle-packet-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.idlePacketOctets",
+        "property": "idle-packet-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.bfdPkts",
+        "property": "bfd-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.bfdOctets",
+        "property": "bfd-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.lispEidConfigPkts",
+        "property": "lisp-failed-to-punt-dynmaic-eid-config-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.lispEidConfigOctets",
+        "property": "lisp-failed-to-punt-dynmaic-eid-config-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.tunnelPktSbMissedPkts",
+        "property": "tunnel-pkt-sb-missed-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.tunnelPktSbMissedOctets",
+        "property": "tunnel-pkt-sb-missed-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.tunnelTooManyTimesPkts",
+        "property": "tunnel-decap-too-many-times-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.tunnelTooManyTimesOctets",
+        "property": "tunnel-decap-too-many-times-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.loadbalanceNullPkts",
+        "property": "loadbalance-null0-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.loadbalanceNullOctets",
+        "property": "loadbalance-null0-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.gpmTxLenExceedPkts",
+        "property": "gpm-tx-len-exceed-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.gpmTxLenExceedOctets",
+        "property": "gpm-tx-len-exceed-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.tunnelProtocolPkts",
+        "property": "tunnel-invalid-protocol-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.tunnelProtocolOctets",
+        "property": "tunnel-invalid-protocol-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.lispSfltrPkts",
+        "property": "lisp-sfltr-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.lispSfltrOctets",
+        "property": "lisp-sfltr-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.identityErrorPkts",
+        "property": "identity-cft-error-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.identityErrorOctets",
+        "property": "identity-cft-error-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.flowQueueFailurePkts",
+        "property": "flow-queue-failure-id-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.flowQueueFailureOctets",
+        "property": "flow-queue-failure-id-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.perfPolicerPkts",
+        "property": "perf-lic-policer-lo-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.perfPolicerOctets",
+        "property": "perf-lic-policer-lo-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.perfPolicerHiPkts",
+        "property": "perf-lic-policer-hi-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.perfPolicerHiOctets",
+        "property": "perf-lic-policer-hi-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.hqfTxErrorPkts",
+        "property": "hqf-tx-error-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.hqfTxErrorOctets",
+        "property": "hqf-tx-error-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.nat66In2outPkts",
+        "property": "nat66-in2out-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.nat66In2outOctets",
+        "property": "nat66-in2out-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.nat66Out2inPkts",
+        "property": "nat66-out2in-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.nat66Out2inOctets",
+        "property": "nat66-out2in-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.lispGsmrEnabledPkts",
+        "property": "lisp-failed-to-punt-gsmr-enabled-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.lispGsmrEnabledOctets",
+        "property": "lisp-failed-to-punt-gsmr-enabled-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.udpPkts",
+        "property": "udp-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.udpOctets",
+        "property": "udp-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.sdwanPkts",
+        "property": "sdwan-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.sdwanOctets",
+        "property": "sdwan-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.sdwanGenericPkts",
+        "property": "sdwan-generic-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.sdwanGenericOctets",
+        "property": "sdwan-generic-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.sdwanImplicitAclPkts",
+        "property": "sdwan-implicit-acl-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.sdwanImplicitAclOctets",
+        "property": "sdwan-implicit-acl-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.sdwanAclPkts",
+        "property": "sdwan-acl-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.sdwanAclOctets",
+        "property": "sdwan-acl-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.sdwanBfdPkts",
+        "property": "sdwan-bfd-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.sdwanBfdOctets",
+        "property": "sdwan-bfd-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.sdwanAppRoutePolicyPkts",
+        "property": "sdwan-app-route-policy-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.sdwanAppRoutePolicyOctets",
+        "property": "sdwan-app-route-policy-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.sdwanDataPolicyPkts",
+        "property": "sdwan-data-policy-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.sdwanDataPolicyOctets",
+        "property": "sdwan-data-policy-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.sdwanInterfacePolicyPkts",
+        "property": "sdwan-interface-policy-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.sdwanInterfacePolicyOctets",
+        "property": "sdwan-interface-policy-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.sdwanTunnelLkupPkts",
+        "property": "sdwan-tunnel-lkup-pkts",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.sdwanTlocExtOctets",
+        "property": "sdwan-tloc-ext-octets",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.sdwan.system.sdwanTlocExtPkts",
+        "property": "sdwan-tloc-ext-pkts",
+        "width": 100,
+        "dataType": "string"
+      }
+    ],
+    "fields": [
+      {
+        "property": "bad-uidb-idx-pkts",
+        "dataType": "number"
+      },
+      {
+        "property": "bad-uidb-idx-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "bad-uidb-sub-idx-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "bad-uidb-sub-idx-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "unknown-encap-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "unknown-encap-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "inv-l2-hdr-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "inv-l2-hdr-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "bad-len-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "bad-len-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "tcp-badfrag-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "tcp-badfrag-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "ipv4-acl-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "ipv4-acl-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "ipv4-acl-lookup-miss-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "ipv4-acl-lookup-miss-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "bad-ip-checksum-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "bad-ip-checksum-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "ip-format-err-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "ip-format-err-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "ip-bad-options-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "ip-bad-options-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "ipv4-martian-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "ipv4-martian-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "mpass-err-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "mpass-err-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "ipv4-pbr-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "ipv4-pbr-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "inv-hdr-err-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "inv-hdr-err-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "punt-err-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "inject-err-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "inject-err-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "ipv4-no-route-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "ipv4-no-route-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "qos-policing-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "qos-policing-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "qos-actions-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "qos-actions-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "null-jib-hdr-tbl-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "tail-drop-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "tail-drop-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "wred-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "wred-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "invalid-queue-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "invalid-queue-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "invalid-wred-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "invalid-wred-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "mpls-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "mpls-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "ipv6-truncatedpkts-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "ipv6-truncatedpkts-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "ipv6-formaterr-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "ipv6-formaterr-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "ipv6-badsource-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "ipv6-badsource-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "ipv6-badhop-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "ipv6-badhop-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "ipv6-toobigpacket-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "ipv6-toobigpacket-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "ipv6-no-route-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "ipv6-no-route-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "ipv6-acl-lookup-miss-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "ipv6-acl-lookup-miss-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "ipv6-acl-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "ipv6-acl-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "ipv6-acl-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "ip-acl-err-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "ip-acl-err-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "mac-acl-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "mac-acl-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "mac-acl-lookup-miss-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "mac-acl-lookup-miss-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "ipv4mc-no-route-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "ipv4mc-no-route-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "unknown-ext-header-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "ipv4mc-rpf-failed-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "ipv4mc-rpf-failed-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "ipv4mc-invalid-replica-record-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "ipv4mc-invalid-replica-record-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "ipv4mc-ttl-threshold-chk-failed-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "ipv4mc-ttl-threshold-chk-failed-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "ipv4mc-extra-replicae-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "ipv4mc-extra-replicae-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "ipv4-mtr-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "ipv4-mtr-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "internal-ctl-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "internal-ctl-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "frfab-wred-drop-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "frfab-wred-drop-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "firewall-nonsession-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "firewall-nonsession-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "firewall-invalid-zone-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "firewall-backpressure-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "firewall-backpressure-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "firewall-l4-insp-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "firewall-l4-insp-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "ip-frag-err-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "ip-frag-err-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "no-gpm-memory-err-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "no-gpm-memory-err-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "for-us-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "for-us-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "ipsec-input-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "ipsec-input-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "ipsec-ike-indicate-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "ipsec-ike-indicate-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "ipsec-invalid-sa-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "ipsec-invalid-sa-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "ipsec-tail-drop-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "ipsec-tail-drop-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "layer2-no-route-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "layer2-no-route-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "icmp-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "icmp-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "ip-ttl-exceeded-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "ip-ttl-exceeded-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "tunnel-bad-gre-checksum-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "tunnel-bad-gre-checksum-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "tunnel-misconfiguration-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "tunnel-misconfiguration-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "gre-bad-options-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "gre-bad-options-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "frag-tail-drop-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "frag-tail-drop-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "unconfigured-fia-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "unconfigured-fia-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "ipv4-fpm-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "ipv4-fpm-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "nat-in2out-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "nat-in2out-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "nat-out2in-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "nat-out2in-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "pa-walk-err-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "pa-walk-err-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "ipv4-routing-err-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "ipv4-routing-err-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "ipv6-routing-err-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "ipv6-routing-err-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "mpass-invalid-fs-vector-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "mpass-invalid-fs-vector-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "reass-drop-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "reass-drop-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "reass-frag-too-big-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "reass-frag-too-big-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "reass-no-frag-info-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "reass-no-frag-info-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "reass-no-frag-info-low-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "reass-no-frag-info-low-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "reass-bad-len-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "reass-bad-len-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "reass-too-many-frags-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "reass-too-many-frags-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "reass-no-frags-left-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "reass-no-frags-left-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "reass-overlap-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "reass-overlap-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "reass-overlap-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "reass-timeout-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "reass-timeout-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "no-mem-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "no-mem-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "vfr-err-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "vfr-err-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "vfr-tail-drop-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "vfr-tail-drop-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "iphc-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "iphc-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "multilink-cfg-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "multilink-cfg-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "mlp-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "mlp-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "min-tu-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "min-tu-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "max-tu-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "max-tu-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "ipv4-unclassified-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "ipv4-unclassified-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "ipv6-unclassified-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "ipv6-unclassified-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "ipv4-no-adj-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "ipv4-no-adj-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "ipv4-null0-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "ipv4-null0-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "mpls-mismatch-linktype-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "mpls-mismatch-linktype-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "mpls-frag-req-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "mpls-frag-req-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "choice-oce-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "choice-oce-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "unsupported-oce-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "unsupported-oce-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "attn-invalid-spid-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "attn-invalid-spid-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "inv-common-preamble-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "inv-common-preamble-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "ext-drop-path-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "ext-drop-path-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "frr-oce-no-backup-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "frr-oce-no-backup-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "frr-oce-invalid-state-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "frr-oce-invalid-state-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "bqs-oor-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "bqs-oor-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "ipv6-null0-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "ipv6-null0-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "ipsec-output-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "ipsec-output-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "ipsec-ted-indicate-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "ipsec-ted-indicate-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "ipsec-deny-drop-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "ipsec-deny-drop-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "disabled-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "disabled-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "ipv6-no-adj-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "ipv6-no-adj-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "not-enabled-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "not-enabled-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "illegal-obj-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "illegal-obj-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "unresolved-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "unresolved-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "discard-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "discard-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "internal-intf-err-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "internal-intf-err-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "glean-adj-unsupport-linktype-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "glean-adj-unsupport-linktype-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "lookup-oce-should-drop-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "lookup-oce-should-drop-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "lookup-oce-unsupport-linktype-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "lookup-oce-unsupport-linktype-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "unsupport-linktype-no-route-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "unsupport-linktype-no-route-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "unsupport-linktype-null0-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "unsupport-linktype-null0-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "ipv4-adj-drop-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "ipv4-adj-drop-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "ipv6-adj-drop-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "ipv6-adj-drop-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "mpls-adj-drop-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "mpls-adj-drop-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "bad-adj-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "bad-adj-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "punt-policer-drop-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "punt-policer-drop-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "punt-global-policer-drop-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "punt-global-policer-drop-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "unconfigured-ipv4-fia-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "unconfigured-ipv4-fia-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "unconfigured-ipv6-fia-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "unconfigured-ipv6-fia-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "unconfigured-mpls-fia-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "unconfigured-mpls-fia-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "oce-drop-adj-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "oce-drop-adj-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "tcp-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "tcp-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "invalid-encap-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "invalid-encap-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "lisp-elig-oce-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "lisp-elig-oce-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "lisp-misconfiguration-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "lisp-misconfiguration-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "lisp-disabled-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "lisp-disabled-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "lisp-decap-failed-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "lisp-decap-failed-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "lisp-hash-lkup-failed-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "lisp-hash-lkup-failed-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "lisp-failed-to-punt-lsb-mismatch-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "lisp-failed-to-punt-lsb-mismatch-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "nat64-v6tov4-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "nat64-v6tov4-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "tunnel-sec-chk-fail-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "tunnel-sec-chk-fail-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "fia-error-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "fia-error-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "cts-format-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "cts-format-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "cts-not-enable-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "cts-not-enable-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "idle-packet-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "idle-packet-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "bfd-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "bfd-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "lisp-failed-to-punt-dynmaic-eid-config-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "lisp-failed-to-punt-dynmaic-eid-config-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "tunnel-pkt-sb-missed-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "tunnel-pkt-sb-missed-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "tunnel-decap-too-many-times-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "tunnel-decap-too-many-times-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "loadbalance-null0-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "loadbalance-null0-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "gpm-tx-len-exceed-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "gpm-tx-len-exceed-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "tunnel-invalid-protocol-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "tunnel-invalid-protocol-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "lisp-sfltr-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "lisp-sfltr-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "identity-cft-error-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "identity-cft-error-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "flow-queue-failure-id-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "flow-queue-failure-id-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "perf-lic-policer-lo-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "perf-lic-policer-lo-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "perf-lic-policer-hi-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "perf-lic-policer-hi-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "hqf-tx-error-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "hqf-tx-error-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "nat66-in2out-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "nat66-in2out-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "nat66-out2in-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "nat66-out2in-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "lisp-failed-to-punt-gsmr-enabled-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "lisp-failed-to-punt-gsmr-enabled-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "udp-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "udp-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "sdwan-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "sdwan-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "sdwan-generic-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "sdwan-generic-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "sdwan-implicit-acl-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "sdwan-implicit-acl-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "sdwan-acl-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "sdwan-acl-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "sdwan-bfd-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "sdwan-bfd-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "sdwan-app-route-policy-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "sdwan-app-route-policy-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "sdwan-data-policy-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "sdwan-data-policy-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "sdwan-interface-policy-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "sdwan-interface-policy-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "sdwan-tunnel-lkup-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "sdwan-tloc-ext-octets",
+        "dataType": "string"
+      },
+      {
+        "property": "sdwan-tloc-ext-pkts",
+        "dataType": "string"
+      }
+    ]
+  },
+  "data": [
+    {
+      "ipv4-acl-lookup-miss-octets": "0",
+      "ip-ttl-exceeded-pkts": "1",
+      "unconfigured-mpls-fia-pkts": "0",
+      "tunnel-pkt-sb-missed-octets": "0",
+      "lisp-decap-failed-octets": "0",
+      "sdwan-bfd-octets": "0",
+      "gre-bad-options-pkts": "0",
+      "sdwan-data-policy-octets": "0",
+      "inv-common-preamble-pkts": "0",
+      "firewall-nonsession-octets": "0",
+      "bqs-oor-pkts": "0",
+      "unconfigured-ipv4-fia-pkts": "3",
+      "perf-lic-policer-lo-octets": "0",
+      "reass-frag-too-big-octets": "0",
+      "unsupport-linktype-no-route-pkts": "0",
+      "lisp-failed-to-punt-dynmaic-eid-config-pkts": "0",
+      "ipv4-no-adj-pkts": "4",
+      "sdwan-octets": "0",
+      "ipv6-acl-octets": "0",
+      "ipv4-acl-pkts": "0",
+      "firewall-backpressure-octets": "0",
+      "ipsec-input-octets": "3646",
+      "ipv6-adj-drop-pkts": "0",
+      "lookup-oce-unsupport-linktype-octets": "0",
+      "ipv6-no-adj-pkts": "0",
+      "reass-bad-len-octets": "0",
+      "ipv4-null0-pkts": "0",
+      "tcp-badfrag-pkts": "0",
+      "ip-bad-options-pkts": "0",
+      "reass-bad-len-pkts": "0",
+      "reass-no-frags-left-pkts": "0",
+      "reass-timeout-pkts": "0",
+      "ipv4-no-route-octets": "0",
+      "oce-drop-adj-octets": "0",
+      "sdwan-generic-pkts": "0",
+      "no-gpm-memory-err-octets": "0",
+      "lisp-decap-failed-pkts": "0",
+      "frfab-wred-drop-octets": "0",
+      "ipsec-ted-indicate-octets": "0",
+      "lisp-sfltr-pkts": "0",
+      "tunnel-sec-chk-fail-octets": "0",
+      "pa-walk-err-pkts": "0",
+      "loadbalance-null0-pkts": "0",
+      "hqf-tx-error-octets": "0",
+      "ipv4mc-extra-replicae-octets": "0",
+      "ipv4-martian-pkts": "0",
+      "tcp-octets": "0",
+      "ipv4-pbr-pkts": "0",
+      "ipsec-invalid-sa-octets": "0",
+      "no-mem-octets": "0",
+      "ipv4-adj-drop-octets": "0",
+      "glean-adj-unsupport-linktype-octets": "0",
+      "vdevice-name": "10.0.0.2",
+      "ipv4-martian-octets": "0",
+      "identity-cft-error-pkts": "0",
+      "reass-frag-too-big-pkts": "0",
+      "lisp-disabled-octets": "0",
+      "udp-octets": "0",
+      "multilink-cfg-pkts": "0",
+      "pa-walk-err-octets": "0",
+      "bad-adj-octets": "0",
+      "unconfigured-ipv6-fia-pkts": "460",
+      "flow-queue-failure-id-octets": "0",
+      "multilink-cfg-octets": "0",
+      "gpm-tx-len-exceed-pkts": "0",
+      "tunnel-decap-too-many-times-pkts": "0",
+      "inv-hdr-err-pkts": "0",
+      "attn-invalid-spid-octets": "0",
+      "tail-drop-octets": "0",
+      "tunnel-bad-gre-checksum-octets": "0",
+      "ipv4mc-ttl-threshold-chk-failed-pkts": "0",
+      "mpass-err-octets": "0",
+      "nat-out2in-octets": "0",
+      "ip-format-err-octets": "0",
+      "firewall-backpressure-pkts": "0",
+      "illegal-obj-pkts": "0",
+      "reass-overlap-octets": "0",
+      "bad-len-octets": "0",
+      "tunnel-misconfiguration-pkts": "0",
+      "reass-too-many-frags-octets": "0",
+      "punt-global-policer-drop-octets": "0",
+      "reass-too-many-frags-pkts": "0",
+      "frr-oce-invalid-state-octets": "0",
+      "invalid-queue-pkts": "0",
+      "ipv4mc-extra-replicae-pkts": "0",
+      "mpls-adj-drop-octets": "0",
+      "bad-uidb-idx-octets": "0",
+      "mpass-err-pkts": "0",
+      "ipv6-truncatedpkts-octets": "0",
+      "lastupdated": 1792760115444,
+      "ip-format-err-pkts": "0",
+      "ipsec-deny-drop-pkts": "0",
+      "invalid-encap-octets": "0",
+      "lookup-oce-should-drop-octets": "0",
+      "lisp-hash-lkup-failed-octets": "0",
+      "unresolved-octets": "0",
+      "ipv4-no-route-pkts": "0",
+      "lisp-failed-to-punt-gsmr-enabled-pkts": "0",
+      "ipv6-null0-pkts": "0",
+      "sdwan-bfd-pkts": "0",
+      "ipv4mc-invalid-replica-record-pkts": "0",
+      "unconfigured-fia-octets": "0",
+      "ext-drop-path-octets": "0",
+      "qos-actions-pkts": "0",
+      "mpass-invalid-fs-vector-pkts": "0",
+      "oce-drop-adj-pkts": "0",
+      "max-tu-octets": "0",
+      "invalid-encap-pkts": "0",
+      "mpls-pkts": "0",
+      "punt-err-pkts": "0",
+      "hqf-tx-error-pkts": "0",
+      "reass-drop-octets": "0",
+      "tail-drop-pkts": "0",
+      "ip-frag-err-octets": "0",
+      "punt-policer-drop-pkts": "0",
+      "mlp-pkts": "0",
+      "max-tu-pkts": "0",
+      "lisp-hash-lkup-failed-pkts": "0",
+      "inv-l2-hdr-pkts": "0",
+      "ipv4-unclassified-octets": "0",
+      "lisp-failed-to-punt-lsb-mismatch-pkts": "0",
+      "nat64-v6tov4-octets": "480",
+      "lisp-failed-to-punt-gsmr-enabled-octets": "0",
+      "sdwan-data-policy-pkts": "0",
+      "bqs-oor-octets": "0",
+      "ipv4-routing-err-pkts": "0",
+      "disabled-pkts": "102",
+      "cts-format-octets": "0",
+      "bad-len-pkts": "0",
+      "ipv6-routing-err-octets": "0",
+      "illegal-obj-octets": "0",
+      "ipv6-unclassified-octets": "0",
+      "bad-uidb-idx-pkts": 0,
+      "bad-uidb-sub-idx-pkts": "0",
+      "for-us-pkts": "0",
+      "icmp-pkts": "0",
+      "invalid-wred-pkts": "0",
+      "lisp-elig-oce-octets": "0",
+      "bfd-octets": "0",
+      "sdwan-tloc-ext-pkts": "0",
+      "ipv4-acl-lookup-miss-pkts": "0",
+      "reass-no-frag-info-octets": "0",
+      "mpls-adj-drop-pkts": "0",
+      "sdwan-generic-octets": "0",
+      "reass-drop-pkts": "0",
+      "inv-common-preamble-octets": "0",
+      "bad-ip-checksum-octets": "0",
+      "ipv6-acl-lookup-miss-pkts": "0",
+      "reass-no-frag-info-low-pkts": "0",
+      "frr-oce-no-backup-pkts": "0",
+      "ipv6-unclassified-pkts": "0",
+      "mpls-mismatch-linktype-pkts": "0",
+      "wred-pkts": "0",
+      "ipv6-badsource-pkts": "0",
+      "lisp-disabled-pkts": "0",
+      "choice-oce-octets": "0",
+      "ipv6-acl-lookup-miss-octets": "0",
+      "bad-adj-pkts": "0",
+      "min-tu-octets": "0",
+      "nat-out2in-pkts": "0",
+      "unsupport-linktype-null0-octets": "0",
+      "firewall-invalid-zone-pkts": "0",
+      "lisp-failed-to-punt-dynmaic-eid-config-octets": "0",
+      "attn-invalid-spid-pkts": "0",
+      "not-enabled-octets": "0",
+      "fia-error-pkts": "0",
+      "bad-ip-checksum-pkts": "0",
+      "ipsec-ike-indicate-octets": "0",
+      "sdwan-app-route-policy-pkts": "0",
+      "ipv6-toobigpacket-octets": "0",
+      "ipv6-formaterr-octets": "0",
+      "ipv4mc-no-route-pkts": "0",
+      "mpls-frag-req-octets": "0",
+      "vdevice-dataKey": "10.0.0.2-",
+      "lookup-oce-should-drop-pkts": "0",
+      "cts-not-enable-octets": "0",
+      "loadbalance-null0-octets": "0",
+      "frr-oce-invalid-state-pkts": "0",
+      "tcp-pkts": "0",
+      "ipv6-acl-pkts": "0",
+      "nat-in2out-pkts": "0",
+      "ipv6-badhop-pkts": "0",
+      "ipv6-badsource-octets": "0",
+      "inv-hdr-err-octets": "0",
+      "tcp-badfrag-octets": "0",
+      "ipv4-mtr-octets": "0",
+      "ipsec-ted-indicate-pkts": "0",
+      "ipsec-output-octets": "0",
+      "nat66-out2in-octets": "0",
+      "lisp-misconfiguration-octets": "0",
+      "ipsec-output-pkts": "0",
+      "cts-not-enable-pkts": "0",
+      "mlp-octets": "0",
+      "qos-actions-octets": "0",
+      "iphc-octets": "0",
+      "disabled-octets": "12334",
+      "unknown-ext-header-pkts": "0",
+      "mpls-mismatch-linktype-octets": "0",
+      "ipv6-no-adj-octets": "0",
+      "fia-error-octets": "0",
+      "gre-bad-options-octets": "0",
+      "reass-overlap-pkts": "0",
+      "vfr-tail-drop-octets": "0",
+      "sdwan-acl-octets": "0",
+      "ipv4-null0-octets": "0",
+      "unresolved-pkts": "0",
+      "invalid-queue-octets": "0",
+      "sdwan-implicit-acl-octets": "4384",
+      "ipv4-routing-err-octets": "0",
+      "inject-err-pkts": "0",
+      "punt-policer-drop-octets": "0",
+      "reass-no-frag-info-low-octets": "0",
+      "min-tu-pkts": "0",
+      "ipsec-input-pkts": "23",
+      "perf-lic-policer-hi-octets": "0",
+      "mac-acl-lookup-miss-octets": "0",
+      "ipv6-no-route-pkts": "6",
+      "cts-format-pkts": "0",
+      "ipsec-deny-drop-octets": "0",
+      "ip-bad-options-octets": "0",
+      "frag-tail-drop-octets": "0",
+      "frr-oce-no-backup-octets": "0",
+      "internal-ctl-pkts": "0",
+      "flow-queue-failure-id-pkts": "0",
+      "unconfigured-mpls-fia-octets": "0",
+      "ip-ttl-exceeded-octets": "78",
+      "unsupported-oce-pkts": "0",
+      "sdwan-acl-pkts": "0",
+      "no-gpm-memory-err-pkts": "0",
+      "perf-lic-policer-hi-pkts": "0",
+      "nat64-v6tov4-pkts": "6",
+      "unsupport-linktype-null0-pkts": "0",
+      "ipv4mc-ttl-threshold-chk-failed-octets": "0",
+      "glean-adj-unsupport-linktype-pkts": "0",
+      "firewall-l4-insp-pkts": "0",
+      "mpass-invalid-fs-vector-octets": "0",
+      "inv-l2-hdr-octets": "0",
+      "mpls-frag-req-pkts": "0",
+      "internal-ctl-octets": "0",
+      "identity-cft-error-octets": "0",
+      "sdwan-pkts": "0",
+      "reass-no-frag-info-pkts": "0",
+      "mpls-octets": "0",
+      "sdwan-interface-policy-octets": "0",
+      "frag-tail-drop-pkts": "0",
+      "ip-acl-err-octets": "0",
+      "discard-pkts": "0",
+      "sdwan-tunnel-lkup-pkts": "0",
+      "not-enabled-pkts": "0",
+      "choice-oce-pkts": "0",
+      "lookup-oce-unsupport-linktype-pkts": "0",
+      "sdwan-app-route-policy-octets": "0",
+      "lisp-misconfiguration-pkts": "0",
+      "bad-uidb-sub-idx-octets": "0",
+      "reass-timeout-octets": "0",
+      "tunnel-decap-too-many-times-octets": "0",
+      "vdevice-host-name": "br1",
+      "icmp-octets": "0",
+      "ipv4-adj-drop-pkts": "0",
+      "tunnel-invalid-protocol-pkts": "0",
+      "wred-octets": "0",
+      "lisp-sfltr-octets": "0",
+      "ipv6-no-route-octets": "336",
+      "unconfigured-ipv6-fia-octets": "50363",
+      "for-us-octets": "0",
+      "vfr-tail-drop-pkts": "0",
+      "frfab-wred-drop-pkts": "0",
+      "ipsec-invalid-sa-pkts": "0",
+      "ipv6-null0-octets": "0",
+      "ipv4-acl-octets": "0",
+      "firewall-nonsession-pkts": "0",
+      "ipsec-tail-drop-pkts": "0",
+      "tunnel-misconfiguration-octets": "0",
+      "bfd-pkts": "0",
+      "ipv4mc-invalid-replica-record-octets": "0",
+      "ip-acl-err-pkts": "0",
+      "ipsec-ike-indicate-pkts": "0",
+      "idle-packet-octets": "0",
+      "unconfigured-ipv4-fia-octets": "755",
+      "ipv6-toobigpacket-pkts": "0",
+      "idle-packet-pkts": "0",
+      "ipv4mc-rpf-failed-pkts": "0",
+      "ip-frag-err-pkts": "0",
+      "sdwan-interface-policy-pkts": "0",
+      "vfr-err-pkts": "0",
+      "unknown-encap-octets": "0",
+      "ipv4mc-no-route-octets": "0",
+      "unsupported-oce-octets": "0",
+      "unconfigured-fia-pkts": "0",
+      "sdwan-tloc-ext-octets": "0",
+      "qos-policing-octets": "0",
+      "sdwan-implicit-acl-pkts": "27",
+      "internal-intf-err-pkts": "0",
+      "firewall-l4-insp-octets": "0",
+      "mac-acl-octets": "0",
+      "no-mem-pkts": "0",
+      "ipv4-mtr-pkts": "0",
+      "internal-intf-err-octets": "0",
+      "invalid-wred-octets": "0",
+      "ipsec-tail-drop-octets": "0",
+      "lisp-elig-oce-pkts": "0",
+      "layer2-no-route-pkts": "0",
+      "ipv6-routing-err-pkts": "0",
+      "ext-drop-path-pkts": "0",
+      "unsupport-linktype-no-route-octets": "0",
+      "mac-acl-lookup-miss-pkts": "0",
+      "ipv4-fpm-pkts": "0",
+      "nat-in2out-octets": "0",
+      "ipv6-adj-drop-octets": "0",
+      "ipv4-no-adj-octets": "494",
+      "ipv4-fpm-octets": "0",
+      "punt-global-policer-drop-pkts": "0",
+      "ipv4-pbr-octets": "0",
+      "nat66-in2out-octets": "0",
+      "nat66-out2in-pkts": "0",
+      "nat66-in2out-pkts": "0",
+      "ipv6-formaterr-pkts": "0",
+      "vfr-err-octets": "0",
+      "mac-acl-pkts": "0",
+      "ipv6-truncatedpkts-pkts": "0",
+      "tunnel-pkt-sb-missed-pkts": "0",
+      "qos-policing-pkts": "0",
+      "gpm-tx-len-exceed-octets": "0",
+      "layer2-no-route-octets": "0",
+      "perf-lic-policer-lo-pkts": "0",
+      "null-jib-hdr-tbl-pkts": "0",
+      "ipv6-badhop-octets": "0",
+      "udp-pkts": "0",
+      "unknown-encap-pkts": "0",
+      "ipv4-unclassified-pkts": "0",
+      "tunnel-bad-gre-checksum-pkts": "0",
+      "tunnel-invalid-protocol-octets": "0",
+      "reass-no-frags-left-octets": "0",
+      "tunnel-sec-chk-fail-pkts": "0",
+      "ipv4mc-rpf-failed-octets": "0",
+      "lisp-failed-to-punt-lsb-mismatch-octets": "0",
+      "inject-err-octets": "0",
+      "iphc-pkts": "0",
+      "discard-octets": "0"
+    }
+  ]
+}

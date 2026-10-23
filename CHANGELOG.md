@@ -66,6 +66,10 @@ All notable changes to this project are documented here. The format follows
   remote edge, matched policies, drop reason), `catsdwan_device_bringup` (the onboarding checklist with the first
   failing step, plus the control check per colour) as reads; `catsdwan_admin_tech` (write, preview-first). Request
   bodies are the ones the Manager's own UI sends.
+- W18 (#32): device state reads. `catsdwan_routes` (the live RIB from `/device/ip/ipRoutes` or `/ip/routetable`,
+  OMP next hops named by edge, VPN/prefix/protocol filters with a `missing` verdict, BGP/OSPF/EIGRP neighbours)
+  and `catsdwan_device_state` (a catalogue of 18 real-time tables by plain name, `feature='list'`, 'did you mean',
+  zero counters left out, platform-specific tables refused).
 
 ## [0.2.0] - 2026-10-23
 

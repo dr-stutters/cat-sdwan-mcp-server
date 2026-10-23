@@ -1,0 +1,34 @@
+{
+  "data": [
+    {
+      "local-system-ip": "10.0.0.1",
+      "host-name": "hub1",
+      "site-id": "100",
+      "site-name": "SITE_100",
+      "hierarchy-uuid": "00000000-0000-4000-8000-000000000180",
+      "cdp": {
+        "neighbors": []
+      }
+    },
+    {
+      "local-system-ip": "10.0.0.2",
+      "host-name": "br1",
+      "site-id": "200",
+      "site-name": "SITE_200",
+      "hierarchy-uuid": "00000000-0000-4000-8000-000000000181",
+      "cdp": {
+        "neighbors": []
+      }
+    },
+    {
+      "local-system-ip": "10.0.0.3",
+      "host-name": "br2",
+      "site-id": "201",
+      "site-name": "SITE_201",
+      "hierarchy-uuid": "00000000-0000-4000-8000-000000000182",
+      "cdp": {
+        "neighbors": []
+      }
+    }
+  ]
+}
