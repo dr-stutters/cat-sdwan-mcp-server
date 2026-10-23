@@ -31,11 +31,13 @@ from cat_sdwan_mcp.client import SdwanApp, _as_list
 from cat_sdwan_mcp.fabric import host_map, is_reachable
 from cat_sdwan_mcp.inventory import load_inventory, matches_site, resolve
 from cat_sdwan_mcp.pathinsight import (
+    DATASTREAM_PATH,
     FIN_FLOWS_PATH,
     TASK_HISTORY_PATH,
     TRACE_HISTORY_PATH,
     TRACE_START_PATH,
     TRACE_STOP_PATH,
+    datastream_enabled,
     flow_row,
     flow_summary,
     flows_of,
@@ -44,6 +46,7 @@ from cat_sdwan_mcp.pathinsight import (
     sort_flows,
     start_body,
     start_problems,
+    start_refusal,
     task_row,
     trace_id_of,
     trace_row,
@@ -204,6 +207,14 @@ def register(reg: ToolRegistrar) -> None:
             for r in chosen
             if not is_reachable(r)
         ]
+        try:
+            if not datastream_enabled(await app.api.get(DATASTREAM_PATH)):
+                blockers.append(
+                    "Data Stream is off on the Manager (Administration > Settings > Data Stream): no path "
+                    "insight trace starts until it is enabled"
+                )
+        except UpstreamError:
+            pass
         warnings = [
             f"{r.get('host')} runs {r.get('version')}: path insight needs 17.6 or later"
             for r in chosen
@@ -281,9 +292,7 @@ def register(reg: ToolRegistrar) -> None:
             if problems := start_problems(answer):
                 out["start_problems"] = problems
             if tid is None or ts is None:
-                out["answer"] = answer
-                out["note"] = "the Manager returned no trace id; see catsdwan_list_path_traces"
-                return out
+                raise UpstreamError(f"The Manager started no trace: {start_refusal(answer)}")
             out["trace_id"] = tid
             flows: list[dict[str, Any]] = []
             read_error = None

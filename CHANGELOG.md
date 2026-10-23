@@ -4,6 +4,14 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/) (0.x: minor bumps may break consumers).
 
+## [Unreleased]
+
+### Fixed
+- `catsdwan_admin_tech`: the request body is now the one the Manager's UI sends (no `device-type` except for the
+  Manager itself, empty `tech-filter` / `custom-commands`); 20.18 refused the old one with DEVICE0007 (live).
+- `catsdwan_path_insight`: the preview is blocked while the Manager's Data Stream setting is off, and a start the
+  Manager refuses without a trace id is now an error instead of an "applied" result (live: `enable_datastream`).
+
 ## [0.3.0] - 2026-10-24
 
 ### Added
