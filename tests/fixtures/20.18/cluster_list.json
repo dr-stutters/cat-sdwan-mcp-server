@@ -1,0 +1,90 @@
+{
+  "header": {
+    "generatedOn": 1792758944486,
+    "viewKeys": {
+      "uniqueKey": [],
+      "preferenceKey": "grid-Cluster_v2"
+    },
+    "columns": [
+      {
+        "title": "Hostname",
+        "property": "host-name",
+        "hideable": false,
+        "minWidth": 170,
+        "dataType": "string"
+      },
+      {
+        "title": "IP Address",
+        "property": "deviceIP",
+        "hideable": false,
+        "minWidth": 170,
+        "dataType": "string"
+      },
+      {
+        "title": "Configure Status",
+        "property": "state",
+        "hideable": true,
+        "minWidth": 170,
+        "dataType": "string"
+      },
+      {
+        "title": "Node Persona",
+        "property": "persona",
+        "hideable": false,
+        "minWidth": 170,
+        "dataType": "string"
+      },
+      {
+        "title": "UUID",
+        "property": "uuid",
+        "hideable": false,
+        "minWidth": 170,
+        "dataType": "string"
+      }
+    ],
+    "fields": [
+      {
+        "property": "host-name",
+        "dataType": "string"
+      },
+      {
+        "property": "deviceIP",
+        "dataType": "string"
+      },
+      {
+        "property": "state",
+        "dataType": "string"
+      },
+      {
+        "property": "persona",
+        "dataType": "string"
+      },
+      {
+        "property": "uuid",
+        "dataType": "string"
+      },
+      {
+        "property": "container-manager",
+        "dataType": "boolean"
+      }
+    ]
+  },
+  "data": [
+    {
+      "isIPConfigured": false,
+      "data": [
+        {
+          "vmanageID": "0",
+          "configJson": {
+            "uuid": "00000000-0000-4000-8000-000000000003",
+            "host-name": "manager",
+            "deviceIP": "localhost",
+            "state": "Ready",
+            "container-manager": true,
+            "persona": "COMPUTE_AND_DATA"
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -87,6 +87,12 @@ All notable changes to this project are documented here. The format follows
   `catsdwan_integrations` (ISE credentials masked, the connection test and ISE SGT list only when ISE is
   configured, pxGrid, partners with a Catalyst Center partner's SD-Access sites and devices, SD-Access VPNs; says
   plainly when no ISE, pxGrid or partner is configured).
+- W25 (#39): Manager operations. `catsdwan_manager_health` (cluster nodes and state, services per node up or
+  down, health summary and details, JVM and third-party memory with %, CPUs, statistics indexes not enabled,
+  disaster recovery with its history when configured; a `verdict`), `catsdwan_list_backups` (`/backup/list`
+  newest first with state and file, `/schedule/list`) and `catsdwan_create_backup` (write tier, preview-first:
+  `POST /backup/export` on demand, followed through `/backup/backupinfo/{id}` to ALL_SUCCESS or a failure; the
+  preview names the newest backup, warns that the Manager is busy and blocks while another backup runs).
 
 ## [0.2.0] - 2026-10-23
 

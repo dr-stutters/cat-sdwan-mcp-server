@@ -1,0 +1,22 @@
+{
+  "header": {
+    "generatedOn": 1792758944466
+  },
+  "data": [
+    {
+      "name": "vManage",
+      "count": 1,
+      "detailsURL": "/dataservice/clusterManagement/health/details",
+      "status": "normal",
+      "statusList": [
+        {
+          "name": "vManage",
+          "status": "normal",
+          "message": "Number of devices down",
+          "detailsURL": "/dataservice/clusterManagement/health/details",
+          "count": 0
+        }
+      ]
+    }
+  ]
+}

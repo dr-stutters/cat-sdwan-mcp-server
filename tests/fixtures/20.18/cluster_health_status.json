@@ -1,0 +1,106 @@
+{
+  "header": {
+    "generatedOn": 1792758944422,
+    "viewKeys": {
+      "uniqueKey": [],
+      "preferenceKey": "grid-ClusterStateDetails"
+    },
+    "columns": [
+      {
+        "title": "view.cluster.viewClusterStateDetails.ipAddress",
+        "property": "deviceIP",
+        "hideable": false,
+        "minWidth": 170,
+        "dataType": "string"
+      },
+      {
+        "title": "view.cluster.viewClusterStateDetails.applicationSer",
+        "property": "application-server",
+        "hideable": false,
+        "minWidth": 170,
+        "dataType": "boolean"
+      },
+      {
+        "title": "view.cluster.viewClusterStateDetails.statisticsData",
+        "property": "olap-db",
+        "hideable": true,
+        "minWidth": 170,
+        "dataType": "boolean"
+      },
+      {
+        "title": "view.cluster.viewClusterStateDetails.configurationD",
+        "property": "configuration-db",
+        "hideable": true,
+        "minWidth": 170,
+        "dataType": "boolean"
+      },
+      {
+        "title": "view.cluster.viewClusterStateDetails.messagingServe",
+        "property": "messaging-server",
+        "hideable": true,
+        "minWidth": 170,
+        "dataType": "boolean"
+      },
+      {
+        "title": "view.cluster.viewClusterStateDetails.sdAvc",
+        "property": "container-manager",
+        "hideable": true,
+        "minWidth": 170,
+        "dataType": "boolean"
+      },
+      {
+        "title": "view.cluster.viewClusterStateDetails.sdAvc-gw",
+        "property": "sdavc-gw",
+        "hideable": true,
+        "minWidth": 170,
+        "dataType": "boolean"
+      }
+    ],
+    "fields": [
+      {
+        "property": "deviceIP",
+        "dataType": "string"
+      },
+      {
+        "property": "application-server",
+        "dataType": "boolean"
+      },
+      {
+        "property": "olap-db",
+        "dataType": "boolean"
+      },
+      {
+        "property": "configuration-db",
+        "dataType": "boolean"
+      },
+      {
+        "property": "messaging-server",
+        "dataType": "boolean"
+      },
+      {
+        "property": "container-manager",
+        "dataType": "boolean"
+      },
+      {
+        "property": "sdavc-gw",
+        "dataType": "boolean"
+      }
+    ]
+  },
+  "data": [
+    {
+      "deviceIP": "localhost"
+    },
+    {
+      "container-manager": true,
+      "application-server": true,
+      "olap-db": true,
+      "sdavc-gw": true,
+      "coordination-server": true,
+      "configuration-db": true,
+      "messaging-server": true,
+      "configuration-db-health": true,
+      "deviceIP": "localhost"
+    }
+  ]
+}

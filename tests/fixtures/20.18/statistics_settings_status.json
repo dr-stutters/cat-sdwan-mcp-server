@@ -1,0 +1,187 @@
+[
+  {
+    "indexName": "aggregatedappsdpistatistics",
+    "status": "enable",
+    "displayName": "Aggregated SAIE"
+  },
+  {
+    "indexName": "apphostingstatistics",
+    "status": "enable",
+    "displayName": "AppHosting"
+  },
+  {
+    "indexName": "approutestatsstatistics",
+    "status": "enable",
+    "displayName": "Approute"
+  },
+  {
+    "indexName": "artstatistics",
+    "status": "enable",
+    "displayName": "Artstatistics"
+  },
+  {
+    "indexName": "bridgeinterfacestatistics",
+    "status": "enable",
+    "displayName": "Bridge Interface"
+  },
+  {
+    "indexName": "bridgemacstatistics",
+    "status": "enable",
+    "displayName": "BridgeMac"
+  },
+  {
+    "indexName": "cloudxstatistics",
+    "status": "enable",
+    "displayName": "CloudExpress"
+  },
+  {
+    "indexName": "cryptodmvpnstatistics",
+    "status": "enable",
+    "displayName": "Crypto DMVPN"
+  },
+  {
+    "indexName": "cryptostatistics",
+    "status": "enable",
+    "displayName": "Crypto"
+  },
+  {
+    "indexName": "devicehealthstatistics",
+    "status": "enable",
+    "displayName": "DeviceHealth"
+  },
+  {
+    "indexName": "devicesystemstatusstatistics",
+    "status": "enable",
+    "displayName": "Device System Status"
+  },
+  {
+    "indexName": "dpistatistics",
+    "status": "enable",
+    "displayName": "SAIE"
+  },
+  {
+    "indexName": "eioltestatistics",
+    "status": "enable",
+    "displayName": "CellularPolaris"
+  },
+  {
+    "indexName": "flowlogstatistics",
+    "status": "enable",
+    "displayName": "Flow Log"
+  },
+  {
+    "indexName": "fwall",
+    "status": "enable",
+    "displayName": "Firewall"
+  },
+  {
+    "indexName": "idmgripuser",
+    "status": "bypass",
+    "displayName": "User-IP Binding"
+  },
+  {
+    "indexName": "interfacestatistics",
+    "status": "enable",
+    "displayName": "Interface"
+  },
+  {
+    "indexName": "ipsalert",
+    "status": "enable",
+    "displayName": "IPS Alert"
+  },
+  {
+    "indexName": "lpshieldstatistics",
+    "status": "enable",
+    "displayName": "Lpshield"
+  },
+  {
+    "indexName": "perfmonstatistics",
+    "status": "enable",
+    "displayName": "Performance Monitor"
+  },
+  {
+    "indexName": "powerconsumptionstatistics",
+    "status": "enable",
+    "displayName": "PowerConsumption"
+  },
+  {
+    "indexName": "qfpdropstatistics",
+    "status": "enable",
+    "displayName": "QFP Drop Statistics"
+  },
+  {
+    "indexName": "qfpstatistics",
+    "status": "enable",
+    "displayName": "QFP Statistics"
+  },
+  {
+    "indexName": "qosstatistics",
+    "status": "enable",
+    "displayName": "QoS"
+  },
+  {
+    "indexName": "sdrastatistics",
+    "status": "enable",
+    "displayName": "SDRA"
+  },
+  {
+    "indexName": "sitehealthstatistics",
+    "status": "enable",
+    "displayName": "SiteHealth"
+  },
+  {
+    "indexName": "sulstatistics",
+    "status": "enable",
+    "displayName": "Security Unified Logging"
+  },
+  {
+    "indexName": "temperaturestatistics",
+    "status": "enable",
+    "displayName": "Temperature Statistics"
+  },
+  {
+    "indexName": "trackerstatistics",
+    "status": "enable",
+    "displayName": "Tracker Statistics"
+  },
+  {
+    "indexName": "umbrella",
+    "status": "enable",
+    "displayName": "Umbrella"
+  },
+  {
+    "indexName": "umtsmonitor",
+    "status": "bypass",
+    "displayName": "umts-monitoring"
+  },
+  {
+    "indexName": "umtstunnelpmtuchange",
+    "status": "bypass",
+    "displayName": "umts-event-tunnel-pmtu-change"
+  },
+  {
+    "indexName": "umtstunnelslachange",
+    "status": "bypass",
+    "displayName": "umts-event-tunnel-sla-change"
+  },
+  {
+    "indexName": "urlf",
+    "status": "enable",
+    "displayName": "Urlf"
+  },
+  {
+    "indexName": "utddaqioxstatistics",
+    "status": "enable",
+    "displayName": "UtdDaqIox"
+  },
+  {
+    "indexName": "vnfstatistics",
+    "status": "enable",
+    "displayName": "vnf statistics"
+  },
+  {
+    "indexName": "wlanclientinfostatistics",
+    "status": "enable",
+    "displayName": "Wlan Client Info"
+  }
+]
