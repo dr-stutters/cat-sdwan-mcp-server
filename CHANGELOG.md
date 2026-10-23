@@ -92,7 +92,9 @@ All notable changes to this project are documented here. The format follows
   disaster recovery with its history when configured; a `verdict`), `catsdwan_list_backups` (`/backup/list`
   newest first with state and file, `/schedule/list`) and `catsdwan_create_backup` (write tier, preview-first:
   `POST /backup/export` on demand, followed through `/backup/backupinfo/{id}` to ALL_SUCCESS or a failure; the
-  preview names the newest backup, warns that the Manager is busy and blocks while another backup runs).
+  preview names the newest backup, warns that the Manager is busy and blocks while another backup runs or
+  when no cluster IP is configured; `srcIpAddress` / `followerIpAddressList` come from the nodes' cluster IPs,
+  and EXPORT_FAILED is explained). `catsdwan_manager_health` reports `cluster_ip_configured`.
 
 ## [0.2.0] - 2026-10-23
 

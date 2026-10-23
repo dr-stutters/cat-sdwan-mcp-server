@@ -8,10 +8,17 @@ trusted for the verdict), `clusterManagement/list` nests the nodes as data[0].da
 `vManageResourceUtilization` gives memory as "11.03 GB" strings, `server/info` answers the misspelt
 "Achitecture", `/disasterrecovery/status` {"drStatus": {"drenabled": false, ...}} (`/drstatus` answers 400
 DR0001 without DR), `/backup/list` {"backupList": []} and `/schedule/list` {"scheduleList": []}.
+
+Backups (live on 20.18.3.1): POST /backup/export needs `srcIpAddress` and `followerIpAddressList` (at least
+one) besides {backupType, taskName}; without them it answers 400 'InValid number of IP in List', 'localhost'
+is refused, and on a Manager whose cluster list says isIPConfigured false even a valid address ends in 400
+EXPORT_FAILED 'Failed to export scheduled backup data'. So the addresses come from the cluster list and a
+Manager without a cluster IP is blocked in the preview.
 """
 
 from __future__ import annotations
 
+import ipaddress
 import re
 from typing import Any
 
@@ -80,12 +87,57 @@ def cluster_nodes(body: Any) -> list[dict[str, Any]]:
                 continue
             row = {
                 "host": cfg.get("host-name"),
+                "vmanage_id": n.get("vmanageID") if isinstance(n, dict) else None,
                 "address": cfg.get("deviceIP"),
                 "state": cfg.get("state"),
                 "persona": cfg.get("persona"),
             }
             out.append({k: v for k, v in row.items() if v not in (None, "")})
     return out
+
+
+def cluster_ip_configured(body: Any) -> bool | None:
+    """GET /clusterManagement/list's `isIPConfigured` (false on a standalone Manager never given a cluster IP
+    in Administration > Cluster Management); None when the answer doesn't say."""
+    flags = [g["isIPConfigured"] for g in data_rows(body) if isinstance(g.get("isIPConfigured"), bool)]
+    return any(flags) if flags else None
+
+
+def _is_ip(v: Any) -> bool:
+    try:
+        ipaddress.ip_address(str(v))
+    except ValueError:
+        return False
+    return True
+
+
+def backup_addresses(nodes: list[dict[str, Any]]) -> tuple[str | None, list[str]]:
+    """The cluster IPs a backup request names: `srcIpAddress` is the node the backup runs on (the one with
+    vmanageID 0, the first node of the cluster, else the first listed) and `followerIpAddressList` every
+    node's cluster IP (the LocalBackupInfo schema needs at least one; a single node lists itself). 'localhost'
+    (no cluster IP) is never used: the Manager refuses it."""
+    ips = [str(n["address"]) for n in nodes if _is_ip(n.get("address"))]
+    if not ips:
+        return None, []
+    first = next((n for n in nodes if str(n.get("vmanage_id")) == "0" and _is_ip(n.get("address"))), None)
+    src = str(first["address"]) if first else ips[0]
+    return src, ips
+
+
+def export_error(message: str) -> str | None:
+    """A readable reason for a refused POST /backup/export (the Manager's codes recorded on 20.18.3.1)."""
+    if "EXPORT_FAILED" in message or "Failed to export" in message:
+        return (
+            "the Manager refused the backup (EXPORT_FAILED: 'Failed to export scheduled backup data'). On "
+            "20.18.3 this is what a Manager without a cluster IP answers: set one in Administration > "
+            "Cluster Management (catsdwan_manager_health shows cluster_ip_configured), then try again"
+        )
+    if "InValid number of IP" in message or "Invalid input for srcIpAddress" in message:
+        return (
+            "the Manager refused the backup's addresses (srcIpAddress / followerIpAddressList must be the "
+            f"nodes' cluster IPs): {message[:300]}"
+        )
+    return None
 
 
 def detail_rows(body: Any) -> list[dict[str, Any]]:

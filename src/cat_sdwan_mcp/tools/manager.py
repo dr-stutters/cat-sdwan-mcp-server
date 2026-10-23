@@ -42,12 +42,15 @@ from cat_sdwan_mcp.manager import (
     SERVER_INFO_PATH,
     STATS_SETTINGS_PATH,
     TASK_NAME_RE,
+    backup_addresses,
     backup_row,
     backup_rows,
     backup_state,
+    cluster_ip_configured,
     cluster_nodes,
     detail_rows,
     dr_state,
+    export_error,
     export_id,
     resources,
     schedule_rows,
@@ -111,6 +114,9 @@ def register(reg: ToolRegistrar) -> None:
         nodes = [] if _err(cluster) else cluster_nodes(cluster)
         svc = [] if _err(status) else services(status)
         out["nodes"] = nodes
+        cluster_ip = None if _err(cluster) else cluster_ip_configured(cluster)
+        if cluster_ip is not None:
+            out["cluster_ip_configured"] = cluster_ip
         out["services"] = svc
         if not _err(summary):
             out["summary"] = summary_rows(summary)
@@ -137,6 +143,11 @@ def register(reg: ToolRegistrar) -> None:
         jvm = out.get("resources", {}).get("jvm_memory", {})
         if jvm.get("used_percent", 0) >= MEMORY_WARN:
             problems.append(f"JVM memory {jvm['used_percent']}% used")
+        if cluster_ip is False:
+            out["cluster_ip_note"] = (
+                "no cluster IP is configured (Administration > Cluster Management): catsdwan_create_backup "
+                "needs one"
+            )
         if problems:
             out["verdict"] = "attention: " + "; ".join(problems)
         elif svc:
@@ -203,22 +214,37 @@ def register(reg: ToolRegistrar) -> None:
         """Back up the Manager's configuration database and statistics (POST /backup/export, an on-demand
         backup stored on the Manager), then follow it (GET /backup/backupinfo/{id}) to ALL_SUCCESS or a
         failure with the file to download. Preview-first: the preview names the newest existing backup,
-        warns that the Manager is busy while it runs, and blocks while another backup is still running. The
+        warns that the Manager is busy while it runs, and blocks while another backup is still running or
+        when no cluster IP is configured (the request names the nodes' cluster IPs). The
         first step of a change window and of controller or edge upgrades. Restores stay in the GUI."""
         if not TASK_NAME_RE.fullmatch(task_name):
             raise InvalidRequest(
                 "task_name may hold letters, digits, spaces and _ - / \\ only (the Manager's own rule)."
             )
         app: SdwanApp = get_client(ctx)
-        rows = await _backups(app)
+        rows, cluster = await asyncio.gather(_backups(app), app.api.get(CLUSTER_LIST_PATH))
+        nodes = cluster_nodes(cluster)
+        configured = cluster_ip_configured(cluster)
+        src, followers = backup_addresses(nodes)
         running = [r for r in rows if backup_state(r) in BACKUP_RUNNING]
         blockers = [
             f"backup {r.get('task') or r.get('id')} is still {r.get('state')} (started {r.get('created')}): "
             "wait for it (catsdwan_list_backups)"
             for r in running
         ]
+        if configured is False or src is None:
+            blockers.append(
+                "the Manager has no cluster IP configured (Administration > Cluster Management): a backup "
+                "needs it (the request names the nodes' cluster IPs; 'localhost' is refused)"
+                + (f"; GET {CLUSTER_LIST_PATH} says isIPConfigured false" if configured is False else "")
+            )
         newest = next((r for r in rows if backup_state(r) in BACKUP_DONE), None)
-        body = {"backupType": "ON_DEMAND", "taskName": task_name}
+        body: dict[str, Any] = {
+            "backupType": "ON_DEMAND",
+            "taskName": task_name,
+            "srcIpAddress": src,
+            "followerIpAddressList": followers,
+        }
         plan = Plan(
             f"Back up the Manager's configuration database and statistics (task {task_name!r})",
             details={
@@ -226,17 +252,24 @@ def register(reg: ToolRegistrar) -> None:
                 "then": f"GET {BACKUP_INFO_PATH} until ALL_SUCCESS or a failure" if wait else "not followed",
                 "newest_backup": newest or "none",
                 "existing_backups": len(rows),
+                "cluster": {"ip_configured": configured, "nodes": nodes},
                 "warning": BUSY_WARNING,
             },
             side_effects=[BUSY_WARNING, "The backup file stays on the Manager's disk until it is deleted."],
-            fingerprint=[(r.get("id"), r.get("state")) for r in running],
+            fingerprint=[[(r.get("id"), r.get("state")) for r in running], src, followers],
             blockers=blockers,
             blast_radius=1,
         )
 
         async def apply() -> Any:
             started = time.time() * 1000
-            answer = await app.api.post(BACKUP_EXPORT_PATH, body)
+            try:
+                answer = await app.api.post(BACKUP_EXPORT_PATH, body)
+            except UpstreamError as e:
+                reason = export_error(str(e))
+                if reason is None:
+                    raise
+                raise UpstreamError(f"Backup not started: {reason}", e.status_code) from e
             bid = export_id(answer)
             if bid is None:
                 # No id in the answer: the new backup is the newest one created since the request.
