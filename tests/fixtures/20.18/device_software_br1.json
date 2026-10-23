@@ -1,0 +1,78 @@
+{
+  "header": {
+    "generatedOn": 1792743507076,
+    "viewKeys": {
+      "uniqueKey": [
+        "vdevice-dataKey"
+      ],
+      "preferenceKey": "grid-Software"
+    },
+    "columns": [
+      {
+        "title": "device.software.deviceDataSoftware.version",
+        "property": "version",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.software.deviceDataSoftware.active",
+        "property": "active",
+        "width": 80,
+        "dataType": "string"
+      },
+      {
+        "title": "device.software.deviceDataSoftware.default",
+        "property": "default",
+        "width": 80,
+        "dataType": "string"
+      },
+      {
+        "title": "device.software.deviceDataSoftware.lastUpdated",
+        "property": "lastupdated",
+        "displayFormat": "DD MMM YYYY h:mm:ss A z",
+        "inputFormat": "unix-time",
+        "hideable": false,
+        "minWidth": 200,
+        "dataType": "date"
+      }
+    ],
+    "fields": [
+      {
+        "property": "vdevice-name",
+        "dataType": "string"
+      },
+      {
+        "property": "vdevice-host-name",
+        "dataType": "string"
+      },
+      {
+        "property": "version",
+        "dataType": "string"
+      },
+      {
+        "property": "active",
+        "dataType": "string"
+      },
+      {
+        "property": "default",
+        "dataType": "string"
+      },
+      {
+        "property": "lastupdated",
+        "dataType": "date"
+      }
+    ]
+  },
+  "data": [
+    {
+      "default": "true",
+      "vdevice-dataKey": "10.0.0.2-17.18.02.0.4112",
+      "software": true,
+      "vdevice-name": "10.0.0.2",
+      "active": "true",
+      "lastupdated": 1792743507064,
+      "version": "17.18.02.0.4112",
+      "vdevice-host-name": "br1"
+    }
+  ]
+}

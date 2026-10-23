@@ -16,6 +16,15 @@ All notable changes to this project are documented here. The format follows
   `CATSDWAN_TENANT`.
 - `catsdwan_status`: Manager release, login style, tenant, controllers by role with reachability and certificate
   expiry, edges and how many are unreachable (`/dataservice/device`, `/dataservice/system/device/controllers`).
+- W2 (#3): inventory and device health. `catsdwan_list_devices` (`/dataservice/device` joined with
+  `/system/device/vedges` and `/system/device/controllers`: certificate state, configuration mode and its template
+  or group; filters site, personality, reachability, model, version; `include_unjoined` for serial-file slots that
+  never joined), `catsdwan_get_device` (by host name, system IP, chassis or serial with 'did you mean'; live
+  `device/system/status`, `device/interface`, `device/software` and `device/reboothistory`, each failure reported in
+  its own section and no real-time reads for an unreachable device), `catsdwan_list_controllers` (certificate
+  serial, expiry, days left, `attention` for invalid or expiring certificates) and `catsdwan_device_health`
+  (`/dataservice/health/devices`, which exists on 20.18.3: poor first with the reason; a partial answer says so;
+  computed from `/dataservice/device/counters` where the endpoint is missing).
 - `cat-sdwan-mcp-server check`: reachability, TLS, auth and version (tested 20.18 and 26.x, minimum 20.15).
 - Unit tests on recorded, redacted 20.18 payloads (`tests/fixtures/20.18/`).
 - Scaffold on stutters-mcp-core v0.14.4 (bundled as `cat_sdwan_mcp._core`, ADR-005): `catsdwan_status` (reports the

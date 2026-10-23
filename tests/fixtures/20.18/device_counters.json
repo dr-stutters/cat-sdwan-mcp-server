@@ -1,0 +1,68 @@
+{
+  "header": {
+    "generatedOn": 1792743421387
+  },
+  "data": [
+    {
+      "system-ip": "1.1.1.1",
+      "number-vsmart-control-connections": 1,
+      "expectedControlConnections": 1,
+      "isMTEdge": false,
+      "rebootCount": 0,
+      "crashCount": 0
+    },
+    {
+      "system-ip": "1.1.1.2",
+      "number-vsmart-control-connections": 1,
+      "expectedControlConnections": 0,
+      "rebootCount": 0,
+      "crashCount": 0
+    },
+    {
+      "system-ip": "1.1.1.3",
+      "number-vsmart-control-connections": 0,
+      "expectedControlConnections": 0,
+      "ompPeersUp": 3,
+      "ompPeersDown": 0,
+      "isMTEdge": false,
+      "rebootCount": 0,
+      "crashCount": 0
+    },
+    {
+      "system-ip": "10.0.0.1",
+      "number-vsmart-control-connections": 2,
+      "expectedControlConnections": 2,
+      "ompPeersUp": 1,
+      "ompPeersDown": 0,
+      "bfdSessionsUp": 8,
+      "bfdSessionsDown": 0,
+      "isMTEdge": false,
+      "rebootCount": 1,
+      "crashCount": 0
+    },
+    {
+      "system-ip": "10.0.0.2",
+      "number-vsmart-control-connections": 2,
+      "expectedControlConnections": 2,
+      "ompPeersUp": 1,
+      "ompPeersDown": 0,
+      "bfdSessionsUp": 8,
+      "bfdSessionsDown": 0,
+      "isMTEdge": false,
+      "rebootCount": 1,
+      "crashCount": 0
+    },
+    {
+      "system-ip": "10.0.0.3",
+      "number-vsmart-control-connections": 2,
+      "expectedControlConnections": 2,
+      "ompPeersUp": 1,
+      "ompPeersDown": 0,
+      "bfdSessionsUp": 8,
+      "bfdSessionsDown": 0,
+      "isMTEdge": false,
+      "rebootCount": 1,
+      "crashCount": 0
+    }
+  ]
+}

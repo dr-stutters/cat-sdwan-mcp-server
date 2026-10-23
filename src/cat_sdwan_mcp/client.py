@@ -48,6 +48,7 @@ TENANTS_PATH = "/dataservice/tenant"
 VSESSION_PATH = "/dataservice/tenant/{id}/vsessionid"
 DEVICE_PATH = "/dataservice/device"
 CONTROLLERS_PATH = "/dataservice/system/device/controllers"
+VEDGES_PATH = "/dataservice/system/device/vedges"
 
 REQUESTS_PER_MINUTE = 6000  # 100 requests/s, the Manager's per-user limit
 BULK_PREFIXES = ("dataservice/data/device/",)
@@ -342,6 +343,11 @@ class SdwanApp:
     async def controllers(self) -> list[dict[str, Any]]:
         """GET /dataservice/system/device/controllers: the controller inventory with certificates."""
         return [d for d in _as_list(await self.get_data(CONTROLLERS_PATH)) if isinstance(d, dict)]
+
+    async def vedges(self) -> list[dict[str, Any]]:
+        """GET /dataservice/system/device/vedges: every WAN edge slot (joined or not) with chassis,
+        certificate state and configuration mode."""
+        return [d for d in _as_list(await self.get_data(VEDGES_PATH)) if isinstance(d, dict)]
 
     async def version(self, devices: list[dict[str, Any]] | None = None) -> str:
         """The Manager's release, from its own row(s) in /dataservice/device ("unknown" if absent)."""

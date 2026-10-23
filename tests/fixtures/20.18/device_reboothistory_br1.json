@@ -1,0 +1,110 @@
+{
+  "header": {
+    "generatedOn": 1792743507971,
+    "viewKeys": {
+      "uniqueKey": [
+        "vdevice-dataKey"
+      ],
+      "preferenceKey": "grid-CEdgeRebootHistoryV2"
+    },
+    "columns": [
+      {
+        "title": "device.reboot.dataRebootHistoryLog.rebootTime",
+        "property": "reload-time-date",
+        "sort": {
+          "priority": 0,
+          "direction": "asc"
+        },
+        "displayFormat": "DD MMM YYYY h:mm:ss A z",
+        "inputFormat": "unix-time",
+        "width": 220,
+        "dataType": "date"
+      },
+      {
+        "title": "device.reboot.dataRebootHistoryLog.rebootCategory",
+        "property": "reload-category",
+        "width": 350,
+        "dataType": "string"
+      },
+      {
+        "title": "device.reboot.dataRebootHistoryLog.rebootReason",
+        "property": "reload-desc",
+        "width": 350,
+        "dataType": "string"
+      },
+      {
+        "title": "device.reboot.dataRebootHistoryLog.highAvailabilityRole",
+        "property": "ha-role",
+        "width": 350,
+        "dataType": "string"
+      },
+      {
+        "title": "device.reboot.dataRebootHistoryLog.rebootSeverity",
+        "property": "reload-severity",
+        "width": 350,
+        "dataType": "string"
+      },
+      {
+        "title": "device.reboot.dataRebootHistoryLog.lastUpdated",
+        "property": "lastupdated",
+        "displayFormat": "DD MMM YYYY h:mm:ss A z",
+        "inputFormat": "unix-time",
+        "hideable": false,
+        "minWidth": 200,
+        "dataType": "date"
+      }
+    ],
+    "fields": [
+      {
+        "property": "vdevice-host-name",
+        "dataType": "string"
+      },
+      {
+        "property": "vdevice-name",
+        "dataType": "string"
+      },
+      {
+        "property": "reload-time",
+        "dataType": "dateWithTZ"
+      },
+      {
+        "property": "reload-time-date",
+        "dataType": "date"
+      },
+      {
+        "property": "reload-category",
+        "dataType": "string"
+      },
+      {
+        "property": "reload-desc",
+        "dataType": "string"
+      },
+      {
+        "property": "ha-role",
+        "dataType": "string"
+      },
+      {
+        "property": "reload-severity",
+        "dataType": "string"
+      },
+      {
+        "property": "lastupdated",
+        "dataType": "date"
+      }
+    ]
+  },
+  "data": [
+    {
+      "vdevice-dataKey": "10.0.0.2-",
+      "vdevice-name": "10.0.0.2",
+      "reload-time": "2026-10-23T06:59:03+00:00",
+      "reload-time-date": 1792738743000,
+      "reload-category": "rc-factory-reset",
+      "ha-role": "ha-role-unknown",
+      "reload-desc": "factory-reset",
+      "lastupdated": 1792743507961,
+      "vdevice-host-name": "br1",
+      "reload-severity": "abnormal"
+    }
+  ]
+}
