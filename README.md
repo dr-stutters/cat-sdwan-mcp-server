@@ -7,8 +7,8 @@ An [MCP](https://modelcontextprotocol.io) server for **Cisco Catalyst SD-WAN Man
 > **Status: early.** The client (JWT and session login, throttling, error mapping), `catsdwan_status` and the
 > `check` preflight (W1), the inventory and device health tools (W2), the control-plane tools (W3), the data-plane
 > and app-route tools (W4), the alarm, event and audit tools (W5), API discovery over the Manager's own OpenAPI
-> document (W6), the configuration reads (W7), preview-first configuration changes (W8) and edge onboarding
-> (W9) exist, unit-tested against recorded 20.18 payloads; nothing is proven live yet. The rest is planned in [ROADMAP.md](ROADMAP.md) (item W0 is the lab fabric in CML) and tracked on the suite board.
+> document (W6), the configuration reads (W7), preview-first configuration changes (W8), edge onboarding
+> (W9) and the workflow prompts (W10) exist, unit-tested against recorded 20.18 payloads; nothing is proven live yet. The rest is planned in [ROADMAP.md](ROADMAP.md) (item W0 is the lab fabric in CML) and tracked on the suite board.
 
 ## What it will do
 
@@ -69,6 +69,22 @@ variables preview lists the old values, and a deploy's preview diff shows the ru
 
 Typical flow: `catsdwan_get_config_group` (variables) -> `catsdwan_set_device_variables` (preview, confirm) ->
 `catsdwan_deploy_config_group` (preview: per-device CLI and diff; confirm) -> `catsdwan_get_device_config(diff=true)`.
+
+## Prompts
+
+Workflow prompts (the client lists them; each names the servers it expects in `uses`, and the legs on servers
+that aren't connected are skipped with a one-line note):
+
+| Prompt | Tier | Uses | What it does |
+|---|---|---|---|
+| `catsdwan_branch_health(site, lab)` | read | catsdwan, cml, netbox | Device health, control connections, BFD per colour, app-route loss/latency/jitter per colour (against the SLA class when there is one), alarms and recent activity, then a verdict per transport (healthy, degraded, down); in CML, `cml_get_link_scenarios` says when a degradation is a deliberate scenario |
+| `catsdwan_onboard_branch(site, chassis, config_group, hostname, lab)` | write | catsdwan, netbox, cml | Site id, system IP and prefixes from NetBox (`netbox_next_available_ips`, `netbox_allocate_ips` preview-first), `catsdwan_list_wan_edges` -> `catsdwan_onboard_edge` -> the edge booted with `catsdwan_bootstrap_config` (`cml_build_recipe` 'cat-sdwan-fabric', `cml_set_node_state`) or activated on a running node (`cml_configure_node` exec) -> control connections -> `catsdwan_set_device_variables` / `catsdwan_deploy_config_group` -> BFD and `cml_check_reachability` branch host to hub host -> `netbox_add_journal_entry`; every write preview-first. Hidden without `MCP_ENABLE_WRITES` |
+| `catsdwan_why_is_app_slow(host, app, lab)` | read | catsdwan, ise, fmc, cml, netbox | The host's site from `ise_find_session` or `netbox_lookup_ip`, BFD and app-route statistics on the branch edge per colour against the SLA class, recent activity, `fmc_packet_tracer` for an FTD behind the edge, CML link scenarios; one sentence on where the delay is |
+
+The prompt test kit checks every `cml_`, `ise_`, `fmc_` and `netbox_` reference against the manifests in
+`tests/manifests` (cml, ise and fmc copied from their repos; `netbox.json` hand-written, as netbox-mcp has no
+`tools --json`), and `tests/snapshots/prompts-rw` holds the rendered prompts (`UPDATE_PROMPT_SNAPSHOTS=1` rewrites
+them).
 
 ## Onboarding an edge
 

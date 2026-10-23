@@ -31,6 +31,15 @@ All notable changes to this project are documented here. The format follows
   then `/certificate/vedge/list?action=push`, followed; invalid, staging on a joined edge, a hub or a
   protected-site edge are dangerous). The one-time token is masked everywhere and registered with the secret
   scrubber. Spec subset extended with the certificate, bootstrap, fileupload and Smart Account operations.
+- W10 (#11): workflow prompts. `catsdwan_branch_health(site, lab)` (uses cml, netbox: health, control connections,
+  BFD and app-route per colour, alarms, recent activity, CML link scenarios; a verdict per transport),
+  `catsdwan_onboard_branch(site, chassis, config_group, hostname, lab)` (write tier; uses netbox, cml: NetBox
+  site, prefixes and system IP, `catsdwan_onboard_edge`, bootstrap or activate in CML, deploy, BFD and
+  reachability proof, NetBox journal entry; every write preview-first) and `catsdwan_why_is_app_slow(host, app,
+  lab)` (uses ise, fmc, cml, netbox: site from the ISE session or NetBox, app-route statistics against the SLA
+  class, `fmc_packet_tracer` for the firewall leg, link scenarios; one sentence on where the delay is). Prompt
+  contract checked against the cml, ise and fmc manifests and a hand-written netbox manifest
+  (`tests/manifests`); snapshots in `tests/snapshots/prompts-rw`.
 
 ### Changed
 - `catsdwan_list_devices(include_unjoined=true)` and `catsdwan_get_device` no longer show a never-joined software
