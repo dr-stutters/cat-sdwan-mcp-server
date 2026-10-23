@@ -1,0 +1,1012 @@
+[
+  {
+    "name": "Check SDAVC Resource Sync Status",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Application Reload",
+    "isCancelEnabled": true,
+    "isParallelExecutionEnabled": true
+  },
+  {
+    "name": "Live Protect",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Multicloud - Delete Edge Connectivity",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Change Partition",
+    "isCancelEnabled": true,
+    "isParallelExecutionEnabled": true
+  },
+  {
+    "name": "Admin Tech Options",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Push MT hub Tenant List",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Application Stop",
+    "isCancelEnabled": true,
+    "isParallelExecutionEnabled": true
+  },
+  {
+    "name": "Cluster Add",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Multicloud - Update Gateway",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Live Protect Support",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Set Default Version",
+    "isCancelEnabled": true,
+    "isParallelExecutionEnabled": true
+  },
+  {
+    "name": "Synchronize Custom Applications with SDAVC",
+    "isCancelEnabled": true,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Parse Utd Signature",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Application Name Compliance Checker",
+    "isCancelEnabled": true,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Multicloud - Delete Gateway",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Multicloud - Create Device Link",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Reboot",
+    "isCancelEnabled": true,
+    "isParallelExecutionEnabled": true
+  },
+  {
+    "name": "Set devices to config mode - CLI",
+    "isCancelEnabled": true,
+    "isParallelExecutionEnabled": true
+  },
+  {
+    "name": "Delete Wan VPN Sites",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Renew Remote Access Vmanage CA Device Certificate",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Download Image",
+    "isCancelEnabled": true,
+    "isParallelExecutionEnabled": true
+  },
+  {
+    "name": "Multicloud - Create Core Network",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Renew SSL proxy Vmanage CA Device Certificate",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "MultiCloud -  Create Interconnect OnRamp Gateway Connection",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Tagging - Delete Tag Association",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Device config mode - CLI",
+    "isCancelEnabled": true,
+    "isParallelExecutionEnabled": true
+  },
+  {
+    "name": "Install Certificate",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "MultiCloud - NVA Security Rules",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Renew Enterprise Certificate",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Delete Tenant Bulk",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Cluster Edit",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Disaster Recovery Registration",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Multicloud - Create Tagging",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Kubernetes - Service Discovery",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Disaster Recovery Replication End",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Image Remove",
+    "isCancelEnabled": true,
+    "isParallelExecutionEnabled": true
+  },
+  {
+    "name": "Push Template Configuration",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Sync device",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Create transit VPC/VNet",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Multicloud - Create Gateway",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "COR scale down",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Smart Account Device Sync Service",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Application Upgrade",
+    "isCancelEnabled": true,
+    "isParallelExecutionEnabled": true
+  },
+  {
+    "name": "Install feature cert on device",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Edit Node ClusterV2",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Cluster Info Update To vBond",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Multicloud - Attach Sites",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Multicloud - Rebalance Vnets",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Report telemetry data to Cloud Provider",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Network Design Edit",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Delete Admin Tech",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Create Admin Tech",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Delete Tenant",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Push Feature Template Configuration",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Disaster Recovery Password",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Admin Tech SR Case Upload",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Push vSmart List",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Push WAN Edge List",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Generate SSL proxy CSR",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Create Remote Access Vmanage Root CA",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Scheduled Export Backup",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Multicloud - Create Attachment Object",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Deploy policy group to associated devices",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Create Tenant",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Deploy Protocol Pack on Device",
+    "isCancelEnabled": true,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Removed devices from config-group",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Multicloud - Delete Tagging",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Multicloud - Create Interconnect Gateway",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "COR scale up",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Remove Admin Tech",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Rules - Update Rule Association",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Check Device Compliances",
+    "isCancelEnabled": true,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Add Node ClusterV2",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Multicloud - Update Tagging",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Tenant Import Backup",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Tenant vSmart update",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Deactivate SMU",
+    "isCancelEnabled": true,
+    "isParallelExecutionEnabled": true
+  },
+  {
+    "name": "SD-AVC REST APIs calls",
+    "isCancelEnabled": true,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "HSEC License Fetch",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Multicloud - Update Interconnect Cross Connection",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Push vEdge Policy",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Poll Cloud Sourced Apps",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Config Version Revert",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Firmware Delete Partition",
+    "isCancelEnabled": true,
+    "isParallelExecutionEnabled": true
+  },
+  {
+    "name": "Report File Generating",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Controllers Patch Upgrade",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Firmware Install",
+    "isCancelEnabled": true,
+    "isParallelExecutionEnabled": true
+  },
+  {
+    "name": "Scheduled Import Backup",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Multicloud - Delete Attachment Object",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Multicloud - Create Interconnect Virtual Network Connection",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Stats Migration",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Vnf Install",
+    "isCancelEnabled": true,
+    "isParallelExecutionEnabled": true
+  },
+  {
+    "name": "Multicloud - Delete Interconnect Gateway",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Invalidate Device",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Delete transit VPC/VNet",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Cancel Scheduled Task",
+    "isCancelEnabled": true,
+    "isParallelExecutionEnabled": true
+  },
+  {
+    "name": "Application Registry Updater",
+    "isCancelEnabled": true,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Generate CSR",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Default",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Tenant Export Backup",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Catalog Install",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Application Start",
+    "isCancelEnabled": true,
+    "isParallelExecutionEnabled": true
+  },
+  {
+    "name": "Disaster Recovery Deactive From Primary to Secondary",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Generate Enterprise CSR",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Controllers Upgrade",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Patch to Default",
+    "isCancelEnabled": true,
+    "isParallelExecutionEnabled": true
+  },
+  {
+    "name": "Deploying control component setting",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Delete Partition",
+    "isCancelEnabled": true,
+    "isParallelExecutionEnabled": true
+  },
+  {
+    "name": "Multicloud - Delete Device Link",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Multicloud - Delete Service Chain Object",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Revoke Enterprise Certificate",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Multicloud - Create Service Chain Object",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Multicloud - Audit",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "MultiCloud -  Delete Interconnect OnRamp Gateway Connection",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "SASE Create Config",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Apply Cloud Sourced Apps",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Firmware Upgrade",
+    "isCancelEnabled": true,
+    "isParallelExecutionEnabled": true
+  },
+  {
+    "name": "Multicloud - Update Interconnect Gateway",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "COR auto-scale",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Rules - Delete Rule Association",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "ZTP Software Install",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Push CLI Template Configuration",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Site CG Operation - MRF workflow",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Cluster Remove",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Multicloud - Service Discovery",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Bulk Operate Network Hierarchy",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Rule - Creation or Update",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Software Install",
+    "isCancelEnabled": true,
+    "isParallelExecutionEnabled": true
+  },
+  {
+    "name": "Multicloud - Delete Interconnect Virtual Network Connection",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Tagging - Create Tag Association",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Import data",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "UX User Workflow",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "SD-AVC deactivate",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Startup Application Registry Updater",
+    "isCancelEnabled": true,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Check Policy Compliances",
+    "isCancelEnabled": true,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Import Package",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Create Wan VPN Sites",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "MultiCloud -  Update Interconnect OnRamp Gateway Connection",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "CLOUD ONRAMP CCM ",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Deploy configuration group to associated devices",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Create SSL proxy Vmanage Root CA",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "List Admin Tech",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Rules - Create Rule Association",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Firmware Activate",
+    "isCancelEnabled": true,
+    "isParallelExecutionEnabled": true
+  },
+  {
+    "name": "Relocate All Tenants vSmart",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "SD-Routing Device Onboard",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": true
+  },
+  {
+    "name": "Map host to transit VPC/VNet",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "HSEC License Install",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": true
+  },
+  {
+    "name": "Patch Upgrade",
+    "isCancelEnabled": true,
+    "isParallelExecutionEnabled": true
+  },
+  {
+    "name": "Application Activate",
+    "isCancelEnabled": true,
+    "isParallelExecutionEnabled": true
+  },
+  {
+    "name": "Generate Remote Access CSR",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Tagging - Update Tag Association",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Generate feature cert device CSR",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Export data",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Upload Protocol Pack to SDAVC",
+    "isCancelEnabled": true,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Disaster Recovery Activate",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Revoke feature cert on device",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Disaster Recovery Restart",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "MultiCloud - InterConnect Audit",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "CX Advisories Scan",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Multicloud - Connectivity Mapping",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Sync Wan VPN Sites",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Push vSmart Tenant List",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Disaster Recovery De-Registration",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Cloud OnRamp Service",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Synchronize Protocol Packs with SDAVC",
+    "isCancelEnabled": true,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Sync all device",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Multi Region Fabric Execute Workflow",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Copy Admin Tech",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Multicloud - VPN Config Change",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Unmap host from transit VPC/VNet",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Device Life Cycle",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "SD-AVC activate",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Disaster Recovery update controller list",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Create Tenant Bulk",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Multicloud - Update Device Link",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Disassociate devices and set devices to config mode - CLI",
+    "isCancelEnabled": true,
+    "isParallelExecutionEnabled": true
+  },
+  {
+    "name": "Deploy topology group to vSmarts",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "EA Bulk License Generation",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Push Feature Template Configuration",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Application Delete",
+    "isCancelEnabled": true,
+    "isParallelExecutionEnabled": true
+  },
+  {
+    "name": "Multicloud - Create Interconnect Connectivity",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Multicloud - Update Interconnect Connectivity",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Container activity",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Multicloud - Create Interconnect Cross Connection",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Application Install",
+    "isCancelEnabled": true,
+    "isParallelExecutionEnabled": true
+  },
+  {
+    "name": "Rediscover",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Application Reset",
+    "isCancelEnabled": true,
+    "isParallelExecutionEnabled": true
+  },
+  {
+    "name": "Disaster Recovery Replication Start",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Multicloud - Update Tunnel Scaling",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Configure vManage",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Push vSmart Policy",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": true
+  },
+  {
+    "name": "Device Migration",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Cluster Sync",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Delete Node ClusterV2",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Migrate shared templates",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "App Hosting Config Validation",
+    "isCancelEnabled": true,
+    "isParallelExecutionEnabled": true
+  },
+  {
+    "name": "Multicloud - Delete Interconnect Cross Connection",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Utd Signature Update",
+    "isCancelEnabled": true,
+    "isParallelExecutionEnabled": true
+  },
+  {
+    "name": "Multicloud - Detach Sites",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  },
+  {
+    "name": "Multicloud - Update Interconnect Virtual Network Connection",
+    "isCancelEnabled": false,
+    "isParallelExecutionEnabled": false
+  }
+]

@@ -84,6 +84,15 @@ PATHS = [
     "/template/policy/list",
     "/template/policy/list/site",
     "/template/policy/list/sla",
+    # W12 device operations
+    "/device/action/software",
+    "/device/action/software/images",
+    "/device/action/install",
+    "/device/action/changepartition",
+    "/device/action/list",
+    "/device/software",
+    "/device/reboothistory",
+    "/device/system/status",
 ]
 
 
