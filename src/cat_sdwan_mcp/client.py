@@ -241,7 +241,9 @@ class SdwanApp:
         return Token({"Authorization": f"Bearer {token}"}, Token.expiring_in(seconds), extra)
 
     async def _refresh(self, client: ApiClient, old: Token) -> Token | None:
-        """POST /jwt/refresh with the refresh token (body shape unverified until W0); None = log in again."""
+        """POST /jwt/refresh with the refresh token; None = log in again. Live, 20.18.3: the body is
+        {"refresh": ...} and the answer carries only {token, refresh}: no csrf, and the login's csrf keeps
+        working with the new token, so it is carried over (without it every XSRF-checked call answers 403)."""
         refresh = old.data.get("refresh")
         if self.login_style != "jwt" or not refresh:
             return None
@@ -252,6 +254,8 @@ class SdwanApp:
         data = _body(resp)
         if isinstance(data, dict) and "refresh" not in data:
             data = {**data, "refresh": refresh}  # keep using the old refresh token
+        if isinstance(data, dict) and not data.get("csrf") and old.data.get("csrf"):
+            data = {**data, "csrf": old.data["csrf"]}
         return await self._enter_tenant(client, self._jwt_token(data, self.settings.session_seconds))
 
     async def _session_login(self, client: ApiClient, user: str, password: str) -> Token:

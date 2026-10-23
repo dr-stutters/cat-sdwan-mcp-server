@@ -92,6 +92,24 @@ async def test_jwt_refresh_before_expiry(api: respx.MockRouter) -> None:
     assert app.auth.token is not None and app.auth.token.data["refresh"] == "refresh-123"
 
 
+async def test_jwt_refresh_keeps_the_login_csrf(api: respx.MockRouter) -> None:
+    """Live 20.18.3: /jwt/refresh answers only {token, refresh}; the login's csrf must keep going out, or
+    every XSRF-checked call (statistics, alarms, events, /health) answers a 403 login page after the first
+    refresh."""
+    api.post("/jwt/refresh").respond(json={"token": "jwt-456", "refresh": "refresh-456"})
+    app = SdwanApp(make_settings())
+    try:
+        await app.devices()
+        assert app.auth.token is not None
+        app.auth.token.expires_at = time.monotonic()
+        await app.devices()
+    finally:
+        await app.aclose()
+    last = [c for c in api.calls if c.request.url.path == "/dataservice/device"][-1]
+    assert last.request.headers["Authorization"] == "Bearer jwt-456"
+    assert last.request.headers["X-XSRF-TOKEN"] == "csrf-123"
+
+
 async def test_jwt_refresh_refused_logs_in_again(api: respx.MockRouter) -> None:
     api.post("/jwt/refresh").respond(401)
     app = SdwanApp(make_settings())
