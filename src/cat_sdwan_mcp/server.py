@@ -6,10 +6,11 @@ import httpx
 from fastmcp import FastMCP
 from fastmcp.server.auth import AuthProvider
 
-from cat_sdwan_mcp._core import ServerSpec, build_server
+from cat_sdwan_mcp._core import ServerSpec, ToolRegistrar, build_server
 from cat_sdwan_mcp.client import SdwanApp
 from cat_sdwan_mcp.config import Settings
-from cat_sdwan_mcp.tools import control, dataplane, events, inventory
+from cat_sdwan_mcp.spec import spec_sources
+from cat_sdwan_mcp.tools import api, control, dataplane, events, inventory
 
 INSTRUCTIONS = """
 Tools for Catalyst SD-WAN Manager (formerly vManage): fabric inventory and health, tunnels, BFD and
@@ -29,6 +30,9 @@ Logs: "what changed and who did it?" -> catsdwan_audit_log(changes_only=true); "
 this site?" -> catsdwan_recent_activity(site) (alarms, events and audit lines on one timeline);
 catsdwan_list_alarms (active by default), catsdwan_list_events (busy: keep since_hours short).
 Real-time reads go over the Manager's control connection, so an unreachable edge has none.
+Anything without a tool: catsdwan_search_spec('bfd') -> catsdwan_get_definition(path) -> catsdwan_api_call
+(paths as /dataservice/..., checked against the Manager's own OpenAPI document; GET and the statistics, alarm,
+event and audit query POSTs are reads, other writes are preview-first, /device/action/* is dangerous).
 Other planned tools are in the server's ROADMAP.md; until they exist, say so instead of guessing.
 """
 
@@ -38,6 +42,8 @@ SPEC = ServerSpec(
     product="Cisco Catalyst SD-WAN Manager",
     env_prefix="CATSDWAN_",
     instructions=INSTRUCTIONS,
+    spec_search_example="bfd sessions",
+    spec_path_example="/dataservice/device/bfd/sessions",
 )
 
 
@@ -47,11 +53,15 @@ def create_server(
     auth: AuthProvider | None = None,
     transport: httpx.AsyncBaseTransport | None = None,
 ) -> FastMCP[Any]:
-    return build_server(
+    mcp = build_server(
         SPEC,
         settings,
         client_factory=lambda s: SdwanApp(s, transport=transport),
         register=[inventory.register, control.register, dataplane.register, events.register],
         status=SdwanApp.status,
+        spec_sources=spec_sources,
         auth=auth,
     )
+    # Core's generic api_call is GET-only or dangerous for every write; the Manager's is tiered per path.
+    api.register_api_call(mcp, ToolRegistrar(mcp, settings, SPEC.prefix))
+    return mcp
