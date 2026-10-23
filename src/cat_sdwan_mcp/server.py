@@ -30,6 +30,7 @@ from cat_sdwan_mcp.tools import (
     policy,
     prompts,
     troubleshooting,
+    security,
 )
 
 INSTRUCTIONS = """
@@ -133,6 +134,7 @@ def create_server(
             troubleshooting.register,
             devicestate.register,
             pathinsight.register,
+            security.register,
         ],
         status=SdwanApp.status,
         spec_sources=spec_sources,

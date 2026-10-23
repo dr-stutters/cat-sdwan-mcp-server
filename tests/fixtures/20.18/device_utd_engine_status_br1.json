@@ -1,0 +1,122 @@
+{
+  "header": {
+    "generatedOn": 1792758896447,
+    "viewKeys": {
+      "uniqueKey": [
+        "vdevice-dataKey"
+      ],
+      "preferenceKey": "grid-CEdgeUtdEngineStatus"
+    },
+    "columns": [
+      {
+        "title": "device.utd.dataCedgeUtdEngineStatus.engineVersion",
+        "property": "utd-engine-status-version",
+        "width": 220,
+        "dataType": "string"
+      },
+      {
+        "title": "device.utd.dataCedgeUtdEngineStatus.engineProfile",
+        "property": "utd-engine-status-profile",
+        "width": 220,
+        "dataType": "string"
+      },
+      {
+        "title": "device.utd.dataCedgeUtdEngineStatus.engineStatus",
+        "property": "utd-engine-status-status",
+        "display": "keyvalue",
+        "keyvalueProperty": "utd-engine-status-status",
+        "keyvalue": [
+          {
+            "key": "utd-oper-status-green",
+            "value": "green"
+          },
+          {
+            "key": "utd-oper-status-yellow",
+            "value": "yellow"
+          },
+          {
+            "key": "utd-oper-status-red",
+            "value": "red"
+          },
+          {
+            "key": "utd-oper-status-down",
+            "value": "down"
+          },
+          {
+            "key": "utd-oper-status-unknown",
+            "value": "unknown"
+          }
+        ],
+        "width": 220,
+        "dataType": "string"
+      },
+      {
+        "title": "device.utd.dataCedgeUtdEngineStatus.engineStatusRe",
+        "property": "utd-engine-status-reason",
+        "width": 220,
+        "dataType": "string"
+      },
+      {
+        "title": "device.utd.dataCedgeUtdEngineStatus.memoryUsage",
+        "property": "utd-engine-status-memory-usage",
+        "width": 220,
+        "dataType": "string"
+      },
+      {
+        "title": "device.utd.dataCedgeUtdEngineStatus.memoryStatus",
+        "property": "utd-engine-status-memory-status",
+        "width": 220,
+        "dataType": "string"
+      },
+      {
+        "title": "device.utd.dataCedgeUtdEngineStatus.lastUpdated",
+        "property": "lastupdated",
+        "displayFormat": "DD MMM YYYY h:mm:ss A z",
+        "inputFormat": "unix-time",
+        "hideable": false,
+        "minWidth": 200,
+        "dataType": "date"
+      }
+    ],
+    "fields": [
+      {
+        "property": "vdevice-name",
+        "dataType": "string"
+      },
+      {
+        "property": "vdevice-host-name",
+        "dataType": "string"
+      },
+      {
+        "property": "utd-engine-status-version",
+        "dataType": "string"
+      },
+      {
+        "property": "utd-engine-status-profile",
+        "dataType": "string"
+      },
+      {
+        "property": "utd-engine-status-status",
+        "dataType": "string",
+        "display": "keyvalue"
+      },
+      {
+        "property": "utd-engine-status-reason",
+        "dataType": "string"
+      },
+      {
+        "property": "utd-engine-status-memory-usage",
+        "dataType": "string"
+      },
+      {
+        "property": "utd-engine-status-memory-status",
+        "dataType": "string"
+      },
+      {
+        "property": "lastupdated",
+        "dataType": "date"
+      }
+    ]
+  },
+  "data": []
+}

@@ -73,6 +73,13 @@ All notable changes to this project are documented here. The format follows
 - W19 (#33): Network Wide Path Insight. `catsdwan_list_path_traces` (trace and task history, GUI traces too; a
   trace's flows hop by hop with colours, decisions, policies, drop causes and issues) and `catsdwan_path_insight`
   (write, preview-first: start a trace at a site, wait for flows, read them, always stop it).
+- W23 (#37): edge security reads. `catsdwan_security_status(device)` (live from the edge: UTD engine,
+  image supported and recommended, IPS signatures and updates, URL-filtering cloud connection, zone-based firewall
+  zone pairs and non-zero drop counters, SSL proxy, SIG tunnels to Umbrella or Zscaler, plus the Manager's
+  security policies and embedded-security profiles; `features` and a one-line `verdict`, which says plainly when
+  there is no security policy at all) and `catsdwan_security_events(kind=ips|url|connection|dns, device or site,
+  hours)` (`POST /statistics/ipsalert`, `/urlf`, `/sul/connections`, `/umbrella`, aggregated by signature, per
+  edge or by firewall policy, action and drop reason; with no records it says whether none is expected).
 
 ## [0.2.0] - 2026-10-23
 

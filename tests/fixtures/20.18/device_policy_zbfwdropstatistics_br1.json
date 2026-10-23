@@ -1,0 +1,813 @@
+{
+  "header": {
+    "generatedOn": 1792758899876,
+    "viewKeys": {
+      "uniqueKey": [
+        "vdevice-dataKey"
+      ],
+      "preferenceKey": "grid-CEdgePolicyZoneDropStatistics"
+    },
+    "columns": [
+      {
+        "title": "device.policy.policyZoneDropStatistics.deviceIp",
+        "property": "vdevice-name",
+        "hideable": true,
+        "dataType": "string"
+      },
+      {
+        "title": "device.policy.policyZoneDropStatistics.catchAll",
+        "property": "catch-all",
+        "dataType": "string"
+      },
+      {
+        "title": "device.policy.policyZoneDropStatistics.maxHalfSession",
+        "property": "l4-max-halfsession",
+        "dataType": "string"
+      },
+      {
+        "title": "device.policy.policyZoneDropStatistics.tooManyPackets",
+        "property": "l4-too-many-pkts",
+        "dataType": "string"
+      },
+      {
+        "title": "device.policy.policyZoneDropStatistics.sessionLimit",
+        "property": "l4-session-limit",
+        "dataType": "string"
+      },
+      {
+        "title": "device.policy.policyZoneDropStatistics.invalidHeader",
+        "property": "l4-invalid-hdr",
+        "dataType": "string"
+      },
+      {
+        "title": "device.policy.policyZoneDropStatistics.internalErrorU",
+        "property": "l4-internal-err-undefined-dir",
+        "dataType": "string"
+      },
+      {
+        "title": "device.policy.policyZoneDropStatistics.scbClose",
+        "property": "l4-scb-close",
+        "dataType": "string"
+      },
+      {
+        "title": "device.policy.policyZoneDropStatistics.tcpInvalidAckF",
+        "property": "l4-tcp-invalid-ack-flag",
+        "dataType": "string"
+      },
+      {
+        "title": "device.policy.policyZoneDropStatistics.tcpInvalidAckN",
+        "property": "l4-tcp-invalid-ack-num",
+        "dataType": "string"
+      },
+      {
+        "title": "device.policy.policyZoneDropStatistics.tcpInvalidTcpI",
+        "property": "l4-tcp-invalid-tcp-initiator",
+        "dataType": "string"
+      },
+      {
+        "title": "device.policy.policyZoneDropStatistics.tcpSynWithData",
+        "property": "l4-tcp-syn-with-data",
+        "dataType": "string"
+      },
+      {
+        "title": "device.policy.policyZoneDropStatistics.tcpInvalidWind",
+        "property": "l4-tcp-invalid-win-scale-option",
+        "dataType": "string"
+      },
+      {
+        "title": "device.policy.policyZoneDropStatistics.tcpInvalidSegm",
+        "property": "l4-tcp-invalid-seg-synsent-state",
+        "dataType": "string"
+      },
+      {
+        "title": "device.policy.policyZoneDropStats.tcpInvalidSegSynReceived",
+        "property": "l4-tcp-invalid-seg-synrcvd-state",
+        "dataType": "string"
+      },
+      {
+        "title": "device.policy.policyZoneDropStats.tcpInvalidSegPacket",
+        "property": "l4-tcp-invalid-seg-pkt-too-old",
+        "dataType": "string"
+      },
+      {
+        "title": "device.policy.policyZoneDropStats.tcpInvalidSegPacketWindow",
+        "property": "l4-tcp-invalid-seg-pkt-win-overflow",
+        "dataType": "string"
+      },
+      {
+        "title": "device.policy.policyZoneDropStats.tcpInvalidSegPayload",
+        "property": "l4-tcp-invalid-seg-pyld-after-fin-send",
+        "dataType": "string"
+      },
+      {
+        "title": "device.policy.policyZoneDropStatistics.tcpInvalidFlag",
+        "property": "l4-tcp-invalid-flags",
+        "dataType": "string"
+      },
+      {
+        "title": "device.policy.policyZoneDropStatistics.tcpInvalidSequ",
+        "property": "l4-tcp-invalid-seq",
+        "dataType": "string"
+      },
+      {
+        "title": "device.policy.policyZoneDropStatistics.tcpInvalidRest",
+        "property": "l4-tcp-retrans-invalid-flags",
+        "dataType": "string"
+      },
+      {
+        "title": "device.policy.policyZoneDropStatistics.tcpOooSeg",
+        "property": "l4-tcp-l7-ooo-seg",
+        "dataType": "string"
+      },
+      {
+        "title": "device.policy.policyZoneDropStatistics.tcpSyncFloodDr",
+        "property": "l4-tcp-syn-flood-drop",
+        "dataType": "string"
+      },
+      {
+        "title": "device.policy.policyZoneDropStatistics.tcpInternalErr",
+        "property": "l4-tcp-internal-err-synflood-alloc-hostdb-fail",
+        "dataType": "string"
+      },
+      {
+        "title": "device.policy.policyZoneDropStatistics.tcpSynFloodBla",
+        "property": "l4-tcp-synflood-blackout-drop",
+        "dataType": "string"
+      },
+      {
+        "title": "device.policy.policyZoneDropStatistics.tcpUnexpectedP",
+        "property": "l4-tcp-unexpect-tcp-payload",
+        "dataType": "string"
+      },
+      {
+        "title": "device.policy.policyZoneDropStatistics.tcpSynInWindow",
+        "property": "l4-tcp-syn-in-win",
+        "dataType": "string"
+      },
+      {
+        "title": "device.policy.policyZoneDropStatistics.tcpResetInWind",
+        "property": "l4-tcp-rst-in-win",
+        "dataType": "string"
+      },
+      {
+        "title": "device.policy.policyZoneDropStatistics.tcpStraySeg",
+        "property": "l4-tcp-stray-seg",
+        "dataType": "string"
+      },
+      {
+        "title": "device.policy.policyZoneDropStatistics.tcpResetToResp",
+        "property": "l4-tcp-rst-to-resp",
+        "dataType": "string"
+      },
+      {
+        "title": "device.policy.policyZoneDropStatistics.inspectPamLook",
+        "property": "insp-pam-lookup-fail",
+        "dataType": "string"
+      },
+      {
+        "title": "device.policy.policyZoneDropStatistics.inspectInterna",
+        "property": "insp-internal-err-get-stat-blk-fail",
+        "dataType": "string"
+      },
+      {
+        "title": "device.policy.policyZoneDropStatistics.inspectDestAdd",
+        "property": "insp-dstaddr-lookup-fail",
+        "dataType": "string"
+      },
+      {
+        "title": "device.policy.policyZoneDropStatistics.inspectPolicyN",
+        "property": "insp-policy-not-present",
+        "dataType": "string"
+      },
+      {
+        "title": "device.policy.policyZoneDropStatistics.inspectSession",
+        "property": "insp-sess-miss-policy-not-present",
+        "dataType": "string"
+      },
+      {
+        "title": "device.policy.policyZoneDropStatistics.inspectClassif",
+        "property": "insp-classification-fail",
+        "dataType": "string"
+      },
+      {
+        "title": "device.policy.policyZoneDropStatistics.inspectClassificationAction",
+        "property": "insp-class-action-drop",
+        "dataType": "string"
+      },
+      {
+        "title": "device.policy.policyZoneDropStatistics.inspectPolicyM",
+        "property": "insp-policy-misconfigure",
+        "dataType": "string"
+      },
+      {
+        "title": "device.policy.policyZoneDropStatistics.icmpTooManyErr",
+        "property": "l4-icmp-too-many-err-pkts",
+        "dataType": "string"
+      },
+      {
+        "title": "device.policy.policyZoneDropStatistics.icmpInternalEr",
+        "property": "l4-icmp-internal-err-no-nat",
+        "dataType": "string"
+      },
+      {
+        "title": "device.policy.policyZoneDropStatistics.icmpInternalErrorAlloc",
+        "property": "l4-icmp-internal-err-alloc-fail",
+        "dataType": "string"
+      },
+      {
+        "title": "device.policy.policyZoneDropStatistics.icmpInternalErrorGet",
+        "property": "l4-icmp-internal-err-get-stat-blk-fail",
+        "dataType": "string"
+      },
+      {
+        "title": "device.policy.policyZoneDropStatistics.icmpInternalErrorDir",
+        "property": "l4-icmp-internal-err-dir-not-identified",
+        "dataType": "string"
+      },
+      {
+        "title": "device.policy.policyZoneDropStatistics.icmpScbClose",
+        "property": "l4-icmp-scb-close",
+        "dataType": "string"
+      },
+      {
+        "title": "device.policy.policyZoneDropStatistics.icmpPacketIpNo",
+        "property": "l4-icmp-pkt-no-ip-hdr",
+        "dataType": "string"
+      },
+      {
+        "title": "device.policy.policyZoneDropStatistics.icmpPacketTooS",
+        "property": "l4-icmp-pkt-too-short",
+        "dataType": "string"
+      },
+      {
+        "title": "device.policy.policyZoneDropStatistics.icmpErrorNoIpN",
+        "property": "l4-icmp-err-no-ip-no-icmp",
+        "dataType": "string"
+      },
+      {
+        "title": "device.policy.policyZoneDropStatistics.icmpErrorPacke",
+        "property": "l4-icmp-err-pkts-burst",
+        "dataType": "string"
+      },
+      {
+        "title": "device.policy.policyZoneDropStatistics.icmpErrorMulti",
+        "property": "l4-icmp-err-multiple-unreach",
+        "dataType": "string"
+      },
+      {
+        "title": "device.policy.policyZoneDropStatistics.icmpErrorInval",
+        "property": "l4-icmp-err-l4-invalid-seq",
+        "dataType": "string"
+      },
+      {
+        "title": "device.policy.policyZoneDropStatistics.icmpErrorInvalidAck",
+        "property": "l4-icmp-err-l4-invalid-ack",
+        "dataType": "string"
+      },
+      {
+        "title": "device.policy.policyZoneDropStatistics.icmpErrorPolic",
+        "property": "l4-icmp-err-policy-not-present",
+        "dataType": "string"
+      },
+      {
+        "title": "device.policy.policyZoneDropStatistics.icmpErrorClass",
+        "property": "l4-icmp-err-classification-fail",
+        "dataType": "string"
+      },
+      {
+        "title": "device.policy.policyZoneDropStatistics.synCookieMaxDe",
+        "property": "syncookie-max-dst",
+        "dataType": "string"
+      },
+      {
+        "title": "device.policy.policyZoneDropStatistics.synCookieInter",
+        "property": "syncookie-internal-err-alloc-fail",
+        "dataType": "string"
+      },
+      {
+        "title": "device.policy.policyZoneDropStatistics.synCookieTrigg",
+        "property": "syncookie-trigger",
+        "dataType": "string"
+      },
+      {
+        "title": "device.policy.policyZoneDropStatistics.policyFragment",
+        "property": "policy-fragment-drop",
+        "dataType": "string"
+      },
+      {
+        "title": "device.policy.policyZoneDropStatistics.policyActionDr",
+        "property": "policy-action-drop",
+        "dataType": "string"
+      },
+      {
+        "title": "device.policy.policyZoneDropStatistics.policyIcmpActi",
+        "property": "policy-icmp-action-drop",
+        "dataType": "string"
+      },
+      {
+        "title": "device.policy.policyZoneDropStatistics.typeDrop",
+        "property": "l7-type-drop",
+        "dataType": "string"
+      },
+      {
+        "title": "device.policy.policyZoneDropStatistics.noSegment",
+        "property": "l7-no-seg",
+        "dataType": "string"
+      },
+      {
+        "title": "device.policy.policyZoneDropStatistics.noFragments",
+        "property": "l7-no-frag",
+        "dataType": "string"
+      },
+      {
+        "title": "device.policy.policyZoneDropStatistics.unknownProtoco",
+        "property": "l7-unknown-proto",
+        "dataType": "string"
+      },
+      {
+        "title": "device.policy.policyZoneDropStatistics.algRetDrop",
+        "property": "l7-alg-ret-drop",
+        "dataType": "string"
+      },
+      {
+        "title": "device.policy.policyZoneDropStatistics.promoteFailNoZ",
+        "property": "l7-promote-fail-no-zone-pair",
+        "dataType": "string"
+      },
+      {
+        "title": "device.policy.policyZoneDropStatistics.promoteFailNoP",
+        "property": "l7-promote-fail-no-policy",
+        "dataType": "string"
+      },
+      {
+        "title": "device.policy.policyZoneDropStatistics.noSession",
+        "property": "no-session",
+        "dataType": "string"
+      },
+      {
+        "title": "device.policy.policyZoneDropStatistics.noNewSession",
+        "property": "no-new-session",
+        "dataType": "string"
+      },
+      {
+        "title": "device.policy.policyZoneDropStatistics.notInitiator",
+        "property": "not-initiator",
+        "dataType": "string"
+      },
+      {
+        "title": "device.policy.policyZoneDropStatistics.invalidZone",
+        "property": "invalid-zone",
+        "dataType": "string"
+      },
+      {
+        "title": "device.policy.policyZoneDropStatistics.haArStandby",
+        "property": "ha-ar-standby",
+        "dataType": "string"
+      },
+      {
+        "title": "device.policy.policyZoneDropStatistics.noForwardingZo",
+        "property": "no-forwarding-zone",
+        "dataType": "string"
+      },
+      {
+        "title": "device.policy.policyZoneDropStatistics.backPressure",
+        "property": "backpressure",
+        "dataType": "string"
+      },
+      {
+        "title": "device.policy.policyZoneDropStatistics.zoneMismatch",
+        "property": "zone-mismatch",
+        "dataType": "string"
+      },
+      {
+        "title": "device.policy.policyZoneDropStatistics.fdbError",
+        "property": "fdb-err",
+        "dataType": "string"
+      },
+      {
+        "title": "device.policy.policyZoneDropStatistics.lispHeaderRest",
+        "property": "lisp-header-restore-fail",
+        "dataType": "string"
+      },
+      {
+        "title": "device.policy.policyZoneDropStatistics.lispInnerPacke",
+        "property": "lisp-inner-pkt-insane",
+        "dataType": "string"
+      },
+      {
+        "title": "device.policy.policyZoneDropStatistics.lispInnerIpv4I",
+        "property": "lisp-inner-ipv4-insane",
+        "dataType": "string"
+      },
+      {
+        "title": "device.policy.policyZoneDropStatistics.lispInnerIpv6I",
+        "property": "lisp-inner-ipv6-insane",
+        "dataType": "string"
+      }
+    ],
+    "fields": [
+      {
+        "property": "vdevice-name",
+        "dataType": "string"
+      },
+      {
+        "property": "catch-all",
+        "dataType": "string"
+      },
+      {
+        "property": "l4-max-halfsession",
+        "dataType": "string"
+      },
+      {
+        "property": "l4-too-many-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "l4-session-limit",
+        "dataType": "string"
+      },
+      {
+        "property": "l4-invalid-hdr",
+        "dataType": "string"
+      },
+      {
+        "property": "l4-internal-err-undefined-dir",
+        "dataType": "string"
+      },
+      {
+        "property": "l4-scb-close",
+        "dataType": "string"
+      },
+      {
+        "property": "l4-tcp-invalid-ack-flag",
+        "dataType": "string"
+      },
+      {
+        "property": "l4-tcp-invalid-ack-num",
+        "dataType": "string"
+      },
+      {
+        "property": "l4-tcp-invalid-tcp-initiator",
+        "dataType": "string"
+      },
+      {
+        "property": "l4-tcp-syn-with-data",
+        "dataType": "string"
+      },
+      {
+        "property": "l4-tcp-invalid-win-scale-option",
+        "dataType": "string"
+      },
+      {
+        "property": "l4-tcp-invalid-seg-synsent-state",
+        "dataType": "string"
+      },
+      {
+        "property": "l4-tcp-invalid-seg-synrcvd-state",
+        "dataType": "string"
+      },
+      {
+        "property": "l4-tcp-invalid-seg-pkt-too-old",
+        "dataType": "string"
+      },
+      {
+        "property": "l4-tcp-invalid-seg-pkt-win-overflow",
+        "dataType": "string"
+      },
+      {
+        "property": "l4-tcp-invalid-seg-pyld-after-fin-send",
+        "dataType": "string"
+      },
+      {
+        "property": "l4-tcp-invalid-flags",
+        "dataType": "string"
+      },
+      {
+        "property": "l4-tcp-invalid-seq",
+        "dataType": "string"
+      },
+      {
+        "property": "l4-tcp-retrans-invalid-flags",
+        "dataType": "string"
+      },
+      {
+        "property": "l4-tcp-l7-ooo-seg",
+        "dataType": "string"
+      },
+      {
+        "property": "l4-tcp-syn-flood-drop",
+        "dataType": "string"
+      },
+      {
+        "property": "l4-tcp-internal-err-synflood-alloc-hostdb-fail",
+        "dataType": "string"
+      },
+      {
+        "property": "l4-tcp-synflood-blackout-drop",
+        "dataType": "string"
+      },
+      {
+        "property": "l4-tcp-unexpect-tcp-payload",
+        "dataType": "string"
+      },
+      {
+        "property": "l4-tcp-syn-in-win",
+        "dataType": "string"
+      },
+      {
+        "property": "l4-tcp-rst-in-win",
+        "dataType": "string"
+      },
+      {
+        "property": "l4-tcp-stray-seg",
+        "dataType": "string"
+      },
+      {
+        "property": "l4-tcp-rst-to-resp",
+        "dataType": "string"
+      },
+      {
+        "property": "insp-pam-lookup-fail",
+        "dataType": "string"
+      },
+      {
+        "property": "insp-internal-err-get-stat-blk-fail",
+        "dataType": "string"
+      },
+      {
+        "property": "insp-dstaddr-lookup-fail",
+        "dataType": "string"
+      },
+      {
+        "property": "insp-policy-not-present",
+        "dataType": "string"
+      },
+      {
+        "property": "insp-sess-miss-policy-not-present",
+        "dataType": "string"
+      },
+      {
+        "property": "insp-classification-fail",
+        "dataType": "string"
+      },
+      {
+        "property": "insp-class-action-drop",
+        "dataType": "string"
+      },
+      {
+        "property": "insp-policy-misconfigure",
+        "dataType": "string"
+      },
+      {
+        "property": "l4-icmp-too-many-err-pkts",
+        "dataType": "string"
+      },
+      {
+        "property": "l4-icmp-internal-err-no-nat",
+        "dataType": "string"
+      },
+      {
+        "property": "l4-icmp-internal-err-alloc-fail",
+        "dataType": "string"
+      },
+      {
+        "property": "l4-icmp-internal-err-get-stat-blk-fail",
+        "dataType": "string"
+      },
+      {
+        "property": "l4-icmp-internal-err-dir-not-identified",
+        "dataType": "string"
+      },
+      {
+        "property": "l4-icmp-scb-close",
+        "dataType": "string"
+      },
+      {
+        "property": "l4-icmp-pkt-no-ip-hdr",
+        "dataType": "string"
+      },
+      {
+        "property": "l4-icmp-pkt-too-short",
+        "dataType": "string"
+      },
+      {
+        "property": "l4-icmp-err-no-ip-no-icmp",
+        "dataType": "string"
+      },
+      {
+        "property": "l4-icmp-err-pkts-burst",
+        "dataType": "string"
+      },
+      {
+        "property": "l4-icmp-err-multiple-unreach",
+        "dataType": "string"
+      },
+      {
+        "property": "l4-icmp-err-l4-invalid-seq",
+        "dataType": "string"
+      },
+      {
+        "property": "l4-icmp-err-l4-invalid-ack",
+        "dataType": "string"
+      },
+      {
+        "property": "l4-icmp-err-policy-not-present",
+        "dataType": "string"
+      },
+      {
+        "property": "l4-icmp-err-classification-fail",
+        "dataType": "string"
+      },
+      {
+        "property": "syncookie-max-dst",
+        "dataType": "string"
+      },
+      {
+        "property": "syncookie-internal-err-alloc-fail",
+        "dataType": "string"
+      },
+      {
+        "property": "syncookie-trigger",
+        "dataType": "string"
+      },
+      {
+        "property": "policy-fragment-drop",
+        "dataType": "string"
+      },
+      {
+        "property": "policy-action-drop",
+        "dataType": "string"
+      },
+      {
+        "property": "policy-icmp-action-drop",
+        "dataType": "string"
+      },
+      {
+        "property": "l7-type-drop",
+        "dataType": "string"
+      },
+      {
+        "property": "l7-no-seg",
+        "dataType": "string"
+      },
+      {
+        "property": "l7-no-frag",
+        "dataType": "string"
+      },
+      {
+        "property": "l7-unknown-proto",
+        "dataType": "string"
+      },
+      {
+        "property": "l7-alg-ret-drop",
+        "dataType": "string"
+      },
+      {
+        "property": "l7-promote-fail-no-zone-pair",
+        "dataType": "string"
+      },
+      {
+        "property": "l7-promote-fail-no-policy",
+        "dataType": "string"
+      },
+      {
+        "property": "no-session",
+        "dataType": "string"
+      },
+      {
+        "property": "no-new-session",
+        "dataType": "string"
+      },
+      {
+        "property": "not-initiator",
+        "dataType": "string"
+      },
+      {
+        "property": "invalid-zone",
+        "dataType": "string"
+      },
+      {
+        "property": "ha-ar-standby",
+        "dataType": "string"
+      },
+      {
+        "property": "no-forwarding-zone",
+        "dataType": "string"
+      },
+      {
+        "property": "backpressure",
+        "dataType": "string"
+      },
+      {
+        "property": "zone-mismatch",
+        "dataType": "string"
+      },
+      {
+        "property": "fdb-err",
+        "dataType": "string"
+      },
+      {
+        "property": "lisp-header-restore-fail",
+        "dataType": "string"
+      },
+      {
+        "property": "lisp-inner-pkt-insane",
+        "dataType": "string"
+      },
+      {
+        "property": "lisp-inner-ipv4-insane",
+        "dataType": "string"
+      },
+      {
+        "property": "lisp-inner-ipv6-insane",
+        "dataType": "string"
+      }
+    ]
+  },
+  "data": [
+    {
+      "l4-tcp-l7-ooo-seg": "0",
+      "l4-icmp-err-l4-invalid-seq": "0",
+      "policy-action-drop": "0",
+      "l4-icmp-err-no-ip-no-icmp": "0",
+      "l7-type-drop": "0",
+      "l4-scb-close": "0",
+      "l4-tcp-invalid-seg-synsent-state": "0",
+      "l4-tcp-syn-flood-drop": "0",
+      "l4-icmp-internal-err-no-nat": "0",
+      "l4-tcp-invalid-seq": "0",
+      "l7-no-seg": "0",
+      "no-new-session": "0",
+      "l4-icmp-internal-err-get-stat-blk-fail": "0",
+      "syncookie-max-dst": "0",
+      "insp-internal-err-get-stat-blk-fail": "0",
+      "l4-invalid-hdr": "0",
+      "l4-icmp-internal-err-alloc-fail": "0",
+      "l4-tcp-invalid-seg-pkt-win-overflow": "0",
+      "no-forwarding-zone": "0",
+      "l4-icmp-too-many-err-pkts": "0",
+      "fdb-err": "0",
+      "no-session": "0",
+      "insp-dstaddr-lookup-fail": "0",
+      "l4-session-limit": "0",
+      "insp-class-action-drop": "0",
+      "l4-tcp-rst-to-resp": "0",
+      "l4-tcp-stray-seg": "0",
+      "not-initiator": "0",
+      "backpressure": "0",
+      "l4-tcp-invalid-tcp-initiator": "0",
+      "l4-icmp-pkt-too-short": "0",
+      "zone-mismatch": "0",
+      "l4-tcp-unexpect-tcp-payload": "0",
+      "l7-no-frag": "0",
+      "l4-tcp-invalid-seg-pyld-after-fin-send": "0",
+      "l4-icmp-err-policy-not-present": "0",
+      "l7-alg-ret-drop": "0",
+      "l4-tcp-internal-err-synflood-alloc-hostdb-fail": "0",
+      "insp-classification-fail": "0",
+      "l4-tcp-invalid-win-scale-option": "0",
+      "l4-tcp-syn-in-win": "0",
+      "policy-icmp-action-drop": "0",
+      "vdevice-name": "10.0.0.2",
+      "lisp-inner-ipv6-insane": "0",
+      "l4-tcp-rst-in-win": "0",
+      "l4-tcp-retrans-invalid-flags": "0",
+      "catch-all": "0",
+      "l4-icmp-err-l4-invalid-ack": "0",
+      "syncookie-trigger": "0",
+      "l7-unknown-proto": "0",
+      "l4-tcp-syn-with-data": "0",
+      "l4-tcp-invalid-seg-pkt-too-old": "0",
+      "l4-icmp-err-classification-fail": "0",
+      "l4-icmp-internal-err-dir-not-identified": "0",
+      "l4-internal-err-undefined-dir": "0",
+      "insp-policy-not-present": "0",
+      "syncookie-internal-err-alloc-fail": "0",
+      "lisp-header-restore-fail": "0",
+      "l4-tcp-synflood-blackout-drop": "0",
+      "l4-tcp-invalid-ack-flag": "0",
+      "insp-pam-lookup-fail": "0",
+      "l4-icmp-scb-close": "0",
+      "invalid-zone": "0",
+      "ha-ar-standby": "0",
+      "vdevice-host-name": "br1",
+      "l4-tcp-invalid-seg-synrcvd-state": "0",
+      "l4-tcp-invalid-ack-num": "0",
+      "l7-promote-fail-no-policy": "0",
+      "l4-too-many-pkts": "0",
+      "l4-icmp-err-pkts-burst": "0",
+      "l7-promote-fail-no-zone-pair": "0",
+      "vdevice-dataKey": "10.0.0.2-0",
+      "l4-icmp-err-multiple-unreach": "0",
+      "policy-fragment-drop": "0",
+      "l4-tcp-invalid-flags": "0",
+      "lisp-inner-ipv4-insane": "0",
+      "lastupdated": 1792758899867,
+      "l4-max-halfsession": "0",
+      "insp-sess-miss-policy-not-present": "0",
+      "l4-icmp-pkt-no-ip-hdr": "0",
+      "insp-policy-misconfigure": "0",
+      "lisp-inner-pkt-insane": "0"
+    }
+  ]
+}

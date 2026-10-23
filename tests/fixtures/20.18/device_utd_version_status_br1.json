@@ -1,0 +1,77 @@
+{
+  "header": {
+    "generatedOn": 1792758897030,
+    "viewKeys": {
+      "uniqueKey": [
+        "vdevice-dataKey"
+      ],
+      "preferenceKey": "grid-CEdgeUtdVersionStatus"
+    },
+    "columns": [
+      {
+        "title": "device.utd.dataCedgeUtdVersionStatus.recommendedVer",
+        "property": "utd-version-status-recommended-version",
+        "width": 220,
+        "dataType": "string"
+      },
+      {
+        "title": "device.utd.dataCedgeUtdVersionStatus.supportedRegex",
+        "property": "utd-version-status-supported-regex",
+        "width": 220,
+        "dataType": "string"
+      },
+      {
+        "title": "device.utd.dataCedgeUtdVersionStatus.supported",
+        "property": "utd-version-status-supported",
+        "width": 220,
+        "dataType": "string"
+      },
+      {
+        "title": "device.utd.dataCedgeUtdVersionStatus.lastUpdated",
+        "property": "lastupdated",
+        "displayFormat": "DD MMM YYYY h:mm:ss A z",
+        "inputFormat": "unix-time",
+        "hideable": false,
+        "minWidth": 200,
+        "dataType": "date"
+      }
+    ],
+    "fields": [
+      {
+        "property": "vdevice-name",
+        "dataType": "string"
+      },
+      {
+        "property": "vdevice-host-name",
+        "dataType": "string"
+      },
+      {
+        "property": "utd-version-status-recommended-version",
+        "dataType": "string"
+      },
+      {
+        "property": "utd-version-status-supported-regex",
+        "dataType": "string"
+      },
+      {
+        "property": "utd-version-status-supported",
+        "dataType": "string"
+      },
+      {
+        "property": "lastupdated",
+        "dataType": "date"
+      }
+    ]
+  },
+  "data": [
+    {
+      "utd-version-status-supported": "false",
+      "vdevice-dataKey": "10.0.0.2",
+      "vdevice-name": "10.0.0.2",
+      "utd-version-status-recommended-version": "1.1.0_SV3.3.5.0_XE17.18",
+      "lastupdated": 1792758897024,
+      "vdevice-host-name": "br1",
+      "utd-version-status-supported-regex": "^1\\.1\\.([0-9]+)_SV(.*)_XE17.18$"
+    }
+  ]
+}
