@@ -1,0 +1,229 @@
+{
+  "header": {
+    "generatedOn": 1792759023889
+  },
+  "data": [
+    {
+      "type": "vSmart",
+      "name": "vSmart",
+      "image": "images/vsmart.png",
+      "count": 1,
+      "detailView": "dialog",
+      "detailsURL": "/dataservice/device?personality=vsmart",
+      "statusList": [
+        {
+          "status": "error",
+          "name": "Error",
+          "detailView": "dialog",
+          "detailsURL": "/dataservice/device?personality=vsmart&status=error",
+          "color": "fa7c7d",
+          "icon": "images/device/device-error.png",
+          "count": 0
+        },
+        {
+          "status": "warning",
+          "name": "Warning",
+          "detailView": "dialog",
+          "detailsURL": "/dataservice/device?personality=vsmart&status=warning",
+          "color": "f2ce60",
+          "icon": "images/device/device-warning.png",
+          "count": 0
+        },
+        {
+          "status": "normal",
+          "name": "Normal",
+          "detailView": "dialog",
+          "detailsURL": "/dataservice/device?personality=vsmart&status=normal",
+          "color": "b0e276",
+          "icon": "images/device/device-normal.png",
+          "count": 1
+        },
+        {
+          "status": "new",
+          "name": "Discovered device",
+          "detailView": "dialog",
+          "detailsURL": "/dataservice/device?personality=vsmart&status=new",
+          "color": "7c8afa",
+          "icon": "images/device/device-new.png",
+          "count": 0
+        }
+      ]
+    },
+    {
+      "type": "vbond",
+      "name": "vbond",
+      "image": "images/vbond.png",
+      "count": 1,
+      "detailView": "dialog",
+      "detailsURL": "/dataservice/device?personality=vbond",
+      "statusList": [
+        {
+          "status": "error",
+          "name": "Error",
+          "detailView": "dialog",
+          "detailsURL": "/dataservice/device?personality=vbond&status=error",
+          "color": "fa7c7d",
+          "icon": "images/device/device-error.png",
+          "count": 0
+        },
+        {
+          "status": "warning",
+          "name": "Warning",
+          "detailView": "dialog",
+          "detailsURL": "/dataservice/device?personality=vbond&status=warning",
+          "color": "f2ce60",
+          "icon": "images/device/device-warning.png",
+          "count": 0
+        },
+        {
+          "status": "normal",
+          "name": "Normal",
+          "detailView": "dialog",
+          "detailsURL": "/dataservice/device?personality=vbond&status=normal",
+          "color": "b0e276",
+          "icon": "images/device/device-normal.png",
+          "count": 1
+        },
+        {
+          "status": "new",
+          "name": "Discovered device",
+          "detailView": "dialog",
+          "detailsURL": "/dataservice/device?personality=vbond&status=new",
+          "color": "7c8afa",
+          "icon": "images/device/device-new.png",
+          "count": 0
+        }
+      ]
+    },
+    {
+      "type": "vEdge",
+      "name": "vEdge",
+      "image": "images/vedge.png",
+      "count": 3,
+      "detailView": "dialog",
+      "detailsURL": "/dataservice/device?personality=vedge",
+      "statusList": [
+        {
+          "status": "error",
+          "name": "Error",
+          "detailView": "dialog",
+          "detailsURL": "/dataservice/device?personality=vedge&status=error",
+          "color": "fa7c7d",
+          "icon": "images/device/device-error.png",
+          "count": 0
+        },
+        {
+          "status": "warning",
+          "name": "Warning",
+          "detailView": "dialog",
+          "detailsURL": "/dataservice/device?personality=vedge&status=warning",
+          "color": "f2ce60",
+          "icon": "images/device/device-warning.png",
+          "count": 0
+        },
+        {
+          "status": "normal",
+          "name": "Normal",
+          "detailView": "dialog",
+          "detailsURL": "/dataservice/device?personality=vedge&status=normal",
+          "color": "b0e276",
+          "icon": "images/device/device-normal.png",
+          "count": 3
+        },
+        {
+          "status": "new",
+          "name": "Discovered device",
+          "detailView": "dialog",
+          "detailsURL": "/dataservice/device?personality=vedge&status=new",
+          "color": "7c8afa",
+          "icon": "images/device/device-new.png",
+          "count": 0
+        }
+      ]
+    },
+    {
+      "type": "omp",
+      "name": "OMP",
+      "image": "images/omp.png",
+      "count": 0,
+      "detailView": "dialog",
+      "detailsURL": "/dataservice/device/omp/links",
+      "statusList": [
+        {
+          "status": "up",
+          "icon": "images/connection/connection-network-up.png",
+          "color": "b0e276",
+          "name": "up",
+          "detailView": "dialog",
+          "detailsURL": "/dataservice/device/omp/links?state=up",
+          "count": 0
+        },
+        {
+          "status": "down",
+          "icon": "images/connection/connection-network-down.png",
+          "color": "fa7c7d",
+          "name": "down",
+          "detailView": "dialog",
+          "detailsURL": "/dataservice/device/omp/links?state=down",
+          "count": 0
+        }
+      ]
+    },
+    {
+      "type": "control",
+      "name": "Control",
+      "image": "images/control.png",
+      "count": 0,
+      "detailView": "dialog",
+      "detailsURL": "/dataservice/device/control/links",
+      "statusList": [
+        {
+          "status": "up",
+          "icon": "images/connection/connection-network-up.png",
+          "color": "b0e276",
+          "name": "up",
+          "detailView": "dialog",
+          "detailsURL": "/dataservice/device/control/links?state=up",
+          "count": 0
+        },
+        {
+          "status": "down",
+          "icon": "images/connection/connection-network-down.png",
+          "color": "fa7c7d",
+          "name": "down",
+          "detailView": "dialog",
+          "detailsURL": "/dataservice/device/control/links?state=down",
+          "count": 0
+        }
+      ]
+    },
+    {
+      "type": "bfd",
+      "name": "BFD",
+      "image": "images/bfd.png",
+      "count": 0,
+      "detailView": "dialog",
+      "detailsURL": "/dataservice/device/bfd/links",
+      "statusList": [
+        {
+          "status": "up",
+          "icon": "images/connection/connection-network-up.png",
+          "color": "b0e276",
+          "name": "up",
+          "detailView": "dialog",
+          "detailsURL": "/dataservice/device/bfd/links?state=up",
+          "count": 0
+        },
+        {
+          "status": "down",
+          "icon": "images/connection/connection-network-down.png",
+          "color": "fa7c7d",
+          "name": "down",
+          "detailView": "dialog",
+          "detailsURL": "/dataservice/device/bfd/links?state=down",
+          "count": 0
+        }
+      ]
+    }
+  ]
+}

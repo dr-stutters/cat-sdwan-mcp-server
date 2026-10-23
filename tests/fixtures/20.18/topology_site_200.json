@@ -1,0 +1,429 @@
+{
+  "site_name": "SITE_200",
+  "data": [
+    {
+      "device-id": "REDACTED-01",
+      "device-model": "C8000v",
+      "uuid": "REDACTED-01",
+      "chasisNumber": "REDACTED-01",
+      "site_id": "200",
+      "host_name": "br1",
+      "system_ip": "10.0.0.2",
+      "configuredSystemIP": "10.0.0.2",
+      "configured_on": "1792752172368",
+      "intent": {
+        "solution": "sdwan",
+        "associatedPeerGroups": [],
+        "name": "mcp-test",
+        "description": "seed_lab.py (hub1, br1)",
+        "id": "00000000-0000-4000-8000-000000000124",
+        "type": "config-group",
+        "version": 11,
+        "featureprofiles": [
+          {
+            "profileName": "mcp-test-transport",
+            "profileType": "transport",
+            "profileId": "00000000-0000-4000-8000-000000001029",
+            "description": "",
+            "parcels": [
+              {
+                "parcelType": "wan/vpn",
+                "data": {
+                  "enhanceEcmpKeying": {
+                    "optionType": "default",
+                    "value": false
+                  },
+                  "vpnId": {
+                    "optionType": "default",
+                    "value": 0
+                  }
+                },
+                "createdBy": "admin",
+                "subparcels": [],
+                "name": "mcp-test-wan-vpn",
+                "description": "seed_lab.py",
+                "parcelId": "00000000-0000-4000-8000-000000001030"
+              }
+            ]
+          },
+          {
+            "profileName": "mcp-test-system",
+            "profileType": "system",
+            "profileId": "00000000-0000-4000-8000-000000001031",
+            "description": "",
+            "parcels": [
+              {
+                "parcelType": "bfd",
+                "data": {
+                  "defaultDscp": {
+                    "optionType": "default",
+                    "value": 48
+                  },
+                  "pollInterval": {
+                    "optionType": "default",
+                    "value": 600000
+                  },
+                  "multiplier": {
+                    "optionType": "default",
+                    "value": 6
+                  }
+                },
+                "createdBy": "admin",
+                "subparcels": [],
+                "name": "mcp-test-bfd",
+                "description": "seed_lab.py",
+                "parcelId": "00000000-0000-4000-8000-000000001032"
+              },
+              {
+                "parcelType": "omp",
+                "data": {
+                  "ecmpLimit": {
+                    "optionType": "default",
+                    "value": 4
+                  },
+                  "gracefulRestart": {
+                    "optionType": "default",
+                    "value": true
+                  },
+                  "advertiseIpv4": {
+                    "connected": {
+                      "optionType": "default",
+                      "value": true
+                    },
+                    "eigrp": {
+                      "optionType": "default",
+                      "value": false
+                    },
+                    "static": {
+                      "optionType": "default",
+                      "value": true
+                    },
+                    "isis": {
+                      "optionType": "default",
+                      "value": false
+                    },
+                    "ospfv3": {
+                      "optionType": "default",
+                      "value": false
+                    },
+                    "lisp": {
+                      "optionType": "default",
+                      "value": false
+                    },
+                    "bgp": {
+                      "optionType": "default",
+                      "value": false
+                    },
+                    "ospf": {
+                      "optionType": "default",
+                      "value": false
+                    }
+                  },
+                  "ompAdminDistanceIpv4": {
+                    "optionType": "default",
+                    "value": 251
+                  },
+                  "advertiseIpv6": {
+                    "connected": {
+                      "optionType": "default",
+                      "value": true
+                    },
+                    "eigrp": {
+                      "optionType": "default",
+                      "value": false
+                    },
+                    "static": {
+                      "optionType": "default",
+                      "value": true
+                    },
+                    "isis": {
+                      "optionType": "default",
+                      "value": false
+                    },
+                    "lisp": {
+                      "optionType": "default",
+                      "value": false
+                    },
+                    "bgp": {
+                      "optionType": "default",
+                      "value": false
+                    },
+                    "ospf": {
+                      "optionType": "default",
+                      "value": false
+                    }
+                  },
+                  "sendPathLimit": {
+                    "optionType": "default",
+                    "value": 4
+                  },
+                  "ompAdminDistanceIpv6": {
+                    "optionType": "default",
+                    "value": 251
+                  },
+                  "gracefulRestartTimer": {
+                    "optionType": "default",
+                    "value": 43200
+                  },
+                  "advertisementInterval": {
+                    "optionType": "default",
+                    "value": 1
+                  },
+                  "overlayAs": {
+                    "optionType": "default"
+                  },
+                  "holdtime": {
+                    "optionType": "default",
+                    "value": 300
+                  },
+                  "eorTimer": {
+                    "optionType": "default",
+                    "value": 300
+                  },
+                  "shutdown": {
+                    "optionType": "default",
+                    "value": false
+                  }
+                },
+                "createdBy": "admin",
+                "subparcels": [],
+                "name": "mcp-test-omp",
+                "description": "seed_lab.py",
+                "parcelId": "00000000-0000-4000-8000-000000001033"
+              },
+              {
+                "parcelType": "basic",
+                "data": {
+                  "adminTechOnFailure": {
+                    "optionType": "default",
+                    "value": true
+                  },
+                  "onDemand": {
+                    "onDemandEnable": {
+                      "optionType": "default",
+                      "value": false
+                    },
+                    "onDemandIdleTimeout": {
+                      "optionType": "default",
+                      "value": 10
+                    }
+                  },
+                  "gpsLocation": {
+                    "latitude": {
+                      "optionType": "default"
+                    },
+                    "longitude": {
+                      "optionType": "default"
+                    }
+                  },
+                  "portOffset": {
+                    "optionType": "default",
+                    "value": 0
+                  },
+                  "maxOmpSessions": {
+                    "optionType": "default"
+                  },
+                  "portHop": {
+                    "optionType": "default",
+                    "value": true
+                  },
+                  "consoleBaudRate": {
+                    "optionType": "default",
+                    "value": "9600"
+                  },
+                  "description": {
+                    "optionType": "default"
+                  },
+                  "location": {
+                    "optionType": "default"
+                  },
+                  "clock": {
+                    "timezone": {
+                      "optionType": "default",
+                      "value": "UTC"
+                    }
+                  },
+                  "deviceGroups": {
+                    "optionType": "default"
+                  },
+                  "overlayId": {
+                    "optionType": "default",
+                    "value": 1
+                  }
+                },
+                "createdBy": "admin",
+                "subparcels": [],
+                "name": "mcp-test-basic",
+                "description": "seed_lab.py",
+                "parcelId": "00000000-0000-4000-8000-000000001034"
+              },
+              {
+                "parcelType": "aaa",
+                "data": {
+                  "accountingGroup": {
+                    "optionType": "default",
+                    "value": false
+                  },
+                  "authorizationConsole": {
+                    "optionType": "default",
+                    "value": false
+                  },
+                  "authorizationConfigCommands": {
+                    "optionType": "default",
+                    "value": false
+                  },
+                  "serverAuthOrder": {
+                    "optionType": "global",
+                    "value": [
+                      "local"
+                    ]
+                  },
+                  "authenticationGroup": {
+                    "optionType": "default",
+                    "value": false
+                  }
+                },
+                "createdBy": "admin",
+                "subparcels": [],
+                "name": "mcp-test-aaa",
+                "description": "seed_lab.py",
+                "parcelId": "00000000-0000-4000-8000-000000001035"
+              },
+              {
+                "parcelType": "global",
+                "data": {
+                  "services_global": {
+                    "services_ip": {
+                      "servicesGlobalServicesIpFtpPassive": {
+                        "optionType": "default",
+                        "value": false
+                      },
+                      "servicesGlobalServicesIpHttpServer": {
+                        "optionType": "default",
+                        "value": false
+                      },
+                      "servicesGlobalServicesIpLldp": {
+                        "optionType": "default",
+                        "value": true
+                      },
+                      "servicesGlobalServicesIpDomainLookup": {
+                        "optionType": "default",
+                        "value": false
+                      },
+                      "servicesGlobalServicesIpHttpsServer": {
+                        "optionType": "default",
+                        "value": false
+                      },
+                      "servicesGlobalServicesIpCdp": {
+                        "optionType": "default",
+                        "value": true
+                      },
+                      "servicesGlobalServicesIpRcmd": {
+                        "optionType": "default",
+                        "value": false
+                      },
+                      "servicesGlobalServicesIpArpProxy": {
+                        "optionType": "default",
+                        "value": false
+                      },
+                      "servicesGlobalServicesIpLineVty": {
+                        "optionType": "default",
+                        "value": false
+                      }
+                    }
+                  }
+                },
+                "createdBy": "admin",
+                "subparcels": [],
+                "name": "mcp-test-global",
+                "description": "seed_lab.py",
+                "parcelId": "00000000-0000-4000-8000-000000001036"
+              },
+              {
+                "parcelType": "internal",
+                "data": {
+                  "device-model": {
+                    "optionType": "global",
+                    "value": "vedge-C8000V"
+                  },
+                  "chassis_number": {
+                    "optionType": "global",
+                    "value": "REDACTED-01"
+                  },
+                  "config_template_name": {
+                    "optionType": "global",
+                    "value": "mcp-test"
+                  },
+                  "ipv6_strict_control": {
+                    "optionType": "global",
+                    "value": false
+                  },
+                  "personality": {
+                    "optionType": "global",
+                    "value": "vedge"
+                  },
+                  "vbond": {
+                    "optionType": "global",
+                    "value": "10.60.2.11"
+                  },
+                  "port": {
+                    "optionType": "global",
+                    "value": 12346
+                  },
+                  "sp_org_name": {
+                    "optionType": "global",
+                    "value": "mcp-lab-org"
+                  },
+                  "site_id": {
+                    "optionType": "global",
+                    "value": 200
+                  },
+                  "system_ip": {
+                    "optionType": "global",
+                    "value": "10.0.0.2"
+                  },
+                  "pseudo_commit_timer": {
+                    "optionType": "global",
+                    "value": 300
+                  },
+                  "org_name": {
+                    "optionType": "global",
+                    "value": "mcp-lab-org"
+                  },
+                  "host_name": {
+                    "optionType": "global",
+                    "value": "br1"
+                  }
+                },
+                "createdBy": "admin",
+                "subparcels": [],
+                "name": "system_internal_parcel",
+                "description": "Internal Parcel for viptela-system:system settings",
+                "parcelId": "00000000-0000-4000-8000-000000001037"
+              }
+            ]
+          },
+          {
+            "profileName": "mcp-test-cli",
+            "profileType": "cli",
+            "profileId": "00000000-0000-4000-8000-000000001038",
+            "description": "",
+            "parcels": [
+              {
+                "parcelType": "config",
+                "data": {
+                  "config": " system\n admin-tech-on-failure\n organization-name     mcp-lab-org\n vbond 10.60.2.11 port 12346\n!\nmemory free low-watermark processor 226892\nservice timestamps debug datetime msec\nservice timestamps log datetime msec\nno service tcp-small-servers\nno service udp-small-servers\nplatform console serial\nplatform qfp utilization monitor load 80\nplatform sslvpn use-pd\nusername admin privilege 15 secret 9 <redacted>\nvrf definition 10\n rd 1:10\n address-family ipv4\n  exit-address-family\n !\n!\nvrf definition Mgmt-intf\n address-family ipv4\n  exit-address-family\n !\n!\nip forward-protocol nd\nip route 0.0.0.0 0.0.0.0 10.60.1.254\nip route 0.0.0.0 0.0.0.0 10.60.2.254\nip route vrf Mgmt-intf 0.0.0.0 0.0.0.0 198.18.128.1\nip scp server enable\nno ip ssh bulk-mode\nip tcp RST-count 10 RST-window 5000\nip http server\nip http secure-server\nip nat settings central-policy\nip nat settings gatekeeper-size 1024\nipv6 unicast-routing\nipv6 rip vrf-mode enable\ninterface GigabitEthernet1\n description mpls transport\n no shutdown\n ip address 10.60.1.14 255.255.255.0\n negotiation auto\nexit\ninterface GigabitEthernet2\n description inet transport\n no shutdown\n ip address 10.60.2.14 255.255.255.0\n negotiation auto\nexit\ninterface GigabitEthernet3\n description LAN (VPN 10) to the LAN host\n no shutdown\n vrf forwarding 10\n ip address 10.61.200.1 255.255.255.0\n negotiation auto\nexit\ninterface GigabitEthernet4\n description management (VPN 512)\n no shutdown\n vrf forwarding Mgmt-intf\n ip address 198.18.129.14 255.255.192.0\n negotiation auto\nexit\ninterface Tunnel1\n no shutdown\n ip unnumbered GigabitEthernet1\n tunnel source GigabitEthernet1\n tunnel mode sdwan\nexit\ninterface Tunnel2\n no shutdown\n ip unnumbered GigabitEthernet2\n tunnel source GigabitEthernet2\n tunnel mode sdwan\nexit\ncontrol-plane\n!\nno logging rate-limit\nno logging queue-limit\naaa authentication login default local\naaa authorization console\naaa authorization exec default local\nlogin on-success log\nredundancy\n!\nvtp mode server\nradius-server cache expiry 24\nno crypto ikev2 diagnose error\nfhrp version vrrp v3\nline aux 0\n!\nline con 0\n stopbits 1\n!\nline vty 0 4\n activation-character 13\n transport input ssh\n!\nline vty 5 80\n transport input ssh\n!\nno process cpu extended history\nsdwan\n interface GigabitEthernet1\n  tunnel-interface\n   encapsulation ipsec\n   color mpls\n   allow-service all\n   no allow-service bgp\n   allow-service dhcp\n   allow-service dns\n   allow-service icmp\n   no allow-service sshd\n   no allow-service netconf\n   no allow-service ntp\n   no allow-service ospf\n   no allow-service stun\n   allow-service https\n   no allow-service snmp\n   no allow-service bfd\n  exit\n exit\n interface GigabitEthernet2\n  tunnel-interface\n   encapsulation ipsec\n   color biz-internet\n   allow-service all\n   no allow-service bgp\n   allow-service dhcp\n   allow-service dns\n   allow-service icmp\n   no allow-service sshd\n   no allow-service netconf\n   no allow-service ntp\n   no allow-service ospf\n   no allow-service stun\n   allow-service https\n   no allow-service snmp\n   no allow-service bfd\n  exit\n exit\n appqoe\n  no tcpopt enable\n  no dreopt enable\n  no httpopt enable\n !\n omp\n  no shutdown\n  graceful-restart\n  no as-dot-notation\n  address-family ipv4\n   advertise connected\n   advertise static\n  !\n  address-family ipv6\n   advertise connected\n   advertise static\n  !\n !\n!\nsslproxy\n no enable\n rsa-key-modulus      2048\n certificate-lifetime 730\n eckey-type           P256\n ca-tp-label          PROXY-SIGNING-CA\n settings expired-certificate  drop\n settings untrusted-certificate drop\n settings unknown-status       drop\n settings certificate-revocation-check none\n settings unsupported-protocol-versions drop\n settings unsupported-cipher-suites drop\n settings failure-mode         close\n settings minimum-tls-ver      TLSv1\n dual-side optimization enable\n!\nbanner motd #br1 - deployed by cat-sdwan-mcp W8 (2026-10-23)#\n"
+                },
+                "createdBy": "admin",
+                "subparcels": [],
+                "name": "mcp-test-config",
+                "description": "hub1/br1 full CLI with {{variables}} (seed_lab.py)",
+                "parcelId": "00000000-0000-4000-8000-000000001039"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

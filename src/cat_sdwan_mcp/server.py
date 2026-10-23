@@ -13,11 +13,14 @@ from cat_sdwan_mcp.spec import spec_sources
 from cat_sdwan_mcp.tools import (
     api,
     changes,
+    confighistory,
     configuration,
     control,
     dataplane,
     devops,
     events,
+    features,
+    health,
     history,
     inventory,
     onboarding,
@@ -38,7 +41,9 @@ catsdwan_control_connections(device) (failed attempts with the reason in plain w
 fabric); "why can't branch A reach B?" -> catsdwan_omp_routes(A, vpn, prefix) then catsdwan_list_tlocs and
 catsdwan_omp_peers. Data plane: "which tunnels are down?" -> catsdwan_bfd_sessions(state='not_up');
 "which are lossy / is the voice SLA met?" -> catsdwan_app_route_stats(sla_class=...) (statistics every
-10 minutes; source='realtime' for now), catsdwan_list_sla_classes, catsdwan_tunnel_stats.
+10 minutes; source='realtime' for now), catsdwan_list_sla_classes, catsdwan_tunnel_stats. The Manager's own
+health model: catsdwan_site_health(health='not_good'), catsdwan_tunnel_health(site, history=true: when was it
+bad?), catsdwan_interface_stats(device) ("is a WAN link full?"), catsdwan_topology(site).
 Logs: "what changed and who did it?" -> catsdwan_audit_log(changes_only=true); "what has been breaking at
 this site?" -> catsdwan_recent_activity(site) (alarms, events and audit lines on one timeline);
 catsdwan_list_alarms (active by default), catsdwan_list_events (busy: keep since_hours short).
@@ -47,11 +52,16 @@ Configuration: "how is this edge configured, and did it drift?" -> catsdwan_get_
 diff=true) (running vs intended, secrets masked; says configuration group, template or CLI mode);
 catsdwan_list_config_groups -> catsdwan_get_config_group(group) (feature profiles, values, devices and their
 variables); catsdwan_list_templates(type='device'|'feature'); catsdwan_list_policy_groups. A device is in a
-configuration group or on a device template, never both.
+configuration group or on a device template, never both. "What was it before last night's deploy?" ->
+catsdwan_config_history(device, at=<time> | version='previous' | diff=true).
 Changes (with MCP_ENABLE_WRITES; preview-first): catsdwan_set_device_variables (stores values only) ->
 catsdwan_deploy_config_group(group, devices) (preview = CLI and diff per device; confirm follows the action to
 success or failure per device) -> catsdwan_get_device_config(diff=true). Legacy templates:
-catsdwan_attach_device_template(template, devices, variables). One device is write tier; several devices, a
+catsdwan_attach_device_template(template, devices, variables). Change the group itself:
+catsdwan_get_feature_parcel(profile or group, parcel, fields=true) -> catsdwan_set_feature_parcel(profile,
+parcel, values | cli_replace) (schema-checked, stores only) -> deploy; catsdwan_associate_config_group(group,
+add, remove);
+catsdwan_deploy_policy_group(group, devices). One device is write tier; several devices, a
 hub or a protected-site device need MCP_ENABLE_DANGEROUS. Name the preview's devices before confirming.
 Onboarding: catsdwan_list_wan_edges(state='not_joined') -> catsdwan_onboard_edge(chassis, hostname, system_ip,
 site_id, config_group or template) (validity, association, variables; stops at the failing step) -> boot the
@@ -111,6 +121,9 @@ def create_server(
             policy.register,
             devops.register,
             history.register,
+            confighistory.register,
+            features.register,
+            health.register,
             prompts.register,
         ],
         status=SdwanApp.status,

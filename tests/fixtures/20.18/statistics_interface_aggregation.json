@@ -1,0 +1,317 @@
+{
+  "header": {
+    "generatedOn": 1792759091281,
+    "columns": [
+      {
+        "property": "down_capacity_percentage",
+        "title": "Down_capacity_percentage",
+        "dataType": "double",
+        "isDisplay": true
+      },
+      {
+        "property": "rx_pps",
+        "title": "Rx_pps",
+        "dataType": "number",
+        "isDisplay": true
+      },
+      {
+        "property": "rx_kbps",
+        "title": "Rx_kbps",
+        "dataType": "double",
+        "isDisplay": true
+      },
+      {
+        "property": "interface",
+        "title": "Interface",
+        "dataType": "string",
+        "isDisplay": true
+      },
+      {
+        "property": "tx_drops",
+        "title": "Tx_drops",
+        "dataType": "number",
+        "isDisplay": true
+      },
+      {
+        "property": "rx_errors",
+        "title": "Rx_errors",
+        "dataType": "number",
+        "isDisplay": true
+      },
+      {
+        "property": "rx_drops",
+        "title": "Rx_drops",
+        "dataType": "number",
+        "isDisplay": true
+      },
+      {
+        "property": "tx_kbps",
+        "title": "Tx_kbps",
+        "dataType": "double",
+        "isDisplay": true
+      },
+      {
+        "property": "bw_down",
+        "title": "Bw_down",
+        "dataType": "number",
+        "isDisplay": true
+      },
+      {
+        "property": "tx_errors",
+        "title": "Tx_errors",
+        "dataType": "number",
+        "isDisplay": true
+      },
+      {
+        "property": "up_capacity_percentage",
+        "title": "Up_capacity_percentage",
+        "dataType": "double",
+        "isDisplay": true
+      },
+      {
+        "property": "vdevice_name",
+        "title": "Vdevice_name",
+        "dataType": "string",
+        "isDisplay": true
+      },
+      {
+        "property": "bw_up",
+        "title": "Bw_up",
+        "dataType": "number",
+        "isDisplay": true
+      }
+    ],
+    "fields": [
+      {
+        "property": "down_capacity_percentage",
+        "dataType": "double"
+      },
+      {
+        "property": "rx_pps",
+        "dataType": "number"
+      },
+      {
+        "property": "rx_kbps",
+        "dataType": "double"
+      },
+      {
+        "property": "interface",
+        "dataType": "string"
+      },
+      {
+        "property": "tx_drops",
+        "dataType": "number"
+      },
+      {
+        "property": "rx_errors",
+        "dataType": "number"
+      },
+      {
+        "property": "rx_drops",
+        "dataType": "number"
+      },
+      {
+        "property": "tx_kbps",
+        "dataType": "double"
+      },
+      {
+        "property": "bw_down",
+        "dataType": "number"
+      },
+      {
+        "property": "tx_errors",
+        "dataType": "number"
+      },
+      {
+        "property": "up_capacity_percentage",
+        "dataType": "double"
+      },
+      {
+        "property": "vdevice_name",
+        "dataType": "string"
+      },
+      {
+        "property": "bw_up",
+        "dataType": "number"
+      }
+    ]
+  },
+  "data": [
+    {
+      "rx_kbps": 15.667,
+      "tx_kbps": 14.444,
+      "rx_pps": 13,
+      "rx_errors": 0,
+      "tx_errors": 0,
+      "rx_drops": 0,
+      "tx_drops": 0,
+      "down_capacity_percentage": 0.002,
+      "up_capacity_percentage": 0.002,
+      "bw_down": 1000000,
+      "bw_up": 1000000,
+      "count": 9,
+      "vdevice_name": "10.0.0.2",
+      "interface": "GigabitEthernet1"
+    },
+    {
+      "rx_kbps": 0.0,
+      "tx_kbps": 0.0,
+      "rx_pps": 0,
+      "rx_errors": 0,
+      "tx_errors": 0,
+      "rx_drops": 0,
+      "tx_drops": 0,
+      "down_capacity_percentage": 0.0,
+      "up_capacity_percentage": 0.0,
+      "bw_down": 56,
+      "bw_up": 56,
+      "count": 9,
+      "vdevice_name": "10.0.0.2",
+      "interface": "NVI0"
+    },
+    {
+      "rx_kbps": 5.0,
+      "tx_kbps": 0.0,
+      "rx_pps": 9,
+      "rx_errors": 0,
+      "tx_errors": 0,
+      "rx_drops": 0,
+      "tx_drops": 0,
+      "down_capacity_percentage": 5.0,
+      "up_capacity_percentage": 0.0,
+      "bw_down": 100,
+      "bw_up": 100,
+      "count": 9,
+      "vdevice_name": "10.0.0.2",
+      "interface": "Tunnel2"
+    },
+    {
+      "rx_kbps": 0.0,
+      "tx_kbps": 0.0,
+      "rx_pps": 0,
+      "rx_errors": 0,
+      "tx_errors": 0,
+      "rx_drops": 0,
+      "tx_drops": 0,
+      "down_capacity_percentage": 0.0,
+      "up_capacity_percentage": 0.0,
+      "bw_down": 10000000,
+      "bw_up": 10000000,
+      "count": 9,
+      "vdevice_name": "10.0.0.2",
+      "interface": "SDWAN vmanage/system IDB"
+    },
+    {
+      "rx_kbps": 14.444,
+      "tx_kbps": 14.444,
+      "rx_pps": 12,
+      "rx_errors": 0,
+      "tx_errors": 0,
+      "rx_drops": 0,
+      "tx_drops": 0,
+      "down_capacity_percentage": 0.002,
+      "up_capacity_percentage": 0.002,
+      "bw_down": 1000000,
+      "bw_up": 1000000,
+      "count": 9,
+      "vdevice_name": "10.0.0.2",
+      "interface": "GigabitEthernet2"
+    },
+    {
+      "rx_kbps": 0.0,
+      "tx_kbps": 0.0,
+      "rx_pps": 0,
+      "rx_errors": 0,
+      "tx_errors": 0,
+      "rx_drops": 0,
+      "tx_drops": 0,
+      "down_capacity_percentage": 0.0,
+      "up_capacity_percentage": 0.0,
+      "bw_down": 8000000,
+      "bw_up": 8000000,
+      "count": 9,
+      "vdevice_name": "10.0.0.2",
+      "interface": "Loopback65528"
+    },
+    {
+      "rx_kbps": 0.556,
+      "tx_kbps": 0.0,
+      "rx_pps": 6,
+      "rx_errors": 0,
+      "tx_errors": 0,
+      "rx_drops": 0,
+      "tx_drops": 0,
+      "down_capacity_percentage": 0.0,
+      "up_capacity_percentage": 0.0,
+      "bw_down": 1000000,
+      "bw_up": 1000000,
+      "count": 9,
+      "vdevice_name": "10.0.0.2",
+      "interface": "GigabitEthernet4"
+    },
+    {
+      "rx_kbps": 0.0,
+      "tx_kbps": 0.0,
+      "rx_pps": 0,
+      "rx_errors": 0,
+      "tx_errors": 0,
+      "rx_drops": 0,
+      "tx_drops": 0,
+      "down_capacity_percentage": 0.0,
+      "up_capacity_percentage": 0.0,
+      "bw_down": 8000000,
+      "bw_up": 8000000,
+      "count": 9,
+      "vdevice_name": "10.0.0.2",
+      "interface": "Loopback65529"
+    },
+    {
+      "rx_kbps": 0.0,
+      "tx_kbps": 0.0,
+      "rx_pps": 0,
+      "rx_errors": 0,
+      "tx_errors": 0,
+      "rx_drops": 0,
+      "tx_drops": 0,
+      "down_capacity_percentage": 0.0,
+      "up_capacity_percentage": 0.0,
+      "bw_down": 1000000,
+      "bw_up": 1000000,
+      "count": 9,
+      "vdevice_name": "10.0.0.2",
+      "interface": "GigabitEthernet3"
+    },
+    {
+      "rx_kbps": 4.0,
+      "tx_kbps": 0.0,
+      "rx_pps": 8,
+      "rx_errors": 0,
+      "tx_errors": 0,
+      "rx_drops": 0,
+      "tx_drops": 0,
+      "down_capacity_percentage": 4.0,
+      "up_capacity_percentage": 0.0,
+      "bw_down": 100,
+      "bw_up": 100,
+      "count": 9,
+      "vdevice_name": "10.0.0.2",
+      "interface": "Tunnel1"
+    },
+    {
+      "rx_kbps": 0.0,
+      "tx_kbps": 0.0,
+      "rx_pps": 0,
+      "rx_errors": 0,
+      "tx_errors": 0,
+      "rx_drops": 0,
+      "tx_drops": 0,
+      "down_capacity_percentage": 0.0,
+      "up_capacity_percentage": 0.0,
+      "bw_down": 10000000,
+      "bw_up": 10000000,
+      "count": 9,
+      "vdevice_name": "10.0.0.2",
+      "interface": "SDWAN System Intf IDB"
+    }
+  ]
+}

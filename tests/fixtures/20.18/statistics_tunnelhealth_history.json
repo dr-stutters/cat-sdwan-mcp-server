@@ -1,0 +1,946 @@
+[
+  {
+    "local_system_ip": "10.0.0.1",
+    "local_color": "biz-internet",
+    "remote_system_ip": "10.0.0.2",
+    "remote_color": "biz-internet",
+    "name": "hub1:biz-internet-br1:biz-internet",
+    "health_score": 10.0,
+    "health": "good",
+    "summary": {
+      "latency": 107.73076923076923,
+      "jitter": 3.3461538461538463,
+      "loss_percentage": 0.3477692307692308,
+      "vqoe_score": 8.417692307692306,
+      "tx_octets": 0.0,
+      "rx_octets": 0.0,
+      "state": "Up"
+    },
+    "history": [
+      {
+        "entry_time": 1792717200000,
+        "health_score": -1.0,
+        "health": "n/a",
+        "data": {}
+      },
+      {
+        "entry_time": 1792719000000,
+        "health_score": -1.0,
+        "health": "n/a",
+        "data": {}
+      },
+      {
+        "entry_time": 1792720800000,
+        "health_score": -1.0,
+        "health": "n/a",
+        "data": {}
+      },
+      {
+        "entry_time": 1792722600000,
+        "health_score": -1.0,
+        "health": "n/a",
+        "data": {}
+      },
+      {
+        "entry_time": 1792724400000,
+        "health_score": -1.0,
+        "health": "n/a",
+        "data": {}
+      },
+      {
+        "entry_time": 1792726200000,
+        "health_score": -1.0,
+        "health": "n/a",
+        "data": {}
+      },
+      {
+        "entry_time": 1792728000000,
+        "health_score": -1.0,
+        "health": "n/a",
+        "data": {}
+      },
+      {
+        "entry_time": 1792729800000,
+        "health_score": -1.0,
+        "health": "n/a",
+        "data": {}
+      },
+      {
+        "entry_time": 1792731600000,
+        "health_score": -1.0,
+        "health": "n/a",
+        "data": {}
+      },
+      {
+        "entry_time": 1792733400000,
+        "health_score": -1.0,
+        "health": "n/a",
+        "data": {}
+      },
+      {
+        "entry_time": 1792735200000,
+        "health_score": -1.0,
+        "health": "n/a",
+        "data": {}
+      },
+      {
+        "entry_time": 1792737000000,
+        "health_score": -1.0,
+        "health": "n/a",
+        "data": {}
+      },
+      {
+        "entry_time": 1792738800000,
+        "health_score": -1.0,
+        "health": "n/a",
+        "data": {}
+      },
+      {
+        "entry_time": 1792740600000,
+        "health_score": -1.0,
+        "health": "n/a",
+        "data": {}
+      },
+      {
+        "entry_time": 1792742400000,
+        "health_score": 10.0,
+        "health": "good",
+        "data": {
+          "latency": 0.0,
+          "jitter": 0.0,
+          "loss_percentage": 0.0,
+          "vqoe_score": 10.0,
+          "tx_octets": 0.0,
+          "rx_octets": 0.0,
+          "state": "Up"
+        }
+      },
+      {
+        "entry_time": 1792744200000,
+        "health_score": 10.0,
+        "health": "good",
+        "data": {
+          "latency": 0.0,
+          "jitter": 0.0,
+          "loss_percentage": 0.0,
+          "vqoe_score": 10.0,
+          "tx_octets": 0.0,
+          "rx_octets": 0.0,
+          "state": "Up"
+        }
+      },
+      {
+        "entry_time": 1792746000000,
+        "health_score": 10.0,
+        "health": "good",
+        "data": {
+          "latency": 13.0,
+          "jitter": 0.6666666666666666,
+          "loss_percentage": 0.050333333333333334,
+          "vqoe_score": 10.0,
+          "tx_octets": 0.0,
+          "rx_octets": 0.0,
+          "state": "Up"
+        }
+      },
+      {
+        "entry_time": 1792747800000,
+        "health_score": 0.0,
+        "health": "poor",
+        "data": {
+          "latency": 463.3333333333333,
+          "jitter": 14.333333333333334,
+          "loss_percentage": 0.7549999999999999,
+          "vqoe_score": 4.18,
+          "tx_octets": 0.0,
+          "rx_octets": 0.0,
+          "state": "Up"
+        }
+      },
+      {
+        "entry_time": 1792749600000,
+        "health_score": 10.0,
+        "health": "good",
+        "data": {
+          "latency": 0.0,
+          "jitter": 0.0,
+          "loss_percentage": 0.0,
+          "vqoe_score": 10.0,
+          "tx_octets": 0.0,
+          "rx_octets": 0.0,
+          "state": "Up"
+        }
+      },
+      {
+        "entry_time": 1792751400000,
+        "health_score": 10.0,
+        "health": "good",
+        "data": {
+          "latency": 0.0,
+          "jitter": 0.0,
+          "loss_percentage": 0.9009999999999999,
+          "vqoe_score": 8.64,
+          "tx_octets": 0.0,
+          "rx_octets": 0.0,
+          "state": "Up"
+        }
+      },
+      {
+        "entry_time": 1792753200000,
+        "health_score": 10.0,
+        "health": "good",
+        "data": {
+          "latency": 0.0,
+          "jitter": 0.0,
+          "loss_percentage": 0.0,
+          "vqoe_score": 10.0,
+          "tx_octets": 0.0,
+          "rx_octets": 0.0,
+          "state": "Up"
+        }
+      },
+      {
+        "entry_time": 1792755000000,
+        "health_score": 10.0,
+        "health": "good",
+        "data": {
+          "latency": 0.0,
+          "jitter": 0.0,
+          "loss_percentage": 0.0,
+          "vqoe_score": 10.0,
+          "tx_octets": 0.0,
+          "rx_octets": 0.0,
+          "state": "Up"
+        }
+      },
+      {
+        "entry_time": 1792756800000,
+        "health_score": 0.0,
+        "health": "poor",
+        "data": {
+          "latency": 457.3333333333333,
+          "jitter": 14.0,
+          "loss_percentage": 1.3076666666666668,
+          "vqoe_score": 3.466666666666667,
+          "tx_octets": 0.0,
+          "rx_octets": 0.0,
+          "state": "Up"
+        }
+      },
+      {
+        "entry_time": 1792758600000,
+        "health_score": -1.0,
+        "health": "n/a",
+        "data": {}
+      }
+    ]
+  },
+  {
+    "local_system_ip": "10.0.0.3",
+    "local_color": "biz-internet",
+    "remote_system_ip": "10.0.0.2",
+    "remote_color": "biz-internet",
+    "name": "br2:biz-internet-br1:biz-internet",
+    "health_score": 10.0,
+    "health": "good",
+    "summary": {
+      "latency": 107.04545454545455,
+      "jitter": 3.3636363636363638,
+      "loss_percentage": 0.3630909090909091,
+      "vqoe_score": 8.458181818181819,
+      "tx_octets": 0.0,
+      "rx_octets": 0.0,
+      "state": "Up"
+    },
+    "history": [
+      {
+        "entry_time": 1792717200000,
+        "health_score": -1.0,
+        "health": "n/a",
+        "data": {}
+      },
+      {
+        "entry_time": 1792719000000,
+        "health_score": -1.0,
+        "health": "n/a",
+        "data": {}
+      },
+      {
+        "entry_time": 1792720800000,
+        "health_score": -1.0,
+        "health": "n/a",
+        "data": {}
+      },
+      {
+        "entry_time": 1792722600000,
+        "health_score": -1.0,
+        "health": "n/a",
+        "data": {}
+      },
+      {
+        "entry_time": 1792724400000,
+        "health_score": -1.0,
+        "health": "n/a",
+        "data": {}
+      },
+      {
+        "entry_time": 1792726200000,
+        "health_score": -1.0,
+        "health": "n/a",
+        "data": {}
+      },
+      {
+        "entry_time": 1792728000000,
+        "health_score": -1.0,
+        "health": "n/a",
+        "data": {}
+      },
+      {
+        "entry_time": 1792729800000,
+        "health_score": -1.0,
+        "health": "n/a",
+        "data": {}
+      },
+      {
+        "entry_time": 1792731600000,
+        "health_score": -1.0,
+        "health": "n/a",
+        "data": {}
+      },
+      {
+        "entry_time": 1792733400000,
+        "health_score": -1.0,
+        "health": "n/a",
+        "data": {}
+      },
+      {
+        "entry_time": 1792735200000,
+        "health_score": -1.0,
+        "health": "n/a",
+        "data": {}
+      },
+      {
+        "entry_time": 1792737000000,
+        "health_score": -1.0,
+        "health": "n/a",
+        "data": {}
+      },
+      {
+        "entry_time": 1792738800000,
+        "health_score": -1.0,
+        "health": "n/a",
+        "data": {}
+      },
+      {
+        "entry_time": 1792740600000,
+        "health_score": -1.0,
+        "health": "n/a",
+        "data": {}
+      },
+      {
+        "entry_time": 1792742400000,
+        "health_score": 10.0,
+        "health": "good",
+        "data": {
+          "latency": 0.0,
+          "jitter": 0.0,
+          "loss_percentage": 0.0755,
+          "vqoe_score": 10.0,
+          "tx_octets": 0.0,
+          "rx_octets": 0.0,
+          "state": "Up"
+        }
+      },
+      {
+        "entry_time": 1792744200000,
+        "health_score": 10.0,
+        "health": "good",
+        "data": {
+          "latency": 0.0,
+          "jitter": 0.0,
+          "loss_percentage": 0.0,
+          "vqoe_score": 10.0,
+          "tx_octets": 0.0,
+          "rx_octets": 0.0,
+          "state": "Up"
+        }
+      },
+      {
+        "entry_time": 1792746000000,
+        "health_score": 10.0,
+        "health": "good",
+        "data": {
+          "latency": 0.0,
+          "jitter": 0.0,
+          "loss_percentage": 0.0,
+          "vqoe_score": 10.0,
+          "tx_octets": 0.0,
+          "rx_octets": 0.0,
+          "state": "Up"
+        }
+      },
+      {
+        "entry_time": 1792747800000,
+        "health_score": 0.0,
+        "health": "poor",
+        "data": {
+          "latency": 600.5,
+          "jitter": 19.0,
+          "loss_percentage": 1.206,
+          "vqoe_score": 2.52,
+          "tx_octets": 0.0,
+          "rx_octets": 0.0,
+          "state": "Up"
+        }
+      },
+      {
+        "entry_time": 1792749600000,
+        "health_score": 10.0,
+        "health": "good",
+        "data": {
+          "latency": 9.333333333333334,
+          "jitter": 0.6666666666666666,
+          "loss_percentage": 0.050333333333333334,
+          "vqoe_score": 10.0,
+          "tx_octets": 0.0,
+          "rx_octets": 0.0,
+          "state": "Up"
+        }
+      },
+      {
+        "entry_time": 1792751400000,
+        "health_score": 10.0,
+        "health": "good",
+        "data": {
+          "latency": 0.0,
+          "jitter": 0.0,
+          "loss_percentage": 0.9523333333333334,
+          "vqoe_score": 8.626666666666667,
+          "tx_octets": 0.0,
+          "rx_octets": 0.0,
+          "state": "Up"
+        }
+      },
+      {
+        "entry_time": 1792753200000,
+        "health_score": 10.0,
+        "health": "good",
+        "data": {
+          "latency": 0.0,
+          "jitter": 0.0,
+          "loss_percentage": 0.0,
+          "vqoe_score": 10.0,
+          "tx_octets": 0.0,
+          "rx_octets": 0.0,
+          "state": "Up"
+        }
+      },
+      {
+        "entry_time": 1792755000000,
+        "health_score": 10.0,
+        "health": "good",
+        "data": {
+          "latency": 0.0,
+          "jitter": 0.0,
+          "loss_percentage": 0.0,
+          "vqoe_score": 10.0,
+          "tx_octets": 0.0,
+          "rx_octets": 0.0,
+          "state": "Up"
+        }
+      },
+      {
+        "entry_time": 1792756800000,
+        "health_score": 5.0,
+        "health": "fair",
+        "data": {
+          "latency": 375.3333333333333,
+          "jitter": 11.333333333333334,
+          "loss_percentage": 0.8056666666666666,
+          "vqoe_score": 5.053333333333334,
+          "tx_octets": 0.0,
+          "rx_octets": 0.0,
+          "state": "Up"
+        }
+      },
+      {
+        "entry_time": 1792758600000,
+        "health_score": -1.0,
+        "health": "n/a",
+        "data": {}
+      }
+    ]
+  },
+  {
+    "local_system_ip": "10.0.0.1",
+    "local_color": "mpls",
+    "remote_system_ip": "10.0.0.2",
+    "remote_color": "biz-internet",
+    "name": "hub1:mpls-br1:biz-internet",
+    "health_score": 10.0,
+    "health": "good",
+    "summary": {
+      "latency": 108.65384615384616,
+      "jitter": 3.6923076923076925,
+      "loss_percentage": 0.37623076923076926,
+      "vqoe_score": 8.496923076923077,
+      "tx_octets": 686.0,
+      "rx_octets": 976.0,
+      "state": "Up"
+    },
+    "history": [
+      {
+        "entry_time": 1792717200000,
+        "health_score": -1.0,
+        "health": "n/a",
+        "data": {}
+      },
+      {
+        "entry_time": 1792719000000,
+        "health_score": -1.0,
+        "health": "n/a",
+        "data": {}
+      },
+      {
+        "entry_time": 1792720800000,
+        "health_score": -1.0,
+        "health": "n/a",
+        "data": {}
+      },
+      {
+        "entry_time": 1792722600000,
+        "health_score": -1.0,
+        "health": "n/a",
+        "data": {}
+      },
+      {
+        "entry_time": 1792724400000,
+        "health_score": -1.0,
+        "health": "n/a",
+        "data": {}
+      },
+      {
+        "entry_time": 1792726200000,
+        "health_score": -1.0,
+        "health": "n/a",
+        "data": {}
+      },
+      {
+        "entry_time": 1792728000000,
+        "health_score": -1.0,
+        "health": "n/a",
+        "data": {}
+      },
+      {
+        "entry_time": 1792729800000,
+        "health_score": -1.0,
+        "health": "n/a",
+        "data": {}
+      },
+      {
+        "entry_time": 1792731600000,
+        "health_score": -1.0,
+        "health": "n/a",
+        "data": {}
+      },
+      {
+        "entry_time": 1792733400000,
+        "health_score": -1.0,
+        "health": "n/a",
+        "data": {}
+      },
+      {
+        "entry_time": 1792735200000,
+        "health_score": -1.0,
+        "health": "n/a",
+        "data": {}
+      },
+      {
+        "entry_time": 1792737000000,
+        "health_score": -1.0,
+        "health": "n/a",
+        "data": {}
+      },
+      {
+        "entry_time": 1792738800000,
+        "health_score": -1.0,
+        "health": "n/a",
+        "data": {}
+      },
+      {
+        "entry_time": 1792740600000,
+        "health_score": -1.0,
+        "health": "n/a",
+        "data": {}
+      },
+      {
+        "entry_time": 1792742400000,
+        "health_score": 10.0,
+        "health": "good",
+        "data": {
+          "latency": 1.0,
+          "jitter": 1.0,
+          "loss_percentage": 0.0,
+          "vqoe_score": 10.0,
+          "tx_octets": 686.0,
+          "rx_octets": 976.0,
+          "state": "Up"
+        }
+      },
+      {
+        "entry_time": 1792744200000,
+        "health_score": 10.0,
+        "health": "good",
+        "data": {
+          "latency": 1.0,
+          "jitter": 1.0,
+          "loss_percentage": 0.0,
+          "vqoe_score": 10.0,
+          "tx_octets": 0.0,
+          "rx_octets": 0.0,
+          "state": "Up"
+        }
+      },
+      {
+        "entry_time": 1792746000000,
+        "health_score": 10.0,
+        "health": "good",
+        "data": {
+          "latency": 14.333333333333334,
+          "jitter": 1.6666666666666667,
+          "loss_percentage": 0.050333333333333334,
+          "vqoe_score": 10.0,
+          "tx_octets": 0.0,
+          "rx_octets": 0.0,
+          "state": "Up"
+        }
+      },
+      {
+        "entry_time": 1792747800000,
+        "health_score": 0.0,
+        "health": "poor",
+        "data": {
+          "latency": 464.3333333333333,
+          "jitter": 15.0,
+          "loss_percentage": 0.6026666666666667,
+          "vqoe_score": 4.8933333333333335,
+          "tx_octets": 0.0,
+          "rx_octets": 0.0,
+          "state": "Up"
+        }
+      },
+      {
+        "entry_time": 1792749600000,
+        "health_score": 10.0,
+        "health": "good",
+        "data": {
+          "latency": 0.3333333333333333,
+          "jitter": 0.0,
+          "loss_percentage": 0.0,
+          "vqoe_score": 10.0,
+          "tx_octets": 0.0,
+          "rx_octets": 0.0,
+          "state": "Up"
+        }
+      },
+      {
+        "entry_time": 1792751400000,
+        "health_score": 10.0,
+        "health": "good",
+        "data": {
+          "latency": 0.0,
+          "jitter": 0.0,
+          "loss_percentage": 1.4536666666666667,
+          "vqoe_score": 8.523333333333333,
+          "tx_octets": 0.0,
+          "rx_octets": 0.0,
+          "state": "Up"
+        }
+      },
+      {
+        "entry_time": 1792753200000,
+        "health_score": 10.0,
+        "health": "good",
+        "data": {
+          "latency": 0.6666666666666666,
+          "jitter": 0.0,
+          "loss_percentage": 0.0,
+          "vqoe_score": 10.0,
+          "tx_octets": 0.0,
+          "rx_octets": 0.0,
+          "state": "Up"
+        }
+      },
+      {
+        "entry_time": 1792755000000,
+        "health_score": 10.0,
+        "health": "good",
+        "data": {
+          "latency": 1.0,
+          "jitter": 0.0,
+          "loss_percentage": 0.0,
+          "vqoe_score": 10.0,
+          "tx_octets": 0.0,
+          "rx_octets": 0.0,
+          "state": "Up"
+        }
+      },
+      {
+        "entry_time": 1792756800000,
+        "health_score": 0.0,
+        "health": "poor",
+        "data": {
+          "latency": 459.3333333333333,
+          "jitter": 13.666666666666666,
+          "loss_percentage": 1.154,
+          "vqoe_score": 3.556666666666667,
+          "tx_octets": 0.0,
+          "rx_octets": 0.0,
+          "state": "Up"
+        }
+      },
+      {
+        "entry_time": 1792758600000,
+        "health_score": -1.0,
+        "health": "n/a",
+        "data": {}
+      }
+    ]
+  },
+  {
+    "local_system_ip": "10.0.0.3",
+    "local_color": "mpls",
+    "remote_system_ip": "10.0.0.2",
+    "remote_color": "biz-internet",
+    "name": "br2:mpls-br1:biz-internet",
+    "health_score": 10.0,
+    "health": "good",
+    "summary": {
+      "latency": 103.30434782608695,
+      "jitter": 3.5652173913043477,
+      "loss_percentage": 0.3863913043478261,
+      "vqoe_score": 8.62304347826087,
+      "tx_octets": 0.0,
+      "rx_octets": 976.0,
+      "state": "Up"
+    },
+    "history": [
+      {
+        "entry_time": 1792717200000,
+        "health_score": -1.0,
+        "health": "n/a",
+        "data": {}
+      },
+      {
+        "entry_time": 1792719000000,
+        "health_score": -1.0,
+        "health": "n/a",
+        "data": {}
+      },
+      {
+        "entry_time": 1792720800000,
+        "health_score": -1.0,
+        "health": "n/a",
+        "data": {}
+      },
+      {
+        "entry_time": 1792722600000,
+        "health_score": -1.0,
+        "health": "n/a",
+        "data": {}
+      },
+      {
+        "entry_time": 1792724400000,
+        "health_score": -1.0,
+        "health": "n/a",
+        "data": {}
+      },
+      {
+        "entry_time": 1792726200000,
+        "health_score": -1.0,
+        "health": "n/a",
+        "data": {}
+      },
+      {
+        "entry_time": 1792728000000,
+        "health_score": -1.0,
+        "health": "n/a",
+        "data": {}
+      },
+      {
+        "entry_time": 1792729800000,
+        "health_score": -1.0,
+        "health": "n/a",
+        "data": {}
+      },
+      {
+        "entry_time": 1792731600000,
+        "health_score": -1.0,
+        "health": "n/a",
+        "data": {}
+      },
+      {
+        "entry_time": 1792733400000,
+        "health_score": -1.0,
+        "health": "n/a",
+        "data": {}
+      },
+      {
+        "entry_time": 1792735200000,
+        "health_score": -1.0,
+        "health": "n/a",
+        "data": {}
+      },
+      {
+        "entry_time": 1792737000000,
+        "health_score": -1.0,
+        "health": "n/a",
+        "data": {}
+      },
+      {
+        "entry_time": 1792738800000,
+        "health_score": -1.0,
+        "health": "n/a",
+        "data": {}
+      },
+      {
+        "entry_time": 1792740600000,
+        "health_score": -1.0,
+        "health": "n/a",
+        "data": {}
+      },
+      {
+        "entry_time": 1792742400000,
+        "health_score": 10.0,
+        "health": "good",
+        "data": {
+          "latency": 1.0,
+          "jitter": 1.0,
+          "loss_percentage": 0.0755,
+          "vqoe_score": 10.0,
+          "tx_octets": 0.0,
+          "rx_octets": 976.0,
+          "state": "Up"
+        }
+      },
+      {
+        "entry_time": 1792744200000,
+        "health_score": 10.0,
+        "health": "good",
+        "data": {
+          "latency": 1.0,
+          "jitter": 1.0,
+          "loss_percentage": 0.0,
+          "vqoe_score": 10.0,
+          "tx_octets": 0.0,
+          "rx_octets": 0.0,
+          "state": "Up"
+        }
+      },
+      {
+        "entry_time": 1792746000000,
+        "health_score": 10.0,
+        "health": "good",
+        "data": {
+          "latency": 1.0,
+          "jitter": 1.0,
+          "loss_percentage": 0.0,
+          "vqoe_score": 10.0,
+          "tx_octets": 0.0,
+          "rx_octets": 0.0,
+          "state": "Up"
+        }
+      },
+      {
+        "entry_time": 1792747800000,
+        "health_score": 0.0,
+        "health": "poor",
+        "data": {
+          "latency": 602.0,
+          "jitter": 19.0,
+          "loss_percentage": 1.208,
+          "vqoe_score": 2.6550000000000002,
+          "tx_octets": 0.0,
+          "rx_octets": 0.0,
+          "state": "Up"
+        }
+      },
+      {
+        "entry_time": 1792749600000,
+        "health_score": 10.0,
+        "health": "good",
+        "data": {
+          "latency": 10.666666666666666,
+          "jitter": 0.6666666666666666,
+          "loss_percentage": 0.050333333333333334,
+          "vqoe_score": 10.0,
+          "tx_octets": 0.0,
+          "rx_octets": 0.0,
+          "state": "Up"
+        }
+      },
+      {
+        "entry_time": 1792751400000,
+        "health_score": 10.0,
+        "health": "good",
+        "data": {
+          "latency": 0.3333333333333333,
+          "jitter": 0.0,
+          "loss_percentage": 1.5036666666666667,
+          "vqoe_score": 8.516666666666667,
+          "tx_octets": 0.0,
+          "rx_octets": 0.0,
+          "state": "Up"
+        }
+      },
+      {
+        "entry_time": 1792753200000,
+        "health_score": 10.0,
+        "health": "good",
+        "data": {
+          "latency": 0.5,
+          "jitter": 0.0,
+          "loss_percentage": 0.0,
+          "vqoe_score": 10.0,
+          "tx_octets": 0.0,
+          "rx_octets": 0.0,
+          "state": "Up"
+        }
+      },
+      {
+        "entry_time": 1792755000000,
+        "health_score": 10.0,
+        "health": "good",
+        "data": {
+          "latency": 1.0,
+          "jitter": 0.0,
+          "loss_percentage": 0.0,
+          "vqoe_score": 10.0,
+          "tx_octets": 0.0,
+          "rx_octets": 0.0,
+          "state": "Up"
+        }
+      },
+      {
+        "entry_time": 1792756800000,
+        "health_score": 5.0,
+        "health": "fair",
+        "data": {
+          "latency": 376.0,
+          "jitter": 11.666666666666666,
+          "loss_percentage": 0.5526666666666666,
+          "vqoe_score": 5.823333333333333,
+          "tx_octets": 0.0,
+          "rx_octets": 0.0,
+          "state": "Up"
+        }
+      },
+      {
+        "entry_time": 1792758600000,
+        "health_score": -1.0,
+        "health": "n/a",
+        "data": {}
+      }
+    ]
+  }
+]

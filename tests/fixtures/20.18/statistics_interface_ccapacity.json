@@ -1,0 +1,147 @@
+{
+  "header": {
+    "generatedOn": 1792759074320,
+    "columns": [
+      {
+        "property": "min_up_capacity_percentage",
+        "title": "Min_up_capacity_percentage",
+        "dataType": "double",
+        "isDisplay": true
+      },
+      {
+        "property": "max_up_capacity_percentage",
+        "title": "Max_up_capacity_percentage",
+        "dataType": "double",
+        "isDisplay": true
+      },
+      {
+        "property": "max_bw_up",
+        "title": "Max_bw_up",
+        "dataType": "number",
+        "isDisplay": true
+      },
+      {
+        "property": "max_bw_down",
+        "title": "Max_bw_down",
+        "dataType": "number",
+        "isDisplay": true
+      },
+      {
+        "property": "vdevice_name",
+        "title": "Vdevice_name",
+        "dataType": "string",
+        "isDisplay": true
+      },
+      {
+        "property": "avg_up_capacity_percentage",
+        "title": "Avg_up_capacity_percentage",
+        "dataType": "double",
+        "isDisplay": true
+      },
+      {
+        "property": "max_down_capacity_percentage",
+        "title": "Max_down_capacity_percentage",
+        "dataType": "double",
+        "isDisplay": true
+      },
+      {
+        "property": "interface",
+        "title": "Interface",
+        "dataType": "string",
+        "isDisplay": true
+      },
+      {
+        "property": "avg_down_capacity_percentage",
+        "title": "Avg_down_capacity_percentage",
+        "dataType": "double",
+        "isDisplay": true
+      },
+      {
+        "property": "min_down_capacity_percentage",
+        "title": "Min_down_capacity_percentage",
+        "dataType": "double",
+        "isDisplay": true
+      }
+    ],
+    "fields": [
+      {
+        "property": "min_up_capacity_percentage",
+        "dataType": "double"
+      },
+      {
+        "property": "max_up_capacity_percentage",
+        "dataType": "double"
+      },
+      {
+        "property": "max_bw_up",
+        "dataType": "number"
+      },
+      {
+        "property": "max_bw_down",
+        "dataType": "number"
+      },
+      {
+        "property": "vdevice_name",
+        "dataType": "string"
+      },
+      {
+        "property": "avg_up_capacity_percentage",
+        "dataType": "double"
+      },
+      {
+        "property": "max_down_capacity_percentage",
+        "dataType": "double"
+      },
+      {
+        "property": "interface",
+        "dataType": "string"
+      },
+      {
+        "property": "avg_down_capacity_percentage",
+        "dataType": "double"
+      },
+      {
+        "property": "min_down_capacity_percentage",
+        "dataType": "double"
+      }
+    ]
+  },
+  "data": [
+    {
+      "avg_up_capacity_percentage": 0.001,
+      "avg_down_capacity_percentage": 0.001,
+      "min_up_capacity_percentage": 0,
+      "min_down_capacity_percentage": 0,
+      "max_up_capacity_percentage": 0.003,
+      "max_down_capacity_percentage": 0.002,
+      "count": 64,
+      "vdevice_name": "10.0.0.2",
+      "interface": "GigabitEthernet1",
+      "range": "0-25",
+      "bw_up": 1000000,
+      "bw_down": 1000000
+    },
+    {
+      "avg_up_capacity_percentage": 0.001,
+      "avg_down_capacity_percentage": 0.001,
+      "min_up_capacity_percentage": 0,
+      "min_down_capacity_percentage": 0,
+      "max_up_capacity_percentage": 0.002,
+      "max_down_capacity_percentage": 0.002,
+      "count": 64,
+      "vdevice_name": "10.0.0.2",
+      "interface": "GigabitEthernet2",
+      "range": "0-25",
+      "bw_up": 1000000,
+      "bw_down": 1000000
+    }
+  ],
+  "distribution": {
+    "50-75": 0,
+    "0-25": 2,
+    "75-100": 0,
+    "uncategorized": 0,
+    "25-50": 0,
+    ">100": 0
+  }
+}

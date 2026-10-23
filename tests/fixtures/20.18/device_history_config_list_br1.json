@@ -1,0 +1,56 @@
+{
+  "header": {
+    "generatedOn": 1792758942470,
+    "viewKeys": {
+      "uniqueKey": [],
+      "preferenceKey": "grid-device_configuration_list"
+    },
+    "columns": [
+      {
+        "title": "view.statistics.deviceConfigurationList.systemIp",
+        "property": "system_ip",
+        "dataType": "string"
+      }
+    ],
+    "fields": [
+      {
+        "property": "entry_time",
+        "dataType": "date"
+      },
+      {
+        "property": "system_ip",
+        "dataType": "string"
+      },
+      {
+        "property": "config_mode",
+        "dataType": "string"
+      },
+      {
+        "property": "config_id",
+        "dataType": "string"
+      }
+    ],
+    "chart": {}
+  },
+  "pageInfo": {
+    "startTime": "1792752250379",
+    "endTime": "1792742865322",
+    "count": 2
+  },
+  "data": [
+    {
+      "entry_time": 1792752250379,
+      "config_id": "00000000-0000-4000-8000-000000000172",
+      "config_mode": "cli/ztp",
+      "system_ip": "10.0.0.2",
+      "device_type": "vedge"
+    },
+    {
+      "entry_time": 1792742865322,
+      "config_id": "00000000-0000-4000-8000-000000000175",
+      "config_mode": "cli",
+      "system_ip": "10.0.0.2",
+      "device_type": "vedge"
+    }
+  ]
+}
