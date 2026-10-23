@@ -97,6 +97,10 @@ PATHS = [
     "/statistics/dpi",
     "/statistics/dpi/aggregation",
     "/device/control/connectionshistory",
+    # W20 configuration history
+    "/device/history/config",
+    "/device/history/config/{config_id}",
+    "/device/history/config/diff/list",
 ]
 
 

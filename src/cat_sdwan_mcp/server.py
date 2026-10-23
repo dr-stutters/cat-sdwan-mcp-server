@@ -13,6 +13,7 @@ from cat_sdwan_mcp.spec import spec_sources
 from cat_sdwan_mcp.tools import (
     api,
     changes,
+    confighistory,
     configuration,
     control,
     dataplane,
@@ -47,7 +48,8 @@ Configuration: "how is this edge configured, and did it drift?" -> catsdwan_get_
 diff=true) (running vs intended, secrets masked; says configuration group, template or CLI mode);
 catsdwan_list_config_groups -> catsdwan_get_config_group(group) (feature profiles, values, devices and their
 variables); catsdwan_list_templates(type='device'|'feature'); catsdwan_list_policy_groups. A device is in a
-configuration group or on a device template, never both.
+configuration group or on a device template, never both. "What was it before last night's deploy?" ->
+catsdwan_config_history(device, at=<time> | version='previous' | diff=true).
 Changes (with MCP_ENABLE_WRITES; preview-first): catsdwan_set_device_variables (stores values only) ->
 catsdwan_deploy_config_group(group, devices) (preview = CLI and diff per device; confirm follows the action to
 success or failure per device) -> catsdwan_get_device_config(diff=true). Legacy templates:
@@ -111,6 +113,7 @@ def create_server(
             policy.register,
             devops.register,
             history.register,
+            confighistory.register,
             prompts.register,
         ],
         status=SdwanApp.status,

@@ -9825,6 +9825,13 @@
     ],
     "description": "Generate install info",
     "operationId": "generateInstallInfo",
+  "/device/history/config": {
+   "get": {
+    "tags": [
+     "Configuration - Device Config History"
+    ],
+    "description": "Get device config history",
+    "operationId": "getLastThousandConfigList",
     "parameters": [
      {
       "name": "deviceId",
@@ -10674,6 +10681,19 @@
        "pattern": "^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?).){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$",
        "type": "string",
        "example": "169.254.10.10"
+      "description": "Device Id",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     },
+     {
+      "name": "query",
+      "in": "query",
+      "description": "Query filter",
+      "required": true,
+      "schema": {
+       "type": "string"
       }
      }
     ],
@@ -10808,6 +10828,9 @@
             }
            ]
           }
+         "Device config history": {
+          "description": "Device config history",
+          "value": {}
          }
         }
        }
@@ -10824,6 +10847,112 @@
      }
     },
     "x-roles-required": "System-read,System-write,Security-read,Security-write"
+    "x-roles-required": "Template Configuration-read,Config Group-read,Policy Group-read"
+   }
+  },
+  "/device/history/config/{config_id}": {
+   "get": {
+    "tags": [
+     "Configuration - Device Config History"
+    ],
+    "description": "Get device config",
+    "operationId": "getDeviceConfig",
+    "parameters": [
+     {
+      "name": "config_id",
+      "in": "path",
+      "description": "Config Id",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Success",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "object"
+        },
+        "examples": {
+         "Device config": {
+          "description": "Device config",
+          "value": {}
+         }
+        }
+       }
+      }
+     },
+     "400": {
+      "description": "Bad Request"
+     },
+     "403": {
+      "description": "Forbidden"
+     },
+     "500": {
+      "description": "Internal Server Error"
+     }
+    },
+    "x-roles-required": "Template Configuration-read,Config Group-read,Policy Group-read"
+   }
+  },
+  "/device/history/config/diff/list": {
+   "get": {
+    "tags": [
+     "Configuration - Device Config History"
+    ],
+    "description": "Get diff of two configs",
+    "operationId": "getConfigDiff",
+    "parameters": [
+     {
+      "name": "config_id1",
+      "in": "query",
+      "description": "Config Id one",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     },
+     {
+      "name": "config_id2",
+      "in": "query",
+      "description": "Config Id two",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Success",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "object"
+        },
+        "examples": {
+         "Device config": {
+          "description": "Device config",
+          "value": {}
+         }
+        }
+       }
+      }
+     },
+     "400": {
+      "description": "Bad Request"
+     },
+     "403": {
+      "description": "Forbidden"
+     },
+     "500": {
+      "description": "Internal Server Error"
+     }
+    },
+    "x-roles-required": "Template Configuration-read,Config Group-read,Policy Group-read"
    }
   }
  },
@@ -12917,6 +13046,130 @@
        "cellular-controller",
        "service-insertion-attachment"
       ]
+     }
+    }
+   },
+   "AuditLogEntry": {
+    "required": [
+     "auditdetails",
+     "entry_time",
+     "logdeviceid",
+     "logfeature",
+     "logid",
+     "logmessage",
+     "logmodule",
+     "loguser",
+     "logusersrcip",
+     "statcycletime",
+     "tenant"
+    ],
+    "type": "object",
+    "properties": {
+     "auditdetails": {
+      "type": "array",
+      "items": {
+       "type": "string"
+      }
+     },
+     "entry_time": {
+      "type": "integer",
+      "format": "int32",
+      "example": 1659003590292
+     },
+     "id": {
+      "type": "string",
+      "example": "iWJRRIIBMbLIyWbe1qH"
+     },
+     "logdeviceid": {
+      "type": "string",
+      "example": "172.16.255.22"
+     },
+     "logfeature": {
+      "type": "string",
+      "example": "user"
+     },
+     "logid": {
+      "type": "string",
+      "format": "uuid",
+      "example": "918c6d64-729c-4304-b2c7-955a7c0e6a61"
+     },
+     "logmessage": {
+      "type": "string",
+      "example": "Invalidated session due to server session idle time out for User: viptela-device-901d032c-0721-438e-82ba-1d429598d879"
+     },
+     "logmodule": {
+      "type": "string",
+      "example": "user"
+     },
+     "loguser": {
+      "type": "string",
+      "format": "uuid"
+     },
+     "logusersrcip": {
+      "type": "string",
+      "example": "172.16.255.19"
+     },
+     "statcycletime": {
+      "type": "integer",
+      "format": "int32",
+      "example": 1659003590292
+     },
+     "tenant": {
+      "type": "string",
+      "example": "default"
+     }
+    }
+   },
+   "Criteria": {
+    "type": "object",
+    "properties": {
+     "attribute": {
+      "type": "string",
+      "enum": [
+       "tag"
+      ]
+     },
+     "value": {
+      "type": "string"
+     }
+    }
+   },
+   "GenerateBootstrapConfigForVedge": {
+    "type": "object",
+    "properties": {
+     "bootstrapConfig": {
+      "type": "string",
+      "example": "#cloud-config\\nvinitparam:\\n - uuid : ESR-6300-LIC-K9-FAUSTEST126\\n - vbond : 10.0.12.26\\n - org : vIPtela Inc Regression\\n"
+     }
+    }
+   },
+   "FormPostResp": {
+    "type": "object",
+    "properties": {
+     "activityList": {
+      "type": "string",
+      "example": "[Number of vEdges uploaded successfully: 1, Uploaded vEdges (chassisId, serial number): ,  - ESR-6300-LIC-K9-FAUSTEST126, 030557201979336385BE]"
+     },
+     "id": {
+      "type": "string",
+      "example": "b5091b8e-e5ea-4096-8e4c-f17d0d60f2dd"
+     },
+     "vedgeListUploadMsg": {
+      "type": "string",
+      "example": "Number of vEdges uploaded successfully: 1"
+     },
+     "vedgeListUploadStatus": {
+      "type": "string",
+      "example": "vEdge list uploaded successfully"
+     }
+    }
+   },
+   "SyncDevicesResp": {
+    "type": "object",
+    "properties": {
+     "processId": {
+      "type": "string",
+      "example": "c82d4877-dc04-4580-aedc-3a10166dab4d"
      }
     }
    }

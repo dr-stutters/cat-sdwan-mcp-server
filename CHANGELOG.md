@@ -38,6 +38,11 @@ All notable changes to this project are documented here. The format follows
   on) and `catsdwan_site_report` (devices, availability and SLA misses per transport with a verdict, control
   drops per colour, top alarms, top applications). The two long ones are core tasks; the aggregations run on the
   statistics semaphore. Recorded aggregation and empty DPI fixtures; spec subset extended.
+- W20 (#34): `catsdwan_config_history(device, since_hours, version, at, diff, diff_between, section)`: the
+  configurations the Manager stored for a device (`GET /device/history/config`; with a `query` the Manager ignores
+  `deviceId`, so the query carries a `system_ip` rule and `fields` keeps the text out of the list), one version
+  (`/history/config/{id}`), the version in effect at a time, and a block diff of two versions
+  (`/history/config/diff/list` answers both texts, not a diff); secrets masked.
 
 ## [0.2.0] - 2026-10-23
 
