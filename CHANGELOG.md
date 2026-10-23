@@ -4,6 +4,25 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/) (0.x: minor bumps may break consumers).
 
+## [Unreleased]
+
+### Added
+- W11 (#12): policy. `catsdwan_list_policies` (centralised `/template/policy/vsmart`, localised
+  `/template/policy/vedge`, policy groups `/v1/policy-group`; activated state and each policy's parts),
+  `catsdwan_get_policy` (the assembly from `/template/policy/vsmart/definition/{id}` with site and VPN lists
+  resolved, each definition from `/template/policy/definition/<type>/{id}` with its sequences in plain words: SLA
+  class and limits, preferred and backup colours, data-policy actions, control and hub-and-spoke/mesh topologies;
+  lists from `/template/policy/list`, or per type when that isn't available), `catsdwan_explain_path` (offline
+  walk: control/topology parts on the two sites, OMP routes at a source edge for a prefix, data-policy sequences
+  that may override, the first matching app-route sequence by app list or DSCP with 'maybe' sequences named, the
+  tunnels' SLA now from the app-route statistics, and the choice: preferred colour, another SLA-meeting colour,
+  backup colour, best path, strict drop or load-balance) and `catsdwan_activate_policy` (dangerous; activate
+  `{"isEdited": false}` or deactivate, followed per controller; preview names the controllers, the sites and their
+  edges, the policy replaced, `blast_radius`; blocked for a controller in CLI mode or unreachable). Tools that are
+  always dangerous are listed with `MCP_ENABLE_WRITES` alone (write tier) so their preview refuses with the reason;
+  with `MCP_ENABLE_DANGEROUS` they register at the dangerous tier. Recorded 20.18.3.1 policy fixtures (policy,
+  definition record, definition and list types); spec subset extended with the policy operations.
+
 ## [0.2.0] - 2026-10-23
 
 ### Added

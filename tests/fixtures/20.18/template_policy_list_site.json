@@ -1,0 +1,116 @@
+{
+  "header": {
+    "generatedOn": 1792757014563,
+    "viewKeys": {
+      "uniqueKey": [],
+      "preferenceKey": "grid-PolicyList"
+    },
+    "columns": [
+      {
+        "title": "Name",
+        "property": "name",
+        "hideable": false,
+        "dataType": "string"
+      },
+      {
+        "title": "Entries",
+        "property": "entries",
+        "hideable": true,
+        "dataType": "array"
+      },
+      {
+        "title": "Internet Protocal",
+        "property": "type",
+        "hideable": true,
+        "dataType": "string"
+      },
+      {
+        "title": "Reference Count",
+        "property": "referenceCount",
+        "hideable": true,
+        "dataType": "string"
+      },
+      {
+        "title": "Updated By",
+        "property": "owner",
+        "dataType": "string"
+      },
+      {
+        "title": "Last Updated",
+        "property": "lastUpdated",
+        "displayFormat": "DD MMM YYYY h:mm:ss A z",
+        "inputFormat": "unix-time",
+        "dataType": "date"
+      }
+    ],
+    "fields": [
+      {
+        "property": "name",
+        "dataType": "string"
+      },
+      {
+        "property": "type",
+        "dataType": "string"
+      },
+      {
+        "property": "description",
+        "dataType": "string"
+      },
+      {
+        "property": "listId",
+        "dataType": "string"
+      },
+      {
+        "property": "entries",
+        "dataType": "array"
+      },
+      {
+        "property": "type",
+        "dataType": "string"
+      },
+      {
+        "property": "referenceCount",
+        "dataType": "string"
+      },
+      {
+        "property": "owner",
+        "dataType": "string"
+      },
+      {
+        "property": "lastUpdated",
+        "dataType": "date"
+      }
+    ]
+  },
+  "data": [
+    {
+      "listId": "00000000-0000-4000-8000-000000000128",
+      "name": "mcp-test-sites",
+      "type": "site",
+      "description": "seed_lab.py",
+      "entries": [
+        {
+          "siteId": "100"
+        },
+        {
+          "siteId": "200"
+        },
+        {
+          "siteId": "201"
+        }
+      ],
+      "lastUpdated": 1792743020037,
+      "owner": "admin",
+      "readOnly": false,
+      "version": "0",
+      "infoTag": "",
+      "referenceCount": 1,
+      "references": [
+        {
+          "id": "",
+          "type": ""
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "policyDefinition": {
+    "assembly": [
+      {
+        "definitionId": "00000000-0000-4000-8000-000000000127",
+        "type": "appRoute",
+        "entries": [
+          {
+            "siteLists": [
+              "00000000-0000-4000-8000-000000000128"
+            ],
+            "vpnLists": [
+              "00000000-0000-4000-8000-000000000129"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "policyType": "feature",
+  "policyName": "mcp-test-policy",
+  "policyDescription": "app-route SLA for the lab sites (not activated)",
+  "lastUpdatedOn": "1792743020820",
+  "isPolicyActivated": false
+}
