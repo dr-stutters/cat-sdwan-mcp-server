@@ -1,0 +1,272 @@
+{
+  "header": {
+    "generatedOn": 1792743430189,
+    "viewKeys": {
+      "uniqueKey": [],
+      "preferenceKey": "grid-PolicyList"
+    },
+    "columns": [
+      {
+        "title": "Name",
+        "property": "name",
+        "hideable": false,
+        "dataType": "string"
+      },
+      {
+        "title": "Entries",
+        "property": "entries",
+        "hideable": true,
+        "dataType": "array"
+      },
+      {
+        "title": "Internet Protocal",
+        "property": "type",
+        "hideable": true,
+        "dataType": "string"
+      },
+      {
+        "title": "Reference Count",
+        "property": "referenceCount",
+        "hideable": true,
+        "dataType": "string"
+      },
+      {
+        "title": "Updated By",
+        "property": "owner",
+        "dataType": "string"
+      },
+      {
+        "title": "Last Updated",
+        "property": "lastUpdated",
+        "displayFormat": "DD MMM YYYY h:mm:ss A z",
+        "inputFormat": "unix-time",
+        "dataType": "date"
+      }
+    ],
+    "fields": [
+      {
+        "property": "name",
+        "dataType": "string"
+      },
+      {
+        "property": "type",
+        "dataType": "string"
+      },
+      {
+        "property": "description",
+        "dataType": "string"
+      },
+      {
+        "property": "listId",
+        "dataType": "string"
+      },
+      {
+        "property": "entries",
+        "dataType": "array"
+      },
+      {
+        "property": "type",
+        "dataType": "string"
+      },
+      {
+        "property": "referenceCount",
+        "dataType": "string"
+      },
+      {
+        "property": "owner",
+        "dataType": "string"
+      },
+      {
+        "property": "lastUpdated",
+        "dataType": "date"
+      }
+    ]
+  },
+  "data": [
+    {
+      "listId": "00000000-0000-4000-8000-000000000861",
+      "name": "Best-Effort",
+      "type": "sla",
+      "description": "Best Effort SLA",
+      "entries": [
+        {
+          "jitter": "500",
+          "latency": "500",
+          "loss": "5"
+        }
+      ],
+      "lastUpdated": 1792742259289,
+      "owner": "system",
+      "readOnly": true,
+      "version": "3.0",
+      "infoTag": "",
+      "referenceCount": 0,
+      "references": []
+    },
+    {
+      "listId": "00000000-0000-4000-8000-000000000862",
+      "name": "Bulk-Data",
+      "type": "sla",
+      "description": "ACI Bulk Data SLA",
+      "entries": [
+        {
+          "jitter": "500",
+          "latency": "500",
+          "loss": "5"
+        }
+      ],
+      "lastUpdated": 1792742257876,
+      "owner": "system",
+      "readOnly": true,
+      "version": "3.0",
+      "infoTag": "aci",
+      "referenceCount": 0,
+      "references": []
+    },
+    {
+      "listId": "00000000-0000-4000-8000-000000000863",
+      "name": "Business-Critical",
+      "type": "sla",
+      "description": "Business Critical SLA",
+      "entries": [
+        {
+          "jitter": "100",
+          "latency": "250",
+          "loss": "1"
+        }
+      ],
+      "lastUpdated": 1792742258081,
+      "owner": "system",
+      "readOnly": true,
+      "version": "3.0",
+      "infoTag": "",
+      "referenceCount": 0,
+      "references": []
+    },
+    {
+      "listId": "00000000-0000-4000-8000-000000000864",
+      "name": "Business-Data",
+      "type": "sla",
+      "description": "Business Data SLA",
+      "entries": [
+        {
+          "jitter": "200",
+          "latency": "350",
+          "loss": "3"
+        }
+      ],
+      "lastUpdated": 1792742257490,
+      "owner": "system",
+      "readOnly": true,
+      "version": "3.0",
+      "infoTag": "",
+      "referenceCount": 0,
+      "references": []
+    },
+    {
+      "listId": "00000000-0000-4000-8000-000000000865",
+      "name": "Default",
+      "type": "sla",
+      "description": "ACI Default SLA",
+      "entries": [
+        {
+          "jitter": "500",
+          "latency": "500",
+          "loss": "5"
+        }
+      ],
+      "lastUpdated": 1792742256654,
+      "owner": "system",
+      "readOnly": true,
+      "version": "3.0",
+      "infoTag": "aci",
+      "referenceCount": 0,
+      "references": []
+    },
+    {
+      "listId": "00000000-0000-4000-8000-000000000866",
+      "name": "Realtime",
+      "type": "sla",
+      "description": "Realtime SLA",
+      "entries": [
+        {
+          "jitter": "30",
+          "latency": "150",
+          "loss": "1"
+        }
+      ],
+      "lastUpdated": 1792742259004,
+      "owner": "system",
+      "readOnly": true,
+      "version": "3.0",
+      "infoTag": "",
+      "referenceCount": 0,
+      "references": []
+    },
+    {
+      "listId": "00000000-0000-4000-8000-000000000867",
+      "name": "Transactional-Data",
+      "type": "sla",
+      "description": "ACI Transactional Data SLA",
+      "entries": [
+        {
+          "jitter": "200",
+          "latency": "200",
+          "loss": "1"
+        }
+      ],
+      "lastUpdated": 1792742257320,
+      "owner": "system",
+      "readOnly": true,
+      "version": "3.0",
+      "infoTag": "aci",
+      "referenceCount": 0,
+      "references": []
+    },
+    {
+      "listId": "00000000-0000-4000-8000-000000000868",
+      "name": "Voice-And-Video",
+      "type": "sla",
+      "description": "ACI Voice And Video SLA",
+      "entries": [
+        {
+          "jitter": "60",
+          "latency": "300",
+          "loss": "2"
+        }
+      ],
+      "lastUpdated": 1792742258816,
+      "owner": "system",
+      "readOnly": true,
+      "version": "3.0",
+      "infoTag": "aci",
+      "referenceCount": 0,
+      "references": []
+    },
+    {
+      "listId": "00000000-0000-4000-8000-000000000131",
+      "name": "mcp-test-sla",
+      "type": "sla",
+      "description": "seed_lab.py",
+      "entries": [
+        {
+          "latency": "150",
+          "loss": "2",
+          "jitter": "50"
+        }
+      ],
+      "lastUpdated": 1792743019778,
+      "owner": "admin",
+      "readOnly": false,
+      "version": "0",
+      "infoTag": "",
+      "referenceCount": 1,
+      "references": [
+        {
+          "id": "00000000-0000-4000-8000-000000000127",
+          "type": "appRoute"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,206 @@
+{
+  "header": {
+    "generatedOn": 1792743430314,
+    "viewKeys": {
+      "uniqueKey": [],
+      "preferenceKey": "grid-PolicyDefinition"
+    },
+    "columns": [
+      {
+        "title": "server.vmanage.policyBuilderDefinition.name",
+        "property": "name",
+        "hideable": false,
+        "dataType": "string"
+      },
+      {
+        "title": "server.vmanage.policyBuilderDefinition.type",
+        "property": "type",
+        "display": "keyvalue",
+        "keyvalueProperty": "type",
+        "hideable": false,
+        "keyvalue": [
+          {
+            "key": "data",
+            "value": "Data"
+          },
+          {
+            "key": "appRoute",
+            "value": "App Route"
+          },
+          {
+            "key": "control",
+            "value": "Custom Control"
+          },
+          {
+            "key": "cflowd",
+            "value": "Cflowd"
+          },
+          {
+            "key": "mesh",
+            "value": "Mesh"
+          },
+          {
+            "key": "hubAndSpoke",
+            "value": "Hub and Spoke"
+          },
+          {
+            "key": "vpnMembershipGroup",
+            "value": "VPN Membership"
+          },
+          {
+            "key": "qosMap",
+            "value": "QoS Map"
+          },
+          {
+            "key": "vpnQosMap",
+            "value": "VPN QoS Map"
+          },
+          {
+            "key": "rewriteRule",
+            "value": "Rewrite Rule"
+          },
+          {
+            "key": "acl",
+            "value": "Access Control List(IPv4)"
+          },
+          {
+            "key": "aclv6",
+            "value": "Access Control List(IPv6)"
+          },
+          {
+            "key": "deviceAccessPolicy",
+            "value": "Device Access Control List(IPv4)"
+          },
+          {
+            "key": "deviceAccessPolicyv6",
+            "value": "Device Access Control List(IPv6)"
+          },
+          {
+            "key": "vedgeRoute",
+            "value": "Route"
+          },
+          {
+            "key": "zoneBasedFW",
+            "value": "Zone Based"
+          },
+          {
+            "key": "fxoPort",
+            "value": "FXO"
+          },
+          {
+            "key": "fxsPort",
+            "value": "FXS"
+          },
+          {
+            "key": "fxsDidPort",
+            "value": "FXS DID"
+          },
+          {
+            "key": "dialPeer",
+            "value": "Dial Peer"
+          },
+          {
+            "key": "srstPhoneProfile",
+            "value": "SRST Phone"
+          },
+          {
+            "key": "priIsdnPort",
+            "value": "PRI ISDN"
+          }
+        ],
+        "dataType": "string"
+      },
+      {
+        "title": "server.vmanage.policyBuilderDefinition.description",
+        "property": "description",
+        "dataType": "string"
+      },
+      {
+        "title": "server.vmanage.policyBuilderDefinition.mode",
+        "property": "mode",
+        "dataType": "string"
+      },
+      {
+        "title": "server.vmanage.policyBuilderDefinition.referenceCount",
+        "property": "referenceCount",
+        "hideable": true,
+        "dataType": "string"
+      },
+      {
+        "title": "server.vmanage.policyBuilderDefinition.updatedBy",
+        "property": "owner",
+        "dataType": "string"
+      },
+      {
+        "title": "server.vmanage.policyBuilderDefinition.lastUpdated",
+        "property": "lastUpdated",
+        "displayFormat": "DD MMM YYYY h:mm:ss A z",
+        "inputFormat": "unix-time",
+        "dataType": "date"
+      }
+    ],
+    "fields": [
+      {
+        "property": "name",
+        "dataType": "string"
+      },
+      {
+        "property": "type",
+        "dataType": "string",
+        "display": "keyvalue"
+      },
+      {
+        "property": "description",
+        "dataType": "string"
+      },
+      {
+        "property": "mode",
+        "dataType": "string"
+      },
+      {
+        "property": "id",
+        "dataType": "string"
+      },
+      {
+        "property": "defaultAction",
+        "dataType": "object"
+      },
+      {
+        "property": "sequences",
+        "dataType": "array"
+      },
+      {
+        "property": "referenceCount",
+        "dataType": "string"
+      },
+      {
+        "property": "owner",
+        "dataType": "string"
+      },
+      {
+        "property": "lastUpdated",
+        "dataType": "date"
+      }
+    ]
+  },
+  "data": [
+    {
+      "name": "mcp-test-app-route",
+      "definitionId": "00000000-0000-4000-8000-000000000127",
+      "type": "appRoute",
+      "description": "voice (DSCP 46) on the SLA class, mpls first",
+      "owner": "admin",
+      "lastUpdated": 1792743020499,
+      "infoTag": "",
+      "mode": "",
+      "optimized": "false",
+      "referenceCount": 1,
+      "references": [
+        {
+          "id": "00000000-0000-4000-8000-000000000860",
+          "property": "policyId"
+        }
+      ]
+    }
+  ]
+}

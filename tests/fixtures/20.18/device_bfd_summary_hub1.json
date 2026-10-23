@@ -1,0 +1,99 @@
+{
+  "header": {
+    "generatedOn": 1792743426794,
+    "viewKeys": {
+      "uniqueKey": [
+        "vdevice-dataKey"
+      ],
+      "preferenceKey": "grid-BFDSummary"
+    },
+    "columns": [
+      {
+        "title": "device.bfd.deviceDataBfdSummary.sessionsTotal",
+        "property": "bfd-sessions-total",
+        "width": 220,
+        "dataType": "number"
+      },
+      {
+        "title": "device.bfd.deviceDataBfdSummary.sessionsUp",
+        "property": "bfd-sessions-up",
+        "width": 100,
+        "dataType": "number"
+      },
+      {
+        "title": "device.bfd.deviceDataBfdSummary.sessionsMax",
+        "property": "bfd-sessions-max",
+        "width": 100,
+        "dataType": "number"
+      },
+      {
+        "title": "device.bfd.deviceDataBfdSummary.sessionsFlap",
+        "property": "bfd-sessions-flap",
+        "width": 100,
+        "dataType": "number"
+      },
+      {
+        "title": "device.bfd.deviceDataBfdSummary.appRoutePollIn",
+        "property": "poll-interval",
+        "width": 100,
+        "dataType": "number"
+      },
+      {
+        "title": "device.bfd.deviceDataBfdSummary.lastUpdated",
+        "property": "lastupdated",
+        "displayFormat": "DD MMM YYYY h:mm:ss A z",
+        "inputFormat": "unix-time",
+        "hideable": false,
+        "minWidth": 200,
+        "dataType": "date"
+      }
+    ],
+    "fields": [
+      {
+        "property": "vdevice-name",
+        "dataType": "string"
+      },
+      {
+        "property": "vdevice-host-name",
+        "dataType": "string"
+      },
+      {
+        "property": "bfd-sessions-total",
+        "dataType": "number"
+      },
+      {
+        "property": "bfd-sessions-up",
+        "dataType": "number"
+      },
+      {
+        "property": "bfd-sessions-max",
+        "dataType": "number"
+      },
+      {
+        "property": "bfd-sessions-flap",
+        "dataType": "number"
+      },
+      {
+        "property": "poll-interval",
+        "dataType": "number"
+      },
+      {
+        "property": "lastupdated",
+        "dataType": "date"
+      }
+    ]
+  },
+  "data": [
+    {
+      "bfd-sessions-max": "8",
+      "vdevice-dataKey": "10.0.0.1",
+      "bfd-sessions-flap": "0",
+      "vdevice-name": "10.0.0.1",
+      "bfd-sessions-up": "8",
+      "lastupdated": 1792743426787,
+      "bfd-sessions-total": "8",
+      "poll-interval": "600000",
+      "vdevice-host-name": "hub1"
+    }
+  ]
+}

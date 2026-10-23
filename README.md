@@ -5,7 +5,7 @@ An [MCP](https://modelcontextprotocol.io) server for **Cisco Catalyst SD-WAN Man
 (cml, ise, catc, fmc).
 
 > **Status: early.** The client (JWT and session login, throttling, error mapping), `catsdwan_status` and the
-> `check` preflight (W1), the inventory and device health tools (W2) and the control-plane tools (W3) exist, unit-tested against recorded
+> `check` preflight (W1), the inventory and device health tools (W2) the control-plane tools (W3) and the data-plane and app-route tools (W4) exist, unit-tested against recorded
 > 20.18 payloads; nothing is proven live yet. The
 > rest is planned in [ROADMAP.md](ROADMAP.md) (item W0 is the lab fabric in CML) and tracked on the suite board.
 
@@ -27,6 +27,10 @@ servers, the production gate and the external prerequisites.
 | `catsdwan_omp_peers` | read | OMP peers live (peer and host, type, site, state, uptime, routes received/installed/sent where reported); no device = every reachable controller, i.e. the fabric's OMP sessions |
 | `catsdwan_omp_routes` | read | OMP routes received or advertised on one device (VPN, prefix, originating edge, TLOC, status flags explained, preference); `prefix` finds overlapping routes, `not_installed` names prefixes with no installed path |
 | `catsdwan_list_tlocs` | read | TLOCs received over OMP (edge, colour, encapsulation, site, public and private address, BFD status, preference, weight); no device = the first reachable controller's table, i.e. the whole fabric |
+| `catsdwan_bfd_sessions` | read | BFD sessions (local and remote colour, remote edge, state, uptime, transitions, hello and multiplier), down first, with `by_colour_pair` up counts; live from one edge with its BFD summary, or every edge from the bulk state API (each reachable edge live when it is missing) |
+| `catsdwan_tunnel_stats` | read | Per-tunnel packet and byte counters on one edge (live, since the tunnel came up), MTU and TCP MSS; tunnels that send but never received are named |
+| `catsdwan_app_route_stats` | read | Loss %, latency and jitter per tunnel (avg, min, max over 1-24 h of the Manager's app-route statistics; `device`, `site`, `remote`, `colour` filters sent as query rules), worst first; `sla_class` adds a meets/misses verdict per tunnel; `source='realtime'` reads the device's own probe buckets now |
+| `catsdwan_list_sla_classes` | read | SLA classes (loss, latency, jitter limits; default or custom) with the app-route policies that use them and the centralized policies carrying those, activated or not |
 
 `cat-sdwan-mcp-server check` is the preflight: reachability (login and a `/dataservice` read), TLS trust,
 credentials (a wrong password reports `auth`, also on the session login whose failure is an HTML page), and the
@@ -41,8 +45,10 @@ Manager release (tested 20.18 and 26.x, minimum 20.15). `--json` for the report 
   is renewed when the Manager answers 401 or its HTML login page, and closed with `POST /logout`.
 - The XSRF token goes on every `/dataservice` call (20.18.3 refuses some JWT reads, such as `/dataservice/health/devices`, without it). One login is shared by every caller of the server.
 - Pacing: 100 requests/s (the Manager's per-user limit; `CATSDWAN_RATE_LIMIT` in requests/min overrides it),
-  48/min and two at a time for the bulk APIs (`/dataservice/data/device/...`), two concurrent
+  48/min and two at a time for the bulk APIs (`/dataservice/data/device/...`, paged with `startId`), two concurrent
   `/dataservice/statistics/...` requests.
+- Statistics, alarm, event and audit reads POST a query body (`entry_time last_n_hours` plus rules) and follow the
+  `pageInfo` scroll (`scrollId`/`hasMoreData` on `<path>/page`) up to the tool's cap; a cut answer says so.
 - The Manager's `{"error": {"message", "details", "code"}}` body becomes the error text.
 
 ## Configuration

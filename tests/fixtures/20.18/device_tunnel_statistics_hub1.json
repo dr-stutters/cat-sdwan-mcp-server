@@ -1,0 +1,416 @@
+{
+  "header": {
+    "generatedOn": 1792743427603,
+    "viewKeys": {
+      "uniqueKey": [
+        "vdevice-dataKey"
+      ],
+      "preferenceKey": "grid-TunnelStatistics"
+    },
+    "columns": [
+      {
+        "title": "device.tunnel.dataTunnelStatistics.hostName",
+        "property": "vdevice-host-name",
+        "hideable": false,
+        "dataType": "string"
+      },
+      {
+        "title": "device.tunnel.dataTunnelStatistics.tunnelProtocol",
+        "property": "tunnel-protocol",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.tunnel.dataTunnelStatistics.remoteSystemIp",
+        "property": "system-ip",
+        "width": 100,
+        "dataType": "ipv4"
+      },
+      {
+        "title": "device.tunnel.dataTunnelStatistics.localColor",
+        "property": "local-color",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.tunnel.dataTunnelStatistics.remoteColor",
+        "property": "remote-color",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.tunnel.dataTunnelStatistics.sourceIp",
+        "property": "source-ip",
+        "width": 100,
+        "dataType": "ipv4"
+      },
+      {
+        "title": "device.tunnel.dataTunnelStatistics.destinationIp",
+        "property": "dest-ip",
+        "width": 100,
+        "dataType": "ipv4"
+      },
+      {
+        "title": "device.tunnel.dataTunnelStatistics.sourcePort",
+        "property": "source-port",
+        "width": 100,
+        "dataType": "number"
+      },
+      {
+        "title": "device.tunnel.dataTunnelStatistics.destinationPor",
+        "property": "dest-port",
+        "width": 100,
+        "dataType": "number"
+      },
+      {
+        "title": "device.tunnel.dataTunnelStatistics.tunnelMtu",
+        "property": "tunnel-mtu",
+        "width": 100,
+        "dataType": "number"
+      },
+      {
+        "title": "device.tunnel.dataTunnelStatistics.txPackets",
+        "property": "tx_pkts",
+        "width": 100,
+        "dataType": "number"
+      },
+      {
+        "title": "device.tunnel.dataTunnelStatistics.txOctets",
+        "property": "tx_octets",
+        "width": 100,
+        "dataType": "number"
+      },
+      {
+        "title": "device.tunnel.dataTunnelStatistics.rxPackets",
+        "property": "rx_pkts",
+        "width": 100,
+        "dataType": "number"
+      },
+      {
+        "title": "device.tunnel.dataTunnelStatistics.rxOctets",
+        "property": "rx_octets",
+        "width": 100,
+        "dataType": "number"
+      },
+      {
+        "title": "device.tunnel.dataTunnelStatistics.tcpMssAdjust",
+        "property": "tcp-mss-adjust",
+        "width": 100,
+        "dataType": "number"
+      },
+      {
+        "title": "device.tunnel.dataTunnelStatistics.lastUpdated",
+        "property": "lastupdated",
+        "displayFormat": "DD MMM YYYY h:mm:ss A z",
+        "inputFormat": "unix-time",
+        "hideable": false,
+        "minWidth": 200,
+        "dataType": "date"
+      },
+      {
+        "title": "device.tunnel.dataTunnelStatistics.ipv6TxPkts",
+        "property": "ipv6_tx_pkts",
+        "width": 100,
+        "dataType": "number"
+      },
+      {
+        "title": "device.tunnel.dataTunnelStatistics.ipv6RxPkts",
+        "property": "ipv6_rx_pkts",
+        "width": 100,
+        "dataType": "number"
+      },
+      {
+        "title": "device.tunnel.dataTunnelStatistics.ipv6TxOctets",
+        "property": "ipv6_tx_octets",
+        "width": 100,
+        "dataType": "number"
+      },
+      {
+        "title": "device.tunnel.dataTunnelStatistics.ipv6RxOctets",
+        "property": "ipv6_rx_octets",
+        "width": 100,
+        "dataType": "number"
+      }
+    ],
+    "fields": [
+      {
+        "property": "vdevice-host-name",
+        "dataType": "string"
+      },
+      {
+        "property": "vdevice-name",
+        "dataType": "string"
+      },
+      {
+        "property": "tunnel-protocol",
+        "dataType": "string"
+      },
+      {
+        "property": "system-ip",
+        "dataType": "ipv4"
+      },
+      {
+        "property": "local-color",
+        "dataType": "string"
+      },
+      {
+        "property": "remote-color",
+        "dataType": "string"
+      },
+      {
+        "property": "source-ip",
+        "dataType": "ipv4"
+      },
+      {
+        "property": "dest-ip",
+        "dataType": "ipv4"
+      },
+      {
+        "property": "source-port",
+        "dataType": "number"
+      },
+      {
+        "property": "dest-port",
+        "dataType": "number"
+      },
+      {
+        "property": "tunnel-mtu",
+        "dataType": "number"
+      },
+      {
+        "property": "tx_pkts",
+        "dataType": "number"
+      },
+      {
+        "property": "tx_octets",
+        "dataType": "number"
+      },
+      {
+        "property": "rx_pkts",
+        "dataType": "number"
+      },
+      {
+        "property": "rx_octets",
+        "dataType": "number"
+      },
+      {
+        "property": "tcp-mss-adjust",
+        "dataType": "number"
+      },
+      {
+        "property": "lastupdated",
+        "dataType": "date"
+      },
+      {
+        "property": "ipv6_tx_pkts",
+        "dataType": "number"
+      },
+      {
+        "property": "ipv6_rx_pkts",
+        "dataType": "number"
+      },
+      {
+        "property": "ipv6_tx_octets",
+        "dataType": "number"
+      },
+      {
+        "property": "ipv6_rx_octets",
+        "dataType": "number"
+      }
+    ]
+  },
+  "data": [
+    {
+      "dest-ip": "10.60.1.14",
+      "source-port": 12386,
+      "ipv6_rx_pkts": 0,
+      "vdevice-name": "10.0.0.1",
+      "rx_pkts": 1282,
+      "system-ip": "10.0.0.2",
+      "tcp-mss-adjust": 1358,
+      "remote-color": "mpls",
+      "tx_octets": 140315,
+      "vdevice-host-name": "hub1",
+      "tunnel-protocol": "ipsec",
+      "local-color": "mpls",
+      "ipv6_rx_octets": 0,
+      "tx_pkts": 1282,
+      "dest-port": 12426,
+      "vdevice-dataKey": "10.0.0.1-ipsec-10.60.1.13-10.60.1.14-12386-12426",
+      "rx_octets": 158263,
+      "ipv6_tx_pkts": 0,
+      "tunnel-mtu": 1438,
+      "ipv6_tx_octets": 0,
+      "lastupdated": 1792743427585,
+      "source-ip": "10.60.1.13"
+    },
+    {
+      "dest-ip": "10.60.1.15",
+      "source-port": 12386,
+      "ipv6_rx_pkts": 0,
+      "vdevice-name": "10.0.0.1",
+      "rx_pkts": 1239,
+      "system-ip": "10.0.0.3",
+      "tcp-mss-adjust": 1358,
+      "remote-color": "mpls",
+      "tx_octets": 136556,
+      "vdevice-host-name": "hub1",
+      "tunnel-protocol": "ipsec",
+      "local-color": "mpls",
+      "ipv6_rx_octets": 0,
+      "tx_pkts": 1239,
+      "dest-port": 12386,
+      "vdevice-dataKey": "10.0.0.1-ipsec-10.60.1.13-10.60.1.15-12386-12386",
+      "rx_octets": 153895,
+      "ipv6_tx_pkts": 0,
+      "tunnel-mtu": 1438,
+      "ipv6_tx_octets": 0,
+      "lastupdated": 1792743427585,
+      "source-ip": "10.60.1.13"
+    },
+    {
+      "dest-ip": "10.60.2.14",
+      "source-port": 12386,
+      "ipv6_rx_pkts": 0,
+      "vdevice-name": "10.0.0.1",
+      "rx_pkts": 1292,
+      "system-ip": "10.0.0.2",
+      "tcp-mss-adjust": 1358,
+      "remote-color": "biz-internet",
+      "tx_octets": 159783,
+      "vdevice-host-name": "hub1",
+      "tunnel-protocol": "ipsec",
+      "local-color": "mpls",
+      "ipv6_rx_octets": 0,
+      "tx_pkts": 1291,
+      "dest-port": 12426,
+      "vdevice-dataKey": "10.0.0.1-ipsec-10.60.1.13-10.60.2.14-12386-12426",
+      "rx_octets": 178035,
+      "ipv6_tx_pkts": 0,
+      "tunnel-mtu": 1438,
+      "ipv6_tx_octets": 0,
+      "lastupdated": 1792743427585,
+      "source-ip": "10.60.1.13"
+    },
+    {
+      "dest-ip": "10.60.2.15",
+      "source-port": 12386,
+      "ipv6_rx_pkts": 0,
+      "vdevice-name": "10.0.0.1",
+      "rx_pkts": 1235,
+      "system-ip": "10.0.0.3",
+      "tcp-mss-adjust": 1358,
+      "remote-color": "biz-internet",
+      "tx_octets": 154071,
+      "vdevice-host-name": "hub1",
+      "tunnel-protocol": "ipsec",
+      "local-color": "mpls",
+      "ipv6_rx_octets": 0,
+      "tx_pkts": 1235,
+      "dest-port": 12386,
+      "vdevice-dataKey": "10.0.0.1-ipsec-10.60.1.13-10.60.2.15-12386-12386",
+      "rx_octets": 171354,
+      "ipv6_tx_pkts": 0,
+      "tunnel-mtu": 1438,
+      "ipv6_tx_octets": 0,
+      "lastupdated": 1792743427585,
+      "source-ip": "10.60.1.13"
+    },
+    {
+      "dest-ip": "10.60.1.14",
+      "source-port": 12386,
+      "ipv6_rx_pkts": 0,
+      "vdevice-name": "10.0.0.1",
+      "rx_pkts": 1283,
+      "system-ip": "10.0.0.2",
+      "tcp-mss-adjust": 1358,
+      "remote-color": "mpls",
+      "tx_octets": 158970,
+      "vdevice-host-name": "hub1",
+      "tunnel-protocol": "ipsec",
+      "local-color": "biz-internet",
+      "ipv6_rx_octets": 0,
+      "tx_pkts": 1283,
+      "dest-port": 12426,
+      "vdevice-dataKey": "10.0.0.1-ipsec-10.60.2.13-10.60.1.14-12386-12426",
+      "rx_octets": 176967,
+      "ipv6_tx_pkts": 0,
+      "tunnel-mtu": 1438,
+      "ipv6_tx_octets": 0,
+      "lastupdated": 1792743427585,
+      "source-ip": "10.60.2.13"
+    },
+    {
+      "dest-ip": "10.60.1.15",
+      "source-port": 12386,
+      "ipv6_rx_pkts": 0,
+      "vdevice-name": "10.0.0.1",
+      "rx_pkts": 1239,
+      "system-ip": "10.0.0.3",
+      "tcp-mss-adjust": 1358,
+      "remote-color": "mpls",
+      "tx_octets": 154481,
+      "vdevice-host-name": "hub1",
+      "tunnel-protocol": "ipsec",
+      "local-color": "biz-internet",
+      "ipv6_rx_octets": 0,
+      "tx_pkts": 1239,
+      "dest-port": 12386,
+      "vdevice-dataKey": "10.0.0.1-ipsec-10.60.2.13-10.60.1.15-12386-12386",
+      "rx_octets": 171820,
+      "ipv6_tx_pkts": 0,
+      "tunnel-mtu": 1438,
+      "ipv6_tx_octets": 0,
+      "lastupdated": 1792743427585,
+      "source-ip": "10.60.2.13"
+    },
+    {
+      "dest-ip": "10.60.2.14",
+      "source-port": 12386,
+      "ipv6_rx_pkts": 0,
+      "vdevice-name": "10.0.0.1",
+      "rx_pkts": 1281,
+      "system-ip": "10.0.0.2",
+      "tcp-mss-adjust": 1358,
+      "remote-color": "biz-internet",
+      "tx_octets": 158793,
+      "vdevice-host-name": "hub1",
+      "tunnel-protocol": "ipsec",
+      "local-color": "biz-internet",
+      "ipv6_rx_octets": 0,
+      "tx_pkts": 1281,
+      "dest-port": 12426,
+      "vdevice-dataKey": "10.0.0.1-ipsec-10.60.2.13-10.60.2.14-12386-12426",
+      "rx_octets": 176706,
+      "ipv6_tx_pkts": 0,
+      "tunnel-mtu": 1438,
+      "ipv6_tx_octets": 0,
+      "lastupdated": 1792743427585,
+      "source-ip": "10.60.2.13"
+    },
+    {
+      "dest-ip": "10.60.2.15",
+      "source-port": 12386,
+      "ipv6_rx_pkts": 0,
+      "vdevice-name": "10.0.0.1",
+      "rx_pkts": 1238,
+      "system-ip": "10.0.0.3",
+      "tcp-mss-adjust": 1358,
+      "remote-color": "biz-internet",
+      "tx_octets": 154368,
+      "vdevice-host-name": "hub1",
+      "tunnel-protocol": "ipsec",
+      "local-color": "biz-internet",
+      "ipv6_rx_octets": 0,
+      "tx_pkts": 1238,
+      "dest-port": 12386,
+      "vdevice-dataKey": "10.0.0.1-ipsec-10.60.2.13-10.60.2.15-12386-12386",
+      "rx_octets": 171714,
+      "ipv6_tx_pkts": 0,
+      "tunnel-mtu": 1438,
+      "ipv6_tx_octets": 0,
+      "lastupdated": 1792743427585,
+      "source-ip": "10.60.2.13"
+    }
+  ]
+}
