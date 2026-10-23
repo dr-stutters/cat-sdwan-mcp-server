@@ -1,0 +1,491 @@
+{
+  "header": {
+    "generatedOn": 1792736308447,
+    "viewKeys": {
+      "uniqueKey": [],
+      "preferenceKey": "grid-ControllerView"
+    },
+    "columns": [
+      {
+        "title": "nms.controller.tableHeader.controllerType",
+        "property": "deviceType",
+        "display": "keyvalue",
+        "keyvalueProperty": "deviceType",
+        "hideable": false,
+        "visible": true,
+        "keyvalue": [
+          {
+            "key": "vsmart",
+            "value": "vSmart"
+          },
+          {
+            "key": "vbond",
+            "value": "vBond"
+          },
+          {
+            "key": "vmanage",
+            "value": "vManage"
+          },
+          {
+            "key": "vedge",
+            "value": "WAN Edge"
+          }
+        ],
+        "width": 140,
+        "dataType": "string"
+      },
+      {
+        "title": "nms.controller.tableHeader.site-name",
+        "property": "site-name",
+        "visible": true,
+        "width": 80,
+        "dataType": "string"
+      },
+      {
+        "title": "nms.controller.tableHeader.hostname",
+        "property": "host-name",
+        "hideable": false,
+        "visible": true,
+        "width": 200,
+        "dataType": "string"
+      },
+      {
+        "title": "nms.controller.tableHeader.deviceLock",
+        "property": "device-lock",
+        "visible": true,
+        "width": 80,
+        "dataType": "boolean"
+      },
+      {
+        "title": "nms.controller.tableHeader.managedBy",
+        "property": "managed-by",
+        "visible": true,
+        "headerTooltip": "view.certificate.clientViewVedgeList.fieldIndicatesdevice",
+        "width": 160,
+        "dataType": "string"
+      },
+      {
+        "title": "nms.controller.tableHeader.configStatusMessage",
+        "property": "configStatusMessage",
+        "display": "syncDiffChecker",
+        "visible": true,
+        "width": 150,
+        "dataType": "string"
+      },
+      {
+        "title": "nms.controller.tableHeader.system-ip",
+        "property": "system-ip",
+        "hideable": false,
+        "visible": true,
+        "editable": false,
+        "width": 125,
+        "dataType": "ipv4"
+      },
+      {
+        "title": "nms.controller.tableHeader.site-id",
+        "property": "site-id",
+        "visible": false,
+        "width": 70,
+        "dataType": "numberStr"
+      },
+      {
+        "title": "view.certificate.clientViewVedgeList.regionId",
+        "property": "region-id",
+        "visible": false,
+        "width": 120,
+        "dataType": "string"
+      },
+      {
+        "title": "nms.controller.tableHeader.configOperationMode",
+        "property": "configOperationMode",
+        "display": "keyvalue",
+        "keyvalueProperty": "configOperationMode",
+        "visible": false,
+        "keyvalue": [
+          {
+            "key": "cli",
+            "value": "CLI"
+          },
+          {
+            "key": "vmanage",
+            "value": "vManage"
+          }
+        ],
+        "width": 75,
+        "dataType": "string"
+      },
+      {
+        "title": "nms.controller.tableHeader.template",
+        "property": "template",
+        "visible": false,
+        "width": 150,
+        "dataType": "string"
+      },
+      {
+        "title": "nms.controller.tableHeader.draftMode",
+        "property": "draftMode",
+        "visible": false,
+        "width": 80,
+        "dataType": "string"
+      },
+      {
+        "title": "nms.controller.tableHeader.certInstallStatus",
+        "property": "certInstallStatus",
+        "visible": false,
+        "minWidth": 110,
+        "dataType": "string"
+      },
+      {
+        "title": "nms.controller.tableHeader.policy-template-name",
+        "property": "policy-template-name",
+        "visible": false,
+        "minWidth": 140,
+        "dataType": "string"
+      },
+      {
+        "title": "nms.controller.tableHeader.policy-template-version",
+        "property": "policy-template-version",
+        "visible": false,
+        "minWidth": 150,
+        "dataType": "string"
+      },
+      {
+        "title": "nms.controller.tableHeader.uuid",
+        "property": "uuid",
+        "hideable": false,
+        "visible": true,
+        "editable": false,
+        "dataType": "string"
+      }
+    ],
+    "fields": [
+      {
+        "property": "deviceType",
+        "dataType": "string",
+        "display": "keyvalue"
+      },
+      {
+        "property": "site-name",
+        "dataType": "string"
+      },
+      {
+        "property": "host-name",
+        "dataType": "string"
+      },
+      {
+        "property": "device-lock",
+        "dataType": "boolean"
+      },
+      {
+        "property": "managed-by",
+        "dataType": "string"
+      },
+      {
+        "property": "configStatusMessage",
+        "dataType": "string",
+        "display": "syncDiffChecker"
+      },
+      {
+        "property": "system-ip",
+        "dataType": "ipv4"
+      },
+      {
+        "property": "deviceIP",
+        "dataType": "ipv4"
+      },
+      {
+        "property": "site-id",
+        "dataType": "numberStr"
+      },
+      {
+        "property": "region-id",
+        "dataType": "string"
+      },
+      {
+        "property": "configOperationMode",
+        "dataType": "string",
+        "display": "keyvalue"
+      },
+      {
+        "property": "template",
+        "dataType": "string"
+      },
+      {
+        "property": "draftMode",
+        "dataType": "string"
+      },
+      {
+        "property": "username",
+        "dataType": "string"
+      },
+      {
+        "property": "password",
+        "dataType": "string"
+      },
+      {
+        "property": "certInstallStatus",
+        "dataType": "string"
+      },
+      {
+        "property": "policy-template-name",
+        "dataType": "string"
+      },
+      {
+        "property": "policy-template-version",
+        "dataType": "string"
+      },
+      {
+        "property": "uuid",
+        "dataType": "string"
+      }
+    ],
+    "modelNameMapping": {
+      "vAnalytics": "Analytics",
+      "vmanage": "Manager",
+      "vSmart": "Controller",
+      "vManage": "Manager",
+      "Cloud OnRamp": "Cloud onRamp",
+      "vedge-x86": "Controller/Validator",
+      "vBond": "Validator"
+    }
+  },
+  "data": [
+    {
+      "configuredSiteId": "1",
+      "configuredSystemIP": "1.1.1.2",
+      "deviceType": "vbond",
+      "serialNumber": "A2000000000000000000000000000000000003",
+      "ncsDeviceName": "vbond-00000000-0000-4000-8000-000000000003",
+      "configStatusMessage": "In Sync",
+      "templateApplyLog": [
+        "[23-Oct-2026 6:17:15 UTC] Sync-from successful"
+      ],
+      "uuid": "00000000-0000-4000-8000-000000000003",
+      "managementSystemIP": "0.0.0.0",
+      "templateStatus": "Success",
+      "chasisNumber": "00000000-0000-4000-8000-000000000003",
+      "configStatusMessageDetails": "",
+      "configOperationMode": "cli",
+      "deviceModel": "vedge-cloud",
+      "deviceState": "READY",
+      "validity": "valid",
+      "platformFamily": "vedge-x86",
+      "hardwareVedge": false,
+      "username": "admin",
+      "deviceCSR": "<redacted PEM>",
+      "deviceEnterpriseCertificate": "<redacted PEM>",
+      "deviceCSRCommonName": "vsmart-00000000-0000-4000-8000-000000000003-0.cisco.com",
+      "rootCertHash": "ad9f17e71ec87545f641176ba04799dbacdef138",
+      "rsaKey4096Compatible": true,
+      "CSR": "N/A",
+      "CSRDetail": "N/A",
+      "keyLength": "2048",
+      "certificateIssuerType": "",
+      "state": "Installed",
+      "globalState": "normal",
+      "valid": "valid",
+      "requestTokenID": "00000000-0000-4000-8000-000000000004",
+      "expirationDate": "Oct 22 06:05:23 2028 GMT",
+      "expirationDateLong": 1855807523000,
+      "deviceIP": "1.1.1.2",
+      "activity": [
+        "[23-Oct-2026 6:14:12 UTC] CSR Generated",
+        "[23-Oct-2026 6:16:26 UTC] Installed"
+      ],
+      "state_vedgeList": "Sync",
+      "certInstallStatus": "Installed",
+      "org": "mcp-lab-org",
+      "personality": "vbond",
+      "expirationStatus": "normal",
+      "solution": "common",
+      "site-id": "1",
+      "host-name": "validator",
+      "system-ip": "1.1.1.2",
+      "vbond": "10.60.2.11",
+      "vmanageConnectionState": "connected",
+      "local-system-ip": "1.1.1.2",
+      "availableVersions": [],
+      "defaultVersion": "20.18.3.1",
+      "reachability": "reachable",
+      "version": "20.18.3.1",
+      "uptime-date": 1792735168026,
+      "model_sku": "None",
+      "lastupdated": 1792736264037,
+      "vmanage-system-ip": "1.1.1.2",
+      "sp-organization-name": "mcp-lab-org",
+      "organization-name": "mcp-lab-org",
+      "lifeCycleRequired": true,
+      "hardwareCertSerialNumber": "NA",
+      "subjectSerialNumber": "NA",
+      "resourceGroup": "global",
+      "id": "NA",
+      "tags": [],
+      "saseConfigured": "SASE_NONE_CONFIGURED",
+      "draftMode": "Disabled",
+      "groupTopologyLabel": "NA",
+      "site-name": "SITE_1",
+      "device-lock": "No",
+      "managed-by": "Unmanaged"
+    },
+    {
+      "configuredSiteId": "1",
+      "deviceType": "vmanage",
+      "serialNumber": "A0000000000000000000000000000000000001",
+      "ncsDeviceName": "vmanage-00000000-0000-4000-8000-000000000001",
+      "configStatusMessage": "In Sync",
+      "templateApplyLog": [
+        "[23-Oct-2026 6:11:59 UTC] Sync-from successful"
+      ],
+      "uuid": "00000000-0000-4000-8000-000000000001",
+      "managementSystemIP": "1.1.1.1",
+      "templateStatus": "Success",
+      "chasisNumber": "00000000-0000-4000-8000-000000000001",
+      "configStatusMessageDetails": "",
+      "configOperationMode": "cli",
+      "deviceModel": "vmanage",
+      "deviceState": "READY",
+      "validity": "valid",
+      "platformFamily": "vmanage",
+      "hardwareVedge": false,
+      "username": "--",
+      "deviceCSR": "<redacted PEM>",
+      "deviceEnterpriseCertificate": "<redacted PEM>",
+      "deviceCSRCommonName": "vmanage-00000000-0000-4000-8000-000000000001-0.cisco.com",
+      "rootCertHash": "ad9f17e71ec87545f641176ba04799dbacdef138",
+      "rsaKey4096Compatible": true,
+      "CSR": "vmanage-00000000-0000-4000-8000-000000000001-0.cisco.com",
+      "CSRDetail": "<redacted PEM>",
+      "keyLength": "2048",
+      "certificateIssuerType": "",
+      "certificateDetail": "<redacted PEM>",
+      "state": "vBond Updated",
+      "globalState": "normal",
+      "valid": "valid",
+      "expirationDate": "Oct 22 06:04:58 2028 GMT",
+      "expirationDateLong": 1855807498000,
+      "deviceIP": "1.1.1.1",
+      "activity": [
+        "vBond Updated"
+      ],
+      "state_vedgeList": "Sync",
+      "certInstallStatus": "Installed",
+      "servicePersonality": "all",
+      "personality": "vmanage",
+      "expirationStatus": "normal",
+      "uploadSource": "Auto Discovered",
+      "solution": "sdwan",
+      "site-id": "1",
+      "host-name": "manager",
+      "system-ip": "1.1.1.1",
+      "vbond": "10.60.2.11",
+      "vmanageConnectionState": "connected",
+      "local-system-ip": "1.1.1.1",
+      "availableVersions": [],
+      "defaultVersion": "20.18.3.1",
+      "reachability": "reachable",
+      "version": "20.18.3.1",
+      "uptime-date": 1792735143500,
+      "model_sku": "None",
+      "lastupdated": 1792736287791,
+      "vmanage-system-ip": "1.1.1.1",
+      "domain-id": "0",
+      "sp-organization-name": "mcp-lab-org",
+      "organization-name": "mcp-lab-org",
+      "certScheduledRenewal": "NA",
+      "certScheduledDate": "NA",
+      "lifeCycleRequired": false,
+      "hardwareCertSerialNumber": "NA",
+      "subjectSerialNumber": "NA",
+      "resourceGroup": "global",
+      "id": "NA",
+      "tags": [],
+      "saseConfigured": "SASE_NONE_CONFIGURED",
+      "draftMode": "Disabled",
+      "groupTopologyLabel": "NA",
+      "site-name": "SITE_1",
+      "device-lock": "No",
+      "managed-by": "Unmanaged"
+    },
+    {
+      "configuredSiteId": "1",
+      "configuredSystemIP": "1.1.1.3",
+      "deviceType": "vsmart",
+      "serialNumber": "A1000000000000000000000000000000000002",
+      "ncsDeviceName": "vsmart-00000000-0000-4000-8000-000000000002",
+      "configStatusMessage": "In Sync",
+      "templateApplyLog": [
+        "[23-Oct-2026 6:18:11 UTC] Sync-from successful"
+      ],
+      "uuid": "00000000-0000-4000-8000-000000000002",
+      "managementSystemIP": "0.0.0.0",
+      "templateStatus": "Success",
+      "chasisNumber": "00000000-0000-4000-8000-000000000002",
+      "configStatusMessageDetails": "",
+      "configOperationMode": "cli",
+      "deviceModel": "vsmart",
+      "deviceState": "READY",
+      "validity": "valid",
+      "platformFamily": "vsmart",
+      "hardwareVedge": false,
+      "username": "--",
+      "deviceCSR": "<redacted PEM>",
+      "deviceEnterpriseCertificate": "<redacted PEM>",
+      "deviceCSRCommonName": "vsmart-00000000-0000-4000-8000-000000000002-0.cisco.com",
+      "rootCertHash": "ad9f17e71ec87545f641176ba04799dbacdef138",
+      "rsaKey4096Compatible": true,
+      "CSR": "vsmart-00000000-0000-4000-8000-000000000002-0.cisco.com",
+      "CSRDetail": "<redacted PEM>",
+      "keyLength": "2048",
+      "certificateIssuerType": "",
+      "certificateDetail": "<redacted PEM>",
+      "state": "vBond Updated",
+      "globalState": "normal",
+      "valid": "N/A",
+      "requestTokenID": "00000000-0000-4000-8000-000000000005",
+      "expirationDate": "Oct 22 06:05:24 2028 GMT",
+      "expirationDateLong": 1855807524000,
+      "deviceIP": "1.1.1.3",
+      "activity": [
+        "vBond Updated"
+      ],
+      "state_vedgeList": "Sync",
+      "certInstallStatus": "Installed",
+      "org": "mcp-lab-org",
+      "personality": "vsmart",
+      "expirationStatus": "normal",
+      "region-id": [],
+      "solution": "sdwan",
+      "site-id": "1",
+      "host-name": "controller",
+      "system-ip": "1.1.1.3",
+      "vbond": "10.60.2.11",
+      "vmanageConnectionState": "connected",
+      "policy-template-name": "",
+      "policy-template-version": "",
+      "local-system-ip": "1.1.1.3",
+      "availableVersions": [],
+      "defaultVersion": "20.18.3.1",
+      "reachability": "reachable",
+      "version": "20.18.3.1",
+      "uptime-date": 1792735134667,
+      "model_sku": "None",
+      "lastupdated": 1792736291677,
+      "vmanage-system-ip": "1.1.1.3",
+      "domain-id": "1",
+      "sp-organization-name": "mcp-lab-org",
+      "organization-name": "mcp-lab-org",
+      "lifeCycleRequired": false,
+      "hardwareCertSerialNumber": "NA",
+      "subjectSerialNumber": "NA",
+      "resourceGroup": "global",
+      "id": "NA",
+      "tags": [],
+      "saseConfigured": "SASE_NONE_CONFIGURED",
+      "draftMode": "Disabled",
+      "groupTopologyLabel": "NA",
+      "site-name": "SITE_1",
+      "device-lock": "No",
+      "managed-by": "Unmanaged"
+    }
+  ]
+}

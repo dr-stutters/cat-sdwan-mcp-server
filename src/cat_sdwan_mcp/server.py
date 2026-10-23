@@ -12,8 +12,10 @@ from cat_sdwan_mcp.config import Settings
 
 INSTRUCTIONS = """
 Tools for Catalyst SD-WAN Manager (formerly vManage): fabric inventory and health, tunnels, BFD and
-app-route state, configuration groups and policies. This server is a scaffold (plan only): catsdwan_status
-is the only tool so far and it makes no SD-WAN Manager API calls. The planned tools are in the server's
+app-route state, configuration groups and policies. Personalities: vmanage = Manager, vsmart = Controller,
+vbond = Validator, vedge = WAN edge. Only catsdwan_status exists so far: the Manager release, the login
+style (JWT or session), the tenant, controllers by role with certificate expiry, and edge counts with how
+many are unreachable. Call it first, and if anything fails. The planned tools are in the server's
 ROADMAP.md; until they exist, say so instead of guessing.
 """
 
