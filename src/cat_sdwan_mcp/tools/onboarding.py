@@ -294,6 +294,15 @@ def register(reg: ToolRegistrar) -> None:
         v = edge_or_not_found(vedges, chassis)
         c = chassis_of(v)
         token = token_of(v)
+        if is_joined(v):
+            # live, 20.18.3: the Manager answers 400 'not in "Token Generated" or "Bootstrap Config Generated"
+            # state. Bootstrap not allowed' for a joined edge, so say why instead of passing that on
+            raise InvalidRequest(
+                f"{c} has already joined ({v.get('host-name') or 'no host name'}): its token is spent and "
+                "the Manager generates no bootstrap for it. To rebuild it with the same chassis, "
+                "decommission it on the Manager first (it then gets a new token), or use a free chassis "
+                "(catsdwan_list_wan_edges(state='not_joined'))."
+            )
         body = await app.api.get(
             path(BOOTSTRAP_PATH, id=c),
             {"configtype": CONFIG_TYPES[type], "inclDefRootCert": str(include_root_cert).lower()},
