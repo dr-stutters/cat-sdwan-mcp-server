@@ -35,7 +35,7 @@ Manager release (tested 20.18 and 26.x, minimum 20.15). `--json` for the report 
   `GET /dataservice/client/token`) when the Manager answers 404/405. `jwt` or `session` forces one.
 - JWT tokens are refreshed (`POST /jwt/refresh`) shortly before `CATSDWAN_SESSION_SECONDS` runs out; a session
   is renewed when the Manager answers 401 or its HTML login page, and closed with `POST /logout`.
-- The XSRF token goes on writes to `/dataservice` only. One login is shared by every caller of the server.
+- The XSRF token goes on every `/dataservice` call (20.18.3 refuses some JWT reads, such as `/dataservice/health/devices`, without it). One login is shared by every caller of the server.
 - Pacing: 100 requests/s (the Manager's per-user limit; `CATSDWAN_RATE_LIMIT` in requests/min overrides it),
   48/min and two at a time for the bulk APIs (`/dataservice/data/device/...`), two concurrent
   `/dataservice/statistics/...` requests.
