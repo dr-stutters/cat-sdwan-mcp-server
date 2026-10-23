@@ -2,8 +2,8 @@
 
 Login (CATSDWAN_AUTH=auto|jwt|session):
 - JWT (20.18.1 and later): POST /jwt/login {username, password, duration} -> {token, csrf, refresh}.
-  Requests carry `Authorization: Bearer <token>`; writes also carry `X-XSRF-TOKEN: <csrf>`. POST /jwt/refresh
-  renews the token shortly before it expires; there is no logout.
+  Requests carry `Authorization: Bearer <token>` and `X-XSRF-TOKEN: <csrf>` (some GETs need it too).
+  POST /jwt/refresh renews the token shortly before it expires; there is no logout.
 - Session (every release): POST /j_security_check (form j_username, j_password). Success is a JSESSIONID
   cookie and an empty body; a wrong password answers 200 with the HTML login page, so that page is an auth
   error, never a parse error. GET /dataservice/client/token (a plain-text body) gives the XSRF token for
@@ -31,7 +31,7 @@ import httpx
 
 from cat_sdwan_mcp._core import AuthError, UpstreamError
 from cat_sdwan_mcp._core.http import ApiClient, LoginTokenAuth, NoPaging, RateLimiter, Token
-from cat_sdwan_mcp._core.http.client import IDEMPOTENT, Expect, default_error_detail
+from cat_sdwan_mcp._core.http.client import Expect, default_error_detail
 from cat_sdwan_mcp._core.secrets import register_secret
 from cat_sdwan_mcp.config import Settings
 
@@ -48,6 +48,7 @@ TENANTS_PATH = "/dataservice/tenant"
 VSESSION_PATH = "/dataservice/tenant/{id}/vsessionid"
 DEVICE_PATH = "/dataservice/device"
 CONTROLLERS_PATH = "/dataservice/system/device/controllers"
+VEDGES_PATH = "/dataservice/system/device/vedges"
 
 REQUESTS_PER_MINUTE = 6000  # 100 requests/s, the Manager's per-user limit
 BULK_PREFIXES = ("dataservice/data/device/",)
@@ -102,7 +103,7 @@ def is_html_response(resp: httpx.Response) -> bool:
 
 
 class SdwanApiClient(ApiClient):
-    """ApiClient with the Manager's quirks: the XSRF token on every /dataservice write, separate buckets for
+    """ApiClient with the Manager's quirks: the XSRF token on every /dataservice call, separate buckets for
     the bulk APIs, no cookie jar, and the HTML login page on a /dataservice read treated as an expired
     session (log in again once, then an auth error)."""
 
@@ -121,8 +122,9 @@ class SdwanApiClient(ApiClient):
         # Session state lives in the token's headers; a jar would resend a stale JSESSIONID after a re-login.
         self._http.cookies.clear()
         headers = dict(kwargs.pop("headers", None) or {})
-        writes = method not in IDEMPOTENT and rel.startswith("dataservice/")
-        if writes and "X-XSRF-TOKEN" not in headers and (csrf := self._csrf()):
+        # Every /dataservice call, reads too: with a JWT, 20.18.3 answers some GETs (/dataservice/health/...)
+        # with a 403 login page unless the XSRF token comes along.
+        if rel.startswith("dataservice/") and "X-XSRF-TOKEN" not in headers and (csrf := self._csrf()):
             headers["X-XSRF-TOKEN"] = csrf
         kwargs["headers"] = headers
         if rel.startswith(BULK_PREFIXES):
@@ -342,6 +344,11 @@ class SdwanApp:
     async def controllers(self) -> list[dict[str, Any]]:
         """GET /dataservice/system/device/controllers: the controller inventory with certificates."""
         return [d for d in _as_list(await self.get_data(CONTROLLERS_PATH)) if isinstance(d, dict)]
+
+    async def vedges(self) -> list[dict[str, Any]]:
+        """GET /dataservice/system/device/vedges: every WAN edge slot (joined or not) with chassis,
+        certificate state and configuration mode."""
+        return [d for d in _as_list(await self.get_data(VEDGES_PATH)) if isinstance(d, dict)]
 
     async def version(self, devices: list[dict[str, Any]] | None = None) -> str:
         """The Manager's release, from its own row(s) in /dataservice/device ("unknown" if absent)."""

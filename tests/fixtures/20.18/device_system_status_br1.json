@@ -1,0 +1,488 @@
+{
+  "header": {
+    "generatedOn": 1792743508807,
+    "viewKeys": {
+      "uniqueKey": [
+        "vdevice-dataKey"
+      ],
+      "preferenceKey": "grid-SystemStatus"
+    },
+    "columns": [
+      {
+        "title": "device.system.deviceDataSystemStatus.personality",
+        "property": "personality",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.system.deviceDataSystemStatus.deviceModel",
+        "property": "model",
+        "width": 150,
+        "dataType": "string"
+      },
+      {
+        "title": "device.system.deviceDataSystemStatus.bootloaderVers",
+        "property": "bootloader_version",
+        "width": 150,
+        "dataType": "string"
+      },
+      {
+        "title": "device.system.deviceDataSystemStatus.loggingToHost",
+        "property": "loghost_status",
+        "width": 200,
+        "dataType": "string"
+      },
+      {
+        "title": "device.system.deviceDataSystemStatus.loggingToDisk",
+        "property": "disk_status",
+        "width": 200,
+        "dataType": "string"
+      },
+      {
+        "title": "device.system.deviceDataSystemStatus.rebootReason",
+        "property": "reboot_reason",
+        "width": 150,
+        "dataType": "string"
+      },
+      {
+        "title": "device.system.deviceDataSystemStatus.rebootType",
+        "property": "reboot_type",
+        "width": 150,
+        "dataType": "string"
+      },
+      {
+        "title": "device.system.deviceDataSystemStatus.configDate",
+        "property": "config_date/date-time-string",
+        "width": 200,
+        "dataType": "string"
+      },
+      {
+        "title": "device.system.deviceDataSystemStatus.uptime",
+        "property": "uptime",
+        "width": 200,
+        "dataType": "uptime-detail"
+      },
+      {
+        "title": "device.system.deviceDataSystemStatus.cpuUser",
+        "property": "cpu_user",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.system.deviceDataSystemStatus.cpuSystem",
+        "property": "cpu_system",
+        "width": 200,
+        "dataType": "string"
+      },
+      {
+        "title": "device.system.deviceDataSystemStatus.cpuIdle",
+        "property": "cpu_idle",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.system.deviceDataSystemStatus.loadAverage1Mi",
+        "property": "min1_avg",
+        "width": 200,
+        "dataType": "number"
+      },
+      {
+        "title": "device.system.deviceDataSystemStatus.loadAverage5Mi",
+        "property": "min5_avg",
+        "width": 200,
+        "dataType": "number"
+      },
+      {
+        "title": "device.system.deviceDataSystemStatus.loadAverage15M",
+        "property": "min15_avg",
+        "width": 200,
+        "dataType": "number"
+      },
+      {
+        "title": "device.system.deviceDataSystemStatus.memoryTotal",
+        "property": "mem_total",
+        "width": 200,
+        "dataType": "number"
+      },
+      {
+        "title": "device.system.deviceDataSystemStatus.memoryUsed",
+        "property": "mem_used",
+        "width": 150,
+        "dataType": "number"
+      },
+      {
+        "title": "device.system.deviceDataSystemStatus.memoryFree",
+        "property": "mem_free",
+        "width": 100,
+        "dataType": "number"
+      },
+      {
+        "title": "device.system.deviceDataSystemStatus.memoryBuffers",
+        "property": "mem_buffers",
+        "width": 150,
+        "dataType": "number"
+      },
+      {
+        "title": "device.system.deviceDataSystemStatus.memoryCached",
+        "property": "mem_cached",
+        "width": 150,
+        "dataType": "number"
+      },
+      {
+        "title": "device.system.deviceDataSystemStatus.diskFs",
+        "property": "disk_fs",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.system.deviceDataSystemStatus.diskSize",
+        "property": "disk_size",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.system.deviceDataSystemStatus.diskUsed",
+        "property": "disk_used",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.system.deviceDataSystemStatus.diskAvailable",
+        "property": "disk_avail",
+        "width": 150,
+        "dataType": "string"
+      },
+      {
+        "title": "device.system.deviceDataSystemStatus.diskUse",
+        "property": "disk_use",
+        "width": 100,
+        "dataType": "number"
+      },
+      {
+        "title": "device.system.deviceDataSystemStatus.diskMount",
+        "property": "disk_mount",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.system.deviceDataSystemStatus.processes",
+        "property": "procs",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.system.deviceDataSystemStatus.totalCpu",
+        "property": "total_cpu_count",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.system.deviceDataSystemStatus.fpCpu",
+        "property": "fp_cpu_count",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.system.deviceDataSystemStatus.linuxCpu",
+        "property": "linux_cpu_count",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.system.deviceDataSystemStatus.tcpdCpu",
+        "property": "tcpd_cpu_count",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.system.deviceDataSystemStatus.deviceRole",
+        "property": "device_role",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.system.deviceDataSystemStatus.buildNumber",
+        "property": "build_number",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.system.deviceDataSystemStatus.state",
+        "property": "state",
+        "width": 50,
+        "dataType": "string"
+      },
+      {
+        "title": "device.system.deviceDataSystemStatus.stateDescripti",
+        "property": "state_description",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.system.deviceDataSystemStatus.modelSku",
+        "property": "model_sku",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.system.deviceDataSystemStatus.fipsState",
+        "property": "fips_mode",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.system.deviceDataSystemStatus.chassisSerialN",
+        "property": "chassis-serial-number",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.system.deviceDataSystemStatus.lastUpdated",
+        "property": "lastupdated",
+        "displayFormat": "DD MMM YYYY h:mm:ss A z",
+        "inputFormat": "unix-time",
+        "hideable": false,
+        "minWidth": 100,
+        "dataType": "date"
+      }
+    ],
+    "fields": [
+      {
+        "property": "vdevice-name",
+        "dataType": "string"
+      },
+      {
+        "property": "vdevice-host-name",
+        "dataType": "string"
+      },
+      {
+        "property": "personality",
+        "dataType": "string"
+      },
+      {
+        "property": "version",
+        "dataType": "string"
+      },
+      {
+        "property": "board_type",
+        "dataType": "string"
+      },
+      {
+        "property": "model",
+        "dataType": "string"
+      },
+      {
+        "property": "product_id",
+        "dataType": "string"
+      },
+      {
+        "property": "testbed_mode",
+        "dataType": "string"
+      },
+      {
+        "property": "bootloader_version",
+        "dataType": "string"
+      },
+      {
+        "property": "loghost_status",
+        "dataType": "string"
+      },
+      {
+        "property": "disk_status",
+        "dataType": "string"
+      },
+      {
+        "property": "reboot_reason",
+        "dataType": "string"
+      },
+      {
+        "property": "reboot_type",
+        "dataType": "string"
+      },
+      {
+        "property": "config_date/date-time-string",
+        "dataType": "string"
+      },
+      {
+        "property": "uptime",
+        "dataType": "uptime-detail"
+      },
+      {
+        "property": "cpu_user",
+        "dataType": "string"
+      },
+      {
+        "property": "cpu_system",
+        "dataType": "string"
+      },
+      {
+        "property": "cpu_idle",
+        "dataType": "string"
+      },
+      {
+        "property": "min1_avg",
+        "dataType": "number"
+      },
+      {
+        "property": "min5_avg",
+        "dataType": "number"
+      },
+      {
+        "property": "min15_avg",
+        "dataType": "number"
+      },
+      {
+        "property": "mem_total",
+        "dataType": "number"
+      },
+      {
+        "property": "mem_used",
+        "dataType": "number"
+      },
+      {
+        "property": "mem_free",
+        "dataType": "number"
+      },
+      {
+        "property": "mem_buffers",
+        "dataType": "number"
+      },
+      {
+        "property": "mem_cached",
+        "dataType": "number"
+      },
+      {
+        "property": "disk_fs",
+        "dataType": "string"
+      },
+      {
+        "property": "disk_size",
+        "dataType": "string"
+      },
+      {
+        "property": "disk_used",
+        "dataType": "string"
+      },
+      {
+        "property": "disk_avail",
+        "dataType": "string"
+      },
+      {
+        "property": "disk_use",
+        "dataType": "number"
+      },
+      {
+        "property": "disk_mount",
+        "dataType": "string"
+      },
+      {
+        "property": "procs",
+        "dataType": "string"
+      },
+      {
+        "property": "total_cpu_count",
+        "dataType": "string"
+      },
+      {
+        "property": "fp_cpu_count",
+        "dataType": "string"
+      },
+      {
+        "property": "linux_cpu_count",
+        "dataType": "string"
+      },
+      {
+        "property": "tcpd_cpu_count",
+        "dataType": "string"
+      },
+      {
+        "property": "device_role",
+        "dataType": "string"
+      },
+      {
+        "property": "build_number",
+        "dataType": "string"
+      },
+      {
+        "property": "state",
+        "dataType": "string"
+      },
+      {
+        "property": "state_description",
+        "dataType": "string"
+      },
+      {
+        "property": "model_sku",
+        "dataType": "string"
+      },
+      {
+        "property": "fips_mode",
+        "dataType": "string"
+      },
+      {
+        "property": "chassis-serial-number",
+        "dataType": "string"
+      },
+      {
+        "property": "timezone",
+        "dataType": "string"
+      },
+      {
+        "property": "lastupdated",
+        "dataType": "date"
+      }
+    ]
+  },
+  "data": [
+    {
+      "mem_used": "3336428",
+      "procs": "355",
+      "disk_avail": "3341M",
+      "disk_mount": "/bootflash",
+      "board_type": "Vedge-CSR",
+      "vdevice-name": "10.0.0.2",
+      "total_cpu_count": "2",
+      "mem_cached": "1522964",
+      "timezone": "UTC +0000",
+      "reboot_type": "Initiated by other",
+      "disk_fs": "/dev/disk/by-label/fs-bootflash",
+      "fp_cpu_count": "1",
+      "chassis-serial-number": "SSI130300YK",
+      "min1_avg": "1.34",
+      "state_description": "All daemons up",
+      "personality": "vEdge",
+      "disk_used": "1320M",
+      "disk_use": "28",
+      "product_id": "C8000V",
+      "model": "vedge-C8000V",
+      "disk_status": "enabled",
+      "state": "green",
+      "config_date/date-time-string": "Fri Oct 23 08:18:29 UTC 2026",
+      "linux_cpu_count": "1",
+      "reboot_reason": "factory-reset",
+      "cpu_user": "6.15",
+      "testbed_mode": "0",
+      "min15_avg": "1.30",
+      "disk_size": "4933M",
+      "cpu_idle": "47.81",
+      "mem_buffers": "4632",
+      "model_sku": "None",
+      "cpu_system": "46.00",
+      "version": "17.18.02.0.4112",
+      "min5_avg": "1.28",
+      "tcpd_cpu_count": "0",
+      "vdevice-host-name": "br1",
+      "mem_total": "4987936",
+      "uptime": "0 days 01 hrs 18 min 50 sec",
+      "vdevice-dataKey": "10.0.0.2",
+      "mem_free": "1651508",
+      "bootloader_version": "Not applicable",
+      "device_role": "cEdge-SDWAN",
+      "fips_mode": "disabled",
+      "build_number": "Not applicable",
+      "lastupdated": 1792743508798,
+      "loghost_status": "disabled",
+      "uptime-date": 1792738778799
+    }
+  ]
+}

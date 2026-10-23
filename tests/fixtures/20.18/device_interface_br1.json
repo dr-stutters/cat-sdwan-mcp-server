@@ -1,0 +1,830 @@
+{
+  "header": {
+    "generatedOn": 1792743509753,
+    "viewKeys": {
+      "uniqueKey": [
+        "vdevice-dataKey"
+      ],
+      "preferenceKey": "grid-CEdgeInterface"
+    },
+    "columns": [
+      {
+        "title": "device.dinterface.deviceDataCedgeInterface.vpnVrf",
+        "property": "vpn-id",
+        "width": 50,
+        "dataType": "string"
+      },
+      {
+        "title": "device.dinterface.deviceDataCedgeInterface.interfaceName",
+        "property": "ifname",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.dinterface.deviceDataCedgeInterface.interfaceDescr",
+        "property": "description",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.dinterface.deviceDataCedgeInterface.physicalAddres",
+        "property": "hwaddr",
+        "width": 120,
+        "dataType": "string"
+      },
+      {
+        "title": "device.dinterface.deviceDataCedgeInterface.ipv4Address",
+        "property": "ip-address",
+        "width": 120,
+        "dataType": "string"
+      },
+      {
+        "title": "device.dinterface.deviceDataCedgeInterface.ipv4SubnetMask",
+        "property": "ipv4-subnet-mask",
+        "width": 120,
+        "dataType": "string"
+      },
+      {
+        "title": "device.dinterface.deviceDataCedgeInterface.adminStatus",
+        "property": "if-admin-status",
+        "display": "icon",
+        "iconProperty": "if-admin-status",
+        "icon": [
+          {
+            "key": "if-state-up",
+            "value": "images/up.png"
+          },
+          {
+            "key": "if-state-down",
+            "value": "images/down.png"
+          },
+          {
+            "key": "n/a"
+          }
+        ],
+        "width": 120,
+        "dataType": "string"
+      },
+      {
+        "title": "device.dinterface.deviceDataCedgeInterface.operStatus",
+        "property": "if-oper-status",
+        "display": "icon",
+        "iconProperty": "if-oper-status",
+        "icon": [
+          {
+            "key": "if-oper-state-ready",
+            "value": "images/up.png"
+          },
+          {
+            "key": "if-oper-state-lower-layer-down",
+            "value": "images/down.png"
+          },
+          {
+            "key": "if-oper-state-no-pass",
+            "value": "images/down.png"
+          },
+          {
+            "key": "n/a"
+          }
+        ],
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.dinterface.deviceDataCedgeInterface.interfaceType",
+        "property": "interface-type",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.dinterface.deviceDataCedgeInterface.biaAddress",
+        "property": "bia-address",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.dinterface.deviceDataCedgeInterface.ipv6Address",
+        "property": "ipv6-addrs",
+        "hideable": true,
+        "dataType": "ipv6-address"
+      },
+      {
+        "title": "device.dinterface.deviceDataCedgeInterface.ipvfourTcpAdjustMss",
+        "property": "ipv4-tcp-adjust-mss",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.dinterface.deviceDataCedgeInterface.ipvsixTcpAdjustMss",
+        "property": "ipv6-tcp-adjust-mss",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.dinterface.deviceDataCedgeInterface.ifIndex",
+        "property": "ifindex",
+        "width": 75,
+        "dataType": "string"
+      },
+      {
+        "title": "device.dinterface.deviceDataCedgeInterface.afType",
+        "property": "af-type",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.dinterface.deviceDataCedgeInterface.mtu",
+        "property": "mtu",
+        "width": 60,
+        "dataType": "string"
+      },
+      {
+        "title": "device.dinterface.deviceDataCedgeInterface.speedmbps",
+        "property": "speed-mbps",
+        "width": 120,
+        "dataType": "string"
+      },
+      {
+        "title": "device.dinterface.deviceDataCedgeInterface.autoBandwidthUpstream",
+        "property": "auto-upstream-bandwidth",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.dinterface.deviceDataCedgeInterface.autoBandwidthDownStream",
+        "property": "auto-downstream-bandwidth",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.dinterface.deviceDataCedgeInterface.bandwidthUpstreamUtilization",
+        "property": "bw-up-util",
+        "width": 100,
+        "dataType": "double"
+      },
+      {
+        "title": "device.dinterface.deviceDataCedgeInterface.bandwidthDownstreamUtilization",
+        "property": "bw-down-util",
+        "width": 100,
+        "dataType": "double"
+      },
+      {
+        "title": "device.dinterface.deviceDataCedgeInterface.txKbps",
+        "property": "tx-kbps",
+        "width": 100,
+        "dataType": "number"
+      },
+      {
+        "title": "device.dinterface.deviceDataCedgeInterface.rxKbps",
+        "property": "rx-kbps",
+        "width": 100,
+        "dataType": "number"
+      },
+      {
+        "title": "device.dinterface.deviceDataCedgeInterface.txPps",
+        "property": "tx-pps",
+        "width": 100,
+        "dataType": "number"
+      },
+      {
+        "title": "device.dinterface.deviceDataCedgeInterface.rxPps",
+        "property": "rx-pps",
+        "width": 100,
+        "dataType": "number"
+      },
+      {
+        "title": "device.dinterface.deviceDataCedgeInterface.rxOctets",
+        "property": "rx-octets",
+        "width": 100,
+        "dataType": "number"
+      },
+      {
+        "title": "device.dinterface.deviceDataCedgeInterface.rxUnicastPacke",
+        "property": "rx-packets",
+        "width": 100,
+        "dataType": "number"
+      },
+      {
+        "title": "device.dinterface.deviceDataCedgeInterface.txOctets",
+        "property": "tx-octets",
+        "width": 100,
+        "dataType": "number"
+      },
+      {
+        "title": "device.dinterface.deviceDataCedgeInterface.txUnicastPacke",
+        "property": "tx-packets",
+        "width": 100,
+        "dataType": "number"
+      },
+      {
+        "title": "device.dinterface.deviceDataCedgeInterface.rxDiscardsCaps",
+        "property": "rx-drops",
+        "width": 100,
+        "dataType": "number"
+      },
+      {
+        "title": "device.dinterface.deviceDataCedgeInterface.txDiscardsCaps",
+        "property": "tx-drops",
+        "width": 100,
+        "dataType": "number"
+      },
+      {
+        "title": "device.dinterface.deviceDataCedgeInterface.rxErrors",
+        "property": "rx-errors",
+        "width": 100,
+        "dataType": "number"
+      },
+      {
+        "title": "device.dinterface.deviceDataCedgeInterface.txErrors",
+        "property": "tx-errors",
+        "width": 100,
+        "dataType": "number"
+      },
+      {
+        "title": "device.dinterface.deviceDataCedgeInterface.numFlaps",
+        "property": "num-flaps",
+        "width": 70,
+        "dataType": "string"
+      },
+      {
+        "title": "device.dinterface.deviceDataCedgeInterface.negotiatedDuplexMode",
+        "property": "negotiated-duplex-mode",
+        "width": 70,
+        "dataType": "string"
+      },
+      {
+        "title": "device.dinterface.deviceDataCedgeInterface.negotiatedPortSpeed",
+        "property": "negotiated-port-speed",
+        "width": 70,
+        "dataType": "string"
+      },
+      {
+        "title": "device.dinterface.deviceDataCedgeInterface.autoNegotiate",
+        "property": "auto-negotiate",
+        "width": 70,
+        "dataType": "string"
+      },
+      {
+        "title": "device.dinterface.deviceDataCedgeInterface.lastUpdated",
+        "property": "lastupdated",
+        "displayFormat": "DD MMM YYYY h:mm:ss A z",
+        "inputFormat": "unix-time",
+        "hideable": false,
+        "minWidth": 200,
+        "dataType": "date"
+      }
+    ],
+    "fields": [
+      {
+        "property": "vdevice-name",
+        "dataType": "string"
+      },
+      {
+        "property": "vdevice-host-name",
+        "dataType": "string"
+      },
+      {
+        "property": "vpn-id",
+        "dataType": "string"
+      },
+      {
+        "property": "ifname",
+        "dataType": "string"
+      },
+      {
+        "property": "description",
+        "dataType": "string"
+      },
+      {
+        "property": "hwaddr",
+        "dataType": "string"
+      },
+      {
+        "property": "ip-address",
+        "dataType": "string"
+      },
+      {
+        "property": "ipv4-subnet-mask",
+        "dataType": "string"
+      },
+      {
+        "property": "if-admin-status",
+        "dataType": "string",
+        "display": "icon"
+      },
+      {
+        "property": "if-oper-status",
+        "dataType": "string",
+        "display": "icon"
+      },
+      {
+        "property": "interface-type",
+        "dataType": "string"
+      },
+      {
+        "property": "bia-address",
+        "dataType": "string"
+      },
+      {
+        "property": "ipv6-addrs",
+        "dataType": "ipv6-address"
+      },
+      {
+        "property": "ipv4-tcp-adjust-mss",
+        "dataType": "string"
+      },
+      {
+        "property": "ipv6-tcp-adjust-mss",
+        "dataType": "string"
+      },
+      {
+        "property": "ifindex",
+        "dataType": "string"
+      },
+      {
+        "property": "af-type",
+        "dataType": "string"
+      },
+      {
+        "property": "mtu",
+        "dataType": "string"
+      },
+      {
+        "property": "speed-mbps",
+        "dataType": "string"
+      },
+      {
+        "property": "auto-upstream-bandwidth",
+        "dataType": "string"
+      },
+      {
+        "property": "auto-downstream-bandwidth",
+        "dataType": "string"
+      },
+      {
+        "property": "bw-up-util",
+        "dataType": "double"
+      },
+      {
+        "property": "bw-down-util",
+        "dataType": "double"
+      },
+      {
+        "property": "tx-kbps",
+        "dataType": "number"
+      },
+      {
+        "property": "rx-kbps",
+        "dataType": "number"
+      },
+      {
+        "property": "tx-pps",
+        "dataType": "number"
+      },
+      {
+        "property": "rx-pps",
+        "dataType": "number"
+      },
+      {
+        "property": "rx-octets",
+        "dataType": "number"
+      },
+      {
+        "property": "rx-packets",
+        "dataType": "number"
+      },
+      {
+        "property": "tx-octets",
+        "dataType": "number"
+      },
+      {
+        "property": "tx-packets",
+        "dataType": "number"
+      },
+      {
+        "property": "rx-drops",
+        "dataType": "number"
+      },
+      {
+        "property": "tx-drops",
+        "dataType": "number"
+      },
+      {
+        "property": "rx-errors",
+        "dataType": "number"
+      },
+      {
+        "property": "tx-errors",
+        "dataType": "number"
+      },
+      {
+        "property": "num-flaps",
+        "dataType": "string"
+      },
+      {
+        "property": "negotiated-duplex-mode",
+        "dataType": "string"
+      },
+      {
+        "property": "negotiated-port-speed",
+        "dataType": "string"
+      },
+      {
+        "property": "auto-negotiate",
+        "dataType": "string"
+      },
+      {
+        "property": "lastupdated",
+        "dataType": "date"
+      }
+    ]
+  },
+  "data": [
+    {
+      "vdevice-name": "10.0.0.2",
+      "rx-errors": 0,
+      "tx-kbps": 16,
+      "if-admin-status": "if-state-up",
+      "ipv6-tcp-adjust-mss": "0",
+      "description": "mpls transport",
+      "tx-pps": 12,
+      "tx-errors": 0,
+      "negotiated-port-speed": "speed-1gb",
+      "ifname": "GigabitEthernet1",
+      "interface-type": "iana-iftype-ethernet-csmacd",
+      "rx-pps": 12,
+      "bw-down-util": "0.00",
+      "if-oper-status": "if-oper-state-ready",
+      "ifindex": "1",
+      "negotiated-duplex-mode": "full-duplex",
+      "num-flaps": "0",
+      "ipv4-tcp-adjust-mss": "0",
+      "rx-packets": 12084,
+      "bia-address": "52:54:00:f8:e1:90",
+      "vpn-id": "0",
+      "vdevice-host-name": "br1",
+      "ipv4-subnet-mask": "255.255.255.0",
+      "mtu": "1500",
+      "rx-drops": 0,
+      "tx-drops": 0,
+      "hwaddr": "52:54:00:f8:e1:90",
+      "ip-address": "10.60.1.14",
+      "speed-mbps": 1000,
+      "auto-downstream-bandwidth": "N/A",
+      "vdevice-dataKey": "10.0.0.2-0-GigabitEthernet1-10.60.1.14-52:54:00:f8:e1:90",
+      "bw-up-util": "0.00",
+      "tx-octets": 3143197,
+      "auto-upstream-bandwidth": "N/A",
+      "tx-packets": 11984,
+      "rx-kbps": 17,
+      "rx-octets": 2443503,
+      "lastupdated": 1792743509653,
+      "auto-negotiate": "true"
+    },
+    {
+      "vdevice-name": "10.0.0.2",
+      "rx-errors": 0,
+      "tx-kbps": 16,
+      "if-admin-status": "if-state-up",
+      "ipv6-tcp-adjust-mss": "0",
+      "description": "inet transport",
+      "tx-pps": 11,
+      "tx-errors": 0,
+      "negotiated-port-speed": "speed-1gb",
+      "ifname": "GigabitEthernet2",
+      "interface-type": "iana-iftype-ethernet-csmacd",
+      "rx-pps": 12,
+      "bw-down-util": "0.00",
+      "if-oper-status": "if-oper-state-ready",
+      "ifindex": "2",
+      "negotiated-duplex-mode": "full-duplex",
+      "num-flaps": "0",
+      "ipv4-tcp-adjust-mss": "0",
+      "rx-packets": 9276,
+      "bia-address": "52:54:00:89:79:78",
+      "vpn-id": "0",
+      "vdevice-host-name": "br1",
+      "ipv4-subnet-mask": "255.255.255.0",
+      "mtu": "1500",
+      "rx-drops": 0,
+      "tx-drops": 0,
+      "hwaddr": "52:54:00:89:79:78",
+      "ip-address": "10.60.2.14",
+      "speed-mbps": 1000,
+      "auto-downstream-bandwidth": "N/A",
+      "vdevice-dataKey": "10.0.0.2-0-GigabitEthernet2-10.60.2.14-52:54:00:89:79:78",
+      "bw-up-util": "0.00",
+      "tx-octets": 1620533,
+      "auto-upstream-bandwidth": "N/A",
+      "tx-packets": 8852,
+      "rx-kbps": 16,
+      "rx-octets": 1493457,
+      "lastupdated": 1792743509653,
+      "auto-negotiate": "true"
+    },
+    {
+      "vdevice-name": "10.0.0.2",
+      "rx-errors": 0,
+      "tx-kbps": 0,
+      "if-admin-status": "if-state-up",
+      "ipv6-tcp-adjust-mss": "0",
+      "description": "LAN (VPN 10) to host-br1",
+      "tx-pps": 0,
+      "tx-errors": 0,
+      "negotiated-port-speed": "speed-1gb",
+      "ifname": "GigabitEthernet3",
+      "interface-type": "iana-iftype-ethernet-csmacd",
+      "rx-pps": 0,
+      "bw-down-util": "0.00",
+      "if-oper-status": "if-oper-state-ready",
+      "ifindex": "3",
+      "negotiated-duplex-mode": "full-duplex",
+      "num-flaps": "0",
+      "ipv4-tcp-adjust-mss": "0",
+      "rx-packets": 97,
+      "bia-address": "52:54:00:a0:5d:e3",
+      "vpn-id": "10",
+      "vdevice-host-name": "br1",
+      "ipv4-subnet-mask": "255.255.255.0",
+      "mtu": "1500",
+      "rx-drops": 0,
+      "tx-drops": 0,
+      "hwaddr": "52:54:00:a0:5d:e3",
+      "ip-address": "10.61.200.1",
+      "speed-mbps": 1000,
+      "auto-downstream-bandwidth": "N/A",
+      "vdevice-dataKey": "10.0.0.2-10-GigabitEthernet3-10.61.200.1-52:54:00:a0:5d:e3",
+      "bw-up-util": "0.00",
+      "tx-octets": 1552,
+      "auto-upstream-bandwidth": "N/A",
+      "tx-packets": 17,
+      "rx-kbps": 0,
+      "rx-octets": 26792,
+      "lastupdated": 1792743509653,
+      "auto-negotiate": "true"
+    },
+    {
+      "vdevice-name": "10.0.0.2",
+      "rx-errors": 0,
+      "tx-kbps": 0,
+      "if-admin-status": "if-state-up",
+      "ipv6-tcp-adjust-mss": "0",
+      "description": "management (VPN 512)",
+      "tx-pps": 0,
+      "tx-errors": 0,
+      "negotiated-port-speed": "speed-1gb",
+      "ifname": "GigabitEthernet4",
+      "interface-type": "iana-iftype-ethernet-csmacd",
+      "rx-pps": 4,
+      "bw-down-util": "0.00",
+      "if-oper-status": "if-oper-state-ready",
+      "ifindex": "4",
+      "negotiated-duplex-mode": "full-duplex",
+      "num-flaps": "0",
+      "ipv4-tcp-adjust-mss": "0",
+      "rx-packets": 15171,
+      "bia-address": "52:54:00:bd:9e:ac",
+      "vpn-id": "512",
+      "vdevice-host-name": "br1",
+      "ipv4-subnet-mask": "255.255.192.0",
+      "mtu": "1500",
+      "rx-drops": 0,
+      "tx-drops": 0,
+      "hwaddr": "52:54:00:bd:9e:ac",
+      "ip-address": "198.18.129.14",
+      "speed-mbps": 1000,
+      "auto-downstream-bandwidth": "N/A",
+      "vdevice-dataKey": "10.0.0.2-512-GigabitEthernet4-198.18.129.14-52:54:00:bd:9e:ac",
+      "bw-up-util": "0.00",
+      "tx-octets": 221881,
+      "auto-upstream-bandwidth": "N/A",
+      "tx-packets": 3436,
+      "rx-kbps": 2,
+      "rx-octets": 885734,
+      "lastupdated": 1792743509653,
+      "auto-negotiate": "true"
+    },
+    {
+      "vdevice-name": "10.0.0.2",
+      "rx-errors": 0,
+      "tx-kbps": 0,
+      "if-admin-status": "if-state-up",
+      "ipv6-tcp-adjust-mss": "0",
+      "tx-pps": 0,
+      "tx-errors": 0,
+      "ifname": "Loopback65528",
+      "interface-type": "iana-iftype-sw-loopback",
+      "rx-pps": 0,
+      "bw-down-util": "0.00",
+      "if-oper-status": "if-oper-state-ready",
+      "ifindex": "7",
+      "num-flaps": "0",
+      "ipv4-tcp-adjust-mss": "0",
+      "rx-packets": 0,
+      "bia-address": "00:00:00:00:00:00",
+      "vpn-id": "65528",
+      "vdevice-host-name": "br1",
+      "ipv4-subnet-mask": "255.255.255.255",
+      "mtu": "1514",
+      "rx-drops": 0,
+      "tx-drops": 0,
+      "hwaddr": "00:1e:bd:9a:80:00",
+      "ip-address": "192.168.1.1",
+      "speed-mbps": 8000,
+      "auto-downstream-bandwidth": "N/A",
+      "vdevice-dataKey": "10.0.0.2-65528-Loopback65528-192.168.1.1-00:1e:bd:9a:80:00",
+      "bw-up-util": "0.00",
+      "tx-octets": 0,
+      "auto-upstream-bandwidth": "N/A",
+      "tx-packets": 0,
+      "rx-kbps": 0,
+      "rx-octets": 0,
+      "lastupdated": 1792743509653
+    },
+    {
+      "vdevice-name": "10.0.0.2",
+      "rx-errors": 0,
+      "tx-kbps": 0,
+      "if-admin-status": "if-state-up",
+      "ipv6-tcp-adjust-mss": "0",
+      "tx-pps": 0,
+      "tx-errors": 0,
+      "ifname": "Loopback65529",
+      "interface-type": "iana-iftype-sw-loopback",
+      "rx-pps": 0,
+      "bw-down-util": "0.00",
+      "if-oper-status": "if-oper-state-ready",
+      "ifindex": "8",
+      "num-flaps": "0",
+      "ipv4-tcp-adjust-mss": "0",
+      "rx-packets": 0,
+      "bia-address": "00:00:00:00:00:00",
+      "vpn-id": "65529",
+      "vdevice-host-name": "br1",
+      "ipv4-subnet-mask": "255.255.255.255",
+      "mtu": "1514",
+      "rx-drops": 0,
+      "tx-drops": 0,
+      "hwaddr": "00:1e:bd:9a:80:00",
+      "ip-address": "11.1.0.2",
+      "speed-mbps": 8000,
+      "auto-downstream-bandwidth": "N/A",
+      "vdevice-dataKey": "10.0.0.2-65529-Loopback65529-11.1.0.2-00:1e:bd:9a:80:00",
+      "bw-up-util": "0.00",
+      "tx-octets": 0,
+      "auto-upstream-bandwidth": "N/A",
+      "tx-packets": 0,
+      "rx-kbps": 0,
+      "rx-octets": 0,
+      "lastupdated": 1792743509653
+    },
+    {
+      "vdevice-name": "10.0.0.2",
+      "rx-errors": 0,
+      "tx-kbps": 0,
+      "if-admin-status": "if-state-up",
+      "ipv6-tcp-adjust-mss": "0",
+      "tx-pps": 0,
+      "tx-errors": 0,
+      "ifname": "Sdwan-system-intf",
+      "interface-type": "iana-iftype-sw-loopback",
+      "rx-pps": 0,
+      "bw-down-util": "0.00",
+      "if-oper-status": "if-oper-state-ready",
+      "ifindex": "12",
+      "num-flaps": "0",
+      "ipv4-tcp-adjust-mss": "0",
+      "rx-packets": 0,
+      "bia-address": "00:00:00:00:00:00",
+      "vpn-id": "0",
+      "vdevice-host-name": "br1",
+      "ipv4-subnet-mask": "255.255.255.255",
+      "mtu": "0",
+      "rx-drops": 0,
+      "tx-drops": 0,
+      "hwaddr": "00:1e:bd:9a:80:00",
+      "ip-address": "10.0.0.2",
+      "speed-mbps": 10000,
+      "auto-downstream-bandwidth": "N/A",
+      "vdevice-dataKey": "10.0.0.2-0-Sdwan-system-intf-10.0.0.2-00:1e:bd:9a:80:00",
+      "bw-up-util": "0.00",
+      "tx-octets": 0,
+      "auto-upstream-bandwidth": "N/A",
+      "tx-packets": 0,
+      "rx-kbps": 0,
+      "rx-octets": 0,
+      "lastupdated": 1792743509653
+    },
+    {
+      "vdevice-name": "10.0.0.2",
+      "rx-errors": 0,
+      "tx-kbps": 0,
+      "if-admin-status": "if-state-up",
+      "ipv6-tcp-adjust-mss": "0",
+      "tx-pps": 0,
+      "tx-errors": 0,
+      "ifname": "Tunnel1",
+      "interface-type": "iana-iftype-tunnel",
+      "rx-pps": 8,
+      "bw-down-util": "5.00",
+      "if-oper-status": "if-oper-state-ready",
+      "ifindex": "9",
+      "num-flaps": "0",
+      "ipv4-tcp-adjust-mss": "0",
+      "rx-packets": 5744,
+      "bia-address": "00:00:00:00:00:00",
+      "vpn-id": "0",
+      "vdevice-host-name": "br1",
+      "ipv4-subnet-mask": "255.255.255.0",
+      "mtu": "9980",
+      "rx-drops": 0,
+      "tx-drops": 8,
+      "hwaddr": "00:00:00:00:00:00",
+      "ip-address": "10.60.1.14",
+      "speed-mbps": 0.1,
+      "auto-downstream-bandwidth": "N/A",
+      "vdevice-dataKey": "10.0.0.2-0-Tunnel1-10.60.1.14-00:00:00:00:00:00",
+      "bw-up-util": "0.00",
+      "tx-octets": 0,
+      "auto-upstream-bandwidth": "N/A",
+      "tx-packets": 0,
+      "rx-kbps": 5,
+      "rx-octets": 553193,
+      "lastupdated": 1792743509653
+    },
+    {
+      "vdevice-name": "10.0.0.2",
+      "rx-errors": 0,
+      "tx-kbps": 0,
+      "if-admin-status": "if-state-up",
+      "ipv6-tcp-adjust-mss": "0",
+      "tx-pps": 0,
+      "tx-errors": 0,
+      "ifname": "Tunnel2",
+      "interface-type": "iana-iftype-tunnel",
+      "rx-pps": 8,
+      "bw-down-util": "6.00",
+      "if-oper-status": "if-oper-state-ready",
+      "ifindex": "10",
+      "num-flaps": "0",
+      "ipv4-tcp-adjust-mss": "0",
+      "rx-packets": 5748,
+      "bia-address": "00:00:00:00:00:00",
+      "vpn-id": "0",
+      "vdevice-host-name": "br1",
+      "ipv4-subnet-mask": "255.255.255.0",
+      "mtu": "9980",
+      "rx-drops": 0,
+      "tx-drops": 8,
+      "hwaddr": "00:00:00:00:00:00",
+      "ip-address": "10.60.2.14",
+      "speed-mbps": 0.1,
+      "auto-downstream-bandwidth": "N/A",
+      "vdevice-dataKey": "10.0.0.2-0-Tunnel2-10.60.2.14-00:00:00:00:00:00",
+      "bw-up-util": "0.00",
+      "tx-octets": 1728,
+      "auto-upstream-bandwidth": "N/A",
+      "tx-packets": 16,
+      "rx-kbps": 6,
+      "rx-octets": 606418,
+      "lastupdated": 1792743509653
+    },
+    {
+      "vdevice-name": "10.0.0.2",
+      "rx-errors": 0,
+      "tx-kbps": 0,
+      "if-admin-status": "if-state-up",
+      "ipv6-tcp-adjust-mss": "0",
+      "tx-pps": 0,
+      "tx-errors": 0,
+      "ifname": "vmanage_system",
+      "interface-type": "iana-iftype-sw-loopback",
+      "rx-pps": 0,
+      "bw-down-util": "0.00",
+      "if-oper-status": "if-oper-state-ready",
+      "ifindex": "11",
+      "num-flaps": "0",
+      "ipv4-tcp-adjust-mss": "0",
+      "rx-packets": 0,
+      "bia-address": "00:00:00:00:00:00",
+      "vpn-id": "0",
+      "vdevice-host-name": "br1",
+      "ipv4-subnet-mask": "255.255.255.255",
+      "mtu": "0",
+      "rx-drops": 0,
+      "tx-drops": 0,
+      "hwaddr": "00:1e:bd:9a:80:00",
+      "ip-address": "0.0.0.0",
+      "speed-mbps": 10000,
+      "auto-downstream-bandwidth": "N/A",
+      "vdevice-dataKey": "10.0.0.2-0-vmanage_system-0.0.0.0-00:1e:bd:9a:80:00",
+      "bw-up-util": "0.00",
+      "tx-octets": 0,
+      "auto-upstream-bandwidth": "N/A",
+      "tx-packets": 0,
+      "rx-kbps": 0,
+      "rx-octets": 0,
+      "lastupdated": 1792743509653
+    }
+  ]
+}

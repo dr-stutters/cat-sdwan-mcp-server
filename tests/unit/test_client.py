@@ -1,4 +1,5 @@
-"""W1: the Manager client: JWT and session login, XSRF on writes, re-login, tenancy, throttling, errors."""
+"""W1: the Manager client: JWT and session login, XSRF on every call, re-login, tenancy, throttling,
+errors."""
 
 import json
 import time
@@ -47,7 +48,7 @@ def test_error_detail_shapes() -> None:
 # --- JWT -------------------------------------------------------------------------------------------
 
 
-async def test_jwt_login_bearer_and_xsrf_on_writes_only(api: respx.MockRouter) -> None:
+async def test_jwt_login_bearer_and_xsrf_on_every_call(api: respx.MockRouter) -> None:
     read = api.get("/dataservice/template/feature").respond(json={"data": []})
     write = api.post("/dataservice/template/feature").respond(json={"templateId": "t1"})
     app = SdwanApp(make_settings())
@@ -59,7 +60,7 @@ async def test_jwt_login_bearer_and_xsrf_on_writes_only(api: respx.MockRouter) -
     login = json.loads(api.routes[0].calls.last.request.content)
     assert login == {"username": "admin", "password": "pw", "duration": 1800}
     got = read.calls.last.request.headers
-    assert got["Authorization"] == "Bearer jwt-123" and "X-XSRF-TOKEN" not in got
+    assert got["Authorization"] == "Bearer jwt-123" and got["X-XSRF-TOKEN"] == "csrf-123"
     sent = write.calls.last.request.headers
     assert sent["Authorization"] == "Bearer jwt-123" and sent["X-XSRF-TOKEN"] == "csrf-123"
     assert app.login_style == "jwt"
@@ -141,7 +142,7 @@ async def test_auto_falls_back_to_session(router: respx.MockRouter, status: int)
     await app.aclose()
     assert form.calls.last.request.content == b"j_username=admin&j_password=pw"
     got = read.calls.last.request.headers
-    assert got["Cookie"] == "JSESSIONID=sess-1" and "X-XSRF-TOKEN" not in got
+    assert got["Cookie"] == "JSESSIONID=sess-1" and got["X-XSRF-TOKEN"] == "xsrf-1"
     sent = write.calls.last.request.headers
     assert sent["Cookie"] == "JSESSIONID=sess-1" and sent["X-XSRF-TOKEN"] == "xsrf-1"
     assert logout.call_count == 1 and logout.calls.last.request.headers["Cookie"] == "JSESSIONID=sess-1"
