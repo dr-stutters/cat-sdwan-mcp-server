@@ -27,6 +27,7 @@ from cat_sdwan_mcp.tools import (
     inventory,
     onboarding,
     policy,
+    pathinsight,
     prompts,
     troubleshooting,
 )
@@ -131,6 +132,7 @@ def create_server(
             certificates.register,
             troubleshooting.register,
             devicestate.register,
+            pathinsight.register,
         ],
         status=SdwanApp.status,
         spec_sources=spec_sources,

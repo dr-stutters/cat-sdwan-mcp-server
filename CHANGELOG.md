@@ -70,6 +70,9 @@ All notable changes to this project are documented here. The format follows
   OMP next hops named by edge, VPN/prefix/protocol filters with a `missing` verdict, BGP/OSPF/EIGRP neighbours)
   and `catsdwan_device_state` (a catalogue of 18 real-time tables by plain name, `feature='list'`, 'did you mean',
   zero counters left out, platform-specific tables refused).
+- W19 (#33): Network Wide Path Insight. `catsdwan_list_path_traces` (trace and task history, GUI traces too; a
+  trace's flows hop by hop with colours, decisions, policies, drop causes and issues) and `catsdwan_path_insight`
+  (write, preview-first: start a trace at a site, wait for flows, read them, always stop it).
 
 ## [0.2.0] - 2026-10-23
 

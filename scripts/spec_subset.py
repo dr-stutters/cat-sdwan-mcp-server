@@ -184,6 +184,11 @@ PATHS = [
     "/device/sdwan-global-drop-statistics",
     "/device/qos/session/summary",
     "/device/policer",
+    # W19 path insight
+    "/stream/device/nwpi/trace/start",
+    "/stream/device/nwpi/trace/stop/{traceId}",
+    "/stream/device/nwpi/traceHistory",
+    "/stream/device/nwpi/tasks/taskHistory",
 ]
 
 
