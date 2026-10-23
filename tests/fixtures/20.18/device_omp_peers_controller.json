@@ -1,0 +1,223 @@
+{
+  "header": {
+    "generatedOn": 1792743423689,
+    "viewKeys": {
+      "uniqueKey": [
+        "vdevice-dataKey"
+      ],
+      "preferenceKey": "grid-OMPPeer"
+    },
+    "columns": [
+      {
+        "title": "device.omp.deviceDataOmpPeer.peer",
+        "property": "peer",
+        "width": 220,
+        "dataType": "ipv4"
+      },
+      {
+        "title": "device.omp.deviceDataOmpPeer.peerHostname",
+        "property": "peer",
+        "width": 220,
+        "enableHostName": true,
+        "hostValueType": "ip",
+        "dataType": "string"
+      },
+      {
+        "title": "device.omp.deviceDataOmpPeer.tenantId",
+        "property": "tenant-id",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.omp.deviceDataOmpPeer.type",
+        "property": "type",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.omp.deviceDataOmpPeer.domainId",
+        "property": "domain-id",
+        "width": 100,
+        "dataType": "number"
+      },
+      {
+        "title": "device.omp.deviceDataOmpPeer.siteId",
+        "property": "site-id",
+        "width": 100,
+        "dataType": "number"
+      },
+      {
+        "title": "device.omp.deviceDataOmpPeer.regionId",
+        "property": "region-id",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.omp.deviceDataOmpPeer.state",
+        "property": "state",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.omp.deviceDataOmpPeer.legit",
+        "property": "legit",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.omp.deviceDataOmpPeer.refresh",
+        "property": "refresh",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.omp.deviceDataOmpPeer.upSince",
+        "property": "up-time-date",
+        "displayFormat": "DD MMM YYYY h:mm:ss A z",
+        "inputFormat": "unix-time",
+        "width": 200,
+        "dataType": "date"
+      },
+      {
+        "title": "device.omp.deviceDataOmpPeer.upTime",
+        "property": "up-time",
+        "width": 100,
+        "dataType": "uptime"
+      },
+      {
+        "title": "device.omp.deviceDataOmpPeer.filterAffinityGroupPreference",
+        "property": "filter-affinity-group-preference",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.omp.deviceDataOmpPeer.lastUpdated",
+        "property": "lastupdated",
+        "displayFormat": "DD MMM YYYY h:mm:ss A z",
+        "inputFormat": "unix-time",
+        "hideable": false,
+        "minWidth": 100,
+        "dataType": "date"
+      }
+    ],
+    "fields": [
+      {
+        "property": "vdevice-name",
+        "dataType": "string"
+      },
+      {
+        "property": "vdevice-host-name",
+        "dataType": "string"
+      },
+      {
+        "property": "peer",
+        "dataType": "ipv4"
+      },
+      {
+        "property": "peer",
+        "dataType": "string"
+      },
+      {
+        "property": "tenant-id",
+        "dataType": "string"
+      },
+      {
+        "property": "type",
+        "dataType": "string"
+      },
+      {
+        "property": "domain-id",
+        "dataType": "number"
+      },
+      {
+        "property": "site-id",
+        "dataType": "number"
+      },
+      {
+        "property": "region-id",
+        "dataType": "string"
+      },
+      {
+        "property": "state",
+        "dataType": "string"
+      },
+      {
+        "property": "legit",
+        "dataType": "string"
+      },
+      {
+        "property": "refresh",
+        "dataType": "string"
+      },
+      {
+        "property": "up-time-date",
+        "dataType": "date"
+      },
+      {
+        "property": "up-time",
+        "dataType": "uptime"
+      },
+      {
+        "property": "filter-affinity-group-preference",
+        "dataType": "string"
+      },
+      {
+        "property": "lastupdated",
+        "dataType": "date"
+      }
+    ]
+  },
+  "data": [
+    {
+      "domain-id": 1,
+      "vdevice-name": "1.1.1.3",
+      "refresh": "supported",
+      "site-id": 100,
+      "type": "vedge",
+      "vdevice-host-name": "controller",
+      "up-time-date": 1792742814676,
+      "vdevice-dataKey": "1.1.1.3-10.0.0.1-vedge",
+      "peer": "10.0.0.1",
+      "up-time": "0:00:10:09",
+      "legit": "yes",
+      "region-id": "None",
+      "lastupdated": 1792743423676,
+      "state": "up",
+      "filter-affinity-group-preference": "NA"
+    },
+    {
+      "domain-id": 1,
+      "vdevice-name": "1.1.1.3",
+      "refresh": "supported",
+      "site-id": 200,
+      "type": "vedge",
+      "vdevice-host-name": "controller",
+      "up-time-date": 1792742858677,
+      "vdevice-dataKey": "1.1.1.3-10.0.0.2-vedge",
+      "peer": "10.0.0.2",
+      "up-time": "0:00:09:25",
+      "legit": "yes",
+      "region-id": "None",
+      "lastupdated": 1792743423676,
+      "state": "up",
+      "filter-affinity-group-preference": "NA"
+    },
+    {
+      "domain-id": 1,
+      "vdevice-name": "1.1.1.3",
+      "refresh": "supported",
+      "site-id": 201,
+      "type": "vedge",
+      "vdevice-host-name": "controller",
+      "up-time-date": 1792742879677,
+      "vdevice-dataKey": "1.1.1.3-10.0.0.3-vedge",
+      "peer": "10.0.0.3",
+      "up-time": "0:00:09:04",
+      "legit": "yes",
+      "region-id": "None",
+      "lastupdated": 1792743423676,
+      "state": "up",
+      "filter-affinity-group-preference": "NA"
+    }
+  ]
+}

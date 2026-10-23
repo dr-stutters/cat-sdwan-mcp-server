@@ -9,7 +9,7 @@ from fastmcp.server.auth import AuthProvider
 from cat_sdwan_mcp._core import ServerSpec, build_server
 from cat_sdwan_mcp.client import SdwanApp
 from cat_sdwan_mcp.config import Settings
-from cat_sdwan_mcp.tools import inventory
+from cat_sdwan_mcp.tools import control, inventory
 
 INSTRUCTIONS = """
 Tools for Catalyst SD-WAN Manager (formerly vManage): fabric inventory and health, tunnels, BFD and
@@ -19,9 +19,11 @@ Start with catsdwan_status (release, login, controllers, edge counts); call it i
 Inventory: catsdwan_list_devices (site, kind, reachability, model, version; certificate state and
 configuration mode), catsdwan_get_device (one device plus live CPU, memory, interfaces, software, reboots),
 catsdwan_list_controllers (control plane and certificate expiry). "What is unhealthy?":
-catsdwan_device_health(health='poor'). Real-time reads go over the Manager's control connection, so an
-unreachable edge has none. Other planned tools are in the server's ROADMAP.md; until they exist, say so
-instead of guessing.
+catsdwan_device_health(health='poor'). Control plane: "why didn't this edge join?" ->
+catsdwan_control_connections(device) (failed attempts with the reason in plain words; no device = the
+fabric); "why can't branch A reach B?" -> catsdwan_omp_routes(A, vpn, prefix) then catsdwan_list_tlocs and
+catsdwan_omp_peers. Real-time reads go over the Manager's control connection, so an unreachable edge has none.
+Other planned tools are in the server's ROADMAP.md; until they exist, say so instead of guessing.
 """
 
 SPEC = ServerSpec(
@@ -43,7 +45,7 @@ def create_server(
         SPEC,
         settings,
         client_factory=lambda s: SdwanApp(s, transport=transport),
-        register=[inventory.register],
+        register=[inventory.register, control.register],
         status=SdwanApp.status,
         auth=auth,
     )

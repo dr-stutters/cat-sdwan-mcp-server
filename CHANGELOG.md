@@ -25,6 +25,17 @@ All notable changes to this project are documented here. The format follows
   serial, expiry, days left, `attention` for invalid or expiring certificates) and `catsdwan_device_health`
   (`/dataservice/health/devices`, which exists on 20.18.3: poor first with the reason; a partial answer says so;
   computed from `/dataservice/device/counters` where the endpoint is missing).
+- W3 (#4): the control plane. `catsdwan_control_connections` (live `device/control/connections` plus
+  `device/control/summary` and `device/control/connectionshistory` for one device; without one the fabric from the
+  bulk state API `/dataservice/data/device/state/ControlConnection`, paged with `startId`/`moreEntries` in the 48/min
+  bucket, falling back to live reads of the controllers and validators; `failed_attempts` explain the vdaemon error
+  codes such as BIDNTVRFD, SERNTPRES, CTORGNMMIS, CRTVERFL in plain words; for an edge that is down or never joined
+  the validators' history is read), `catsdwan_omp_peers` (`device/omp/peers`, every reachable controller by
+  default), `catsdwan_omp_routes` (`device/omp/routes/received|advertised`, VPN, overlapping-prefix and originator
+  filters, status flags explained, prefixes without an installed path named) and `catsdwan_list_tlocs`
+  (`device/omp/tlocs/received`, the first reachable controller by default). Every `device` argument resolves like
+  W2's (host name, system IP, chassis or serial, 'did you mean'); a device the Manager cannot reach is refused with
+  the reason instead of waiting for a timeout.
 - `cat-sdwan-mcp-server check`: reachability, TLS, auth and version (tested 20.18 and 26.x, minimum 20.15).
 - Unit tests on recorded, redacted 20.18 payloads (`tests/fixtures/20.18/`).
 - Scaffold on stutters-mcp-core v0.14.4 (bundled as `cat_sdwan_mcp._core`, ADR-005): `catsdwan_status` (reports the
