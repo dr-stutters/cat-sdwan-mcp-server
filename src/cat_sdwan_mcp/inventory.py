@@ -131,8 +131,10 @@ def device_row(d: dict[str, Any], cert: dict[str, Any] | None) -> dict[str, Any]
 
 def unjoined_row(v: dict[str, Any]) -> dict[str, Any]:
     """A vedges slot missing from /dataservice/device (never joined, or gone): chassis, serial and
-    certificate."""
+    certificate. A software edge's serialNumber before it joins is its one-time token (a secret): left out."""
     mode, name = config_mode(v)
+    state = str(v.get("vedgeCertificateState") or "").lower()
+    token = state in ("tokengenerated", "bootstrapconfiggenerated") or v.get("hardwareVedge") is False
     row: dict[str, Any] = {
         "host": v.get("host-name"),
         "role": role_of(v) or "edge",
@@ -141,7 +143,8 @@ def unjoined_row(v: dict[str, Any]) -> dict[str, Any]:
         "model": v.get("deviceModel"),
         "reachability": "not joined",
         "chassis": v.get("chasisNumber") or v.get("uuid"),
-        "board_serial": v.get("serialNumber"),
+        "board_serial": None if token else v.get("serialNumber"),
+        "token": "********" if token and v.get("serialNumber") else None,
         "certificate": v.get("validity"),
         "certificate_state": v.get("vedgeCertificateState"),
         "config_mode": mode,

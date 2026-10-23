@@ -7,7 +7,8 @@ An [MCP](https://modelcontextprotocol.io) server for **Cisco Catalyst SD-WAN Man
 > **Status: early.** The client (JWT and session login, throttling, error mapping), `catsdwan_status` and the
 > `check` preflight (W1), the inventory and device health tools (W2), the control-plane tools (W3), the data-plane
 > and app-route tools (W4), the alarm, event and audit tools (W5), API discovery over the Manager's own OpenAPI
-> document (W6) and the configuration reads (W7) exist, unit-tested against recorded 20.18 payloads; nothing is proven live yet. The rest is planned in [ROADMAP.md](ROADMAP.md) (item W0 is the lab fabric in CML) and tracked on the suite board.
+> document (W6), the configuration reads (W7), preview-first configuration changes (W8) and edge onboarding
+> (W9) exist, unit-tested against recorded 20.18 payloads; nothing is proven live yet. The rest is planned in [ROADMAP.md](ROADMAP.md) (item W0 is the lab fabric in CML) and tracked on the suite board.
 
 ## What it will do
 
@@ -43,6 +44,10 @@ servers, the production gate and the external prerequisites.
 | `catsdwan_set_device_variables` | write | A device's variable values in a configuration group (`PUT /v1/config-group/{id}/device/variables`): the preview shows each changed variable old -> new (secrets masked) and the old values to undo; the Manager needs every variable of the device in one write, so the tool reads them all, merges and writes them back with their original types. Stores only: nothing reaches the device until a deploy |
 | `catsdwan_deploy_config_group` | write / dangerous | Push a configuration group to named devices (`POST /v1/config-group/{id}/device/deploy`). Preview per device: the Manager's CLI preview (`POST .../device/{id}/preview`) and its diff against the running configuration, or, when that isn't available, the stored intended-vs-running diff (labelled as such). Blocked for a device not in the group, on a template, unreachable or with an action running, and for a group without feature profiles. Confirm follows `GET /device/action/status/{id}` until each device reports success or failure (with the reason) |
 | `catsdwan_attach_device_template` | write / dangerous | Attach a device template (CLI: `attachcli`, feature-based: `attachfeature`) with variables for every device or per device. Preview: the template's variables per device (`template/device/config/input`, a missing value blocks) and the rendered CLI per device (`template/device/config/config`) with its diff against running. Blocked for a configuration-group device, an unreachable device, another device model or a running action. Confirm follows the action status like the deploy |
+| `catsdwan_list_wan_edges` | read | The WAN edge list (`/system/device/vedges`: serial-file and Smart Account slots, joined or not): chassis, model, hardware or software, validity (valid, invalid, staging), joined (host, system IP, site), certificate state, the org name in its certificate (`org_mismatch` when it isn't the overlay's), managed by; `state` filter (joined, not_joined, valid, invalid, staging). A software edge's one-time token is always shown as `********` |
+| `catsdwan_bootstrap_config` | read | The day-0 bootstrap an edge boots with (`/system/device/bootstrap/device/{uuid}`, cloud-init or encoded): vinitparam uuid, otp, validator, org; for the day-0 configuration of a C8000V in `cml_build_lab`. The otp is masked unless `reveal_otp=true` (then in full, with a warning); also gives the `request platform software sdwan vedge_cloud activate` command for a running edge; warns when the edge has joined already, is not valid, or its org differs |
+| `catsdwan_onboard_edge` | write / dangerous | Bring a WAN edge slot into the fabric in order, stopping at the first failing step with its reason: (0) upload a signed serial file when the chassis isn't in the list (`serial_file`; multipart `POST /system/device/fileupload`, validity valid, upload true), (1) validity valid and the list sent to the controllers, (2) associate with a configuration group and store host name, system IP and site id (plus `variables`) as its variables, or attach a device template with them. Preview lists every step; blocked for a chassis not in the list (with the two ways in), an org mismatch, a failed certificate, a system IP in use, the other configuration mode. A hub or protected-site edge is dangerous. The result says how the edge joins (bootstrap at first boot, or the activate command) |
+| `catsdwan_set_edge_validity` | write / dangerous | valid, invalid or staging in the WAN edge list (`POST /certificate/save/vedge/list`), then send the list to the controllers (`POST /certificate/vedge/list?action=push`, followed to the end). invalid (the edge can't join; a joined edge drops its control connections and tunnels), staging on a joined edge (no data plane) and a hub or protected-site edge are dangerous; the preview names the edge's site and the undo |
 | `catsdwan_search_spec` | read | Search the Manager's own OpenAPI document (`GET /apidocs/vmanageapi.json`, OpenAPI 3, about 2800 paths on 20.18) for operations and schemas; paths shown as `/dataservice/...`; indexed once per Manager release and cached in `MCP_CACHE_DIR` |
 | `catsdwan_get_definition` | read | One operation (parameters, request fields, required fields; `examples=true` for the spec's examples) or schema |
 | `catsdwan_api_call` | read / write / dangerous | Any endpoint, the path checked against the spec ('did you mean' when it isn't there). GET and the query POSTs of `/statistics/<index>`, `/alarms`, `/event`, `/auditlog` are reads; with `MCP_ENABLE_WRITES` other POST/PUT/DELETE calls are preview-first; `/device/action/*` writes (reboot, software) need `MCP_ENABLE_DANGEROUS`. Secrets masked |
@@ -64,6 +69,22 @@ variables preview lists the old values, and a deploy's preview diff shows the ru
 
 Typical flow: `catsdwan_get_config_group` (variables) -> `catsdwan_set_device_variables` (preview, confirm) ->
 `catsdwan_deploy_config_group` (preview: per-device CLI and diff; confirm) -> `catsdwan_get_device_config(diff=true)`.
+
+## Onboarding an edge
+
+`catsdwan_list_wan_edges(state='not_joined')` (a free chassis) -> `catsdwan_onboard_edge(chassis, hostname,
+system_ip, site_id, config_group=...)` (preview, confirm) -> boot the edge: either with the cloud-init from
+`catsdwan_bootstrap_config(chassis, reveal_otp=true)` as its day-0 (in CML, the node configuration in
+`cml_build_lab`), or, on a C8000V already running in controller mode, the exec command
+`request platform software sdwan vedge_cloud activate chassis-number <chassis> token <token>`. A C8000V needs
+some uuid/otp in its day-0 `vinitparam`, or it boots in autonomous mode. Then `catsdwan_control_connections(device)`
+until it is up, and `catsdwan_deploy_config_group` to push its configuration.
+
+The one-time token (the serial number of a software edge that has not joined, the bootstrap's otp) is a secret:
+masked in every result except `catsdwan_bootstrap_config(reveal_otp=true)`, and registered with the secret
+scrubber so it never reaches a log line or an error. A chassis that isn't in the WAN edge list gets in by the
+signed serial file (`catsdwan_onboard_edge(serial_file=...)`) or a Smart Account sync
+(`POST /dataservice/system/device/smartaccount/sync` through `catsdwan_api_call`; no tool yet).
 
 ## Login and throttling
 

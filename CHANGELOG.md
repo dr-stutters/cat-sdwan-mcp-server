@@ -19,8 +19,22 @@ All notable changes to this project are documented here. The format follows
   running; a group without feature profiles; a template variable without a value. One device is write tier;
   several devices, a hub (`CATSDWAN_HUB_DEVICES`) or a protected-site device (`CATSDWAN_PROTECTED_SITES`) need
   `MCP_ENABLE_DANGEROUS`; `blast_radius` = the devices. Settings `CATSDWAN_HUB_DEVICES`, `CATSDWAN_PROTECTED_SITES`.
+- W9 (#10): edge onboarding. `catsdwan_list_wan_edges` (`/system/device/vedges`: chassis, model, hardware or
+  software, validity, joined, certificate state, certificate org with `org_mismatch`, managed by; `state` filter),
+  `catsdwan_bootstrap_config` (`GET /system/device/bootstrap/device/{uuid}`, cloud-init or encoded, otp masked
+  unless `reveal_otp=true`, plus the `request platform software sdwan vedge_cloud activate` command),
+  `catsdwan_onboard_edge` (preview lists the steps, confirm runs them in order and stops at the failing one:
+  optional signed serial-file upload as multipart `POST /system/device/fileupload` with validity valid and upload
+  true, validity valid + send to controllers, configuration-group association and host name / system IP / site id
+  variables, or a device-template attach; refuses a chassis not in the list with the two ways in, an org mismatch,
+  a failed certificate, a system IP in use) and `catsdwan_set_edge_validity` (`POST /certificate/save/vedge/list`
+  then `/certificate/vedge/list?action=push`, followed; invalid, staging on a joined edge, a hub or a
+  protected-site edge are dangerous). The one-time token is masked everywhere and registered with the secret
+  scrubber. Spec subset extended with the certificate, bootstrap, fileupload and Smart Account operations.
 
 ### Changed
+- `catsdwan_list_devices(include_unjoined=true)` and `catsdwan_get_device` no longer show a never-joined software
+  edge's serial number (it is the one-time token): `token: ********` instead.
 - `catsdwan_get_config_group` reads device variables in the recorded 20.18.3 shape (no `value` key for an empty
   variable, native types).
 
