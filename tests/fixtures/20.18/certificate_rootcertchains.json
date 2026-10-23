@@ -1,0 +1,106 @@
+{
+  "header": {
+    "generatedOn": 1792758938996
+  },
+  "data": [
+    {
+      "CommonName": "example-CA",
+      "Issuer": "CN=example-CA, DC=example, DC=lab",
+      "Subject": "CN=example-CA, DC=example, DC=lab",
+      "SerialNumber": "A300000000000000000000000000000004",
+      "FingerPrint": "aaefca3dcc80308e52d4f72dcab28d302d62398c",
+      "ExpirationDate": "Fri Oct 17 01:04:19 UTC 2036",
+      "Certificate": "<redacted PEM>"
+    },
+    {
+      "CommonName": "VeriSign Class 3 Public Primary Certification Authority - G5",
+      "Issuer": "CN=VeriSign Class 3 Public Primary Certification Authority - G5, OU=\"(c) 2006 VeriSign, Inc. - For authorized use only\", OU=VeriSign Trust Network, O=\"VeriSign, Inc.\", C=US",
+      "Subject": "CN=VeriSign Class 3 Public Primary Certification Authority - G5, OU=\"(c) 2006 VeriSign, Inc. - For authorized use only\", OU=VeriSign Trust Network, O=\"VeriSign, Inc.\", C=US",
+      "SerialNumber": "A400000000000000000000000000000005",
+      "FingerPrint": "4eb6d578499b1ccf5f581ead56be3d9b6744a5e5",
+      "ExpirationDate": "Wed Jul 16 23:59:59 UTC 2036",
+      "Certificate": "<redacted PEM>"
+    },
+    {
+      "CommonName": "DigiCert Global Root G2",
+      "Issuer": "CN=DigiCert Global Root G2, OU=www.digicert.com, O=DigiCert Inc, C=US",
+      "Subject": "CN=DigiCert Global Root G2, OU=www.digicert.com, O=DigiCert Inc, C=US",
+      "SerialNumber": "A500000000000000000000000000000006",
+      "FingerPrint": "df3c24f9bfd666761b268073fe06d1cc8d4f82a4",
+      "ExpirationDate": "Fri Jan 15 12:00:00 UTC 2038",
+      "Certificate": "<redacted PEM>"
+    },
+    {
+      "CommonName": "DigiCert Global CA G2",
+      "Issuer": "CN=DigiCert Global Root G2, OU=www.digicert.com, O=DigiCert Inc, C=US",
+      "Subject": "CN=DigiCert Global CA G2, O=DigiCert Inc, C=US",
+      "SerialNumber": "A600000000000000000000000000000007",
+      "FingerPrint": "d6aee31631f7abc56b9de8abeccc4108a626b104",
+      "ExpirationDate": "Tue Aug 01 12:00:00 UTC 2028",
+      "Certificate": "<redacted PEM>"
+    },
+    {
+      "CommonName": "DigiCert Global Root CA",
+      "Issuer": "CN=DigiCert Global Root CA, OU=www.digicert.com, O=DigiCert Inc, C=US",
+      "Subject": "CN=DigiCert Global Root CA, OU=www.digicert.com, O=DigiCert Inc, C=US",
+      "SerialNumber": "A700000000000000000000000000000008",
+      "FingerPrint": "a8985d3a65e5e5c4b2d7d66d40c6dd2fb19c5436",
+      "ExpirationDate": "Mon Nov 10 00:00:00 UTC 2031",
+      "Certificate": "<redacted PEM>"
+    },
+    {
+      "CommonName": "Viptela SubCA",
+      "Issuer": "CN=Internal Customer Root CA, O=Cisco, OU=Arcturus",
+      "Subject": "CN=Viptela SubCA, OU=Albireo, O=Cisco",
+      "SerialNumber": "A800000000000000000000000000000009",
+      "FingerPrint": "402b309f95b746c4b68b6d1a0f67d3adff9ca4ed",
+      "ExpirationDate": "Sat Aug 20 14:59:39 UTC 2050",
+      "Certificate": "<redacted PEM>"
+    },
+    {
+      "CommonName": "Internal Customer Root CA",
+      "Issuer": "CN=Internal Customer Root CA, O=Cisco, OU=Arcturus",
+      "Subject": "CN=Internal Customer Root CA, O=Cisco, OU=Arcturus",
+      "SerialNumber": "A900000000000000000000000000000010",
+      "FingerPrint": "e1c4b3d3cd48e07c53f6f9ba9ab94f924241c263",
+      "ExpirationDate": "Sat Aug 20 14:59:40 UTC 2050",
+      "Certificate": "<redacted PEM>"
+    },
+    {
+      "CommonName": "Symantec Trust Services Private SHA256 Root CA",
+      "Issuer": "CN=Symantec Trust Services Private SHA256 Root CA, O=Symantec Corporation, C=US",
+      "Subject": "CN=Symantec Trust Services Private SHA256 Root CA, O=Symantec Corporation, C=US",
+      "SerialNumber": "AA00000000000000000000000000000011",
+      "FingerPrint": "1d33a080c99817e6e2a366ac372c17fbe5d02e18",
+      "ExpirationDate": "Sun Jun 12 23:59:59 UTC 2044",
+      "Certificate": "<redacted PEM>"
+    },
+    {
+      "CommonName": "DigiCert TLS ICA VRSN PCA-G5",
+      "Issuer": "CN=VeriSign Class 3 Public Primary Certification Authority - G5, OU=\"(c) 2006 VeriSign, Inc. - For authorized use only\", OU=VeriSign Trust Network, O=\"VeriSign, Inc.\", C=US",
+      "Subject": "CN=DigiCert TLS ICA VRSN PCA-G5, OU=www.digicert.com, O=\"DigiCert, Inc.\", C=US",
+      "SerialNumber": "AB00000000000000000000000000000012",
+      "FingerPrint": "0662fe46f8003d1f36e0e8ed2e8ea83378b440ce",
+      "ExpirationDate": "Tue Jan 16 23:59:59 UTC 2029",
+      "Certificate": "<redacted PEM>"
+    },
+    {
+      "CommonName": "DigiCert Private SSL SHA256 CA - G2",
+      "Issuer": "CN=Symantec Trust Services Private SHA256 Root CA, O=Symantec Corporation, C=US",
+      "Subject": "CN=DigiCert Private SSL SHA256 CA - G2, O=DigiCert Inc., C=US",
+      "SerialNumber": "AC00000000000000000000000000000013",
+      "FingerPrint": "e799ad140f5b5bfb0e27b40b477381e610006da5",
+      "ExpirationDate": "Tue Oct 01 23:59:59 UTC 2030",
+      "Certificate": "<redacted PEM>"
+    },
+    {
+      "CommonName": "00000000-0000-4000-8000-000000000003",
+      "Issuer": "O=Cisco Systems, CN=00000000-0000-4000-8000-000000000003, C=US",
+      "Subject": "O=Cisco Systems, CN=00000000-0000-4000-8000-000000000003, C=US",
+      "SerialNumber": "04260227",
+      "FingerPrint": "424fe2bfaa79f0680178bd3b15fbc1715f62745f",
+      "ExpirationDate": "Mon Oct 20 07:45:08 UTC 2036",
+      "Certificate": "<redacted PEM>"
+    }
+  ]
+}

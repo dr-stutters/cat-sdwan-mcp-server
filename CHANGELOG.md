@@ -55,6 +55,12 @@ All notable changes to this project are documented here. The format follows
   (`/statistics/tunnelhealth/overview`, `history=true` from `/tunnelhealth/history` as fair/poor periods),
   `catsdwan_interface_stats` (`POST /statistics/interface/aggregation`, one metric per property; circuit capacity,
   QoS drops) and `catsdwan_topology` (sites, devices, configuration intent, site-to-site tunnel links).
+- W16 (#30): certificates and trust. `catsdwan_certificates` (controller and edge certificates with status,
+  expiry, days left and what breaks when each expires, invalid/expired/expiring first; the Manager's counts,
+  signing modes, root chain, HTTPS certificate and an edge's trustpoints), `catsdwan_renew_controller_certificate`
+  (dangerous; two previewed steps: CSR on the controller, then install of the Enterprise-CA-signed certificate and
+  send to the validators; refused unless controller signing is Enterprise) and `catsdwan_sync_root_cert` (write;
+  `POST /certificate/forcesync/rootCert`).
 
 ## [0.2.0] - 2026-10-23
 

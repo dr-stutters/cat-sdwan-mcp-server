@@ -121,6 +121,16 @@ PATHS = [
     "/statistics/interface/ccapacity/distribution",
     "/statistics/qos",
     "/topology/device/site/{siteId}",
+    # W16 certificates
+    "/certificate/stats/summary",
+    "/certificate/data/controller/list",
+    "/certificate/data/vedge/list",
+    "/certificate/rootcertchains",
+    "/certificate/generate/csr",
+    "/certificate/install/signedCert",
+    "/certificate/vsmart/list",
+    "/certificate/forcesync/rootCert",
+    "/device/pki/trustpoint",
 ]
 
 

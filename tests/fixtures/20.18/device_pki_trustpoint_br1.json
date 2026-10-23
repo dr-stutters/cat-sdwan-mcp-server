@@ -1,0 +1,349 @@
+{
+  "header": {
+    "generatedOn": 1792758939788,
+    "viewKeys": {
+      "uniqueKey": [
+        "vdevice-dataKey"
+      ],
+      "preferenceKey": "grid-PkiTrustpoint"
+    },
+    "columns": [
+      {
+        "title": "server.vmanage.deviceDataPkiTrustPoint.label",
+        "property": "label",
+        "dataType": "string"
+      },
+      {
+        "title": "server.vmanage.deviceDataPkiTrustPoint.tpAuthenticated",
+        "property": "tp-authenticated",
+        "dataType": "string"
+      },
+      {
+        "title": "server.vmanage.deviceDataPkiTrustPoint.serialNumber",
+        "property": "cert/serial-number",
+        "dataType": "string"
+      },
+      {
+        "title": "server.vmanage.deviceDataPkiTrustPoint.subjectName",
+        "property": "cert/subject-name",
+        "dataType": "string"
+      },
+      {
+        "title": "server.vmanage.deviceDataPkiTrustPoint.issuerName",
+        "property": "cert/issuer-name",
+        "dataType": "string"
+      },
+      {
+        "title": "server.vmanage.deviceDataPkiTrustPoint.validityStart",
+        "property": "cert/validity-start",
+        "dataType": "string"
+      },
+      {
+        "title": "server.vmanage.deviceDataPkiTrustPoint.validityEnd",
+        "property": "cert/validity-end",
+        "dataType": "string"
+      },
+      {
+        "title": "server.vmanage.deviceDataPkiTrustPoint.md5Fingerprint",
+        "property": "cert/md5-fp",
+        "dataType": "string"
+      }
+    ],
+    "fields": [
+      {
+        "property": "vdevice-name",
+        "dataType": "string"
+      },
+      {
+        "property": "vdevice-host-name",
+        "dataType": "string"
+      },
+      {
+        "property": "label",
+        "dataType": "string"
+      },
+      {
+        "property": "tp-authenticated",
+        "dataType": "string"
+      },
+      {
+        "property": "cert/serial-number",
+        "dataType": "string"
+      },
+      {
+        "property": "cert/subject-name",
+        "dataType": "string"
+      },
+      {
+        "property": "cert/issuer-name",
+        "dataType": "string"
+      },
+      {
+        "property": "cert/validity-start",
+        "dataType": "string"
+      },
+      {
+        "property": "cert/validity-end",
+        "dataType": "string"
+      },
+      {
+        "property": "cert/md5-fp",
+        "dataType": "string"
+      }
+    ]
+  },
+  "data": [
+    {
+      "cert/subject-name": "cn=Cisco Root CA M1,o=Cisco",
+      "cert/issuer-name": "cn=Cisco Root CA M1,o=Cisco",
+      "vdevice-dataKey": "10.0.0.2-Trustpool",
+      "vdevice-name": "10.0.0.2",
+      "cert/validity-end": "2033-11-18T21:59:46+00:00",
+      "cert/serial-number": "B000000000000000000000000000000017",
+      "lastupdated": 1792758939776,
+      "cert/validity-start": "2008-11-18T21:50:24+00:00",
+      "label": "Trustpool",
+      "tp-authenticated": "true",
+      "vdevice-host-name": "br1",
+      "cert/md5-fp": "F0F28550B0B8394B327BB8472FD1B807"
+    },
+    {
+      "cert/subject-name": "cn=Cisco Root CA 2048,o=Cisco Systems",
+      "cert/issuer-name": "cn=Cisco Root CA 2048,o=Cisco Systems",
+      "vdevice-dataKey": "10.0.0.2-Trustpool1",
+      "vdevice-name": "10.0.0.2",
+      "cert/validity-end": "2029-05-14T20:25:42+00:00",
+      "cert/serial-number": "B100000000000000000000000000000018",
+      "lastupdated": 1792758939776,
+      "cert/validity-start": "2004-05-14T20:17:12+00:00",
+      "label": "Trustpool1",
+      "tp-authenticated": "true",
+      "vdevice-host-name": "br1",
+      "cert/md5-fp": "BE395ABE078AB1121725CC1D46343CB2"
+    },
+    {
+      "cert/subject-name": "cn=Cisco Manufacturing CA,o=Cisco Systems",
+      "cert/issuer-name": "cn=Cisco Root CA 2048,o=Cisco Systems",
+      "vdevice-dataKey": "10.0.0.2-Trustpool2",
+      "vdevice-name": "10.0.0.2",
+      "cert/validity-end": "2029-05-14T20:25:42+00:00",
+      "cert/serial-number": "B200000000000000000000000000000019",
+      "lastupdated": 1792758939776,
+      "cert/validity-start": "2005-06-10T22:16:01+00:00",
+      "label": "Trustpool2",
+      "tp-authenticated": "true",
+      "vdevice-host-name": "br1",
+      "cert/md5-fp": "6EA241F5AC9A1148CC8B4B43C7C13025"
+    },
+    {
+      "cert/subject-name": "cn=Cisco Root CA M2,o=Cisco",
+      "cert/issuer-name": "cn=Cisco Root CA M2,o=Cisco",
+      "vdevice-dataKey": "10.0.0.2-Trustpool3",
+      "vdevice-name": "10.0.0.2",
+      "cert/validity-end": "2037-11-12T13:00:18+00:00",
+      "cert/serial-number": "01",
+      "lastupdated": 1792758939776,
+      "cert/validity-start": "2012-11-12T13:00:18+00:00",
+      "label": "Trustpool3",
+      "tp-authenticated": "true",
+      "vdevice-host-name": "br1",
+      "cert/md5-fp": "2F4032DB64EC926D3D36167EB1BBED12"
+    },
+    {
+      "cert/subject-name": "cn=Cisco Manufacturing CA SHA2,o=Cisco",
+      "cert/issuer-name": "cn=Cisco Root CA M2,o=Cisco",
+      "vdevice-dataKey": "10.0.0.2-Trustpool4",
+      "vdevice-name": "10.0.0.2",
+      "cert/validity-end": "2037-11-12T13:00:17+00:00",
+      "cert/serial-number": "02",
+      "lastupdated": 1792758939776,
+      "cert/validity-start": "2012-11-12T13:50:58+00:00",
+      "label": "Trustpool4",
+      "tp-authenticated": "true",
+      "vdevice-host-name": "br1",
+      "cert/md5-fp": "AC14F08FC3780F8FD9EEE6C939111280"
+    },
+    {
+      "cert/subject-name": "cn=Licensing Root - DEV,o=Cisco",
+      "cert/issuer-name": "cn=Licensing Root - DEV,o=Cisco",
+      "vdevice-dataKey": "10.0.0.2-Trustpool5",
+      "vdevice-name": "10.0.0.2",
+      "cert/validity-end": "2033-04-24T21:55:43+00:00",
+      "cert/serial-number": "01",
+      "lastupdated": 1792758939776,
+      "cert/validity-start": "2013-04-24T21:55:43+00:00",
+      "label": "Trustpool5",
+      "tp-authenticated": "true",
+      "vdevice-host-name": "br1",
+      "cert/md5-fp": "432CBFA032D2983A8A56A319FD28C6F9"
+    },
+    {
+      "cert/subject-name": "cn=Cisco Licensing Root CA,o=Cisco",
+      "cert/issuer-name": "cn=Cisco Licensing Root CA,o=Cisco",
+      "vdevice-dataKey": "10.0.0.2-Trustpool6",
+      "vdevice-name": "10.0.0.2",
+      "cert/validity-end": "2038-05-30T19:48:47+00:00",
+      "cert/serial-number": "01",
+      "lastupdated": 1792758939776,
+      "cert/validity-start": "2013-05-30T19:48:47+00:00",
+      "label": "Trustpool6",
+      "tp-authenticated": "true",
+      "vdevice-host-name": "br1",
+      "cert/md5-fp": "1468DC18250BDFCF769C29DFE1F7E5A8"
+    },
+    {
+      "cert/subject-name": "cn=ACT2 SUDI CA,o=Cisco",
+      "cert/issuer-name": "cn=Cisco Root CA 2048,o=Cisco Systems",
+      "vdevice-dataKey": "10.0.0.2-Trustpool7",
+      "vdevice-name": "10.0.0.2",
+      "cert/validity-end": "2029-05-14T20:25:42+00:00",
+      "cert/serial-number": "B300000000000000000000000000000020",
+      "lastupdated": 1792758939776,
+      "cert/validity-start": "2011-06-30T17:56:57+00:00",
+      "label": "Trustpool7",
+      "tp-authenticated": "true",
+      "vdevice-host-name": "br1",
+      "cert/md5-fp": "542F6E7328DA26118E50685DEB4B7194"
+    },
+    {
+      "cert/subject-name": "cn=Cisco RXC-R2,o=Cisco Systems,c=US",
+      "cert/issuer-name": "cn=Cisco RXC-R2,o=Cisco Systems,c=US",
+      "vdevice-dataKey": "10.0.0.2-RXC_Trustpool",
+      "vdevice-name": "10.0.0.2",
+      "cert/validity-end": "2034-07-09T21:46:56+00:00",
+      "cert/serial-number": "01",
+      "lastupdated": 1792758939776,
+      "cert/validity-start": "2014-07-09T21:46:56+00:00",
+      "label": "RXC_Trustpool",
+      "tp-authenticated": "true",
+      "vdevice-host-name": "br1",
+      "cert/md5-fp": "F8AC58C2B64215630582F336EFC62F12"
+    },
+    {
+      "cert/subject-name": "cn=VeriSign Class 3 Public Primary Certification Authority - G5,ou=(c) 2006 VeriSign, Inc. - For authorized use only,ou=VeriSign Trust Network,o=VeriSign, Inc.,c=US",
+      "cert/issuer-name": "cn=VeriSign Class 3 Public Primary Certification Authority - G5,ou=(c) 2006 VeriSign, Inc. - For authorized use only,ou=VeriSign Trust Network,o=VeriSign, Inc.,c=US",
+      "vdevice-dataKey": "10.0.0.2-Trustpool9",
+      "vdevice-name": "10.0.0.2",
+      "cert/validity-end": "2036-07-16T23:59:59+00:00",
+      "cert/serial-number": "A400000000000000000000000000000005",
+      "lastupdated": 1792758939776,
+      "cert/validity-start": "2006-11-08T00:00:00+00:00",
+      "label": "Trustpool9",
+      "tp-authenticated": "true",
+      "vdevice-host-name": "br1",
+      "cert/md5-fp": "CB17E431673EE209FE455793F30AFA1C"
+    },
+    {
+      "cert/subject-name": "cn=QuoVadis Root CA 2,o=QuoVadis Limited,c=BM",
+      "cert/issuer-name": "cn=QuoVadis Root CA 2,o=QuoVadis Limited,c=BM",
+      "vdevice-dataKey": "10.0.0.2-Trustpool10",
+      "vdevice-name": "10.0.0.2",
+      "cert/validity-end": "2031-11-24T18:23:33+00:00",
+      "cert/serial-number": "0509",
+      "lastupdated": 1792758939776,
+      "cert/validity-start": "2006-11-24T18:27:00+00:00",
+      "label": "Trustpool10",
+      "tp-authenticated": "true",
+      "vdevice-host-name": "br1",
+      "cert/md5-fp": "5E397BDDF8BAEC82E9AC62BA0C54002B"
+    },
+    {
+      "cert/subject-name": "cn=IdenTrust Commercial Root CA 1,o=IdenTrust,c=US",
+      "cert/issuer-name": "cn=IdenTrust Commercial Root CA 1,o=IdenTrust,c=US",
+      "vdevice-dataKey": "10.0.0.2-Trustpool11",
+      "vdevice-name": "10.0.0.2",
+      "cert/validity-end": "2034-01-16T18:12:23+00:00",
+      "cert/serial-number": "B400000000000000000000000000000021",
+      "lastupdated": 1792758939776,
+      "cert/validity-start": "2014-01-16T18:12:23+00:00",
+      "label": "Trustpool11",
+      "tp-authenticated": "true",
+      "vdevice-host-name": "br1",
+      "cert/md5-fp": "B33E777375EEA0D3E37E49634959BBC7"
+    },
+    {
+      "cert/subject-name": "cn=Cisco Root CA 2099,o=Cisco",
+      "cert/issuer-name": "cn=Cisco Root CA 2099,o=Cisco",
+      "vdevice-dataKey": "10.0.0.2-Trustpool12",
+      "vdevice-name": "10.0.0.2",
+      "cert/validity-end": "2099-08-09T20:58:28+00:00",
+      "cert/serial-number": "B500000000000000000000000000000022",
+      "lastupdated": 1792758939776,
+      "cert/validity-start": "2016-08-09T20:58:28+00:00",
+      "label": "Trustpool12",
+      "tp-authenticated": "true",
+      "vdevice-host-name": "br1",
+      "cert/md5-fp": "CC9B9C1BAEC0152555838FD1856D9306"
+    },
+    {
+      "cert/subject-name": "o=Cisco,cn=High Assurance SUDI CA",
+      "cert/issuer-name": "cn=Cisco Root CA 2099,o=Cisco",
+      "vdevice-dataKey": "10.0.0.2-Trustpool13",
+      "vdevice-name": "10.0.0.2",
+      "cert/validity-end": "2099-08-09T20:58:27+00:00",
+      "cert/serial-number": "B600000000000000000000000000000023",
+      "lastupdated": 1792758939776,
+      "cert/validity-start": "2016-08-11T20:28:08+00:00",
+      "label": "Trustpool13",
+      "tp-authenticated": "true",
+      "vdevice-host-name": "br1",
+      "cert/md5-fp": "E6897BC627D7C558A2330EC7C2D7A10B"
+    },
+    {
+      "cert/subject-name": "cn=Cisco Basic Assurance Root CA 2099,o=Cisco",
+      "cert/issuer-name": "cn=Cisco Basic Assurance Root CA 2099,o=Cisco",
+      "vdevice-dataKey": "10.0.0.2-Trustpool14",
+      "vdevice-name": "10.0.0.2",
+      "cert/validity-end": "2099-05-26T19:19:29+00:00",
+      "cert/serial-number": "B700000000000000000000000000000024",
+      "lastupdated": 1792758939776,
+      "cert/validity-start": "2017-05-26T19:19:29+00:00",
+      "label": "Trustpool14",
+      "tp-authenticated": "true",
+      "vdevice-host-name": "br1",
+      "cert/md5-fp": "C1779A47DF4FA3C84E5A65D9152A0411"
+    },
+    {
+      "cert/subject-name": "cn=Cisco Manufacturing CA III,o=Cisco",
+      "cert/issuer-name": "cn=Cisco Basic Assurance Root CA 2099,o=Cisco",
+      "vdevice-dataKey": "10.0.0.2-Trustpool15",
+      "vdevice-name": "10.0.0.2",
+      "cert/validity-end": "2099-05-26T19:19:28+00:00",
+      "cert/serial-number": "B800000000000000000000000000000025",
+      "lastupdated": 1792758939776,
+      "cert/validity-start": "2017-07-05T19:28:06+00:00",
+      "label": "Trustpool15",
+      "tp-authenticated": "true",
+      "vdevice-host-name": "br1",
+      "cert/md5-fp": "858FF2C981CDB09D8B484A70E0C4AF87"
+    },
+    {
+      "cert/subject-name": "cn=IOS-Self-Signed-Certificate-4059688902",
+      "cert/issuer-name": "cn=IOS-Self-Signed-Certificate-4059688902",
+      "vdevice-dataKey": "10.0.0.2-TP-self-signed-4059688902",
+      "vdevice-name": "10.0.0.2",
+      "cert/validity-end": "2036-10-22T07:00:11+00:00",
+      "cert/serial-number": "01",
+      "lastupdated": 1792758939776,
+      "cert/validity-start": "2026-10-23T07:00:11+00:00",
+      "label": "TP-self-signed-4059688902",
+      "tp-authenticated": "true",
+      "vdevice-host-name": "br1",
+      "cert/md5-fp": "3097D4201541F40515DD0F718B51D24D"
+    },
+    {
+      "cert/subject-name": "cn=Cisco Licensing Root CA,o=Cisco",
+      "cert/issuer-name": "cn=Cisco Licensing Root CA,o=Cisco",
+      "vdevice-dataKey": "10.0.0.2-SLA-TrustPoint",
+      "vdevice-name": "10.0.0.2",
+      "cert/validity-end": "2038-05-30T19:48:47+00:00",
+      "cert/serial-number": "01",
+      "lastupdated": 1792758939776,
+      "cert/validity-start": "2013-05-30T19:48:47+00:00",
+      "label": "SLA-TrustPoint",
+      "tp-authenticated": "true",
+      "vdevice-host-name": "br1",
+      "cert/md5-fp": "1468DC18250BDFCF769C29DFE1F7E5A8"
+    }
+  ]
+}

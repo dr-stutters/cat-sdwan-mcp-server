@@ -12,6 +12,7 @@ from cat_sdwan_mcp.config import Settings
 from cat_sdwan_mcp.spec import spec_sources
 from cat_sdwan_mcp.tools import (
     api,
+    certificates,
     changes,
     confighistory,
     configuration,
@@ -125,6 +126,7 @@ def create_server(
             features.register,
             health.register,
             prompts.register,
+            certificates.register,
         ],
         status=SdwanApp.status,
         spec_sources=spec_sources,
