@@ -10,7 +10,8 @@ reports `blast_radius` = its devices, so MCP_MAX_BLAST_RADIUS caps it.
 
 # No `from __future__ import annotations`: FastMCP inspects signatures at runtime.
 import asyncio
-from typing import Annotated, Any
+from collections.abc import Callable
+from typing import Annotated, Any, TypeVar
 
 from fastmcp import Context
 from pydantic import Field
@@ -69,6 +70,7 @@ from cat_sdwan_mcp.configuration import (
 from cat_sdwan_mcp.inventory import Inventory, load_inventory, resolve
 from cat_sdwan_mcp.tools.configuration import _associated, _groups
 
+F = TypeVar("F", bound=Callable[..., Any])
 POLL_INTERVAL = 3.0  # seconds between action-status reads (tests set it to 0)
 MAX_BUSY_CHECKS = 10  # running actions read for the pending-action blocker
 
@@ -91,6 +93,16 @@ DEPLOY_ROLLBACK = (
     "(catsdwan_set_device_variables: its preview shows them) and deploy again; the running configuration "
     "before this change is what the preview's diff shows as '-' lines."
 )
+
+
+def dangerous_tool(reg: ToolRegistrar, *, title: str, task: bool = False) -> Callable[[F], F]:
+    """Register a tool that is always dangerous (policy activation, reboot, software upgrade): at the
+    dangerous tier with MCP_ENABLE_DANGEROUS; with writes on but dangerous changes off it is still listed (at
+    write tier), so its preview shows what it would do and refuses with the reason (`dangerous_blockers`)
+    instead of the tool being missing. Hidden without MCP_ENABLE_WRITES."""
+    if reg.settings.mcp_enable_dangerous:
+        return reg.dangerous(title=title, task=task)
+    return reg.write(title=title, destructive=True, task=task)
 
 
 def dangerous_blockers(ctx: Context, app: SdwanApp, reasons: list[str]) -> list[str]:

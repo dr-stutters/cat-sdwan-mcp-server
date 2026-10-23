@@ -114,7 +114,7 @@
       "isPolicyActivated": false,
       "policyDescription": "app-route SLA for the lab sites (not activated)",
       "@rid": 3314,
-      "policyId": "00000000-0000-4000-8000-000000000860",
+      "policyId": "00000000-0000-4000-8000-000000000987",
       "createdBy": "admin",
       "policyType": "feature",
       "tenantId": "default",

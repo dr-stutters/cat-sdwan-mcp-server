@@ -68,6 +68,22 @@ PATHS = [
     "/system/device/bootstrap/device/{uuid}",
     "/system/device/fileupload",
     "/system/device/smartaccount/sync",
+    # W11 policy
+    "/template/policy/vsmart",
+    "/template/policy/vsmart/definition/{policyId}",
+    "/template/policy/vsmart/activate/{policyId}",
+    "/template/policy/vsmart/deactivate/{policyId}",
+    "/template/policy/vsmart/connectivity/status",
+    "/template/policy/vedge",
+    "/template/policy/vedge/definition/{policyId}",
+    "/template/policy/definition/approute",
+    "/template/policy/definition/approute/{id}",
+    "/template/policy/definition/control/{id}",
+    "/template/policy/definition/data/{id}",
+    "/template/policy/definition/hubandspoke/{id}",
+    "/template/policy/list",
+    "/template/policy/list/site",
+    "/template/policy/list/sla",
 ]
 
 

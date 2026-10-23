@@ -1,0 +1,73 @@
+{
+  "header": {
+    "generatedOn": 1792757014413,
+    "viewKeys": {
+      "uniqueKey": [],
+      "preferenceKey": "grid-VEdgePolicy"
+    },
+    "columns": [
+      {
+        "title": "view.template.clientViewVedgePolicy.name",
+        "property": "policyName",
+        "hideable": false,
+        "dataType": "string"
+      },
+      {
+        "title": "view.template.clientViewVedgePolicy.description",
+        "property": "policyDescription",
+        "dataType": "string"
+      },
+      {
+        "title": "view.template.clientViewVedgePolicy.devicesAttache",
+        "property": "devicesAttached",
+        "hideable": false,
+        "dataType": "number"
+      },
+      {
+        "title": "view.template.clientViewVedgePolicy.deviceTemplate",
+        "property": "mastersAttached",
+        "hideable": false,
+        "dataType": "number"
+      },
+      {
+        "title": "view.template.clientViewVedgePolicy.updatedBy",
+        "property": "lastUpdatedBy",
+        "dataType": "string"
+      },
+      {
+        "title": "view.template.clientViewVedgePolicy.lastUpdated",
+        "property": "lastUpdatedOn",
+        "displayFormat": "DD MMM YYYY h:mm:ss A z",
+        "inputFormat": "unix-time",
+        "dataType": "date"
+      }
+    ],
+    "fields": [
+      {
+        "property": "policyName",
+        "dataType": "string"
+      },
+      {
+        "property": "policyDescription",
+        "dataType": "string"
+      },
+      {
+        "property": "devicesAttached",
+        "dataType": "number"
+      },
+      {
+        "property": "mastersAttached",
+        "dataType": "number"
+      },
+      {
+        "property": "lastUpdatedBy",
+        "dataType": "string"
+      },
+      {
+        "property": "lastUpdatedOn",
+        "dataType": "date"
+      }
+    ]
+  },
+  "data": []
+}

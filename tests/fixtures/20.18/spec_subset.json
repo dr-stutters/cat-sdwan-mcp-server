@@ -6880,28 +6880,3211 @@
      }
     }
    }
+  },
+  "/template/policy/vsmart": {
+   "get": {
+    "tags": [
+     "Configuration - vSmart Template Policy"
+    ],
+    "description": "Get all template vsmart policy list",
+    "operationId": "generateVSmartPolicyTemplateList",
+    "responses": {
+     "200": {
+      "description": "Success",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "array",
+         "items": {
+          "type": "object"
+         }
+        },
+        "examples": {
+         "Template vSmart policy list": {
+          "description": "Template vSmart policy list",
+          "value": {
+           "data": [
+            {
+             "policyVersion": "12282017T235740495",
+             "lastUpdatedBy": "admin",
+             "policyName": "StrictHub-n-Spoke",
+             "policyDefinition": {
+              "assembly": [
+               {
+                "definitionId": "207bd271-5008-4271-bd51-a58b14a8dd31",
+                "type": "vpnMembershipGroup"
+               },
+               {
+                "definitionId": "4ddd51c0-d8a4-4dff-8874-09c24742b518",
+                "type": "control",
+                "entries": [
+                 {
+                  "direction": "out",
+                  "siteLists": [
+                   "5d4384b7-b2ab-4d05-9e93-76851304092d"
+                  ]
+                 }
+                ]
+               },
+               {
+                "definitionId": "c41897b6-b17c-4a1c-b6d9-403af38ef418",
+                "type": "data",
+                "entries": [
+                 {
+                  "direction": "service",
+                  "siteLists": [
+                   "5d4384b7-b2ab-4d05-9e93-76851304092d"
+                  ],
+                  "vpnLists": [
+                   "f4955f7d-f7b1-4fb5-b0d5-365c40829c51"
+                  ]
+                 }
+                ]
+               }
+              ]
+             },
+             "createdOn": 1514732091489,
+             "isPolicyActivated": false,
+             "policyDescription": "BFD/IPSec based Hub-n-Spoke Topology",
+             "@rid": 6,
+             "policyId": "a8205140-92d9-4688-a127-c70d5f1b93a5",
+             "createdBy": "admin",
+             "policyType": "feature",
+             "lastUpdatedOn": 1514732091489
+            },
+            {
+             "policyVersion": "12302017T143348286",
+             "lastUpdatedBy": "admin",
+             "policyName": "MultiTopologyPolicy",
+             "policyDefinition": {
+              "assembly": [
+               {
+                "definitionId": "a8390569-3aef-4f99-9e6f-678c21bf9dac",
+                "type": "vpnMembershipGroup"
+               },
+               {
+                "definitionId": "c41897b6-b17c-4a1c-b6d9-403af38ef418",
+                "type": "data",
+                "entries": [
+                 {
+                  "direction": "service",
+                  "siteLists": [
+                   "5d4384b7-b2ab-4d05-9e93-76851304092d"
+                  ],
+                  "vpnLists": [
+                   "f4955f7d-f7b1-4fb5-b0d5-365c40829c51"
+                  ]
+                 }
+                ]
+               },
+               {
+                "definitionId": "ce4afddc-3674-4d74-86f2-1005b15e22dc",
+                "type": "control",
+                "entries": [
+                 {
+                  "direction": "out",
+                  "siteLists": [
+                   "5d4384b7-b2ab-4d05-9e93-76851304092d"
+                  ]
+                 }
+                ]
+               }
+              ]
+             },
+             "createdOn": 1514732164516,
+             "isPolicyActivated": false,
+             "policyDescription": "Multi-Topology Policy",
+             "@rid": 7,
+             "policyId": "45f0b251-bce6-4b6b-bb8c-de7dbf13ea0f",
+             "createdBy": "admin",
+             "policyType": "feature",
+             "lastUpdatedOn": 1514732164516
+            },
+            {
+             "policyVersion": "12312017T143840434",
+             "lastUpdatedBy": "admin",
+             "policyName": "MultiTopologyPlusFWInsertion",
+             "policyDefinition": {
+              "assembly": [
+               {
+                "definitionId": "1ded189f-4c6b-41cf-a686-655120fdf179",
+                "type": "vpnMembershipGroup"
+               },
+               {
+                "definitionId": "73096eaf-8bfe-43bd-a67a-9fcaaa2f8c38",
+                "type": "control",
+                "entries": [
+                 {
+                  "direction": "out",
+                  "siteLists": [
+                   "5d4384b7-b2ab-4d05-9e93-76851304092d"
+                  ]
+                 }
+                ]
+               },
+               {
+                "definitionId": "c41897b6-b17c-4a1c-b6d9-403af38ef418",
+                "type": "data",
+                "entries": [
+                 {
+                  "direction": "service",
+                  "siteLists": [
+                   "5d4384b7-b2ab-4d05-9e93-76851304092d"
+                  ],
+                  "vpnLists": [
+                   "f4955f7d-f7b1-4fb5-b0d5-365c40829c51"
+                  ]
+                 }
+                ]
+               }
+              ]
+             },
+             "createdOn": 1514732296993,
+             "isPolicyActivated": false,
+             "policyDescription": "Adding FW for inter-branch communication in VPN 10",
+             "@rid": 8,
+             "policyId": "b33477d1-1ebc-4080-ba44-b89dbf14fef7",
+             "createdBy": "admin",
+             "policyType": "feature",
+             "lastUpdatedOn": 1514732296993
+            },
+            {
+             "policyVersion": "12312017T153128841",
+             "lastUpdatedBy": "admin",
+             "policyName": "MultiTopologyPlusACL",
+             "policyDefinition": {
+              "assembly": [
+               {
+                "definitionId": "968d1ce3-7ff7-4f97-8b69-01e4e06ecad2",
+                "type": "data",
+                "entries": [
+                 {
+                  "direction": "service",
+                  "siteLists": [
+                   "5d4384b7-b2ab-4d05-9e93-76851304092d"
+                  ],
+                  "vpnLists": [
+                   "19f53630-0ce6-4f6b-8e4f-6a527cd15ca4"
+                  ]
+                 }
+                ]
+               },
+               {
+                "definitionId": "ce4afddc-3674-4d74-86f2-1005b15e22dc",
+                "type": "control",
+                "entries": [
+                 {
+                  "direction": "out",
+                  "siteLists": [
+                   "5d4384b7-b2ab-4d05-9e93-76851304092d"
+                  ]
+                 }
+                ]
+               },
+               {
+                "definitionId": "c41897b6-b17c-4a1c-b6d9-403af38ef418",
+                "type": "data",
+                "entries": [
+                 {
+                  "direction": "service",
+                  "siteLists": [
+                   "5d4384b7-b2ab-4d05-9e93-76851304092d"
+                  ],
+                  "vpnLists": [
+                   "f4955f7d-f7b1-4fb5-b0d5-365c40829c51"
+                  ]
+                 }
+                ]
+               },
+               {
+                "definitionId": "a8390569-3aef-4f99-9e6f-678c21bf9dac",
+                "type": "vpnMembershipGroup"
+               }
+              ]
+             },
+             "createdOn": 1514734542150,
+             "isPolicyActivated": false,
+             "policyDescription": "Application/ACL Policy for inter-branch traffic in VPN 20",
+             "@rid": 9,
+             "policyId": "7f156d32-537d-493f-9a7d-53d9e1f05a19",
+             "createdBy": "admin",
+             "policyType": "feature",
+             "lastUpdatedOn": 1514734542150
+            },
+            {
+             "policyVersion": "04092018T121824907",
+             "lastUpdatedBy": "admin",
+             "policyName": "MultiTopologyPlusAppRoute",
+             "policyDefinition": {
+              "assembly": [
+               {
+                "definitionId": "433db0fb-c89a-4642-a498-e3b9a257faef",
+                "type": "appRoute",
+                "entries": [
+                 {
+                  "siteLists": [
+                   "5d4384b7-b2ab-4d05-9e93-76851304092d"
+                  ],
+                  "vpnLists": [
+                   "67c9a7e1-e1b2-4a31-bd7c-7d0bbf9b7bbb"
+                  ]
+                 },
+                 {
+                  "siteLists": [
+                   "1baf2339-97c0-43fb-98d2-285428a61820"
+                  ],
+                  "vpnLists": [
+                   "67c9a7e1-e1b2-4a31-bd7c-7d0bbf9b7bbb"
+                  ]
+                 }
+                ]
+               },
+               {
+                "definitionId": "ce4afddc-3674-4d74-86f2-1005b15e22dc",
+                "type": "control",
+                "entries": [
+                 {
+                  "direction": "out",
+                  "siteLists": [
+                   "5d4384b7-b2ab-4d05-9e93-76851304092d"
+                  ]
+                 }
+                ]
+               },
+               {
+                "definitionId": "c41897b6-b17c-4a1c-b6d9-403af38ef418",
+                "type": "data",
+                "entries": [
+                 {
+                  "direction": "service",
+                  "siteLists": [
+                   "5d4384b7-b2ab-4d05-9e93-76851304092d"
+                  ],
+                  "vpnLists": [
+                   "f4955f7d-f7b1-4fb5-b0d5-365c40829c51"
+                  ]
+                 }
+                ]
+               },
+               {
+                "definitionId": "a8390569-3aef-4f99-9e6f-678c21bf9dac",
+                "type": "vpnMembershipGroup"
+               }
+              ]
+             },
+             "createdOn": 1514736045181,
+             "isPolicyActivated": false,
+             "policyDescription": "App Aware Routing Policy based on SLA",
+             "@rid": 10,
+             "policyId": "12df3ed9-6b1f-4b0a-91a2-377cefb8039f",
+             "createdBy": "admin",
+             "policyType": "feature",
+             "lastUpdatedOn": 1514736045181
+            },
+            {
+             "policyVersion": "06212018T190131728",
+             "lastUpdatedBy": "admin",
+             "policyName": "cflowd_policy",
+             "policyDefinition": "policy\ndata-policy cflowd-policy\n  vpn-list vpn_10-20\n    default-action accept\n  !\n!\ncflowd-template lab-cflowd-template\n  flow-inactive-timeout 10\n\n  flow-active-timeout 60\n\n  template-refresh 600\n  collector vpn 10 address 198.18.133.34 port 2055 transport transport_udp\n!\nlists\n  vpn-list vpn_10-20\n   vpn 10-20\n  !\n  site-list cflowd-sites\n   site-id 100-400\n  !\n  \n  apply-policy\nsite-list cflowd-sites\n  data-policy cflowd-policy all\n  cflowd-template lab-cflowd-template\n  ",
+             "createdOn": 1530540307108,
+             "isPolicyActivated": false,
+             "policyDescription": "cflowd",
+             "@rid": 12,
+             "policyId": "1c865c35-05ac-43a7-a6ee-6328138cd1c4",
+             "createdBy": "admin",
+             "policyType": "cli",
+             "lastUpdatedOn": 1530540307108
+            },
+            {
+             "policyVersion": "02242019T10524417",
+             "lastUpdatedBy": "admin",
+             "policyName": "Hub-Spoke-Policy-PCI",
+             "policyDefinition": {
+              "assembly": [
+               {
+                "definitionId": "605fabbd-4c99-4be4-8842-aebb256f7010",
+                "type": "hubAndSpoke"
+               },
+               {
+                "definitionId": "c41897b6-b17c-4a1c-b6d9-403af38ef418",
+                "type": "data",
+                "entries": [
+                 {
+                  "direction": "service",
+                  "siteLists": [
+                   "5d4384b7-b2ab-4d05-9e93-76851304092d"
+                  ],
+                  "vpnLists": [
+                   "f4955f7d-f7b1-4fb5-b0d5-365c40829c51"
+                  ]
+                 }
+                ]
+               },
+               {
+                "definitionId": "207bd271-5008-4271-bd51-a58b14a8dd31",
+                "type": "vpnMembershipGroup"
+               }
+              ]
+             },
+             "createdOn": 1551005623067,
+             "isPolicyActivated": false,
+             "policyDescription": "Enforce PCI VPN to be Hub and Spoke per corporate requirements",
+             "@rid": 1365,
+             "policyId": "67b2d453-671f-4eaf-b79a-d1c4c0069f1a",
+             "createdBy": "admin",
+             "policyType": "feature",
+             "lastUpdatedOn": 1551005623067
+            }
+           ]
+          }
+         }
+        }
+       }
+      }
+     },
+     "400": {
+      "description": "Bad Request"
+     },
+     "403": {
+      "description": "Forbidden"
+     },
+     "500": {
+      "description": "Internal Server Error"
+     }
+    }
+   },
+   "post": {
+    "tags": [
+     "Configuration - vSmart Template Policy"
+    ],
+    "description": "Create template for given policy",
+    "operationId": "createVSmartTemplate",
+    "requestBody": {
+     "description": "Template policy",
+     "content": {
+      "application/json": {
+       "schema": {
+        "type": "object"
+       },
+       "examples": {
+        "Template policy": {
+         "description": "Template policy",
+         "value": {
+          "policyDescription": "demoVPN",
+          "policyType": "feature",
+          "policyName": "demoVPN",
+          "policyDefinition": {
+           "assembly": [
+            {
+             "definitionId": "605fabbd-4c99-4be4-8842-aebb256f7010",
+             "type": "hubAndSpoke"
+            }
+           ]
+          },
+          "isPolicyActivated": false
+         }
+        }
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": "Success",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "object"
+        },
+        "examples": {
+         "Policy Id": {
+          "description": "Policy Id",
+          "value": {
+           "policyId": "05917007-14e4-42b0-9575-3d3d11f8a371"
+          }
+         }
+        }
+       }
+      }
+     },
+     "400": {
+      "description": "Bad Request"
+     },
+     "403": {
+      "description": "Forbidden"
+     },
+     "500": {
+      "description": "Internal Server Error"
+     }
+    }
+   }
+  },
+  "/template/policy/vsmart/definition/{policyId}": {
+   "get": {
+    "tags": [
+     "Configuration - vSmart Template Policy"
+    ],
+    "description": "Get template policy definition by policy id",
+    "operationId": "getTemplateByPolicyId",
+    "parameters": [
+     {
+      "name": "policyId",
+      "in": "path",
+      "description": "Policy Id",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "format": "uuid"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Success",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "object"
+        },
+        "examples": {
+         "Template vSmart policy": {
+          "description": "Template vSmart policy",
+          "value": {}
+         }
+        }
+       }
+      }
+     },
+     "400": {
+      "description": "Bad Request"
+     },
+     "403": {
+      "description": "Forbidden"
+     },
+     "500": {
+      "description": "Internal Server Error"
+     }
+    }
+   }
+  },
+  "/template/policy/vsmart/activate/{policyId}": {
+   "post": {
+    "tags": [
+     "Configuration - vSmart Template Policy"
+    ],
+    "description": "Activate vsmart policy for a given policy id",
+    "operationId": "activatePolicy",
+    "parameters": [
+     {
+      "name": "policyId",
+      "in": "path",
+      "description": "Policy Id",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "description": "Template policy",
+     "content": {
+      "application/json": {
+       "schema": {
+        "type": "object"
+       },
+       "examples": {
+        "Activate policy": {
+         "description": "Activate policy",
+         "value": {
+          "isEdited": false
+         }
+        },
+        "Deactivate policy": {
+         "description": "Deactivate policy",
+         "value": {}
+        }
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": "Success",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "object"
+        },
+        "examples": {
+         "Task Id": {
+          "description": "Task Id",
+          "value": {
+           "id": "vsmart_policy_config-01242017T020647984"
+          }
+         }
+        }
+       }
+      }
+     },
+     "400": {
+      "description": "Bad Request"
+     },
+     "403": {
+      "description": "Forbidden"
+     },
+     "500": {
+      "description": "Internal Server Error"
+     }
+    }
+   }
+  },
+  "/template/policy/vsmart/deactivate/{policyId}": {
+   "post": {
+    "tags": [
+     "Configuration - vSmart Template Policy"
+    ],
+    "description": "Deactivate vsmart policy for a given policy id",
+    "operationId": "deActivatePolicy",
+    "parameters": [
+     {
+      "name": "policyId",
+      "in": "path",
+      "description": "Policy Id",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Success",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "object"
+        },
+        "examples": {
+         "Task Id": {
+          "description": "Task Id",
+          "value": {
+           "id": "vsmart_policy_config-60851f10-d9f0-4f41-a27e-9eedbd1bae65"
+          }
+         }
+        }
+       }
+      }
+     },
+     "400": {
+      "description": "Bad Request"
+     },
+     "403": {
+      "description": "Forbidden"
+     },
+     "500": {
+      "description": "Internal Server Error"
+     }
+    }
+   }
+  },
+  "/template/policy/vsmart/connectivity/status": {
+   "get": {
+    "tags": [
+     "Configuration - vSmart Template Policy"
+    ],
+    "description": "Check VSmart Connectivity Status",
+    "operationId": "checkVSmartConnectivityStatus",
+    "responses": {
+     "200": {
+      "description": "Success",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "object"
+        },
+        "examples": {
+         "Connectivity Status": {
+          "description": "Connectivity Status",
+          "value": {}
+         }
+        }
+       }
+      }
+     },
+     "400": {
+      "description": "Bad Request"
+     },
+     "403": {
+      "description": "Forbidden"
+     },
+     "500": {
+      "description": "Internal Server Error"
+     }
+    }
+   }
+  },
+  "/template/policy/vedge": {
+   "get": {
+    "tags": [
+     "Configuration - vEdge Template Policy"
+    ],
+    "description": "Get policy details",
+    "operationId": "generatePolicyTemplateList",
+    "responses": {
+     "200": {
+      "description": "Success",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "object"
+        },
+        "examples": {
+         "Policy template": {
+          "description": "Policy template",
+          "value": {}
+         }
+        }
+       }
+      }
+     },
+     "400": {
+      "description": "Bad Request"
+     },
+     "403": {
+      "description": "Forbidden"
+     },
+     "500": {
+      "description": "Internal Server Error"
+     }
+    }
+   },
+   "post": {
+    "tags": [
+     "Configuration - vEdge Template Policy"
+    ],
+    "description": "Create template",
+    "operationId": "createVEdgeTemplate",
+    "requestBody": {
+     "description": "Template policy",
+     "content": {
+      "application/json": {
+       "schema": {
+        "type": "object"
+       },
+       "examples": {
+        "Template policy": {
+         "description": "Template policy",
+         "value": {
+          "policyDescription": "Demo",
+          "policyType": "feature",
+          "policyName": "demo-policy",
+          "policyDefinition": {
+           "assembly": [
+            {
+             "definitionId": "b628d664-d4ec-428f-831c-aff2b688c54c",
+             "type": "vedgeRoute"
+            },
+            {
+             "definitionId": "e4b25c74-f594-49db-b78b-61bbb41464ba",
+             "type": "acl"
+            }
+           ],
+           "settings": {
+            "appVisibility": true,
+            "logFrequency": 60
+           }
+          },
+          "isPolicyActivated": false
+         }
+        }
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": "Success",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "object"
+        },
+        "examples": {
+         "Policy Id": {
+          "description": "Policy Id",
+          "value": {
+           "policyId": "f8efb9ed-7524-41ff-aa12-1b6635087ce1"
+          }
+         }
+        }
+       }
+      }
+     },
+     "400": {
+      "description": "Bad Request"
+     },
+     "403": {
+      "description": "Forbidden"
+     },
+     "500": {
+      "description": "Internal Server Error"
+     }
+    }
+   }
+  },
+  "/template/policy/vedge/definition/{policyId}": {
+   "get": {
+    "tags": [
+     "Configuration - vEdge Template Policy"
+    ],
+    "description": "Get template",
+    "operationId": "getVEdgeTemplate",
+    "parameters": [
+     {
+      "name": "policyId",
+      "in": "path",
+      "description": "Policy Id",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "format": "uuid"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Success",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "object"
+        },
+        "examples": {
+         "Policy template": {
+          "description": "Policy template",
+          "value": {
+           "data": [
+            {
+             "mastersAttached": 0,
+             "lastUpdatedBy": "admin",
+             "policyName": "AppVisibility",
+             "policyDefinition": "policy\n app-visibility\n flow-visibility\n!\n",
+             "policyDefinitionEdit": "policy\n app-visibility\n flow-visibility\n!\n",
+             "createdOn": 1505676829880,
+             "policyDescription": "Application Visibility Only",
+             "@rid": 481,
+             "policyId": "0b860b3a-9446-4c19-86f4-49699f4ed2c7",
+             "createdBy": "admin",
+             "devicesAttached": 0,
+             "lastUpdatedOn": 1505676829880,
+             "policyType": "cli"
+            },
+            {
+             "mastersAttached": 1,
+             "lastUpdatedBy": "admin",
+             "policyName": "BaselinePolicy",
+             "policyDefinition": {
+              "assembly": [
+               {
+                "definitionId": "48a7a27a-54e9-443b-a254-cc87ef13f3f5",
+                "type": "qosMap"
+               },
+               {
+                "definitionId": "dfe3891d-ee1f-44e1-ba84-caa2e5e9f128",
+                "type": "acl"
+               },
+               {
+                "definitionId": "7bdedee2-f87d-4f26-855b-4338b14716a1",
+                "type": "acl"
+               },
+               {
+                "definitionId": "e4b25c74-f594-49db-b78b-61bbb41464ba",
+                "type": "acl"
+               },
+               {
+                "definitionId": "b628d664-d4ec-428f-831c-aff2b688c54c",
+                "type": "vedgeRoute"
+               }
+              ],
+              "settings": {
+               "appVisibility": true,
+               "cloudQos": true,
+               "cloudQosServiceSide": true,
+               "flowVisibility": true,
+               "logFrequency": 10
+              }
+             },
+             "policyDefinitionEdit": {
+              "assembly": [
+               {
+                "definitionId": "48a7a27a-54e9-443b-a254-cc87ef13f3f5",
+                "type": "qosMap"
+               },
+               {
+                "definitionId": "dfe3891d-ee1f-44e1-ba84-caa2e5e9f128",
+                "type": "acl"
+               },
+               {
+                "definitionId": "7bdedee2-f87d-4f26-855b-4338b14716a1",
+                "type": "acl"
+               },
+               {
+                "definitionId": "e4b25c74-f594-49db-b78b-61bbb41464ba",
+                "type": "acl"
+               },
+               {
+                "definitionId": "b628d664-d4ec-428f-831c-aff2b688c54c",
+                "type": "vedgeRoute"
+               }
+              ],
+              "settings": {
+               "appVisibility": true,
+               "cloudQos": true,
+               "cloudQosServiceSide": true,
+               "flowVisibility": true,
+               "logFrequency": 10
+              }
+             },
+             "createdOn": 1548341101877,
+             "policyDescription": "Baseline lab Policy for all WAN Edge",
+             "@rid": 2095,
+             "policyId": "f73b285f-72eb-4f6d-865f-eae0e453bd8e",
+             "createdBy": "admin",
+             "devicesAttached": 2,
+             "policyType": "feature",
+             "lastUpdatedOn": 1548341101877
+            }
+           ]
+          }
+         }
+        }
+       }
+      }
+     },
+     "400": {
+      "description": "Bad Request"
+     },
+     "403": {
+      "description": "Forbidden"
+     },
+     "500": {
+      "description": "Internal Server Error"
+     }
+    }
+   }
+  },
+  "/template/policy/definition/approute": {
+   "get": {
+    "tags": [
+     "Configuration - Policy AppRoute Definition Builder"
+    ],
+    "description": "Get policy definitions",
+    "operationId": "getDefinitions_ConfigurationPolicyApprouteDefinitionBuilder_3603",
+    "responses": {
+     "200": {
+      "description": "Success",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "object"
+        },
+        "examples": {
+         "Policy definition": {
+          "description": "Policy definition",
+          "value": {}
+         }
+        }
+       }
+      }
+     },
+     "400": {
+      "description": "Bad Request"
+     },
+     "403": {
+      "description": "Forbidden"
+     },
+     "500": {
+      "description": "Internal Server Error"
+     }
+    },
+    "x-roles-required": "Policy Configuration-read,Policy Configuration-write,Template Deploy-read,Template Deploy-write,Policy Deploy-read,Policy Deploy-write,AppRoute Policy-read,AppRoute Policy-write"
+   },
+   "post": {
+    "tags": [
+     "Configuration - Policy AppRoute Definition Builder"
+    ],
+    "description": "Create policy definition",
+    "operationId": "createPolicyDefinition_ConfigurationPolicyApprouteDefinitionBuilder_3604",
+    "requestBody": {
+     "description": "Policy definition",
+     "content": {
+      "application/json": {
+       "schema": {
+        "type": "object"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": "Success",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "object"
+        }
+       }
+      }
+     },
+     "400": {
+      "description": "Bad Request"
+     },
+     "403": {
+      "description": "Forbidden"
+     },
+     "500": {
+      "description": "Internal Server Error"
+     }
+    },
+    "x-roles-required": "Policy Configuration-writeAppRoute Policy-write"
+   }
+  },
+  "/template/policy/definition/approute/{id}": {
+   "get": {
+    "tags": [
+     "Configuration - Policy AppRoute Definition Builder"
+    ],
+    "description": "Get a specific policy definitions",
+    "operationId": "getPolicyDefinition_ConfigurationPolicyApprouteDefinitionBuilder_4103",
+    "parameters": [
+     {
+      "name": "id",
+      "in": "path",
+      "description": "Policy Id",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "format": "uuid"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Success",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "object"
+        },
+        "examples": {
+         "Policy definition": {
+          "description": "Policy definition",
+          "value": {}
+         }
+        }
+       }
+      }
+     },
+     "400": {
+      "description": "Bad Request"
+     },
+     "403": {
+      "description": "Forbidden"
+     },
+     "500": {
+      "description": "Internal Server Error"
+     }
+    },
+    "x-roles-required": "Policy Configuration-read,Policy Configuration-write,Template Deploy-read,Template Deploy-write,Policy Deploy-read,Policy Deploy-write,AppRoute Policy-read,AppRoute Policy-write"
+   },
+   "put": {
+    "tags": [
+     "Configuration - Policy AppRoute Definition Builder"
+    ],
+    "description": "Edit a policy definitions",
+    "operationId": "editPolicyDefinition_ConfigurationPolicyApprouteDefinitionBuilder_4103",
+    "parameters": [
+     {
+      "name": "id",
+      "in": "path",
+      "description": "Policy Id",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "description": "Policy definition",
+     "content": {
+      "application/json": {
+       "schema": {
+        "type": "object"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": "Success",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "object"
+        }
+       }
+      }
+     },
+     "400": {
+      "description": "Bad Request"
+     },
+     "403": {
+      "description": "Forbidden"
+     },
+     "500": {
+      "description": "Internal Server Error"
+     }
+    },
+    "x-roles-required": "Policy Configuration-writeAppRoute Policy-write"
+   },
+   "delete": {
+    "tags": [
+     "Configuration - Policy AppRoute Definition Builder"
+    ],
+    "description": "Delete policy definition",
+    "operationId": "deletePolicyDefinition_ConfigurationPolicyApprouteDefinitionBuilder_4106",
+    "parameters": [
+     {
+      "name": "id",
+      "in": "path",
+      "description": "Policy Id",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Success"
+     },
+     "400": {
+      "description": "Bad Request"
+     },
+     "403": {
+      "description": "Forbidden"
+     },
+     "500": {
+      "description": "Internal Server Error"
+     }
+    },
+    "x-roles-required": "Policy Configuration-writeAppRoute Policy-write"
+   }
+  },
+  "/template/policy/definition/control/{id}": {
+   "get": {
+    "tags": [
+     "Configuration - Policy Control Definition Builder"
+    ],
+    "description": "Get a specific policy definitions",
+    "operationId": "getPolicyDefinition_ConfigurationPolicyControlDefinitionBuilder_4003",
+    "parameters": [
+     {
+      "name": "id",
+      "in": "path",
+      "description": "Policy Id",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "format": "uuid"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Success",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "object"
+        },
+        "examples": {
+         "Policy definition": {
+          "description": "Policy definition",
+          "value": {}
+         }
+        }
+       }
+      }
+     },
+     "400": {
+      "description": "Bad Request"
+     },
+     "403": {
+      "description": "Forbidden"
+     },
+     "500": {
+      "description": "Internal Server Error"
+     }
+    },
+    "x-roles-required": "Policy Configuration-read,Policy Configuration-write,Template Deploy-read,Template Deploy-write,Policy Deploy-read,Policy Deploy-write,Topology Policy-read,Topology Policy-write"
+   },
+   "put": {
+    "tags": [
+     "Configuration - Policy Control Definition Builder"
+    ],
+    "description": "Edit a policy definitions",
+    "operationId": "editPolicyDefinition_ConfigurationPolicyControlDefinitionBuilder_4003",
+    "parameters": [
+     {
+      "name": "id",
+      "in": "path",
+      "description": "Policy Id",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "description": "Policy definition",
+     "content": {
+      "application/json": {
+       "schema": {
+        "type": "object"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": "Success",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "object"
+        }
+       }
+      }
+     },
+     "400": {
+      "description": "Bad Request"
+     },
+     "403": {
+      "description": "Forbidden"
+     },
+     "500": {
+      "description": "Internal Server Error"
+     }
+    },
+    "x-roles-required": "Topology Policy-write,Policy Configuration-write"
+   },
+   "delete": {
+    "tags": [
+     "Configuration - Policy Control Definition Builder"
+    ],
+    "description": "Delete policy definition",
+    "operationId": "deletePolicyDefinition_ConfigurationPolicyControlDefinitionBuilder_4006",
+    "parameters": [
+     {
+      "name": "id",
+      "in": "path",
+      "description": "Policy Id",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Success"
+     },
+     "400": {
+      "description": "Bad Request"
+     },
+     "403": {
+      "description": "Forbidden"
+     },
+     "500": {
+      "description": "Internal Server Error"
+     }
+    },
+    "x-roles-required": "Topology Policy-write,Policy Configuration-write"
+   }
+  },
+  "/template/policy/definition/data/{id}": {
+   "get": {
+    "tags": [
+     "Configuration - Policy Data Definition Builder"
+    ],
+    "description": "Get a specific policy definitions",
+    "operationId": "getPolicyDefinition_ConfigurationPolicyDataDefinitionBuilder_3703",
+    "parameters": [
+     {
+      "name": "id",
+      "in": "path",
+      "description": "Policy Id",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "format": "uuid"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Success",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "object"
+        },
+        "examples": {
+         "Policy definition": {
+          "description": "Policy definition",
+          "value": {}
+         }
+        }
+       }
+      }
+     },
+     "400": {
+      "description": "Bad Request"
+     },
+     "403": {
+      "description": "Forbidden"
+     },
+     "500": {
+      "description": "Internal Server Error"
+     }
+    },
+    "x-roles-required": "Policy Configuration-read,Policy Configuration-write,Template Deploy-read,Template Deploy-write,Policy Deploy-read,Policy Deploy-write"
+   },
+   "put": {
+    "tags": [
+     "Configuration - Policy Data Definition Builder"
+    ],
+    "description": "Edit a policy definitions",
+    "operationId": "editPolicyDefinition_ConfigurationPolicyDataDefinitionBuilder_3703",
+    "parameters": [
+     {
+      "name": "id",
+      "in": "path",
+      "description": "Policy Id",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "description": "Policy definition",
+     "content": {
+      "application/json": {
+       "schema": {
+        "type": "object"
+       },
+       "examples": {
+        "ACL policy": {
+         "description": "ACL policy",
+         "value": {
+          "name": "Demo-ACL",
+          "type": "acl",
+          "description": "Demo-ACL",
+          "defaultAction": {
+           "type": "accept"
+          },
+          "sequences": [
+           {
+            "sequenceId": 1,
+            "sequenceName": "Access Control List",
+            "baseAction": "accept",
+            "sequenceType": "acl",
+            "sequenceIpType": "ipv4",
+            "match": {
+             "entries": [
+              {
+               "field": "dscp",
+               "value": "46"
+              },
+              {
+               "field": "protocol",
+               "value": "6"
+              }
+             ]
+            },
+            "actions": [
+             {
+              "type": "class",
+              "parameter": {
+               "ref": "89d20034-7149-4492-b392-b5c4f7903235"
+              }
+             }
+            ]
+           }
+          ]
+         }
+        },
+        "ZBFW definition": {
+         "description": "ZBFW definition",
+         "value": {
+          "name": "Demo-ZBFW",
+          "type": "zoneBasedFW",
+          "description": "Demo-ZBFW",
+          "definition": {
+           "defaultAction": {
+            "type": "drop"
+           },
+           "sequences": [
+            {
+             "sequenceId": 1,
+             "sequenceName": "Demo-Rule-1",
+             "baseAction": "inspect",
+             "sequenceType": "zoneBasedFW",
+             "match": {
+              "entries": [
+               {
+                "field": "sourceDataPrefixList",
+                "ref": "ecbea5de-b200-4ff7-aa76-f537b5f858e9"
+               }
+              ]
+             },
+             "actions": []
+            }
+           ],
+           "entries": [
+            {
+             "sourceZone": "5f35c58e-234e-4013-9e1a-77c7fa6aec53",
+             "destinationZone": "5f35c58e-234e-4013-9e1a-77c7fa6aec53"
+            }
+           ]
+          }
+         }
+        },
+        "IPS definition": {
+         "description": "IPS definition",
+         "value": {
+          "name": "Demo-IPS-Policy",
+          "type": "intrusionPrevention",
+          "description": "Testing",
+          "definition": {
+           "signatureSet": "security",
+           "inspectionMode": "detection",
+           "signatureWhiteList": {
+            "ref": "ad189f08-af06-4799-97d6-0a7c7409cb8d"
+           },
+           "logLevel": "error",
+           "logging": [],
+           "targetVpns": [
+            "10",
+            "20"
+           ]
+          }
+         }
+        },
+        "URL filtering definition": {
+         "description": "URL filtering definition",
+         "value": {
+          "name": "Demo-URL-Filtering-Policy",
+          "type": "urlFiltering",
+          "description": "",
+          "definition": {
+           "webCategoriesAction": "block",
+           "webCategories": [
+            "auctions",
+            "bot-nets",
+            "news-and-media"
+           ],
+           "webReputation": "moderate-risk",
+           "urlWhiteList": {
+            "ref": "c20e31fb-fcea-4f48-93e3-09d2c6492d8b"
+           },
+           "urlBlackList": {
+            "ref": "557ed432-6cf8-495b-a445-d340d4c6236e"
+           },
+           "blockPageAction": "text",
+           "blockPageContents": "Access to the requested page has been denied. Please contact your Network Administrator",
+           "enableAlerts": true,
+           "alerts": [
+            "blacklist",
+            "whitelist",
+            "categories-reputation"
+           ],
+           "logging": [],
+           "targetVpns": [
+            "30"
+           ]
+          }
+         }
+        },
+        "AMP definition": {
+         "description": "AMP definition",
+         "value": {
+          "name": "Demo-AMP-Policy",
+          "type": "advancedMalwareProtection",
+          "description": "",
+          "definition": {
+           "matchAllVpn": true,
+           "fileReputationCloudServer": "nam",
+           "fileReputationEstServer": "nam",
+           "fileReputationAlert": "critical",
+           "fileAnalysisCloudServer": "nam",
+           "fileAnalysisFileTypes": [
+            "pdf",
+            "ms-exe"
+           ],
+           "fileAnalysisAlert": "critical",
+           "targetVpns": [
+            "10",
+            "20"
+           ],
+           "fileAnalysisEnabled": true
+          }
+         }
+        },
+        "DNS definition": {
+         "description": "DNS definition",
+         "value": {
+          "name": "Demo-DNS-Policy",
+          "type": "DNSSecurity",
+          "description": "Testing",
+          "definition": {
+           "localDomainBypassList": {
+            "ref": "143f753f-8d51-4be6-805d-bc330f09982f"
+           },
+           "matchAllVpn": false,
+           "targetVpns": [
+            {
+             "vpns": [
+              "10"
+             ],
+             "umbrellaDefault": false,
+             "childOrgId": "7999118",
+             "dnsServerIP": "10.10.10.1",
+             "localDomainBypassEnabled": true
+            }
+           ],
+           "dnsCrypt": true,
+           "umbrellaData": {
+            "ref": "e6d85acd-fb1c-4cd9-ad77-e5bce620ccfa"
+           }
+          }
+         }
+        }
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": "Success",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "object"
+        },
+        "examples": {
+         "Policy definition": {
+          "description": "Policy definition",
+          "value": {
+           "masterTemplatesAffected": []
+          }
+         }
+        }
+       }
+      }
+     },
+     "400": {
+      "description": "Bad Request"
+     },
+     "403": {
+      "description": "Forbidden"
+     },
+     "500": {
+      "description": "Internal Server Error"
+     }
+    },
+    "x-roles-required": "Policy Configuration-write"
+   },
+   "delete": {
+    "tags": [
+     "Configuration - Policy Data Definition Builder"
+    ],
+    "description": "Delete policy definition",
+    "operationId": "deletePolicyDefinition_ConfigurationPolicyDataDefinitionBuilder_3706",
+    "parameters": [
+     {
+      "name": "id",
+      "in": "path",
+      "description": "Policy Id",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Success"
+     },
+     "400": {
+      "description": "Bad Request"
+     },
+     "403": {
+      "description": "Forbidden"
+     },
+     "500": {
+      "description": "Internal Server Error"
+     }
+    },
+    "x-roles-required": "Policy Configuration-write"
+   }
+  },
+  "/template/policy/definition/hubandspoke/{id}": {
+   "get": {
+    "tags": [
+     "Configuration - Policy Hub and Spoke Definition Builder"
+    ],
+    "description": "Get a specific policy definitions",
+    "operationId": "getPolicyDefinition_ConfigurationPolicyHubSpokeDefinitionBuilder_4403",
+    "parameters": [
+     {
+      "name": "id",
+      "in": "path",
+      "description": "Policy Id",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "format": "uuid"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Success",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "object"
+        },
+        "examples": {
+         "Policy definition": {
+          "description": "Policy definition",
+          "value": {}
+         }
+        }
+       }
+      }
+     },
+     "400": {
+      "description": "Bad Request"
+     },
+     "403": {
+      "description": "Forbidden"
+     },
+     "500": {
+      "description": "Internal Server Error"
+     }
+    },
+    "x-roles-required": "Policy Configuration-read,Policy Configuration-write,Template Deploy-read,Template Deploy-write,Policy Deploy-read,Policy Deploy-write,Topology Policy-read,Topology Policy-write"
+   },
+   "put": {
+    "tags": [
+     "Configuration - Policy Hub and Spoke Definition Builder"
+    ],
+    "description": "Edit a policy definitions",
+    "operationId": "editPolicyDefinition_ConfigurationPolicyHubSpokeDefinitionBuilder_4403",
+    "parameters": [
+     {
+      "name": "id",
+      "in": "path",
+      "description": "Policy Id",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "description": "Policy definition",
+     "content": {
+      "application/json": {
+       "schema": {
+        "type": "object"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": "Success",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "object"
+        }
+       }
+      }
+     },
+     "400": {
+      "description": "Bad Request"
+     },
+     "403": {
+      "description": "Forbidden"
+     },
+     "500": {
+      "description": "Internal Server Error"
+     }
+    },
+    "x-roles-required": "Topology Policy-write,Policy Configuration-write"
+   },
+   "delete": {
+    "tags": [
+     "Configuration - Policy Hub and Spoke Definition Builder"
+    ],
+    "description": "Delete policy definition",
+    "operationId": "deletePolicyDefinition_ConfigurationPolicyHubSpokeDefinitionBuilder_4406",
+    "parameters": [
+     {
+      "name": "id",
+      "in": "path",
+      "description": "Policy Id",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Success"
+     },
+     "400": {
+      "description": "Bad Request"
+     },
+     "403": {
+      "description": "Forbidden"
+     },
+     "500": {
+      "description": "Internal Server Error"
+     }
+    },
+    "x-roles-required": "Topology Policy-write,Policy Configuration-write"
+   }
+  },
+  "/template/policy/list": {
+   "get": {
+    "tags": [
+     "Configuration - Policy List Builder"
+    ],
+    "description": "Get all policy lists",
+    "operationId": "getAllPolicyLists",
+    "responses": {
+     "200": {
+      "description": "Success",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "array",
+         "items": {
+          "type": "object"
+         }
+        },
+        "examples": {
+         "Policy list": {
+          "description": "Policy list",
+          "value": []
+         }
+        }
+       }
+      }
+     },
+     "400": {
+      "description": "Bad Request"
+     },
+     "403": {
+      "description": "Forbidden"
+     },
+     "500": {
+      "description": "Internal Server Error"
+     }
+    }
+   }
+  },
+  "/template/policy/list/site": {
+   "get": {
+    "tags": [
+     "Configuration - Policy Site List Builder"
+    ],
+    "description": "Get policy lists",
+    "operationId": "getPolicyLists_ConfigurationPolicySiteListBuilder_2603",
+    "responses": {
+     "200": {
+      "description": "Success",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "array",
+         "items": {
+          "type": "object"
+         }
+        },
+        "examples": {
+         "App Policy": {
+          "description": "App Policy",
+          "value": "{ \"data\": [\n    {\n      \"listId\": \"be6eb8f9-29df-48a6-ab18-b46af0c60cde\",\n      \"name\": \"Google_Apps\",\n      \"type\": \"app\",\n      \"description\": \"Google Applications List\",\n      \"entries\": [\n        {\n          \"app\": \"gcs\"\n        },\n      ],\n      \"lastUpdated\": 1588001890181,\n      \"owner\": \"system\",\n      \"readOnly\": true,\n      \"version\": \"4.2\",\n      \"infoTag\": \"\",\n      \"referenceCount\": 0,\n      \"references\": [],\n      \"isActivatedByVsmart\": false\n    },"
+         },
+         "Prefix List": {
+          "description": "Prefix List",
+          "value": {
+           "data": [
+            {
+             "listId": "8bc43c09-f72c-40b8-aa90-608c7005e607",
+             "name": "Example",
+             "type": "prefix",
+             "description": "Desc Not Required",
+             "entries": [
+              {
+               "ipPrefix": "10.0.0.0/24"
+              }
+             ],
+             "lastUpdated": 1588178457305,
+             "owner": "admin",
+             "readOnly": false,
+             "version": "0",
+             "infoTag": "",
+             "referenceCount": 0,
+             "references": [],
+             "isActivatedByVsmart": false
+            }
+           ]
+          }
+         }
+        }
+       }
+      }
+     },
+     "400": {
+      "description": "Bad Request"
+     },
+     "403": {
+      "description": "Forbidden"
+     },
+     "500": {
+      "description": "Internal Server Error"
+     }
+    },
+    "x-roles-required": "Policy Configuration-read,Policy Configuration-write,Template Deploy-read,Template Deploy-write,Policy Deploy-read,Policy Deploy-write"
+   },
+   "post": {
+    "tags": [
+     "Configuration - Policy Site List Builder"
+    ],
+    "description": "Create policy list",
+    "operationId": "createPolicyList_ConfigurationPolicySiteListBuilder_2604",
+    "requestBody": {
+     "description": "Policy list",
+     "content": {
+      "application/json": {
+       "schema": {
+        "type": "object"
+       },
+       "examples": {
+        "Zone list": {
+         "description": "Zone list",
+         "value": {
+          "name": "Demo-Zone",
+          "description": "Desc Not Required",
+          "type": "zone",
+          "entries": [
+           {
+            "vpn": "10"
+           }
+          ]
+         }
+        },
+        "IPS list": {
+         "description": "IPS list",
+         "value": {
+          "name": "Demo-IPS-list",
+          "description": "Desc Not Required",
+          "type": "ipssignature",
+          "entries": [
+           {
+            "generatorId": "1111",
+            "signatureId": "4444"
+           }
+          ]
+         }
+        },
+        "URL white list": {
+         "description": "URL white list",
+         "value": {
+          "name": "Demo-Whitelist",
+          "description": "Desc Not Required",
+          "type": "urlwhitelist",
+          "entries": [
+           {
+            "pattern": "https://www.youtube.com"
+           }
+          ]
+         }
+        },
+        "URL black list": {
+         "description": "URL black list",
+         "value": {
+          "name": "Demo-Black-list",
+          "description": "Desc Not Required",
+          "type": "urlblacklist",
+          "entries": [
+           {
+            "pattern": "www.facebook.com"
+           }
+          ]
+         }
+        },
+        "TG API key list": {
+         "description": "TG API key list",
+         "value": {
+          "name": "threatGridApiKeyList",
+          "description": "",
+          "type": "threatGridApiKey",
+          "entries": [
+           {
+            "region": "nam",
+            "apikey": "1234567"
+           },
+           {
+            "region": "eur",
+            "apikey": "1234567"
+           }
+          ]
+         }
+        },
+        "Local domain list": {
+         "description": "Local domain list",
+         "value": {
+          "name": "Demo-Domain-Name-List",
+          "description": "Desc Not Required",
+          "type": "localdomain",
+          "entries": [
+           {
+            "nameServer": "cisco.com"
+           }
+          ]
+         }
+        },
+        "Umbrella data list": {
+         "description": "Umbrella data list",
+         "value": {
+          "name": "umbrellaTokenList",
+          "description": "",
+          "type": "umbrellaData",
+          "entries": [
+           {
+            "apiKey": "abcd",
+            "secret": "12345",
+            "umbOrgId": "23405",
+            "token": "abcedabcedabcedabcedabcedabcedabcedabced"
+           }
+          ]
+         }
+        },
+        "App family": {
+         "description": "App family",
+         "value": {
+          "name": "Demo-App-List",
+          "description": "Desc Not Required",
+          "type": "app",
+          "entries": [
+           {
+            "appFamily": "web"
+           },
+           {
+            "appFamily": "audio-video"
+           }
+          ]
+         }
+        },
+        "App list": {
+         "description": "App list",
+         "value": {
+          "name": "Demo-App-List",
+          "description": "Desc Not Required",
+          "type": "app",
+          "entries": [
+           {
+            "app": "facebook"
+           },
+           {
+            "app": "netshow"
+           }
+          ]
+         }
+        },
+        "Color list": {
+         "description": "Color list",
+         "value": {
+          "name": "Demo-Color-List",
+          "description": "Desc Not Required",
+          "type": "color",
+          "entries": [
+           {
+            "color": "biz-internet"
+           },
+           {
+            "color": "public-internet"
+           }
+          ]
+         }
+        },
+        "Data prefix": {
+         "description": "Data prefix",
+         "value": {
+          "name": "Demo-Data-Prefix-List",
+          "description": "Desc Not Required",
+          "type": "dataprefix",
+          "entries": [
+           {
+            "ipPrefix": "10.1.0.0/16"
+           },
+           {
+            "ipPrefix": "10.2.0.0/16"
+           }
+          ]
+         }
+        },
+        "Policer": {
+         "description": "Policer",
+         "value": {
+          "name": "Demo-Policer-list",
+          "description": "Desc Not Required",
+          "type": "policer",
+          "entries": [
+           {
+            "burst": "16000",
+            "exceed": "drop",
+            "rate": "10000"
+           }
+          ]
+         }
+        },
+        "Prefix": {
+         "description": "Prefix",
+         "value": {
+          "name": "Demo-Prefix-list",
+          "description": "Desc Not Required",
+          "type": "prefix",
+          "entries": [
+           {
+            "ipPrefix": "10.0.0.0/12",
+            "le": "32"
+           }
+          ]
+         }
+        },
+        "Site": {
+         "description": "Site",
+         "value": {
+          "name": "Demo-Site-List",
+          "description": "Desc Not Required",
+          "type": "site",
+          "listId": null,
+          "entries": [
+           {
+            "siteId": "100"
+           },
+           {
+            "siteId": "200"
+           },
+           {
+            "siteId": "300-500"
+           }
+          ]
+         }
+        },
+        "Class": {
+         "description": "Class",
+         "value": {
+          "name": "Demo-Class-Map",
+          "description": "Desc Not Required",
+          "type": "class",
+          "entries": [
+           {
+            "queue": "4"
+           }
+          ]
+         }
+        },
+        "App probe": {
+         "description": "App probe",
+         "value": {
+          "name": "Demo-Probe-Class",
+          "type": "appProbe",
+          "entries": [
+           {
+            "map": [
+             {
+              "color": "biz-internet",
+              "dscp": 46
+             },
+             {
+              "color": "public-internet",
+              "dscp": 20
+             }
+            ],
+            "forwardingClass": "391c5977-0af8-46b2-a9b2-e48702593d70"
+           }
+          ]
+         }
+        },
+        "SLA": {
+         "description": "SLA",
+         "value": {
+          "name": "Demo-SLA-Class",
+          "description": "Desc Not Required",
+          "type": "sla",
+          "entries": [
+           {
+            "latency": "100",
+            "loss": "10",
+            "jitter": "10",
+            "appProbeClass": "39269a77-9592-4a5a-8b35-633a5615c47d"
+           }
+          ]
+         }
+        },
+        "TLOC": {
+         "description": "TLOC",
+         "value": {
+          "name": "Demo-TLOC-List",
+          "description": "Desc Not Required",
+          "type": "tloc",
+          "entries": [
+           {
+            "tloc": "10.1.1.1",
+            "color": "biz-internet",
+            "encap": "ipsec",
+            "preference": "10"
+           },
+           {
+            "tloc": "10.2.2.2",
+            "color": "biz-internet",
+            "encap": "ipsec",
+            "preference": "20"
+           }
+          ]
+         }
+        },
+        "VPN": {
+         "description": "VPN",
+         "value": {
+          "name": "Demo-VPN-List",
+          "description": "Desc Not Required",
+          "type": "vpn",
+          "listId": null,
+          "entries": [
+           {
+            "vpn": "100"
+           },
+           {
+            "vpn": "200"
+           },
+           {
+            "vpn": "300-500"
+           }
+          ]
+         }
+        },
+        "AS path": {
+         "description": "AS path",
+         "value": {
+          "name": "Demo-AS-Path-List",
+          "description": "Desc Not Required",
+          "type": "aspath",
+          "listId": null,
+          "entries": [
+           {
+            "asPath": "100"
+           },
+           {
+            "asPath": "200"
+           },
+           {
+            "asPath": "65002"
+           }
+          ]
+         }
+        },
+        "Community": {
+         "description": "Community",
+         "value": {
+          "name": "Demo-Community-List",
+          "description": "Desc Not Required",
+          "type": "community",
+          "listId": null,
+          "entries": [
+           {
+            "community": "1000:10000"
+           }
+          ]
+         }
+        },
+        "Ext community": {
+         "description": "Ext community",
+         "value": {
+          "name": "Demo-Extended-Community-List",
+          "description": "Desc Not Required",
+          "type": "extcommunity",
+          "listId": null,
+          "entries": [
+           {
+            "community": "rt 100:10"
+           }
+          ]
+         }
+        },
+        "Mirror": {
+         "description": "Mirror",
+         "value": {
+          "name": "Demo-Mirror-List",
+          "description": "Desc Not Required",
+          "type": "mirror",
+          "entries": [
+           {
+            "remoteDest": "10.1.1.1",
+            "source": "20.1.1.1"
+           }
+          ]
+         }
+        }
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": "Success",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "object"
+        },
+        "examples": {
+         "Task Id": {
+          "description": "Task Id",
+          "value": {
+           "listId": "1066ffec-e6ab-426a-b303-434d41b0a4a6"
+          }
+         }
+        }
+       }
+      }
+     },
+     "400": {
+      "description": "Bad Request"
+     },
+     "403": {
+      "description": "Forbidden"
+     },
+     "500": {
+      "description": "Internal Server Error"
+     }
+    },
+    "x-roles-required": "Policy Configuration-write"
+   },
+   "delete": {
+    "tags": [
+     "Configuration - Policy Site List Builder"
+    ],
+    "description": "Delete policy lists with specific info tag",
+    "operationId": "deletePolicyListsWithInfoTag_ConfigurationPolicySiteListBuilder_2606",
+    "parameters": [
+     {
+      "name": "infoTag",
+      "in": "query",
+      "description": "InfoTag",
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Success",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "array",
+         "items": {
+          "type": "object"
+         }
+        },
+        "examples": {
+         "Policy list": {
+          "description": "Policy list",
+          "value": []
+         }
+        }
+       }
+      }
+     },
+     "400": {
+      "description": "Bad Request"
+     },
+     "403": {
+      "description": "Forbidden"
+     },
+     "500": {
+      "description": "Internal Server Error"
+     }
+    }
+   }
+  },
+  "/template/policy/list/sla": {
+   "get": {
+    "tags": [
+     "Configuration - Policy SLA Class List Builder"
+    ],
+    "description": "Get policy lists",
+    "operationId": "getPolicyLists_ConfigurationPolicySlaClassListBuilder_2503",
+    "responses": {
+     "200": {
+      "description": "Success",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "array",
+         "items": {
+          "type": "object"
+         }
+        },
+        "examples": {
+         "App Policy": {
+          "description": "App Policy",
+          "value": "{ \"data\": [\n    {\n      \"listId\": \"be6eb8f9-29df-48a6-ab18-b46af0c60cde\",\n      \"name\": \"Google_Apps\",\n      \"type\": \"app\",\n      \"description\": \"Google Applications List\",\n      \"entries\": [\n        {\n          \"app\": \"gcs\"\n        },\n      ],\n      \"lastUpdated\": 1588001890181,\n      \"owner\": \"system\",\n      \"readOnly\": true,\n      \"version\": \"4.2\",\n      \"infoTag\": \"\",\n      \"referenceCount\": 0,\n      \"references\": [],\n      \"isActivatedByVsmart\": false\n    },"
+         },
+         "Prefix List": {
+          "description": "Prefix List",
+          "value": {
+           "data": [
+            {
+             "listId": "8bc43c09-f72c-40b8-aa90-608c7005e607",
+             "name": "Example",
+             "type": "prefix",
+             "description": "Desc Not Required",
+             "entries": [
+              {
+               "ipPrefix": "10.0.0.0/24"
+              }
+             ],
+             "lastUpdated": 1588178457305,
+             "owner": "admin",
+             "readOnly": false,
+             "version": "0",
+             "infoTag": "",
+             "referenceCount": 0,
+             "references": [],
+             "isActivatedByVsmart": false
+            }
+           ]
+          }
+         }
+        }
+       }
+      }
+     },
+     "400": {
+      "description": "Bad Request"
+     },
+     "403": {
+      "description": "Forbidden"
+     },
+     "500": {
+      "description": "Internal Server Error"
+     }
+    },
+    "x-roles-required": "Policy Configuration-read,Policy Configuration-write,Template Deploy-read,Template Deploy-write,Policy Deploy-read,Policy Deploy-write"
+   },
+   "post": {
+    "tags": [
+     "Configuration - Policy SLA Class List Builder"
+    ],
+    "description": "Create policy list",
+    "operationId": "createPolicyList_ConfigurationPolicySlaClassListBuilder_2504",
+    "requestBody": {
+     "description": "Policy list",
+     "content": {
+      "application/json": {
+       "schema": {
+        "type": "object"
+       },
+       "examples": {
+        "Zone list": {
+         "description": "Zone list",
+         "value": {
+          "name": "Demo-Zone",
+          "description": "Desc Not Required",
+          "type": "zone",
+          "entries": [
+           {
+            "vpn": "10"
+           }
+          ]
+         }
+        },
+        "IPS list": {
+         "description": "IPS list",
+         "value": {
+          "name": "Demo-IPS-list",
+          "description": "Desc Not Required",
+          "type": "ipssignature",
+          "entries": [
+           {
+            "generatorId": "1111",
+            "signatureId": "4444"
+           }
+          ]
+         }
+        },
+        "URL white list": {
+         "description": "URL white list",
+         "value": {
+          "name": "Demo-Whitelist",
+          "description": "Desc Not Required",
+          "type": "urlwhitelist",
+          "entries": [
+           {
+            "pattern": "https://www.youtube.com"
+           }
+          ]
+         }
+        },
+        "URL black list": {
+         "description": "URL black list",
+         "value": {
+          "name": "Demo-Black-list",
+          "description": "Desc Not Required",
+          "type": "urlblacklist",
+          "entries": [
+           {
+            "pattern": "www.facebook.com"
+           }
+          ]
+         }
+        },
+        "TG API key list": {
+         "description": "TG API key list",
+         "value": {
+          "name": "threatGridApiKeyList",
+          "description": "",
+          "type": "threatGridApiKey",
+          "entries": [
+           {
+            "region": "nam",
+            "apikey": "1234567"
+           },
+           {
+            "region": "eur",
+            "apikey": "1234567"
+           }
+          ]
+         }
+        },
+        "Local domain list": {
+         "description": "Local domain list",
+         "value": {
+          "name": "Demo-Domain-Name-List",
+          "description": "Desc Not Required",
+          "type": "localdomain",
+          "entries": [
+           {
+            "nameServer": "cisco.com"
+           }
+          ]
+         }
+        },
+        "Umbrella data list": {
+         "description": "Umbrella data list",
+         "value": {
+          "name": "umbrellaTokenList",
+          "description": "",
+          "type": "umbrellaData",
+          "entries": [
+           {
+            "apiKey": "abcd",
+            "secret": "12345",
+            "umbOrgId": "23405",
+            "token": "abcedabcedabcedabcedabcedabcedabcedabced"
+           }
+          ]
+         }
+        },
+        "App family": {
+         "description": "App family",
+         "value": {
+          "name": "Demo-App-List",
+          "description": "Desc Not Required",
+          "type": "app",
+          "entries": [
+           {
+            "appFamily": "web"
+           },
+           {
+            "appFamily": "audio-video"
+           }
+          ]
+         }
+        },
+        "App list": {
+         "description": "App list",
+         "value": {
+          "name": "Demo-App-List",
+          "description": "Desc Not Required",
+          "type": "app",
+          "entries": [
+           {
+            "app": "facebook"
+           },
+           {
+            "app": "netshow"
+           }
+          ]
+         }
+        },
+        "Color list": {
+         "description": "Color list",
+         "value": {
+          "name": "Demo-Color-List",
+          "description": "Desc Not Required",
+          "type": "color",
+          "entries": [
+           {
+            "color": "biz-internet"
+           },
+           {
+            "color": "public-internet"
+           }
+          ]
+         }
+        },
+        "Data prefix": {
+         "description": "Data prefix",
+         "value": {
+          "name": "Demo-Data-Prefix-List",
+          "description": "Desc Not Required",
+          "type": "dataprefix",
+          "entries": [
+           {
+            "ipPrefix": "10.1.0.0/16"
+           },
+           {
+            "ipPrefix": "10.2.0.0/16"
+           }
+          ]
+         }
+        },
+        "Policer": {
+         "description": "Policer",
+         "value": {
+          "name": "Demo-Policer-list",
+          "description": "Desc Not Required",
+          "type": "policer",
+          "entries": [
+           {
+            "burst": "16000",
+            "exceed": "drop",
+            "rate": "10000"
+           }
+          ]
+         }
+        },
+        "Prefix": {
+         "description": "Prefix",
+         "value": {
+          "name": "Demo-Prefix-list",
+          "description": "Desc Not Required",
+          "type": "prefix",
+          "entries": [
+           {
+            "ipPrefix": "10.0.0.0/12",
+            "le": "32"
+           }
+          ]
+         }
+        },
+        "Site": {
+         "description": "Site",
+         "value": {
+          "name": "Demo-Site-List",
+          "description": "Desc Not Required",
+          "type": "site",
+          "listId": null,
+          "entries": [
+           {
+            "siteId": "100"
+           },
+           {
+            "siteId": "200"
+           },
+           {
+            "siteId": "300-500"
+           }
+          ]
+         }
+        },
+        "Class": {
+         "description": "Class",
+         "value": {
+          "name": "Demo-Class-Map",
+          "description": "Desc Not Required",
+          "type": "class",
+          "entries": [
+           {
+            "queue": "4"
+           }
+          ]
+         }
+        },
+        "App probe": {
+         "description": "App probe",
+         "value": {
+          "name": "Demo-Probe-Class",
+          "type": "appProbe",
+          "entries": [
+           {
+            "map": [
+             {
+              "color": "biz-internet",
+              "dscp": 46
+             },
+             {
+              "color": "public-internet",
+              "dscp": 20
+             }
+            ],
+            "forwardingClass": "391c5977-0af8-46b2-a9b2-e48702593d70"
+           }
+          ]
+         }
+        },
+        "SLA": {
+         "description": "SLA",
+         "value": {
+          "name": "Demo-SLA-Class",
+          "description": "Desc Not Required",
+          "type": "sla",
+          "entries": [
+           {
+            "latency": "100",
+            "loss": "10",
+            "jitter": "10",
+            "appProbeClass": "39269a77-9592-4a5a-8b35-633a5615c47d"
+           }
+          ]
+         }
+        },
+        "TLOC": {
+         "description": "TLOC",
+         "value": {
+          "name": "Demo-TLOC-List",
+          "description": "Desc Not Required",
+          "type": "tloc",
+          "entries": [
+           {
+            "tloc": "10.1.1.1",
+            "color": "biz-internet",
+            "encap": "ipsec",
+            "preference": "10"
+           },
+           {
+            "tloc": "10.2.2.2",
+            "color": "biz-internet",
+            "encap": "ipsec",
+            "preference": "20"
+           }
+          ]
+         }
+        },
+        "VPN": {
+         "description": "VPN",
+         "value": {
+          "name": "Demo-VPN-List",
+          "description": "Desc Not Required",
+          "type": "vpn",
+          "listId": null,
+          "entries": [
+           {
+            "vpn": "100"
+           },
+           {
+            "vpn": "200"
+           },
+           {
+            "vpn": "300-500"
+           }
+          ]
+         }
+        },
+        "AS path": {
+         "description": "AS path",
+         "value": {
+          "name": "Demo-AS-Path-List",
+          "description": "Desc Not Required",
+          "type": "aspath",
+          "listId": null,
+          "entries": [
+           {
+            "asPath": "100"
+           },
+           {
+            "asPath": "200"
+           },
+           {
+            "asPath": "65002"
+           }
+          ]
+         }
+        },
+        "Community": {
+         "description": "Community",
+         "value": {
+          "name": "Demo-Community-List",
+          "description": "Desc Not Required",
+          "type": "community",
+          "listId": null,
+          "entries": [
+           {
+            "community": "1000:10000"
+           }
+          ]
+         }
+        },
+        "Ext community": {
+         "description": "Ext community",
+         "value": {
+          "name": "Demo-Extended-Community-List",
+          "description": "Desc Not Required",
+          "type": "extcommunity",
+          "listId": null,
+          "entries": [
+           {
+            "community": "rt 100:10"
+           }
+          ]
+         }
+        },
+        "Mirror": {
+         "description": "Mirror",
+         "value": {
+          "name": "Demo-Mirror-List",
+          "description": "Desc Not Required",
+          "type": "mirror",
+          "entries": [
+           {
+            "remoteDest": "10.1.1.1",
+            "source": "20.1.1.1"
+           }
+          ]
+         }
+        }
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": "Success",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "object"
+        },
+        "examples": {
+         "Task Id": {
+          "description": "Task Id",
+          "value": {
+           "listId": "1066ffec-e6ab-426a-b303-434d41b0a4a6"
+          }
+         }
+        }
+       }
+      }
+     },
+     "400": {
+      "description": "Bad Request"
+     },
+     "403": {
+      "description": "Forbidden"
+     },
+     "500": {
+      "description": "Internal Server Error"
+     }
+    },
+    "x-roles-required": "Policy Configuration-write"
+   },
+   "delete": {
+    "tags": [
+     "Configuration - Policy SLA Class List Builder"
+    ],
+    "description": "Delete policy lists with specific info tag",
+    "operationId": "deletePolicyListsWithInfoTag_ConfigurationPolicySlaClassListBuilder_2506",
+    "parameters": [
+     {
+      "name": "infoTag",
+      "in": "query",
+      "description": "InfoTag",
+      "schema": {
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Success",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "array",
+         "items": {
+          "type": "object"
+         }
+        },
+        "examples": {
+         "Policy list": {
+          "description": "Policy list",
+          "value": []
+         }
+        }
+       }
+      }
+     },
+     "400": {
+      "description": "Bad Request"
+     },
+     "403": {
+      "description": "Forbidden"
+     },
+     "500": {
+      "description": "Internal Server Error"
+     }
+    }
+   }
   }
  },
  "components": {
+  "examples": {
+   "getSingleSdwanTransportExample": {
+    "value": {
+     "profileName": "cg1_LAN",
+     "lastUpdatedBy": "admin",
+     "description": "cg1 transport Profile",
+     "profileParcelCount": 613,
+     "createdOn": 1701850310222,
+     "@rid": 3262,
+     "profileType": "transport",
+     "solution": "sdwan",
+     "createdBy": "admin",
+     "profileId": "bc99ae4f-0ac3-4a51-95cb-c718953143ce",
+     "lastUpdatedOn": 1702292120081,
+     "associatedProfileParcels": []
+    }
+   },
+   "getSingleSdwanSystemExample": {
+    "value": {
+     "profileName": "cg1_LAN",
+     "lastUpdatedBy": "admin",
+     "description": "cg1 system Profile",
+     "profileParcelCount": 613,
+     "createdOn": 1701850310222,
+     "@rid": 3262,
+     "profileType": "system",
+     "solution": "sdwan",
+     "createdBy": "admin",
+     "profileId": "bc99ae4f-0ac3-4a51-95cb-c718953143ce",
+     "lastUpdatedOn": 1702292120081,
+     "associatedProfileParcels": []
+    }
+   },
+   "getListSdwanSystemExample": {
+    "value": [
+     {
+      "profileId": "bc99ae4f-0ac3-4a51-95cb-c718953143ce",
+      "profileName": "cg1_LAN",
+      "solution": "sdwan",
+      "profileType": "system",
+      "createdBy": "admin",
+      "lastUpdatedBy": "admin",
+      "createdOn": 1701850310222,
+      "description": "cg1 system Profile",
+      "lastUpdatedOn": 1702292120081
+     }
+    ]
+   },
+   "getListSdwanProfileExample": {
+    "value": [
+     {
+      "profileId": "bc99ae4f-0ac3-4a51-95cb-c718953143ce",
+      "profileName": "cg1_LAN",
+      "solution": "sdwan",
+      "profileType": "profile",
+      "createdBy": "admin",
+      "lastUpdatedBy": "admin",
+      "createdOn": 1701850310222,
+      "description": "cg1 profile Profile",
+      "lastUpdatedOn": 1702292120081
+     }
+    ]
+   }
+  },
   "schemas": {
-   "InlineResponse200": {
+   "AppRouteRespWithPageInfo": {
     "type": "object",
     "properties": {
      "data": {
       "type": "array",
-      "example": [
-       "MEGAPORT",
-       "EQUINIX",
-       "ATT"
-      ],
       "items": {
-       "type": "string",
-       "example": [
-        "MEGAPORT",
-        "EQUINIX",
-        "ATT"
-       ]
+       "$ref": "#/components/schemas/AppRouteResp"
       }
+     },
+     "pageInfo": {
+      "$ref": "#/components/schemas/PageInfo"
+     }
+    },
+    "description": "app route response with page info"
+   },
+   "AlarmResponse": {
+    "type": "object",
+    "properties": {
+     "data": {
+      "type": "array",
+      "items": {
+       "$ref": "#/components/schemas/Alarm"
+      }
+     },
+     "pageInfo": {
+      "$ref": "#/components/schemas/PageInfo"
+     }
+    },
+    "description": "AlarmResponse is used for GET/POST /alarms call."
+   },
+   "getSingleSdwanSystemPayload": {
+    "type": "object",
+    "properties": {
+     "profileId": {
+      "$ref": "schema/common/common_defs_schema.json#/components/schemas/uuidDef"
+     },
+     "profileType": {
+      "type": "string",
+      "enum": [
+       "system"
+      ]
+     },
+     "profileName": {
+      "$ref": "schema/common/common_defs_schema.json#/components/schemas/cgFpPpNameDef"
+     },
+     "description": {
+      "type": "string"
+     },
+     "solution": {
+      "type": "string",
+      "enum": [
+       "sdwan"
+      ]
+     },
+     "createdBy": {
+      "type": "string",
+      "description": "User who last created this.",
+      "readOnly": true
+     },
+     "createdOn": {
+      "type": "integer",
+      "description": "Timestamp of creation",
+      "format": "int64",
+      "readOnly": true
+     },
+     "lastUpdatedBy": {
+      "type": "string",
+      "description": "User who last updated this.",
+      "readOnly": true
+     },
+     "lastUpdatedOn": {
+      "type": "integer",
+      "description": "Timestamp of last update",
+      "format": "int64",
+      "readOnly": true
+     },
+     "associatedProfileParcels": {
+      "type": "array",
+      "items": {
+       "type": "object",
+       "minItems": 0,
+       "properties": {
+        "parcelId": {
+         "$ref": "schema/common/common_defs_schema.json#/components/schemas/uuidDef"
+        },
+        "parcelType": {
+         "type": "string"
+        },
+        "payload": {
+         "type": "object"
+        },
+        "subparcels": {
+         "type": "array",
+         "minItems": 0,
+         "items": {
+          "type": "object"
+         }
+        }
+       }
+      }
+     }
+    }
+   },
+   "GenerateBootstrapConfigForVedge": {
+    "type": "object",
+    "properties": {
+     "bootstrapConfig": {
+      "type": "string",
+      "example": "#cloud-config\\nvinitparam:\\n - uuid : ESR-6300-LIC-K9-FAUSTEST126\\n - vbond : 10.0.12.26\\n - org : vIPtela Inc Regression\\n"
+     }
+    }
+   },
+   "TaskId": {
+    "type": "object",
+    "properties": {
+     "id": {
+      "type": "string",
+      "example": "reboot-01232017T154359940"
+     }
+    }
+   },
+   "getSingleSdwanTransportPayload": {
+    "type": "object",
+    "properties": {
+     "profileId": {
+      "$ref": "schema/common/common_defs_schema.json#/components/schemas/uuidDef"
+     },
+     "profileType": {
+      "type": "string",
+      "enum": [
+       "transport"
+      ]
+     },
+     "profileName": {
+      "$ref": "schema/common/common_defs_schema.json#/components/schemas/cgFpPpNameDef"
+     },
+     "description": {
+      "type": "string"
+     },
+     "solution": {
+      "type": "string",
+      "enum": [
+       "sdwan"
+      ]
+     },
+     "createdBy": {
+      "type": "string",
+      "description": "User who last created this.",
+      "readOnly": true
+     },
+     "createdOn": {
+      "type": "integer",
+      "description": "Timestamp of creation",
+      "format": "int64",
+      "readOnly": true
+     },
+     "lastUpdatedBy": {
+      "type": "string",
+      "description": "User who last updated this.",
+      "readOnly": true
+     },
+     "lastUpdatedOn": {
+      "type": "integer",
+      "description": "Timestamp of last update",
+      "format": "int64",
+      "readOnly": true
+     },
+     "associatedProfileParcels": {
+      "type": "array",
+      "items": {
+       "type": "object",
+       "minItems": 0,
+       "properties": {
+        "parcelId": {
+         "$ref": "schema/common/common_defs_schema.json#/components/schemas/uuidDef"
+        },
+        "parcelType": {
+         "type": "string"
+        },
+        "payload": {
+         "type": "object"
+        },
+        "subparcels": {
+         "type": "array",
+         "minItems": 0,
+         "items": {
+          "type": "object"
+         }
+        }
+       }
+      }
+     }
+    }
+   },
+   "AlarmCountResponse": {
+    "type": "array",
+    "properties": {
+     "empty": {
+      "type": "boolean"
+     }
+    },
+    "items": {
+     "$ref": "#/components/schemas/AlarmCount"
+    }
+   },
+   "SyncDevicesResp": {
+    "type": "object",
+    "properties": {
+     "processId": {
+      "type": "string",
+      "example": "c82d4877-dc04-4580-aedc-3a10166dab4d"
+     }
+    }
+   },
+   "PolicyGroup": {
+    "required": [
+     "name",
+     "solution",
+     "state",
+     "version"
+    ],
+    "type": "object",
+    "properties": {
+     "copyInfo": {
+      "type": "string"
+     },
+     "createdBy": {
+      "type": "string",
+      "description": "User who last created this.",
+      "readOnly": true
+     },
+     "createdOn": {
+      "type": "integer",
+      "description": "Timestamp of creation",
+      "format": "int64",
+      "readOnly": true
+     },
+     "description": {
+      "type": "string",
+      "description": "Description of the  Group.",
+      "example": " group for west coast retail stores"
+     },
+     "devices": {
+      "uniqueItems": true,
+      "type": "array",
+      "items": {
+       "type": "string"
+      }
+     },
+     "id": {
+      "type": "string",
+      "description": "System generated unique identifier of the  Group in UUID format.",
+      "example": "6fa14197-c25f-4a14-b81b-299de32ed2ca"
+     },
+     "lastUpdatedBy": {
+      "type": "string",
+      "description": "User who last updated this.",
+      "readOnly": true
+     },
+     "lastUpdatedOn": {
+      "type": "integer",
+      "description": "Timestamp of last update",
+      "format": "int64",
+      "readOnly": true
+     },
+     "name": {
+      "type": "string",
+      "description": "Name of the  Group. Must be unique.",
+      "example": "West coast retail stores"
+     },
+     "numberOfDevices": {
+      "type": "integer",
+      "format": "int64"
+     },
+     "numberOfDevicesUpToDate": {
+      "type": "integer",
+      "format": "int64"
+     },
+     "origin": {
+      "type": "string"
+     },
+     "originInfo": {
+      "type": "object",
+      "additionalProperties": {
+       "type": "string"
+      }
+     },
+     "profiles": {
+      "type": "array",
+      "description": "List of devices UUIDs associated with this group",
+      "example": "West coast retail store devices",
+      "items": {
+       "$ref": "#/components/schemas/FeatureProfile"
+      }
+     },
+     "solution": {
+      "type": "string",
+      "description": "Specify one of the device platform solution",
+      "example": "sdwan",
+      "enum": [
+       "mobility",
+       "sdwan",
+       "sd-routing",
+       "common",
+       "nfvirtual",
+       "service-insertion",
+       "cellulargateway"
+      ]
+     },
+     "source": {
+      "type": "string",
+      "description": "Source of group",
+      "example": "retail_workflow"
+     },
+     "state": {
+      "type": "string",
+      "description": " Group Deployment state",
+      "example": " Group Deployment state.Initial state Deployed "
+     },
+     "version": {
+      "type": "integer",
+      "description": " Group Version Flag",
+      "format": "int64"
+     }
+    }
+   },
+   "AlarmCount": {
+    "type": "object",
+    "properties": {
+     "cleared_count": {
+      "type": "number",
+      "example": 718
+     },
+     "count": {
+      "type": "number",
+      "example": 13
      }
     }
    },
@@ -6925,6 +10108,110 @@
       "type": "integer",
       "format": "int32",
       "example": 0
+     }
+    }
+   },
+   "DeviceTaskStatus": {
+    "type": "object",
+    "properties": {
+     "tasks": {
+      "type": "string",
+      "example": "123"
+     }
+    },
+    "description": "List of tasks"
+   },
+   "AppRouteAggRespWithPageInfo": {
+    "type": "object",
+    "properties": {
+     "data": {
+      "type": "array",
+      "items": {
+       "$ref": "#/components/schemas/AppRouteAggResp"
+      }
+     },
+     "pageInfo": {
+      "$ref": "#/components/schemas/PageInfo"
+     }
+    },
+    "description": "interface aggregation response with page info"
+   },
+   "PageInfo": {
+    "type": "object",
+    "properties": {
+     "count": {
+      "type": "integer",
+      "description": "number of alarms to be fetched",
+      "format": "int64"
+     },
+     "endTime": {
+      "type": "integer",
+      "description": "end time of alarms to be fetched",
+      "format": "int64"
+     },
+     "startTime": {
+      "type": "integer",
+      "description": "start time of alarms to be fetched",
+      "format": "int64"
+     }
+    }
+   },
+   "GenerateDeviceStateData": {
+    "type": "object",
+    "properties": {
+     "data": {
+      "type": "array",
+      "items": {
+       "$ref": "#/components/schemas/GenerateDeviceStateDataData"
+      }
+     }
+    }
+   },
+   "GetAuditLogData": {
+    "required": [
+     "data",
+     "header"
+    ],
+    "type": "object",
+    "properties": {
+     "data": {
+      "type": "array",
+      "items": {
+       "$ref": "#/components/schemas/AuditLogEntry"
+      }
+     },
+     "header": {
+      "$ref": "#/components/schemas/AuditLogHeader"
+     }
+    }
+   },
+   "FormPostResp": {
+    "type": "object",
+    "properties": {
+     "activityList": {
+      "type": "string",
+      "example": "[Number of vEdges uploaded successfully: 1, Uploaded vEdges (chassisId, serial number): ,  - ESR-6300-LIC-K9-FAUSTEST126, 030557201979336385BE]"
+     },
+     "id": {
+      "type": "string",
+      "example": "b5091b8e-e5ea-4096-8e4c-f17d0d60f2dd"
+     },
+     "vedgeListUploadMsg": {
+      "type": "string",
+      "example": "Number of vEdges uploaded successfully: 1"
+     },
+     "vedgeListUploadStatus": {
+      "type": "string",
+      "example": "vEdge list uploaded successfully"
+     }
+    }
+   },
+   "DynamicSchedulerResponse": {
+    "type": "object",
+    "properties": {
+     "enabled": {
+      "type": "boolean",
+      "example": true
      }
     }
    },
@@ -7078,473 +10365,6 @@
      }
     }
    },
-   "DeviceTaskStatus": {
-    "type": "object",
-    "properties": {
-     "tasks": {
-      "type": "string",
-      "example": "123"
-     }
-    },
-    "description": "List of tasks"
-   },
-   "AlarmCountResponse": {
-    "type": "array",
-    "properties": {
-     "empty": {
-      "type": "boolean"
-     }
-    },
-    "items": {
-     "$ref": "#/components/schemas/AlarmCount"
-    }
-   },
-   "AlarmResponse": {
-    "type": "object",
-    "properties": {
-     "data": {
-      "type": "array",
-      "items": {
-       "$ref": "#/components/schemas/Alarm"
-      }
-     },
-     "pageInfo": {
-      "$ref": "#/components/schemas/PageInfo"
-     }
-    },
-    "description": "AlarmResponse is used for GET/POST /alarms call."
-   },
-   "getSingleSdwanTransportPayload": {
-    "type": "object",
-    "properties": {
-     "profileId": {
-      "$ref": "schema/common/common_defs_schema.json#/components/schemas/uuidDef"
-     },
-     "profileType": {
-      "type": "string",
-      "enum": [
-       "transport"
-      ]
-     },
-     "profileName": {
-      "$ref": "schema/common/common_defs_schema.json#/components/schemas/cgFpPpNameDef"
-     },
-     "description": {
-      "type": "string"
-     },
-     "solution": {
-      "type": "string",
-      "enum": [
-       "sdwan"
-      ]
-     },
-     "createdBy": {
-      "type": "string",
-      "description": "User who last created this.",
-      "readOnly": true
-     },
-     "createdOn": {
-      "type": "integer",
-      "description": "Timestamp of creation",
-      "format": "int64",
-      "readOnly": true
-     },
-     "lastUpdatedBy": {
-      "type": "string",
-      "description": "User who last updated this.",
-      "readOnly": true
-     },
-     "lastUpdatedOn": {
-      "type": "integer",
-      "description": "Timestamp of last update",
-      "format": "int64",
-      "readOnly": true
-     },
-     "associatedProfileParcels": {
-      "type": "array",
-      "items": {
-       "type": "object",
-       "minItems": 0,
-       "properties": {
-        "parcelId": {
-         "$ref": "schema/common/common_defs_schema.json#/components/schemas/uuidDef"
-        },
-        "parcelType": {
-         "type": "string"
-        },
-        "payload": {
-         "type": "object"
-        },
-        "subparcels": {
-         "type": "array",
-         "minItems": 0,
-         "items": {
-          "type": "object"
-         }
-        }
-       }
-      }
-     }
-    }
-   },
-   "ConfigGroup": {
-    "required": [
-     "name",
-     "solution",
-     "state",
-     "version"
-    ],
-    "type": "object",
-    "properties": {
-     "copyInfo": {
-      "type": "string"
-     },
-     "createdBy": {
-      "type": "string",
-      "description": "User who last created this.",
-      "readOnly": true
-     },
-     "createdOn": {
-      "type": "integer",
-      "description": "Timestamp of creation",
-      "format": "int64",
-      "readOnly": true
-     },
-     "description": {
-      "type": "string",
-      "description": "Description of the  Group.",
-      "example": " group for west coast retail stores"
-     },
-     "deviceVersion": {
-      "type": "string"
-     },
-     "devices": {
-      "uniqueItems": true,
-      "type": "array",
-      "items": {
-       "type": "string"
-      }
-     },
-     "fullConfigCli": {
-      "type": "boolean"
-     },
-     "id": {
-      "type": "string",
-      "description": "System generated unique identifier of the  Group in UUID format.",
-      "example": "6fa14197-c25f-4a14-b81b-299de32ed2ca"
-     },
-     "iosConfigCli": {
-      "type": "boolean"
-     },
-     "lastUpdatedBy": {
-      "type": "string",
-      "description": "User who last updated this.",
-      "readOnly": true
-     },
-     "lastUpdatedOn": {
-      "type": "integer",
-      "description": "Timestamp of last update",
-      "format": "int64",
-      "readOnly": true
-     },
-     "name": {
-      "type": "string",
-      "description": "Name of the  Group. Must be unique.",
-      "example": "West coast retail stores"
-     },
-     "numberOfDevices": {
-      "type": "integer",
-      "format": "int64"
-     },
-     "numberOfDevicesUpToDate": {
-      "type": "integer",
-      "format": "int64"
-     },
-     "origin": {
-      "type": "string"
-     },
-     "originInfo": {
-      "type": "object",
-      "additionalProperties": {
-       "type": "string"
-      }
-     },
-     "profiles": {
-      "type": "array",
-      "description": "List of devices UUIDs associated with this group",
-      "example": "West coast retail store devices",
-      "items": {
-       "$ref": "#/components/schemas/FeatureProfile"
-      }
-     },
-     "solution": {
-      "type": "string",
-      "description": "Specify one of the device platform solution",
-      "example": "sdwan",
-      "enum": [
-       "mobility",
-       "sdwan",
-       "sd-routing",
-       "common",
-       "nfvirtual",
-       "service-insertion",
-       "cellulargateway"
-      ]
-     },
-     "source": {
-      "type": "string",
-      "description": "Source of group",
-      "example": "retail_workflow"
-     },
-     "state": {
-      "type": "string",
-      "description": " Group Deployment state",
-      "example": " Group Deployment state.Initial state Deployed "
-     },
-     "topology": {
-      "$ref": "#/components/schemas/Topology"
-     },
-     "version": {
-      "type": "integer",
-      "description": " Group Version Flag",
-      "format": "int64"
-     },
-     "versionIncrementReason": {
-      "type": "string"
-     }
-    }
-   },
-   "getSingleSdwanSystemPayload": {
-    "type": "object",
-    "properties": {
-     "profileId": {
-      "$ref": "schema/common/common_defs_schema.json#/components/schemas/uuidDef"
-     },
-     "profileType": {
-      "type": "string",
-      "enum": [
-       "system"
-      ]
-     },
-     "profileName": {
-      "$ref": "schema/common/common_defs_schema.json#/components/schemas/cgFpPpNameDef"
-     },
-     "description": {
-      "type": "string"
-     },
-     "solution": {
-      "type": "string",
-      "enum": [
-       "sdwan"
-      ]
-     },
-     "createdBy": {
-      "type": "string",
-      "description": "User who last created this.",
-      "readOnly": true
-     },
-     "createdOn": {
-      "type": "integer",
-      "description": "Timestamp of creation",
-      "format": "int64",
-      "readOnly": true
-     },
-     "lastUpdatedBy": {
-      "type": "string",
-      "description": "User who last updated this.",
-      "readOnly": true
-     },
-     "lastUpdatedOn": {
-      "type": "integer",
-      "description": "Timestamp of last update",
-      "format": "int64",
-      "readOnly": true
-     },
-     "associatedProfileParcels": {
-      "type": "array",
-      "items": {
-       "type": "object",
-       "minItems": 0,
-       "properties": {
-        "parcelId": {
-         "$ref": "schema/common/common_defs_schema.json#/components/schemas/uuidDef"
-        },
-        "parcelType": {
-         "type": "string"
-        },
-        "payload": {
-         "type": "object"
-        },
-        "subparcels": {
-         "type": "array",
-         "minItems": 0,
-         "items": {
-          "type": "object"
-         }
-        }
-       }
-      }
-     }
-    }
-   },
-   "DynamicSchedulerResponse": {
-    "type": "object",
-    "properties": {
-     "enabled": {
-      "type": "boolean",
-      "example": true
-     }
-    }
-   },
-   "AppRouteRespWithPageInfo": {
-    "type": "object",
-    "properties": {
-     "data": {
-      "type": "array",
-      "items": {
-       "$ref": "#/components/schemas/AppRouteResp"
-      }
-     },
-     "pageInfo": {
-      "$ref": "#/components/schemas/PageInfo"
-     }
-    },
-    "description": "app route response with page info"
-   },
-   "AlarmCount": {
-    "type": "object",
-    "properties": {
-     "cleared_count": {
-      "type": "number",
-      "example": 718
-     },
-     "count": {
-      "type": "number",
-      "example": 13
-     }
-    }
-   },
-   "DeviceIP": {
-    "type": "object",
-    "properties": {
-     "deviceIp": {
-      "type": "string"
-     }
-    },
-    "description": "This is the valid DeviceIP"
-   },
-   "PolicyGroup": {
-    "required": [
-     "name",
-     "solution",
-     "state",
-     "version"
-    ],
-    "type": "object",
-    "properties": {
-     "copyInfo": {
-      "type": "string"
-     },
-     "createdBy": {
-      "type": "string",
-      "description": "User who last created this.",
-      "readOnly": true
-     },
-     "createdOn": {
-      "type": "integer",
-      "description": "Timestamp of creation",
-      "format": "int64",
-      "readOnly": true
-     },
-     "description": {
-      "type": "string",
-      "description": "Description of the  Group.",
-      "example": " group for west coast retail stores"
-     },
-     "devices": {
-      "uniqueItems": true,
-      "type": "array",
-      "items": {
-       "type": "string"
-      }
-     },
-     "id": {
-      "type": "string",
-      "description": "System generated unique identifier of the  Group in UUID format.",
-      "example": "6fa14197-c25f-4a14-b81b-299de32ed2ca"
-     },
-     "lastUpdatedBy": {
-      "type": "string",
-      "description": "User who last updated this.",
-      "readOnly": true
-     },
-     "lastUpdatedOn": {
-      "type": "integer",
-      "description": "Timestamp of last update",
-      "format": "int64",
-      "readOnly": true
-     },
-     "name": {
-      "type": "string",
-      "description": "Name of the  Group. Must be unique.",
-      "example": "West coast retail stores"
-     },
-     "numberOfDevices": {
-      "type": "integer",
-      "format": "int64"
-     },
-     "numberOfDevicesUpToDate": {
-      "type": "integer",
-      "format": "int64"
-     },
-     "origin": {
-      "type": "string"
-     },
-     "originInfo": {
-      "type": "object",
-      "additionalProperties": {
-       "type": "string"
-      }
-     },
-     "profiles": {
-      "type": "array",
-      "description": "List of devices UUIDs associated with this group",
-      "example": "West coast retail store devices",
-      "items": {
-       "$ref": "#/components/schemas/FeatureProfile"
-      }
-     },
-     "solution": {
-      "type": "string",
-      "description": "Specify one of the device platform solution",
-      "example": "sdwan",
-      "enum": [
-       "mobility",
-       "sdwan",
-       "sd-routing",
-       "common",
-       "nfvirtual",
-       "service-insertion",
-       "cellulargateway"
-      ]
-     },
-     "source": {
-      "type": "string",
-      "description": "Source of group",
-      "example": "retail_workflow"
-     },
-     "state": {
-      "type": "string",
-      "description": " Group Deployment state",
-      "example": " Group Deployment state.Initial state Deployed "
-     },
-     "version": {
-      "type": "integer",
-      "description": " Group Version Flag",
-      "format": "int64"
-     }
-    }
-   },
    "Alarm": {
     "type": "object",
     "properties": {
@@ -7694,67 +10514,22 @@
     },
     "description": "Represents any kind of alarm"
    },
-   "AppRouteAggRespWithPageInfo": {
+   "InlineResponse200": {
     "type": "object",
     "properties": {
      "data": {
       "type": "array",
+      "example": [
+       "MEGAPORT",
+       "EQUINIX",
+       "ATT"
+      ],
       "items": {
-       "$ref": "#/components/schemas/AppRouteAggResp"
-      }
-     },
-     "pageInfo": {
-      "$ref": "#/components/schemas/PageInfo"
-     }
-    },
-    "description": "interface aggregation response with page info"
-   },
-   "getListSdwanSystemPayload": {
-    "type": "array",
-    "items": {
-     "type": "object",
-     "properties": {
-      "profileId": {
-       "$ref": "schema/common/common_defs_schema.json#/components/schemas/uuidDef"
-      },
-      "profileName": {
-       "$ref": "schema/common/common_defs_schema.json#/components/schemas/cgFpPpNameDef"
-      },
-      "profileType": {
        "type": "string",
-       "enum": [
-        "system"
-       ]
-      },
-      "createdBy": {
-       "type": "string",
-       "description": "User who last created this.",
-       "readOnly": true
-      },
-      "createdOn": {
-       "type": "integer",
-       "description": "Timestamp of creation",
-       "format": "int64",
-       "readOnly": true
-      },
-      "lastUpdatedBy": {
-       "type": "string",
-       "description": "User who last updated this.",
-       "readOnly": true
-      },
-      "lastUpdatedOn": {
-       "type": "integer",
-       "description": "Timestamp of last update",
-       "format": "int64",
-       "readOnly": true
-      },
-      "description": {
-       "type": "string"
-      },
-      "solution": {
-       "type": "string",
-       "enum": [
-        "sdwan"
+       "example": [
+        "MEGAPORT",
+        "EQUINIX",
+        "ATT"
        ]
       }
      }
@@ -7888,58 +10663,8 @@
     },
     "description": "app route specific response"
    },
-   "GenerateDeviceStateData": {
-    "type": "object",
-    "properties": {
-     "data": {
-      "type": "array",
-      "items": {
-       "$ref": "#/components/schemas/GenerateDeviceStateDataData"
-      }
-     }
-    }
-   },
-   "TaskId": {
-    "type": "object",
-    "properties": {
-     "id": {
-      "type": "string",
-      "example": "reboot-01232017T154359940"
-     }
-    }
-   },
-   "GetAuditLogData": {
-    "required": [
-     "data",
-     "header"
-    ],
-    "type": "object",
-    "properties": {
-     "data": {
-      "type": "array",
-      "items": {
-       "$ref": "#/components/schemas/AuditLogEntry"
-      }
-     },
-     "header": {
-      "$ref": "#/components/schemas/AuditLogHeader"
-     }
-    }
-   },
-   "Topology": {
-    "type": "object",
-    "properties": {
-     "devices": {
-      "type": "array",
-      "items": {
-       "$ref": "#/components/schemas/ConfigGroupDevice"
-      }
-     },
-     "siteDevices": {
-      "type": "integer",
-      "format": "int32"
-     }
-    }
+   "OneOfAlarmConsumedEventsItems": {
+    "type": "object"
    },
    "getListSdwanProfilePayload": {
     "type": "array",
@@ -7992,34 +10717,14 @@
      }
     }
    },
-   "AlarmDevices": {
+   "DeviceIP": {
     "type": "object",
     "properties": {
-     "system-ip": {
-      "type": "string",
-      "example": "19.19.19.1"
+     "deviceIp": {
+      "type": "string"
      }
-    }
-   },
-   "PageInfo": {
-    "type": "object",
-    "properties": {
-     "count": {
-      "type": "integer",
-      "description": "number of alarms to be fetched",
-      "format": "int64"
-     },
-     "endTime": {
-      "type": "integer",
-      "description": "end time of alarms to be fetched",
-      "format": "int64"
-     },
-     "startTime": {
-      "type": "integer",
-      "description": "start time of alarms to be fetched",
-      "format": "int64"
-     }
-    }
+    },
+    "description": "This is the valid DeviceIP"
    },
    "GenerateDeviceStateDataData": {
     "type": "object",
@@ -8167,88 +10872,182 @@
      }
     }
    },
-   "AuditLogHeader": {
-    "type": "object",
-    "properties": {
-     "chart": {
-      "$ref": "#/components/schemas/ChartObject"
-     },
-     "columns": {
-      "$ref": "#/components/schemas/AuditLogHeaderColumns"
-     },
-     "fields": {
-      "$ref": "#/components/schemas/GetStatDataFields"
-     },
-     "generatedOn": {
-      "type": "integer",
-      "format": "int32",
-      "example": 1655622555494
-     },
-     "viewKeys": {
-      "$ref": "#/components/schemas/AuditLogHeaderViewKeys"
+   "getListSdwanSystemPayload": {
+    "type": "array",
+    "items": {
+     "type": "object",
+     "properties": {
+      "profileId": {
+       "$ref": "schema/common/common_defs_schema.json#/components/schemas/uuidDef"
+      },
+      "profileName": {
+       "$ref": "schema/common/common_defs_schema.json#/components/schemas/cgFpPpNameDef"
+      },
+      "profileType": {
+       "type": "string",
+       "enum": [
+        "system"
+       ]
+      },
+      "createdBy": {
+       "type": "string",
+       "description": "User who last created this.",
+       "readOnly": true
+      },
+      "createdOn": {
+       "type": "integer",
+       "description": "Timestamp of creation",
+       "format": "int64",
+       "readOnly": true
+      },
+      "lastUpdatedBy": {
+       "type": "string",
+       "description": "User who last updated this.",
+       "readOnly": true
+      },
+      "lastUpdatedOn": {
+       "type": "integer",
+       "description": "Timestamp of last update",
+       "format": "int64",
+       "readOnly": true
+      },
+      "description": {
+       "type": "string"
+      },
+      "solution": {
+       "type": "string",
+       "enum": [
+        "sdwan"
+       ]
+      }
      }
     }
    },
-   "AuditLogHeaderColumns": {
+   "ConfigGroup": {
     "required": [
-     "dataType",
-     "property",
-     "title"
+     "name",
+     "solution",
+     "state",
+     "version"
     ],
     "type": "object",
     "properties": {
-     "dataType": {
+     "copyInfo": {
+      "type": "string"
+     },
+     "createdBy": {
       "type": "string",
-      "example": "date"
+      "description": "User who last created this.",
+      "readOnly": true
      },
-     "displayFormat": {
-      "type": "string",
-      "example": "DD MMM YYYY h:mm:ss A z"
-     },
-     "hideable": {
-      "type": "boolean",
-      "example": true
-     },
-     "inputFormat": {
-      "type": "string",
-      "example": "unix-time"
-     },
-     "isDisplay": {
-      "type": "boolean",
-      "example": true
-     },
-     "minWidth": {
+     "createdOn": {
       "type": "integer",
-      "format": "int32",
-      "example": 300
+      "description": "Timestamp of creation",
+      "format": "int64",
+      "readOnly": true
      },
-     "property": {
+     "description": {
       "type": "string",
-      "example": "entry_time"
+      "description": "Description of the  Group.",
+      "example": " group for west coast retail stores"
      },
-     "title": {
-      "type": "string",
-      "example": "Timestamp"
+     "deviceVersion": {
+      "type": "string"
      },
-     "width": {
-      "type": "integer",
-      "format": "int32",
-      "example": 220
-     }
-    }
-   },
-   "OneOfAlarmConsumedEventsItems": {
-    "type": "object"
-   },
-   "GeneralSchema": {
-    "type": "object",
-    "properties": {
-     "empty": {
+     "devices": {
+      "uniqueItems": true,
+      "type": "array",
+      "items": {
+       "type": "string"
+      }
+     },
+     "fullConfigCli": {
       "type": "boolean"
+     },
+     "id": {
+      "type": "string",
+      "description": "System generated unique identifier of the  Group in UUID format.",
+      "example": "6fa14197-c25f-4a14-b81b-299de32ed2ca"
+     },
+     "iosConfigCli": {
+      "type": "boolean"
+     },
+     "lastUpdatedBy": {
+      "type": "string",
+      "description": "User who last updated this.",
+      "readOnly": true
+     },
+     "lastUpdatedOn": {
+      "type": "integer",
+      "description": "Timestamp of last update",
+      "format": "int64",
+      "readOnly": true
+     },
+     "name": {
+      "type": "string",
+      "description": "Name of the  Group. Must be unique.",
+      "example": "West coast retail stores"
+     },
+     "numberOfDevices": {
+      "type": "integer",
+      "format": "int64"
+     },
+     "numberOfDevicesUpToDate": {
+      "type": "integer",
+      "format": "int64"
+     },
+     "origin": {
+      "type": "string"
+     },
+     "originInfo": {
+      "type": "object",
+      "additionalProperties": {
+       "type": "string"
+      }
+     },
+     "profiles": {
+      "type": "array",
+      "description": "List of devices UUIDs associated with this group",
+      "example": "West coast retail store devices",
+      "items": {
+       "$ref": "#/components/schemas/FeatureProfile"
+      }
+     },
+     "solution": {
+      "type": "string",
+      "description": "Specify one of the device platform solution",
+      "example": "sdwan",
+      "enum": [
+       "mobility",
+       "sdwan",
+       "sd-routing",
+       "common",
+       "nfvirtual",
+       "service-insertion",
+       "cellulargateway"
+      ]
+     },
+     "source": {
+      "type": "string",
+      "description": "Source of group",
+      "example": "retail_workflow"
+     },
+     "state": {
+      "type": "string",
+      "description": " Group Deployment state",
+      "example": " Group Deployment state.Initial state Deployed "
+     },
+     "topology": {
+      "$ref": "#/components/schemas/Topology"
+     },
+     "version": {
+      "type": "integer",
+      "description": " Group Version Flag",
+      "format": "int64"
+     },
+     "versionIncrementReason": {
+      "type": "string"
      }
-    },
-    "additionalProperties": {
-     "type": "string"
     }
    },
    "FeatureProfile": {
@@ -8319,63 +11118,18 @@
     "description": "List of devices UUIDs associated with this group",
     "example": "West coast retail store devices"
    },
-   "AuditLogHeaderViewKeys": {
+   "Topology": {
     "type": "object",
     "properties": {
-     "preferenceKey": {
-      "type": "string",
-      "example": "grid-AuditLogView"
-     },
-     "uniqueKey": {
+     "devices": {
       "type": "array",
       "items": {
-       "type": "string"
-      }
-     }
-    }
-   },
-   "GetStatDataFields": {
-    "type": "object",
-    "properties": {
-     "dataType": {
-      "type": "string",
-      "example": "date"
-     },
-     "property": {
-      "type": "string",
-      "example": "entry_time"
-     }
-    }
-   },
-   "ChartObject": {
-    "type": "object",
-    "properties": {
-     "series": {
-      "type": "array",
-      "items": {
-       "type": "string"
+       "$ref": "#/components/schemas/ConfigGroupDevice"
       }
      },
-     "title": {
-      "type": "string"
-     },
-     "xAxis": {
-      "type": "array",
-      "items": {
-       "type": "string"
-      }
-     },
-     "xAxisLabel": {
-      "type": "string"
-     },
-     "yAxis": {
-      "type": "array",
-      "items": {
-       "type": "string"
-      }
-     },
-     "yAxisLabel": {
-      "type": "string"
+     "siteDevices": {
+      "type": "integer",
+      "format": "int32"
      }
     }
    },
@@ -8390,6 +11144,29 @@
       "items": {
        "$ref": "#/components/schemas/UnsupportedFeature"
       }
+     }
+    }
+   },
+   "AlarmDevices": {
+    "type": "object",
+    "properties": {
+     "system-ip": {
+      "type": "string",
+      "example": "19.19.19.1"
+     }
+    }
+   },
+   "Criteria": {
+    "type": "object",
+    "properties": {
+     "attribute": {
+      "type": "string",
+      "enum": [
+       "tag"
+      ]
+     },
+     "value": {
+      "type": "string"
      }
     }
    },
@@ -8439,6 +11216,76 @@
        "cellular-controller",
        "service-insertion-attachment"
       ]
+     }
+    }
+   },
+   "AuditLogHeader": {
+    "type": "object",
+    "properties": {
+     "chart": {
+      "$ref": "#/components/schemas/ChartObject"
+     },
+     "columns": {
+      "$ref": "#/components/schemas/AuditLogHeaderColumns"
+     },
+     "fields": {
+      "$ref": "#/components/schemas/GetStatDataFields"
+     },
+     "generatedOn": {
+      "type": "integer",
+      "format": "int32",
+      "example": 1655622555494
+     },
+     "viewKeys": {
+      "$ref": "#/components/schemas/AuditLogHeaderViewKeys"
+     }
+    }
+   },
+   "AuditLogHeaderColumns": {
+    "required": [
+     "dataType",
+     "property",
+     "title"
+    ],
+    "type": "object",
+    "properties": {
+     "dataType": {
+      "type": "string",
+      "example": "date"
+     },
+     "displayFormat": {
+      "type": "string",
+      "example": "DD MMM YYYY h:mm:ss A z"
+     },
+     "hideable": {
+      "type": "boolean",
+      "example": true
+     },
+     "inputFormat": {
+      "type": "string",
+      "example": "unix-time"
+     },
+     "isDisplay": {
+      "type": "boolean",
+      "example": true
+     },
+     "minWidth": {
+      "type": "integer",
+      "format": "int32",
+      "example": 300
+     },
+     "property": {
+      "type": "string",
+      "example": "entry_time"
+     },
+     "title": {
+      "type": "string",
+      "example": "Timestamp"
+     },
+     "width": {
+      "type": "integer",
+      "format": "int32",
+      "example": 220
      }
     }
    },
@@ -8513,83 +11360,76 @@
      }
     }
    },
-   "Criteria": {
+   "AuditLogHeaderViewKeys": {
     "type": "object",
     "properties": {
-     "attribute": {
+     "preferenceKey": {
       "type": "string",
-      "enum": [
-       "tag"
-      ]
+      "example": "grid-AuditLogView"
      },
-     "value": {
+     "uniqueKey": {
+      "type": "array",
+      "items": {
+       "type": "string"
+      }
+     }
+    }
+   },
+   "ChartObject": {
+    "type": "object",
+    "properties": {
+     "series": {
+      "type": "array",
+      "items": {
+       "type": "string"
+      }
+     },
+     "title": {
+      "type": "string"
+     },
+     "xAxis": {
+      "type": "array",
+      "items": {
+       "type": "string"
+      }
+     },
+     "xAxisLabel": {
+      "type": "string"
+     },
+     "yAxis": {
+      "type": "array",
+      "items": {
+       "type": "string"
+      }
+     },
+     "yAxisLabel": {
       "type": "string"
      }
     }
-   }
-  },
-  "examples": {
-   "getListSdwanSystemExample": {
-    "value": [
-     {
-      "profileId": "bc99ae4f-0ac3-4a51-95cb-c718953143ce",
-      "profileName": "cg1_LAN",
-      "solution": "sdwan",
-      "profileType": "system",
-      "createdBy": "admin",
-      "lastUpdatedBy": "admin",
-      "createdOn": 1701850310222,
-      "description": "cg1 system Profile",
-      "lastUpdatedOn": 1702292120081
-     }
-    ]
    },
-   "getSingleSdwanSystemExample": {
-    "value": {
-     "profileName": "cg1_LAN",
-     "lastUpdatedBy": "admin",
-     "description": "cg1 system Profile",
-     "profileParcelCount": 613,
-     "createdOn": 1701850310222,
-     "@rid": 3262,
-     "profileType": "system",
-     "solution": "sdwan",
-     "createdBy": "admin",
-     "profileId": "bc99ae4f-0ac3-4a51-95cb-c718953143ce",
-     "lastUpdatedOn": 1702292120081,
-     "associatedProfileParcels": []
+   "GetStatDataFields": {
+    "type": "object",
+    "properties": {
+     "dataType": {
+      "type": "string",
+      "example": "date"
+     },
+     "property": {
+      "type": "string",
+      "example": "entry_time"
+     }
     }
    },
-   "getSingleSdwanTransportExample": {
-    "value": {
-     "profileName": "cg1_LAN",
-     "lastUpdatedBy": "admin",
-     "description": "cg1 transport Profile",
-     "profileParcelCount": 613,
-     "createdOn": 1701850310222,
-     "@rid": 3262,
-     "profileType": "transport",
-     "solution": "sdwan",
-     "createdBy": "admin",
-     "profileId": "bc99ae4f-0ac3-4a51-95cb-c718953143ce",
-     "lastUpdatedOn": 1702292120081,
-     "associatedProfileParcels": []
-    }
-   },
-   "getListSdwanProfileExample": {
-    "value": [
-     {
-      "profileId": "bc99ae4f-0ac3-4a51-95cb-c718953143ce",
-      "profileName": "cg1_LAN",
-      "solution": "sdwan",
-      "profileType": "profile",
-      "createdBy": "admin",
-      "lastUpdatedBy": "admin",
-      "createdOn": 1701850310222,
-      "description": "cg1 profile Profile",
-      "lastUpdatedOn": 1702292120081
+   "GeneralSchema": {
+    "type": "object",
+    "properties": {
+     "empty": {
+      "type": "boolean"
      }
-    ]
+    },
+    "additionalProperties": {
+     "type": "string"
+    }
    }
   }
  }

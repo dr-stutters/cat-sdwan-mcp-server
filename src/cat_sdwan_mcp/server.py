@@ -19,6 +19,7 @@ from cat_sdwan_mcp.tools import (
     events,
     inventory,
     onboarding,
+    policy,
     prompts,
 )
 
@@ -55,6 +56,11 @@ site_id, config_group or template) (validity, association, variables; stops at t
 edge with catsdwan_bootstrap_config(chassis) as its day-0, or the activate command it gives on a running
 C8000V -> catsdwan_control_connections(device). catsdwan_set_edge_validity: invalid drops a joined edge
 (dangerous). The one-time token is a secret: only catsdwan_bootstrap_config(reveal_otp=true) shows it.
+Policy: catsdwan_list_policies (centralised, localised, policy groups; which is activated) ->
+catsdwan_get_policy (sequences in plain words, lists resolved). "Why does voice take the internet link at this
+branch?" -> catsdwan_explain_path(source_site, destination site or prefix, app or dscp) (offline walk of the
+policy joined with each tunnel's SLA now). catsdwan_activate_policy(policy, action) is always dangerous
+(fabric-wide).
 Prompts: catsdwan_branch_health(site) (a verdict per transport), catsdwan_onboard_branch(site) (NetBox ->
 onboard -> boot -> deploy -> prove), catsdwan_why_is_app_slow(host, app) (ISE, app-route SLA, FMC, CML).
 Anything without a tool: catsdwan_search_spec('bfd') -> catsdwan_get_definition(path) -> catsdwan_api_call
@@ -92,6 +98,7 @@ def create_server(
             configuration.register,
             changes.register,
             onboarding.register,
+            policy.register,
             prompts.register,
         ],
         status=SdwanApp.status,
