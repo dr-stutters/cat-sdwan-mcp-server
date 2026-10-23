@@ -1,0 +1,542 @@
+{
+  "header": {
+    "generatedOn": 1792743424461,
+    "viewKeys": {
+      "uniqueKey": [
+        "vdevice-dataKey"
+      ],
+      "preferenceKey": "grid-OMPReceivedRoute"
+    },
+    "columns": [
+      {
+        "title": "device.omp.dataOmpReceivedRoutes.vpnId",
+        "property": "vpn-id",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.omp.dataOmpReceivedRoutes.prefix",
+        "property": "prefix",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.omp.dataOmpReceivedRoutes.tenantId",
+        "property": "tenant-id",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.omp.dataOmpReceivedRoutes.fromPeer",
+        "property": "from-peer",
+        "width": 100,
+        "dataType": "ipv4"
+      },
+      {
+        "title": "device.omp.dataOmpReceivedRoutes.pathId",
+        "property": "path-id",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.omp.dataOmpReceivedRoutes.label",
+        "property": "label",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.omp.dataOmpReceivedRoutes.status",
+        "property": "status",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.omp.dataOmpReceivedRoutes.attributeType",
+        "property": "attribute-type",
+        "width": 150,
+        "dataType": "string"
+      },
+      {
+        "title": "device.omp.dataOmpReceivedRoutes.tlocIP",
+        "property": "ip",
+        "width": 200,
+        "dataType": "ipv4"
+      },
+      {
+        "title": "device.omp.dataOmpReceivedRoutes.tlocColor",
+        "property": "color",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.omp.dataOmpReceivedRoutes.tlocEncap",
+        "property": "encap",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.omp.dataOmpReceivedRoutes.protocol",
+        "property": "protocol",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.omp.dataOmpReceivedRoutes.metric",
+        "property": "metric",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.omp.dataOmpReceivedRoutes.siteId",
+        "property": "site-id",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.omp.dataOmpReceivedRoutes.asPath",
+        "property": "as-path",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.omp.dataOmpReceivedRoutes.communities",
+        "property": "community",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.omp.dataOmpReceivedRoutes.siteType",
+        "property": "site-type",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.omp.dataOmpReceivedRoutes.affinityPreferenceOrder",
+        "property": "affinity-preference-order",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.omp.dataOmpReceivedRoutes.derivedAffinityGroupNumber",
+        "property": "derived-affinity-group-number",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.omp.dataOmpReceivedRoutes.routeReoriginator",
+        "property": "route-reoriginator",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.omp.dataOmpReceivedRoutes.overlayId",
+        "property": "overlay-id",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.omp.dataOmpReceivedRoutes.ompTag",
+        "property": "tag",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.omp.dataOmpReceivedRoutes.ompPreference",
+        "property": "preference",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.omp.dataOmpReceivedRoutes.affinityGroupNumber",
+        "property": "affinity-group-number",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.omp.dataOmpReceivedRoutes.regionId",
+        "property": "region-id",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.omp.dataOmpReceivedRoutes.regionPath",
+        "property": "region-path",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.omp.dataOmpReceivedRoutes.routeReoriginator",
+        "property": "route-reoriginator",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.omp.dataOmpReceivedRoutes.originator",
+        "property": "originator",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.omp.dataOmpReceivedRoutes.managemantRegion",
+        "property": "management-region",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.omp.dataOmpReceivedRoutes.managementGateway",
+        "property": "management-gateway",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.omp.dataOmpReceivedRoutes.lastUpdated",
+        "property": "lastupdated",
+        "displayFormat": "DD MMM YYYY h:mm:ss A z",
+        "inputFormat": "unix-time",
+        "hideable": false,
+        "minWidth": 100,
+        "dataType": "date"
+      }
+    ],
+    "fields": [
+      {
+        "property": "vdevice-name",
+        "dataType": "string"
+      },
+      {
+        "property": "vdevice-host-name",
+        "dataType": "string"
+      },
+      {
+        "property": "vpn-id",
+        "dataType": "string"
+      },
+      {
+        "property": "prefix",
+        "dataType": "string"
+      },
+      {
+        "property": "tenant-id",
+        "dataType": "string"
+      },
+      {
+        "property": "from-peer",
+        "dataType": "ipv4"
+      },
+      {
+        "property": "path-id",
+        "dataType": "string"
+      },
+      {
+        "property": "label",
+        "dataType": "string"
+      },
+      {
+        "property": "status",
+        "dataType": "string"
+      },
+      {
+        "property": "attribute-type",
+        "dataType": "string"
+      },
+      {
+        "property": "ip",
+        "dataType": "ipv4"
+      },
+      {
+        "property": "color",
+        "dataType": "string"
+      },
+      {
+        "property": "encap",
+        "dataType": "string"
+      },
+      {
+        "property": "protocol",
+        "dataType": "string"
+      },
+      {
+        "property": "metric",
+        "dataType": "string"
+      },
+      {
+        "property": "site-id",
+        "dataType": "string"
+      },
+      {
+        "property": "as-path",
+        "dataType": "string"
+      },
+      {
+        "property": "community",
+        "dataType": "string"
+      },
+      {
+        "property": "site-type",
+        "dataType": "string"
+      },
+      {
+        "property": "affinity-preference-order",
+        "dataType": "string"
+      },
+      {
+        "property": "derived-affinity-group-number",
+        "dataType": "string"
+      },
+      {
+        "property": "route-reoriginator",
+        "dataType": "string"
+      },
+      {
+        "property": "overlay-id",
+        "dataType": "string"
+      },
+      {
+        "property": "tag",
+        "dataType": "string"
+      },
+      {
+        "property": "preference",
+        "dataType": "string"
+      },
+      {
+        "property": "affinity-group-number",
+        "dataType": "string"
+      },
+      {
+        "property": "region-id",
+        "dataType": "string"
+      },
+      {
+        "property": "region-path",
+        "dataType": "string"
+      },
+      {
+        "property": "route-reoriginator",
+        "dataType": "string"
+      },
+      {
+        "property": "originator",
+        "dataType": "string"
+      },
+      {
+        "property": "management-region",
+        "dataType": "string"
+      },
+      {
+        "property": "management-gateway",
+        "dataType": "string"
+      },
+      {
+        "property": "lastupdated",
+        "dataType": "date"
+      }
+    ]
+  },
+  "data": [
+    {
+      "overlay-id": "1",
+      "color": "mpls",
+      "vdevice-name": "10.0.0.1",
+      "prefix": "10.61.100.0/24",
+      "ip": "10.0.0.1",
+      "from-peer": "0.0.0.0",
+      "label": "1003",
+      "encap": "ipsec",
+      "site-id": "100",
+      "originator": "10.0.0.1",
+      "vpn-id": "10",
+      "vdevice-host-name": "hub1",
+      "tenant-id": "0",
+      "path-id": "66",
+      "protocol": "connected",
+      "vdevice-dataKey": "10.0.0.1-10",
+      "metric": "0",
+      "affinity-preference-order": "None",
+      "derived-affinity-group-number": "None",
+      "region-id": "None",
+      "lastupdated": 1792743424453,
+      "affinity-group-number": "None",
+      "attribute-type": "installed",
+      "status": "C Red R"
+    },
+    {
+      "overlay-id": "1",
+      "color": "biz-internet",
+      "vdevice-name": "10.0.0.1",
+      "prefix": "10.61.100.0/24",
+      "ip": "10.0.0.1",
+      "from-peer": "0.0.0.0",
+      "label": "1003",
+      "encap": "ipsec",
+      "site-id": "100",
+      "originator": "10.0.0.1",
+      "vpn-id": "10",
+      "vdevice-host-name": "hub1",
+      "tenant-id": "0",
+      "path-id": "68",
+      "protocol": "connected",
+      "vdevice-dataKey": "10.0.0.1-10",
+      "metric": "0",
+      "affinity-preference-order": "None",
+      "derived-affinity-group-number": "None",
+      "region-id": "None",
+      "lastupdated": 1792743424453,
+      "affinity-group-number": "None",
+      "attribute-type": "installed",
+      "status": "C Red R"
+    },
+    {
+      "overlay-id": "1",
+      "vdevice-name": "10.0.0.1",
+      "prefix": "10.61.200.0/24",
+      "ip": "10.0.0.2",
+      "from-peer": "1.1.1.3",
+      "label": "1003",
+      "site-id": "200",
+      "originator": "10.0.0.2",
+      "vpn-id": "10",
+      "vdevice-host-name": "hub1",
+      "tenant-id": "0",
+      "path-id": "2",
+      "protocol": "connected",
+      "vdevice-dataKey": "10.0.0.1-10",
+      "metric": "0",
+      "affinity-preference-order": "None",
+      "derived-affinity-group-number": "None",
+      "region-id": "None",
+      "lastupdated": 1792743424453,
+      "affinity-group-number": "None",
+      "attribute-type": "installed",
+      "status": "R"
+    },
+    {
+      "overlay-id": "1",
+      "color": "mpls",
+      "vdevice-name": "10.0.0.1",
+      "prefix": "10.61.200.0/24",
+      "ip": "10.0.0.2",
+      "from-peer": "1.1.1.3",
+      "label": "1003",
+      "encap": "ipsec",
+      "site-id": "200",
+      "originator": "10.0.0.2",
+      "vpn-id": "10",
+      "vdevice-host-name": "hub1",
+      "tenant-id": "0",
+      "path-id": "66",
+      "protocol": "connected",
+      "vdevice-dataKey": "10.0.0.1-10",
+      "metric": "0",
+      "affinity-preference-order": "None",
+      "derived-affinity-group-number": "None",
+      "region-id": "None",
+      "lastupdated": 1792743424453,
+      "affinity-group-number": "None",
+      "attribute-type": "installed",
+      "status": "C I R"
+    },
+    {
+      "overlay-id": "1",
+      "color": "biz-internet",
+      "vdevice-name": "10.0.0.1",
+      "prefix": "10.61.200.0/24",
+      "ip": "10.0.0.2",
+      "from-peer": "1.1.1.3",
+      "label": "1003",
+      "encap": "ipsec",
+      "site-id": "200",
+      "originator": "10.0.0.2",
+      "vpn-id": "10",
+      "vdevice-host-name": "hub1",
+      "tenant-id": "0",
+      "path-id": "68",
+      "protocol": "connected",
+      "vdevice-dataKey": "10.0.0.1-10",
+      "metric": "0",
+      "affinity-preference-order": "None",
+      "derived-affinity-group-number": "None",
+      "region-id": "None",
+      "lastupdated": 1792743424453,
+      "affinity-group-number": "None",
+      "attribute-type": "installed",
+      "status": "C I R"
+    },
+    {
+      "overlay-id": "1",
+      "vdevice-name": "10.0.0.1",
+      "prefix": "10.61.201.0/24",
+      "ip": "10.0.0.3",
+      "from-peer": "1.1.1.3",
+      "label": "1003",
+      "site-id": "201",
+      "originator": "10.0.0.3",
+      "vpn-id": "10",
+      "vdevice-host-name": "hub1",
+      "tenant-id": "0",
+      "path-id": "2",
+      "protocol": "connected",
+      "vdevice-dataKey": "10.0.0.1-10",
+      "metric": "0",
+      "affinity-preference-order": "None",
+      "derived-affinity-group-number": "None",
+      "region-id": "None",
+      "lastupdated": 1792743424454,
+      "affinity-group-number": "None",
+      "attribute-type": "installed",
+      "status": "R"
+    },
+    {
+      "overlay-id": "1",
+      "color": "mpls",
+      "vdevice-name": "10.0.0.1",
+      "prefix": "10.61.201.0/24",
+      "ip": "10.0.0.3",
+      "from-peer": "1.1.1.3",
+      "label": "1003",
+      "encap": "ipsec",
+      "site-id": "201",
+      "originator": "10.0.0.3",
+      "vpn-id": "10",
+      "vdevice-host-name": "hub1",
+      "tenant-id": "0",
+      "path-id": "66",
+      "protocol": "connected",
+      "vdevice-dataKey": "10.0.0.1-10",
+      "metric": "0",
+      "affinity-preference-order": "None",
+      "derived-affinity-group-number": "None",
+      "region-id": "None",
+      "lastupdated": 1792743424454,
+      "affinity-group-number": "None",
+      "attribute-type": "installed",
+      "status": "C I R"
+    },
+    {
+      "overlay-id": "1",
+      "color": "biz-internet",
+      "vdevice-name": "10.0.0.1",
+      "prefix": "10.61.201.0/24",
+      "ip": "10.0.0.3",
+      "from-peer": "1.1.1.3",
+      "label": "1003",
+      "encap": "ipsec",
+      "site-id": "201",
+      "originator": "10.0.0.3",
+      "vpn-id": "10",
+      "vdevice-host-name": "hub1",
+      "tenant-id": "0",
+      "path-id": "68",
+      "protocol": "connected",
+      "vdevice-dataKey": "10.0.0.1-10",
+      "metric": "0",
+      "affinity-preference-order": "None",
+      "derived-affinity-group-number": "None",
+      "region-id": "None",
+      "lastupdated": 1792743424454,
+      "affinity-group-number": "None",
+      "attribute-type": "installed",
+      "status": "C I R"
+    }
+  ]
+}

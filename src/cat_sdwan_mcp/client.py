@@ -49,6 +49,8 @@ VSESSION_PATH = "/dataservice/tenant/{id}/vsessionid"
 DEVICE_PATH = "/dataservice/device"
 CONTROLLERS_PATH = "/dataservice/system/device/controllers"
 VEDGES_PATH = "/dataservice/system/device/vedges"
+BULK_STATE_PATH = "/dataservice/data/device/state/{name}"
+BULK_PAGE = 1000
 
 REQUESTS_PER_MINUTE = 6000  # 100 requests/s, the Manager's per-user limit
 BULK_PREFIXES = ("dataservice/data/device/",)
@@ -336,6 +338,33 @@ class SdwanApp:
         if isinstance(body, dict) and "data" in body:
             return body["data"]
         return body
+
+    async def bulk_state(
+        self, name: str, *, limit: int, page_size: int = BULK_PAGE
+    ) -> tuple[list[dict[str, Any]], bool]:
+        """GET /dataservice/data/device/state/<name> (the Manager's state database, every device at once),
+        following `pageInfo` (`startId`/`endId`/`moreEntries`, 20.x) until `limit` rows. Returns the rows and
+        whether more exist. Runs in the bulk bucket (48/min, two at a time), so one call pages slowly on a
+        big fabric: keep `limit` near what the tool shows."""
+        path = BULK_STATE_PATH.format(name=quote(name, safe=""))
+        rows: list[dict[str, Any]] = []
+        params: dict[str, Any] = {"count": min(page_size, limit)}
+        while True:
+            body = await self.api.get(path, params)
+            batch = [
+                r
+                for r in _as_list(body.get("data") if isinstance(body, dict) else body)
+                if isinstance(r, dict)
+            ]
+            rows.extend(batch)
+            info = body.get("pageInfo") if isinstance(body, dict) else None
+            more = bool(isinstance(info, dict) and info.get("moreEntries"))
+            end = info.get("endId") if isinstance(info, dict) else None
+            if len(rows) >= limit:
+                return rows[:limit], more or len(rows) > limit
+            if not more or not batch or end in (None, "", params.get("startId")):
+                return rows, False
+            params = {"count": min(page_size, limit - len(rows)), "startId": end}
 
     async def devices(self) -> list[dict[str, Any]]:
         """GET /dataservice/device: every controller and edge with its live state."""

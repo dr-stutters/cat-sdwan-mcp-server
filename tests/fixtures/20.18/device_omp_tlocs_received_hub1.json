@@ -1,0 +1,407 @@
+{
+  "header": {
+    "generatedOn": 1792743425266,
+    "viewKeys": {
+      "uniqueKey": [
+        "vdevice-dataKey"
+      ],
+      "preferenceKey": "grid-OMPReceivedTlocs"
+    },
+    "columns": [
+      {
+        "title": "device.omp.dataOmpReceivedTlocs.addressFamily",
+        "property": "address-family",
+        "width": 150,
+        "dataType": "string"
+      },
+      {
+        "title": "device.omp.dataOmpReceivedTlocs.iP",
+        "property": "ip",
+        "width": 200,
+        "dataType": "ipv4"
+      },
+      {
+        "title": "device.omp.dataOmpReceivedTlocs.color",
+        "property": "color",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.omp.dataOmpReceivedTlocs.encap",
+        "property": "encap",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.omp.dataOmpReceivedTlocs.fromPeer",
+        "property": "from-peer",
+        "width": 200,
+        "dataType": "ipv4"
+      },
+      {
+        "title": "device.omp.dataOmpReceivedTlocs.tlocSpi",
+        "property": "tloc-spi",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.omp.dataOmpReceivedTlocs.authType",
+        "property": "tloc-auth-type",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.omp.dataOmpReceivedTlocs.encryptType",
+        "property": "tloc-encrypt-type",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.omp.dataOmpReceivedTlocs.publicIp",
+        "property": "tloc-public-ip",
+        "width": 200,
+        "dataType": "ipv4"
+      },
+      {
+        "title": "device.omp.dataOmpReceivedTlocs.publicPort",
+        "property": "tloc-public-port",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.omp.dataOmpReceivedTlocs.privateIp",
+        "property": "tloc-private-ip",
+        "width": 200,
+        "dataType": "ipv4"
+      },
+      {
+        "title": "device.omp.dataOmpReceivedTlocs.privatePort",
+        "property": "tloc-private-port",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.omp.dataOmpReceivedTlocs.siteId",
+        "property": "site-id",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.omp.dataOmpReceivedTlocs.bfdStatus",
+        "property": "bfd-status",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.omp.dataOmpReceivedTlocs.preference",
+        "property": "preference",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.omp.dataOmpReceivedTlocs.regionId",
+        "property": "region-id",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.omp.dataOmpReceivedTlocs.weight",
+        "property": "weight",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.omp.dataOmpReceivedTlocs.originator",
+        "property": "originator",
+        "width": 200,
+        "dataType": "ipv4"
+      },
+      {
+        "title": "device.omp.dataOmpReceivedTlocs.affinityGroupNumber",
+        "property": "affinity-group-number",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.omp.dataOmpReceivedTlocs.managemantRegion",
+        "property": "management-region",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.omp.dataOmpReceivedTlocs.managementGateway",
+        "property": "management-gateway",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.omp.dataOmpReceivedTlocs.lastUpdated",
+        "property": "lastupdated",
+        "displayFormat": "DD MMM YYYY h:mm:ss A z",
+        "inputFormat": "unix-time",
+        "minWidth": 100,
+        "dataType": "date"
+      }
+    ],
+    "fields": [
+      {
+        "property": "vdevice-name",
+        "dataType": "string"
+      },
+      {
+        "property": "vdevice-host-name",
+        "dataType": "string"
+      },
+      {
+        "property": "address-family",
+        "dataType": "string"
+      },
+      {
+        "property": "ip",
+        "dataType": "ipv4"
+      },
+      {
+        "property": "color",
+        "dataType": "string"
+      },
+      {
+        "property": "encap",
+        "dataType": "string"
+      },
+      {
+        "property": "from-peer",
+        "dataType": "ipv4"
+      },
+      {
+        "property": "tloc-proto",
+        "dataType": "string"
+      },
+      {
+        "property": "tloc-spi",
+        "dataType": "string"
+      },
+      {
+        "property": "tloc-auth-type",
+        "dataType": "string"
+      },
+      {
+        "property": "tloc-encrypt-type",
+        "dataType": "string"
+      },
+      {
+        "property": "tloc-public-ip",
+        "dataType": "ipv4"
+      },
+      {
+        "property": "tloc-public-port",
+        "dataType": "string"
+      },
+      {
+        "property": "tloc-private-ip",
+        "dataType": "ipv4"
+      },
+      {
+        "property": "tloc-private-port",
+        "dataType": "string"
+      },
+      {
+        "property": "site-id",
+        "dataType": "string"
+      },
+      {
+        "property": "bfd-status",
+        "dataType": "string"
+      },
+      {
+        "property": "preference",
+        "dataType": "string"
+      },
+      {
+        "property": "region-id",
+        "dataType": "string"
+      },
+      {
+        "property": "weight",
+        "dataType": "string"
+      },
+      {
+        "property": "originator",
+        "dataType": "ipv4"
+      },
+      {
+        "property": "affinity-group-number",
+        "dataType": "string"
+      },
+      {
+        "property": "management-region",
+        "dataType": "string"
+      },
+      {
+        "property": "management-gateway",
+        "dataType": "string"
+      },
+      {
+        "property": "lastupdated",
+        "dataType": "date"
+      }
+    ]
+  },
+  "data": [
+    {
+      "bfd-status": "up",
+      "color": "mpls",
+      "vdevice-name": "10.0.0.1",
+      "ip": "10.0.0.1",
+      "tloc-auth-type": "sha1-hmac ah-sha1-hmac",
+      "preference": "0",
+      "from-peer": "0.0.0.0",
+      "weight": "1",
+      "encap": "ipsec",
+      "site-id": "100",
+      "originator": "10.0.0.1",
+      "vdevice-host-name": "hub1",
+      "tloc-public-ip": "10.60.1.13",
+      "tloc-public-port": "12386",
+      "tloc-private-ip": "10.60.1.13",
+      "vdevice-dataKey": "10.0.0.1-ipv4-10.0.0.1",
+      "tloc-private-port": "12386",
+      "tloc-spi": "272",
+      "region-id": "None",
+      "lastupdated": 1792743425246,
+      "tloc-encrypt-type": "aes256",
+      "affinity-group-number": "None",
+      "tloc-proto": "0",
+      "address-family": "ipv4"
+    },
+    {
+      "bfd-status": "up",
+      "color": "biz-internet",
+      "vdevice-name": "10.0.0.1",
+      "ip": "10.0.0.1",
+      "tloc-auth-type": "sha1-hmac ah-sha1-hmac",
+      "preference": "0",
+      "from-peer": "0.0.0.0",
+      "weight": "1",
+      "encap": "ipsec",
+      "site-id": "100",
+      "originator": "10.0.0.1",
+      "vdevice-host-name": "hub1",
+      "tloc-public-ip": "10.60.2.13",
+      "tloc-public-port": "12386",
+      "tloc-private-ip": "10.60.2.13",
+      "vdevice-dataKey": "10.0.0.1-ipv4-10.0.0.1",
+      "tloc-private-port": "12386",
+      "tloc-spi": "272",
+      "region-id": "None",
+      "lastupdated": 1792743425248,
+      "tloc-encrypt-type": "aes256",
+      "affinity-group-number": "None",
+      "tloc-proto": "0",
+      "address-family": "ipv4"
+    },
+    {
+      "bfd-status": "up",
+      "color": "mpls",
+      "vdevice-name": "10.0.0.1",
+      "ip": "10.0.0.2",
+      "tloc-auth-type": "sha1-hmac ah-sha1-hmac",
+      "preference": "0",
+      "from-peer": "1.1.1.3",
+      "weight": "1",
+      "encap": "ipsec",
+      "site-id": "200",
+      "originator": "10.0.0.2",
+      "vdevice-host-name": "hub1",
+      "tloc-public-ip": "10.60.1.14",
+      "tloc-public-port": "12426",
+      "tloc-private-ip": "10.60.1.14",
+      "vdevice-dataKey": "10.0.0.1-ipv4-10.0.0.2",
+      "tloc-private-port": "12426",
+      "tloc-spi": "274",
+      "region-id": "None",
+      "lastupdated": 1792743425250,
+      "tloc-encrypt-type": "aes256",
+      "affinity-group-number": "None",
+      "tloc-proto": "0",
+      "address-family": "ipv4"
+    },
+    {
+      "bfd-status": "up",
+      "color": "biz-internet",
+      "vdevice-name": "10.0.0.1",
+      "ip": "10.0.0.2",
+      "tloc-auth-type": "sha1-hmac ah-sha1-hmac",
+      "preference": "0",
+      "from-peer": "1.1.1.3",
+      "weight": "1",
+      "encap": "ipsec",
+      "site-id": "200",
+      "originator": "10.0.0.2",
+      "vdevice-host-name": "hub1",
+      "tloc-public-ip": "10.60.2.14",
+      "tloc-public-port": "12426",
+      "tloc-private-ip": "10.60.2.14",
+      "vdevice-dataKey": "10.0.0.1-ipv4-10.0.0.2",
+      "tloc-private-port": "12426",
+      "tloc-spi": "274",
+      "region-id": "None",
+      "lastupdated": 1792743425252,
+      "tloc-encrypt-type": "aes256",
+      "affinity-group-number": "None",
+      "tloc-proto": "0",
+      "address-family": "ipv4"
+    },
+    {
+      "bfd-status": "up",
+      "color": "mpls",
+      "vdevice-name": "10.0.0.1",
+      "ip": "10.0.0.3",
+      "tloc-auth-type": "sha1-hmac ah-sha1-hmac",
+      "preference": "0",
+      "from-peer": "1.1.1.3",
+      "weight": "1",
+      "encap": "ipsec",
+      "site-id": "201",
+      "originator": "10.0.0.3",
+      "vdevice-host-name": "hub1",
+      "tloc-public-ip": "10.60.1.15",
+      "tloc-public-port": "12386",
+      "tloc-private-ip": "10.60.1.15",
+      "vdevice-dataKey": "10.0.0.1-ipv4-10.0.0.3",
+      "tloc-private-port": "12386",
+      "tloc-spi": "272",
+      "region-id": "None",
+      "lastupdated": 1792743425253,
+      "tloc-encrypt-type": "aes256",
+      "affinity-group-number": "None",
+      "tloc-proto": "0",
+      "address-family": "ipv4"
+    },
+    {
+      "bfd-status": "up",
+      "color": "biz-internet",
+      "vdevice-name": "10.0.0.1",
+      "ip": "10.0.0.3",
+      "tloc-auth-type": "sha1-hmac ah-sha1-hmac",
+      "preference": "0",
+      "from-peer": "1.1.1.3",
+      "weight": "1",
+      "encap": "ipsec",
+      "site-id": "201",
+      "originator": "10.0.0.3",
+      "vdevice-host-name": "hub1",
+      "tloc-public-ip": "10.60.2.15",
+      "tloc-public-port": "12386",
+      "tloc-private-ip": "10.60.2.15",
+      "vdevice-dataKey": "10.0.0.1-ipv4-10.0.0.3",
+      "tloc-private-port": "12386",
+      "tloc-spi": "272",
+      "region-id": "None",
+      "lastupdated": 1792743425255,
+      "tloc-encrypt-type": "aes256",
+      "affinity-group-number": "None",
+      "tloc-proto": "0",
+      "address-family": "ipv4"
+    }
+  ]
+}

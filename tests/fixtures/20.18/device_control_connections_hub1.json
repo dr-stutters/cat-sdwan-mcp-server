@@ -1,0 +1,329 @@
+{
+  "header": {
+    "generatedOn": 1792743422902,
+    "viewKeys": {
+      "uniqueKey": [
+        "vdevice-dataKey"
+      ],
+      "preferenceKey": "grid-ControlConnection"
+    },
+    "columns": [
+      {
+        "title": "device.control.dataControlConnection.instanceId",
+        "property": "instance",
+        "width": 100,
+        "dataType": "number"
+      },
+      {
+        "title": "device.control.dataControlConnection.peerType",
+        "property": "peer-type",
+        "hideable": false,
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.control.dataControlConnection.peerProtocol",
+        "property": "protocol",
+        "width": 150,
+        "dataType": "string"
+      },
+      {
+        "title": "device.control.dataControlConnection.peerSystemIp",
+        "property": "system-ip",
+        "hideable": false,
+        "width": 200,
+        "dataType": "ip"
+      },
+      {
+        "title": "device.control.dataControlConnection.siteId",
+        "property": "site-id",
+        "width": 100,
+        "dataType": "number"
+      },
+      {
+        "title": "device.control.dataControlConnection.domainId",
+        "property": "domain-id",
+        "width": 100,
+        "dataType": "number"
+      },
+      {
+        "title": "device.control.dataControlConnection.privateIp",
+        "property": "private-ip",
+        "width": 200,
+        "dataType": "ip"
+      },
+      {
+        "title": "device.control.dataControlConnection.privatePort",
+        "property": "private-port",
+        "width": 100,
+        "dataType": "number"
+      },
+      {
+        "title": "device.control.dataControlConnection.publicIp",
+        "property": "public-ip",
+        "width": 100,
+        "dataType": "ip"
+      },
+      {
+        "title": "device.control.dataControlConnection.publicPort",
+        "property": "public-port",
+        "width": 100,
+        "dataType": "number"
+      },
+      {
+        "title": "device.control.dataControlConnection.localColor",
+        "property": "local-color",
+        "width": 120,
+        "dataType": "string"
+      },
+      {
+        "title": "device.control.dataControlConnection.remoteColor",
+        "property": "remote-color",
+        "width": 150,
+        "dataType": "string"
+      },
+      {
+        "title": "device.control.dataControlConnection.state",
+        "property": "state",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.control.dataControlConnection.controllerGrou",
+        "property": "controller-group-id",
+        "width": 100,
+        "dataType": "number"
+      },
+      {
+        "title": "device.control.dataControlConnection.sharedRegionIdSet",
+        "property": "shared-region-id-set",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.control.dataControlConnection.upSince",
+        "property": "uptime-date",
+        "displayFormat": "DD MMM YYYY h:mm:ss A z",
+        "inputFormat": "unix-time",
+        "width": 220,
+        "dataType": "date"
+      },
+      {
+        "title": "device.control.dataControlConnection.upTime",
+        "property": "uptime",
+        "width": 100,
+        "dataType": "uptime"
+      },
+      {
+        "title": "device.control.dataControlConnection.lastUpdated",
+        "property": "lastupdated",
+        "displayFormat": "DD MMM YYYY h:mm:ss A z",
+        "inputFormat": "unix-time",
+        "hideable": false,
+        "minWidth": 100,
+        "dataType": "date"
+      },
+      {
+        "title": "device.control.dataControlConnection.proxy",
+        "property": "behind-proxy",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.control.dataControlConnection.organizationNa",
+        "property": "v-org-name",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.control.dataControlConnection.peerHostName",
+        "property": "peer-host-name",
+        "hideable": false,
+        "width": 100,
+        "dataType": "string"
+      }
+    ],
+    "fields": [
+      {
+        "property": "vdevice-name",
+        "dataType": "string"
+      },
+      {
+        "property": "vdevice-host-name",
+        "dataType": "string"
+      },
+      {
+        "property": "instance",
+        "dataType": "number"
+      },
+      {
+        "property": "peer-type",
+        "dataType": "string"
+      },
+      {
+        "property": "protocol",
+        "dataType": "string"
+      },
+      {
+        "property": "system-ip",
+        "dataType": "ip"
+      },
+      {
+        "property": "site-id",
+        "dataType": "number"
+      },
+      {
+        "property": "domain-id",
+        "dataType": "number"
+      },
+      {
+        "property": "private-ip",
+        "dataType": "ip"
+      },
+      {
+        "property": "private-port",
+        "dataType": "number"
+      },
+      {
+        "property": "public-ip",
+        "dataType": "ip"
+      },
+      {
+        "property": "public-port",
+        "dataType": "number"
+      },
+      {
+        "property": "local-color",
+        "dataType": "string"
+      },
+      {
+        "property": "remote-color",
+        "dataType": "string"
+      },
+      {
+        "property": "state",
+        "dataType": "string"
+      },
+      {
+        "property": "controller-group-id",
+        "dataType": "number"
+      },
+      {
+        "property": "shared-region-id-set",
+        "dataType": "string"
+      },
+      {
+        "property": "uptime-date",
+        "dataType": "date"
+      },
+      {
+        "property": "uptime",
+        "dataType": "uptime"
+      },
+      {
+        "property": "lastupdated",
+        "dataType": "date"
+      },
+      {
+        "property": "behind-proxy",
+        "dataType": "string"
+      },
+      {
+        "property": "v-org-name",
+        "dataType": "string"
+      },
+      {
+        "property": "peer-host-name",
+        "dataType": "string"
+      }
+    ],
+    "modelNameMapping": {
+      "vAnalytics": "Analytics",
+      "vmanage": "Manager",
+      "vSmart": "Controller",
+      "vManage": "Manager",
+      "Cloud OnRamp": "Cloud onRamp",
+      "vedge-x86": "Controller/Validator",
+      "vBond": "Validator"
+    }
+  },
+  "data": [
+    {
+      "domain-id": 1,
+      "instance": 0,
+      "vdevice-name": "10.0.0.1",
+      "behind-proxy": "No",
+      "system-ip": "1.1.1.3",
+      "peer-host-name": "controller",
+      "remote-color": "default",
+      "site-id": 1,
+      "private-port": 12346,
+      "controller-group-id": 0,
+      "vdevice-host-name": "hub1",
+      "local-color": "mpls",
+      "uptime": "0:00:10:11",
+      "peer-type": "vsmart",
+      "shared-region-id-set": "N/A",
+      "v-org-name": "mcp-lab-org",
+      "protocol": "dtls",
+      "vdevice-dataKey": "10.0.0.1-0-mpls-1.1.1.3-default",
+      "public-ip": "10.60.2.12",
+      "public-port": 12346,
+      "lastupdated": 1792743422892,
+      "state": "up",
+      "private-ip": "10.60.2.12",
+      "uptime-date": 1792742811893
+    },
+    {
+      "domain-id": 1,
+      "instance": 0,
+      "vdevice-name": "10.0.0.1",
+      "behind-proxy": "No",
+      "system-ip": "1.1.1.3",
+      "peer-host-name": "controller",
+      "remote-color": "default",
+      "site-id": 1,
+      "private-port": 12346,
+      "controller-group-id": 0,
+      "vdevice-host-name": "hub1",
+      "local-color": "biz-internet",
+      "uptime": "0:00:10:08",
+      "peer-type": "vsmart",
+      "shared-region-id-set": "N/A",
+      "v-org-name": "mcp-lab-org",
+      "protocol": "dtls",
+      "vdevice-dataKey": "10.0.0.1-0-biz-internet-1.1.1.3-default",
+      "public-ip": "10.60.2.12",
+      "public-port": 12346,
+      "lastupdated": 1792743422892,
+      "state": "up",
+      "private-ip": "10.60.2.12",
+      "uptime-date": 1792742814894
+    },
+    {
+      "domain-id": 0,
+      "instance": 0,
+      "vdevice-name": "10.0.0.1",
+      "behind-proxy": "No",
+      "system-ip": "1.1.1.1",
+      "peer-host-name": "manager",
+      "remote-color": "default",
+      "site-id": 1,
+      "private-port": 12346,
+      "controller-group-id": 0,
+      "vdevice-host-name": "hub1",
+      "local-color": "mpls",
+      "uptime": "0:00:10:11",
+      "peer-type": "vmanage",
+      "v-org-name": "mcp-lab-org",
+      "protocol": "dtls",
+      "vdevice-dataKey": "10.0.0.1-0-mpls-1.1.1.1-default",
+      "public-ip": "10.60.2.10",
+      "public-port": 12346,
+      "lastupdated": 1792743422892,
+      "state": "up",
+      "private-ip": "10.60.2.10",
+      "uptime-date": 1792742811894
+    }
+  ]
+}
