@@ -10,7 +10,17 @@ from cat_sdwan_mcp._core import ServerSpec, ToolRegistrar, build_server
 from cat_sdwan_mcp.client import SdwanApp
 from cat_sdwan_mcp.config import Settings
 from cat_sdwan_mcp.spec import spec_sources
-from cat_sdwan_mcp.tools import api, changes, configuration, control, dataplane, events, inventory, onboarding
+from cat_sdwan_mcp.tools import (
+    api,
+    changes,
+    configuration,
+    control,
+    dataplane,
+    events,
+    inventory,
+    onboarding,
+    prompts,
+)
 
 INSTRUCTIONS = """
 Tools for Catalyst SD-WAN Manager (formerly vManage): fabric inventory and health, tunnels, BFD and
@@ -45,6 +55,8 @@ site_id, config_group or template) (validity, association, variables; stops at t
 edge with catsdwan_bootstrap_config(chassis) as its day-0, or the activate command it gives on a running
 C8000V -> catsdwan_control_connections(device). catsdwan_set_edge_validity: invalid drops a joined edge
 (dangerous). The one-time token is a secret: only catsdwan_bootstrap_config(reveal_otp=true) shows it.
+Prompts: catsdwan_branch_health(site) (a verdict per transport), catsdwan_onboard_branch(site) (NetBox ->
+onboard -> boot -> deploy -> prove), catsdwan_why_is_app_slow(host, app) (ISE, app-route SLA, FMC, CML).
 Anything without a tool: catsdwan_search_spec('bfd') -> catsdwan_get_definition(path) -> catsdwan_api_call
 (paths as /dataservice/..., checked against the Manager's own OpenAPI document; GET and the statistics, alarm,
 event and audit query POSTs are reads, other writes are preview-first, /device/action/* is dangerous).
@@ -80,6 +92,7 @@ def create_server(
             configuration.register,
             changes.register,
             onboarding.register,
+            prompts.register,
         ],
         status=SdwanApp.status,
         spec_sources=spec_sources,

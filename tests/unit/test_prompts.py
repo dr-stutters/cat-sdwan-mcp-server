@@ -1,0 +1,146 @@
+"""W10: workflow prompts (core prompt test kit): contract against the cml, ise and fmc manifests and a
+hand-written netbox manifest, snapshots, rendering and tier gating."""
+
+from pathlib import Path
+
+from fastmcp import Client
+
+from cat_sdwan_mcp._core.prompts import rendered_text
+from cat_sdwan_mcp._core.testing import (
+    assert_prompt_contract,
+    assert_prompt_snapshots,
+    load_tool_manifests,
+)
+
+from .conftest import make_server
+
+TESTS = Path(__file__).resolve().parents[1]
+MANIFESTS = TESTS / "manifests"
+SNAPSHOTS = TESTS / "snapshots" / "prompts-rw"
+KNOWN = {"cml", "ise", "fmc", "catc", "netbox", "win", "catsdwan"}
+
+SAMPLES = {
+    "catsdwan_branch_health": {"site": "200", "lab": "mcp-cat-sdwan"},
+    "catsdwan_onboard_branch": {
+        "site": "201",
+        "chassis": "C8K-00000000-0000-4000-8000-000000000001",
+        "config_group": "mcp-test",
+        "hostname": "br2",
+        "lab": "mcp-cat-sdwan",
+    },
+    "catsdwan_why_is_app_slow": {
+        "host": "10.61.200.10",
+        "app": "ssh to 10.61.100.10",
+        "lab": "mcp-cat-sdwan",
+    },
+}
+
+
+def all_tiers() -> object:
+    return make_server(mcp_enable_writes=True, mcp_enable_dangerous=True)
+
+
+async def text_of(name: str, args: dict[str, str], server: object | None = None) -> str:
+    async with Client(server or all_tiers()) as c:  # type: ignore[arg-type]
+        return rendered_text(await c.get_prompt(name, args))
+
+
+def test_manifests_cover_the_other_servers() -> None:
+    manifests = load_tool_manifests(MANIFESTS)
+    assert set(manifests) == {"cml", "ise", "fmc", "netbox"}
+    assert {"cml_get_link_scenarios", "cml_check_reachability", "cml_build_recipe"} <= manifests["cml"]
+    assert {"netbox_site_summary", "netbox_add_journal_entry"} <= manifests["netbox"]
+
+
+async def test_prompt_contract_against_the_manifests() -> None:
+    await assert_prompt_contract(
+        all_tiers(),  # type: ignore[arg-type]
+        "catsdwan",
+        samples=SAMPLES,
+        known_prefixes=KNOWN,
+        external_tools=load_tool_manifests(MANIFESTS),
+    )
+
+
+async def test_prompt_snapshots() -> None:
+    await assert_prompt_snapshots(all_tiers(), SNAPSHOTS, samples=SAMPLES)  # type: ignore[arg-type]
+
+
+async def test_prompts_declare_their_servers() -> None:
+    async with Client(all_tiers()) as c:  # type: ignore[arg-type]
+        prompts = {p.name: p for p in await c.list_prompts()}
+    uses = {n: (p.meta or {}).get("uses") for n, p in prompts.items()}
+    assert uses == {
+        "catsdwan_branch_health": ["catsdwan", "cml", "netbox"],
+        "catsdwan_onboard_branch": ["catsdwan", "netbox", "cml"],
+        "catsdwan_why_is_app_slow": ["catsdwan", "ise", "fmc", "cml", "netbox"],
+    }
+
+
+async def test_branch_health_renders_a_verdict_per_transport() -> None:
+    text = await text_of("catsdwan_branch_health", SAMPLES["catsdwan_branch_health"])
+    for ref in (
+        "catsdwan_device_health",
+        "catsdwan_control_connections",
+        "catsdwan_bfd_sessions",
+        "catsdwan_app_route_stats",
+        "catsdwan_list_alarms",
+        "catsdwan_recent_activity",
+        "cml_get_link_scenarios",
+    ):
+        assert f"`{ref}`" in text
+    assert 'site="200"' in text and 'lab="mcp-cat-sdwan"' in text
+    assert "healthy" in text and "degraded" in text and "down" in text
+    assert "skipped if that server is not connected" in text
+
+
+async def test_branch_health_default_lab() -> None:
+    text = await text_of("catsdwan_branch_health", {"site": "SITE_100"})
+    assert 'lab="mcp-cat-sdwan"' in text
+
+
+async def test_onboard_branch_is_preview_first_and_chains_the_servers() -> None:
+    text = await text_of("catsdwan_onboard_branch", SAMPLES["catsdwan_onboard_branch"])
+    order = [
+        "netbox_site_summary",
+        "netbox_next_available_ips",
+        "catsdwan_list_wan_edges",
+        "catsdwan_onboard_edge",
+        "catsdwan_bootstrap_config",
+        "cml_configure_node",
+        "catsdwan_control_connections",
+        "catsdwan_deploy_config_group",
+        "catsdwan_bfd_sessions",
+        "cml_check_reachability",
+        "netbox_add_journal_entry",
+    ]
+    positions = [text.index(f"`{ref}`") for ref in order]
+    assert positions == sorted(positions)
+    assert "PREVIEW-FIRST" in text and 'use chassis "C8K-00000000-0000-4000-8000-000000000001"' in text
+    assert 'config_group="mcp-test"' in text and "hostname=br2" in text
+    assert 'recipe "cat-sdwan-fabric"' in text and "one-time token" in text
+
+
+async def test_onboard_branch_without_optional_arguments() -> None:
+    text = await text_of("catsdwan_onboard_branch", {"site": "201"})
+    assert "pick a free chassis" in text and "ask the user which group" in text
+
+
+async def test_onboard_branch_hidden_without_writes() -> None:
+    async with Client(make_server()) as c:
+        names = {p.name for p in await c.list_prompts()}
+    assert names == {"catsdwan_branch_health", "catsdwan_why_is_app_slow"}
+
+
+async def test_why_is_app_slow_renders() -> None:
+    text = await text_of("catsdwan_why_is_app_slow", SAMPLES["catsdwan_why_is_app_slow"])
+    for ref in (
+        "ise_find_session",
+        "netbox_lookup_ip",
+        "catsdwan_app_route_stats",
+        "catsdwan_list_sla_classes",
+        "fmc_packet_tracer",
+        "cml_get_link_scenarios",
+    ):
+        assert f"`{ref}`" in text
+    assert "10.61.200.10" in text and "ssh to 10.61.100.10" in text and "ONE sentence" in text

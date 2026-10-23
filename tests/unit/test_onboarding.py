@@ -188,14 +188,14 @@ async def test_bootstrap_encoded(api: respx.MockRouter) -> None:
     assert "vbond : 10.60.2.11" in out["decoded_masked"]
 
 
-async def test_bootstrap_warns_for_a_joined_or_invalid_edge(api: respx.MockRouter) -> None:
+async def test_bootstrap_refuses_a_joined_edge(api: respx.MockRouter) -> None:
+    """Live 20.18.3: the Manager answers 400 'not in "Token Generated" ... state' for a joined edge."""
     mock_inventory(api, br2={"validity": "invalid"})
-    mock_bootstrap(api, BR2, cloud_init(BR2, "otp-x"))
+    route = mock_bootstrap(api, BR2, cloud_init(BR2, "otp-x"))
     async with Client(make_server()) as c:
-        out = await run(c, "catsdwan_bootstrap_config", {"chassis": "br2"})
-    text = " ".join(out["warnings"])
-    assert "already joined" in text and "is invalid" in text
-    assert "otp-x" not in json.dumps(out)
+        with pytest.raises(ToolError, match="already joined"):
+            await c.call_tool("catsdwan_bootstrap_config", {"chassis": "br2"})
+    assert not route.called
 
 
 async def test_bootstrap_unknown_chassis_names_the_ways_in(api: respx.MockRouter) -> None:
