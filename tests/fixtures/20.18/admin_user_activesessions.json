@@ -1,0 +1,298 @@
+{
+  "header": {
+    "generatedOn": 1792758946489,
+    "viewKeys": {
+      "uniqueKey": [],
+      "preferenceKey": "grid-UserSessionMgmt"
+    },
+    "columns": [
+      {
+        "title": "view.users.clientViewSessionMgmt.userName",
+        "property": "rawUserName",
+        "width": 120,
+        "dataType": "string"
+      },
+      {
+        "title": "view.users.clientViewSessionMgmt.uuidCaps",
+        "property": "uuid",
+        "minWidth": 120,
+        "dataType": "string"
+      },
+      {
+        "title": "view.users.clientViewSessionMgmt.sourceIp",
+        "property": "sourceIp",
+        "minWidth": 120,
+        "dataType": "string"
+      },
+      {
+        "title": "view.users.clientViewSessionMgmt.remoteHost",
+        "property": "remoteHost",
+        "width": 120,
+        "dataType": "string"
+      },
+      {
+        "title": "view.users.clientViewSessionMgmt.tenantDomain",
+        "property": "tenantDomain",
+        "width": 120,
+        "dataType": "string"
+      },
+      {
+        "title": "view.users.clientViewSessionMgmt.tenantUuid",
+        "property": "tenantId",
+        "width": 120,
+        "dataType": "string"
+      },
+      {
+        "title": "view.users.clientViewSessionMgmt.rawUserid",
+        "property": "rawId",
+        "width": 120,
+        "dataType": "string"
+      },
+      {
+        "title": "view.users.clientViewSessionMgmt.userMode",
+        "property": "userMode",
+        "width": 120,
+        "dataType": "string"
+      },
+      {
+        "title": "view.users.clientViewSessionMgmt.userGroups",
+        "property": "userGroup",
+        "width": 120,
+        "dataType": "string"
+      },
+      {
+        "title": "view.users.clientViewSessionMgmt.creationDate",
+        "property": "createDateTime",
+        "displayFormat": "DD MMM YYYY h:mm:ss A z",
+        "inputFormat": "unix-time",
+        "width": 120,
+        "dataType": "date"
+      },
+      {
+        "title": "view.users.clientViewSessionMgmt.lastAccessedTi",
+        "property": "lastAccessedTime",
+        "displayFormat": "DD MMM YYYY h:mm:ss A z",
+        "inputFormat": "unix-time",
+        "width": 120,
+        "dataType": "date"
+      }
+    ],
+    "fields": [
+      {
+        "property": "rawUserName",
+        "dataType": "string"
+      },
+      {
+        "property": "uuid",
+        "dataType": "string"
+      },
+      {
+        "property": "sourceIp",
+        "dataType": "string"
+      },
+      {
+        "property": "remoteHost",
+        "dataType": "string"
+      },
+      {
+        "property": "tenantDomain",
+        "dataType": "string"
+      },
+      {
+        "property": "tenantId",
+        "dataType": "string"
+      },
+      {
+        "property": "rawId",
+        "dataType": "string"
+      },
+      {
+        "property": "userMode",
+        "dataType": "string"
+      },
+      {
+        "property": "userGroup",
+        "dataType": "string"
+      },
+      {
+        "property": "createDateTime",
+        "dataType": "date"
+      },
+      {
+        "property": "lastAccessedTime",
+        "dataType": "date"
+      }
+    ]
+  },
+  "data": [
+    {
+      "uuid": "1390983210",
+      "remoteHost": "0.0.0.0",
+      "tenantDomain": "NA",
+      "tenantId": "default",
+      "rawUserName": "admin",
+      "rawId": "admin",
+      "userMode": "webui",
+      "sourceIp": "192.0.2.10",
+      "userGroup": "[\"netadmin\"]",
+      "lastAccessedTime": 1792757014000,
+      "createDateTime": 1792757014000
+    },
+    {
+      "uuid": "322889266",
+      "remoteHost": "0.0.0.0",
+      "tenantDomain": "NA",
+      "tenantId": "default",
+      "rawUserName": "admin",
+      "rawId": "admin",
+      "userMode": "webui",
+      "sourceIp": "192.0.2.10",
+      "userGroup": "[\"netadmin\"]",
+      "lastAccessedTime": 1792757027000,
+      "createDateTime": 1792757027000
+    },
+    {
+      "uuid": "1308401443",
+      "remoteHost": "0.0.0.0",
+      "tenantDomain": "NA",
+      "tenantId": "default",
+      "rawUserName": "admin",
+      "rawId": "admin",
+      "userMode": "webui",
+      "sourceIp": "192.0.2.10",
+      "userGroup": "[\"netadmin\"]",
+      "lastAccessedTime": 1792757580000,
+      "createDateTime": 1792757580000
+    },
+    {
+      "uuid": "2146848397",
+      "remoteHost": "0.0.0.0",
+      "tenantDomain": "NA",
+      "tenantId": "default",
+      "rawUserName": "admin",
+      "rawId": "admin",
+      "userMode": "webui",
+      "sourceIp": "192.0.2.10",
+      "userGroup": "[\"netadmin\"]",
+      "lastAccessedTime": 1792757714000,
+      "createDateTime": 1792757714000
+    },
+    {
+      "uuid": "2049473790",
+      "remoteHost": "0.0.0.0",
+      "tenantDomain": "NA",
+      "tenantId": "default",
+      "rawUserName": "admin",
+      "rawId": "admin",
+      "userMode": "webui",
+      "sourceIp": "192.0.2.10",
+      "userGroup": "[\"netadmin\"]",
+      "lastAccessedTime": 1792758861000,
+      "createDateTime": 1792758861000
+    },
+    {
+      "uuid": "1498773684",
+      "remoteHost": "0.0.0.0",
+      "tenantDomain": "NA",
+      "tenantId": "default",
+      "rawUserName": "admin",
+      "rawId": "admin",
+      "userMode": "webui",
+      "sourceIp": "192.0.2.10",
+      "userGroup": "[\"netadmin\"]",
+      "lastAccessedTime": 1792758881000,
+      "createDateTime": 1792758881000
+    },
+    {
+      "uuid": "964505355",
+      "remoteHost": "0.0.0.0",
+      "tenantDomain": "NA",
+      "tenantId": "default",
+      "rawUserName": "admin",
+      "rawId": "admin",
+      "userMode": "webui",
+      "sourceIp": "192.0.2.10",
+      "userGroup": "[\"netadmin\"]",
+      "lastAccessedTime": 1792758895000,
+      "createDateTime": 1792758895000
+    },
+    {
+      "uuid": "1488574952",
+      "remoteHost": "0.0.0.0",
+      "tenantDomain": "NA",
+      "tenantId": "default",
+      "rawUserName": "admin",
+      "rawId": "admin",
+      "userMode": "webui",
+      "sourceIp": "192.0.2.10",
+      "userGroup": "[\"netadmin\"]",
+      "lastAccessedTime": 1792758905000,
+      "createDateTime": 1792758905000
+    },
+    {
+      "uuid": "46778785",
+      "remoteHost": "0.0.0.0",
+      "tenantDomain": "NA",
+      "tenantId": "default",
+      "rawUserName": "admin",
+      "rawId": "admin",
+      "userMode": "webui",
+      "sourceIp": "192.0.2.10",
+      "userGroup": "[\"netadmin\"]",
+      "lastAccessedTime": 1792758922000,
+      "createDateTime": 1792758922000
+    },
+    {
+      "uuid": "1850400172",
+      "remoteHost": "0.0.0.0",
+      "tenantDomain": "NA",
+      "tenantId": "default",
+      "rawUserName": "admin",
+      "rawId": "admin",
+      "userMode": "webui",
+      "sourceIp": "192.0.2.10",
+      "userGroup": "[\"netadmin\"]",
+      "lastAccessedTime": 1792758923000,
+      "createDateTime": 1792758923000
+    },
+    {
+      "uuid": "1853042835",
+      "remoteHost": "0.0.0.0",
+      "tenantDomain": "NA",
+      "tenantId": "default",
+      "rawUserName": "admin",
+      "rawId": "admin",
+      "userMode": "webui",
+      "sourceIp": "192.0.2.10",
+      "userGroup": "[\"netadmin\"]",
+      "lastAccessedTime": 1792758938000,
+      "createDateTime": 1792758938000
+    },
+    {
+      "uuid": "500035572",
+      "remoteHost": "0.0.0.0",
+      "tenantDomain": "NA",
+      "tenantId": "default",
+      "rawUserName": "admin",
+      "rawId": "admin",
+      "userMode": "webui",
+      "sourceIp": "192.0.2.10",
+      "userGroup": "[\"netadmin\"]",
+      "lastAccessedTime": 1792758942000,
+      "createDateTime": 1792758942000
+    },
+    {
+      "uuid": "1387772286",
+      "remoteHost": "0.0.0.0",
+      "tenantDomain": "NA",
+      "tenantId": "default",
+      "rawUserName": "admin",
+      "rawId": "admin",
+      "userMode": "webui",
+      "sourceIp": "192.0.2.10",
+      "userGroup": "[\"netadmin\"]",
+      "lastAccessedTime": 1792758944000,
+      "createDateTime": 1792758944000
+    }
+  ]
+}

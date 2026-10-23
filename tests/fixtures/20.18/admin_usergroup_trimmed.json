@@ -1,0 +1,947 @@
+{
+  "header": {
+    "note": "trimmed by hand: each group's first 30 of 360 tasks; header dropped"
+  },
+  "data": [
+    {
+      "groupName": "basic",
+      "groupDesc": "",
+      "type": "Default",
+      "tasks": [
+        {
+          "feature": "Policy",
+          "enabled": false,
+          "read": false,
+          "write": false
+        },
+        {
+          "feature": "Routing",
+          "enabled": false,
+          "read": false,
+          "write": false
+        },
+        {
+          "feature": "Security",
+          "enabled": false,
+          "read": false,
+          "write": false
+        },
+        {
+          "feature": "Interface",
+          "enabled": true,
+          "read": true,
+          "write": false
+        },
+        {
+          "feature": "System",
+          "enabled": true,
+          "read": true,
+          "write": false
+        },
+        {
+          "feature": "ACL Policy",
+          "enabled": false,
+          "read": false,
+          "write": false
+        },
+        {
+          "feature": "AI Assistant",
+          "enabled": false,
+          "read": false,
+          "write": false
+        },
+        {
+          "feature": "Alarms",
+          "enabled": false,
+          "read": false,
+          "write": false
+        },
+        {
+          "feature": "AppRoute Policy",
+          "enabled": false,
+          "read": false,
+          "write": false
+        },
+        {
+          "feature": "Application Catalog > Cloud Sourced Applications",
+          "enabled": false,
+          "read": false,
+          "write": false
+        },
+        {
+          "feature": "Application Monitoring",
+          "enabled": false,
+          "read": false,
+          "write": false
+        },
+        {
+          "feature": "Audit Log",
+          "enabled": false,
+          "read": false,
+          "write": false
+        },
+        {
+          "feature": "CFlowD Policy",
+          "enabled": false,
+          "read": false,
+          "write": false
+        },
+        {
+          "feature": "CLI Add-On Template",
+          "enabled": false,
+          "read": false,
+          "write": false
+        },
+        {
+          "feature": "Cellular Profile Reset",
+          "enabled": false,
+          "read": false,
+          "write": false
+        },
+        {
+          "feature": "Certificates",
+          "enabled": false,
+          "read": false,
+          "write": false
+        },
+        {
+          "feature": "Certificates > Controller",
+          "enabled": false,
+          "read": false,
+          "write": false
+        },
+        {
+          "feature": "Certificates > Edge",
+          "enabled": false,
+          "read": false,
+          "write": false
+        },
+        {
+          "feature": "Cloud OnRamp",
+          "enabled": false,
+          "read": false,
+          "write": false
+        },
+        {
+          "feature": "Cluster",
+          "enabled": false,
+          "read": false,
+          "write": false
+        },
+        {
+          "feature": "Colocation",
+          "enabled": false,
+          "read": false,
+          "write": false
+        },
+        {
+          "feature": "Config Group",
+          "enabled": false,
+          "read": false,
+          "write": false
+        },
+        {
+          "feature": "Config Group > Device",
+          "enabled": false,
+          "read": false,
+          "write": false
+        },
+        {
+          "feature": "Config Group > Device > Deploy",
+          "enabled": false,
+          "read": false,
+          "write": false
+        },
+        {
+          "feature": "Control Component Settings",
+          "enabled": false,
+          "read": false,
+          "write": false
+        },
+        {
+          "feature": "Cortex",
+          "enabled": false,
+          "read": false,
+          "write": false
+        },
+        {
+          "feature": "Device Access Policy",
+          "enabled": false,
+          "read": false,
+          "write": false
+        },
+        {
+          "feature": "Device CLI Template",
+          "enabled": false,
+          "read": false,
+          "write": false
+        },
+        {
+          "feature": "Device Inventory",
+          "enabled": false,
+          "read": false,
+          "write": false
+        },
+        {
+          "feature": "Device Inventory > Controller",
+          "enabled": false,
+          "read": false,
+          "write": false
+        }
+      ],
+      "isRbacVpnGroup": false
+    },
+    {
+      "groupName": "netadmin",
+      "groupDesc": "",
+      "type": "Default",
+      "tasks": [
+        {
+          "feature": "Policy",
+          "enabled": true,
+          "read": true,
+          "write": true
+        },
+        {
+          "feature": "Routing",
+          "enabled": true,
+          "read": true,
+          "write": true
+        },
+        {
+          "feature": "Security",
+          "enabled": true,
+          "read": true,
+          "write": true
+        },
+        {
+          "feature": "Interface",
+          "enabled": true,
+          "read": true,
+          "write": true
+        },
+        {
+          "feature": "System",
+          "enabled": true,
+          "read": true,
+          "write": true
+        },
+        {
+          "feature": "ACL Policy",
+          "enabled": true,
+          "read": true,
+          "write": true
+        },
+        {
+          "feature": "AI Assistant",
+          "enabled": true,
+          "read": true,
+          "write": true
+        },
+        {
+          "feature": "Alarms",
+          "enabled": true,
+          "read": true,
+          "write": true
+        },
+        {
+          "feature": "AppRoute Policy",
+          "enabled": true,
+          "read": true,
+          "write": true
+        },
+        {
+          "feature": "Application Catalog > Cloud Sourced Applications",
+          "enabled": true,
+          "read": true,
+          "write": true
+        },
+        {
+          "feature": "Application Monitoring",
+          "enabled": true,
+          "read": true,
+          "write": true
+        },
+        {
+          "feature": "Audit Log",
+          "enabled": true,
+          "read": true,
+          "write": true
+        },
+        {
+          "feature": "CFlowD Policy",
+          "enabled": true,
+          "read": true,
+          "write": true
+        },
+        {
+          "feature": "CLI Add-On Template",
+          "enabled": true,
+          "read": true,
+          "write": true
+        },
+        {
+          "feature": "Cellular Profile Reset",
+          "enabled": true,
+          "read": true,
+          "write": true
+        },
+        {
+          "feature": "Certificates",
+          "enabled": true,
+          "read": true,
+          "write": true
+        },
+        {
+          "feature": "Certificates > Controller",
+          "enabled": true,
+          "read": true,
+          "write": true
+        },
+        {
+          "feature": "Certificates > Edge",
+          "enabled": true,
+          "read": true,
+          "write": true
+        },
+        {
+          "feature": "Cloud OnRamp",
+          "enabled": true,
+          "read": true,
+          "write": true
+        },
+        {
+          "feature": "Cluster",
+          "enabled": true,
+          "read": true,
+          "write": true
+        },
+        {
+          "feature": "Colocation",
+          "enabled": true,
+          "read": true,
+          "write": true
+        },
+        {
+          "feature": "Config Group",
+          "enabled": true,
+          "read": true,
+          "write": true
+        },
+        {
+          "feature": "Config Group > Device",
+          "enabled": true,
+          "read": true,
+          "write": true
+        },
+        {
+          "feature": "Config Group > Device > Deploy",
+          "enabled": true,
+          "read": true,
+          "write": true
+        },
+        {
+          "feature": "Control Component Settings",
+          "enabled": true,
+          "read": true,
+          "write": true
+        },
+        {
+          "feature": "Cortex",
+          "enabled": true,
+          "read": true,
+          "write": true
+        },
+        {
+          "feature": "Device Access Policy",
+          "enabled": true,
+          "read": true,
+          "write": true
+        },
+        {
+          "feature": "Device CLI Template",
+          "enabled": true,
+          "read": true,
+          "write": true
+        },
+        {
+          "feature": "Device Inventory",
+          "enabled": true,
+          "read": true,
+          "write": true
+        },
+        {
+          "feature": "Device Inventory > Controller",
+          "enabled": true,
+          "read": true,
+          "write": true
+        }
+      ],
+      "isRbacVpnGroup": false
+    },
+    {
+      "groupName": "network_operations",
+      "groupDesc": "",
+      "type": "Default",
+      "tasks": [
+        {
+          "feature": "Policy",
+          "enabled": true,
+          "read": true,
+          "write": true
+        },
+        {
+          "feature": "Routing",
+          "enabled": true,
+          "read": true,
+          "write": true
+        },
+        {
+          "feature": "Security",
+          "enabled": false,
+          "read": false,
+          "write": false
+        },
+        {
+          "feature": "Interface",
+          "enabled": true,
+          "read": true,
+          "write": true
+        },
+        {
+          "feature": "System",
+          "enabled": true,
+          "read": true,
+          "write": false
+        },
+        {
+          "feature": "Device Monitoring",
+          "enabled": true,
+          "read": true,
+          "write": true
+        },
+        {
+          "feature": "Feature Profile > Policy Object > Policer",
+          "enabled": true,
+          "read": true,
+          "write": true
+        },
+        {
+          "feature": "Feature Profile > SD-Routing Transport > VRF",
+          "enabled": true,
+          "read": true,
+          "write": true
+        },
+        {
+          "feature": "Software Upgrade > Edge",
+          "enabled": false,
+          "read": false,
+          "write": false
+        },
+        {
+          "feature": "Feature Profile > Nfvirtual System",
+          "enabled": true,
+          "read": true,
+          "write": true
+        },
+        {
+          "feature": "Feature Profile > Policy Object > Security Object Group",
+          "enabled": false,
+          "read": false,
+          "write": false
+        },
+        {
+          "feature": "Feature Profile > Sig Security > Sig Policy",
+          "enabled": false,
+          "read": false,
+          "write": false
+        },
+        {
+          "feature": "Feature Profile > SD-Routing Transport > VRF > Interface/IPSec",
+          "enabled": true,
+          "read": true,
+          "write": true
+        },
+        {
+          "feature": "Config Group",
+          "enabled": true,
+          "read": true,
+          "write": true
+        },
+        {
+          "feature": "Feature Profile > SD-Routing System",
+          "enabled": true,
+          "read": true,
+          "write": true
+        },
+        {
+          "feature": "Feature Profile > SD-Routing Transport > Management VRF > Interface/Ethernet",
+          "enabled": true,
+          "read": true,
+          "write": true
+        },
+        {
+          "feature": "Feature Profile > SD-Routing Service > Object Tracker",
+          "enabled": true,
+          "read": true,
+          "write": true
+        },
+        {
+          "feature": "Feature Profile > Teleworker > Wifi",
+          "enabled": true,
+          "read": true,
+          "write": true
+        },
+        {
+          "feature": "Feature Profile > Service > Routing/Ospfv3 IPv6",
+          "enabled": true,
+          "read": true,
+          "write": true
+        },
+        {
+          "feature": "Feature Profile > Service > Lan/Vpn/Interface/Ipsec",
+          "enabled": true,
+          "read": true,
+          "write": true
+        },
+        {
+          "feature": "Feature Profile > Service > Routing/Ospfv3 IPv4",
+          "enabled": true,
+          "read": true,
+          "write": true
+        },
+        {
+          "feature": "Feature Profile > SD-Routing Transport > Tracker Group",
+          "enabled": true,
+          "read": true,
+          "write": true
+        },
+        {
+          "feature": "RBAC VPN",
+          "enabled": false,
+          "read": false,
+          "write": false
+        },
+        {
+          "feature": "Feature Profile > CellularGateway > Aaa",
+          "enabled": true,
+          "read": true,
+          "write": true
+        },
+        {
+          "feature": "Feature Profile > UC Voice > Translation Profile",
+          "enabled": true,
+          "read": true,
+          "write": true
+        },
+        {
+          "feature": "Feature Profile > Policy Object > Security IPS Signature Set",
+          "enabled": false,
+          "read": false,
+          "write": false
+        },
+        {
+          "feature": "Feature Profile > SD-Routing Service > VRF > BGP",
+          "enabled": true,
+          "read": true,
+          "write": true
+        },
+        {
+          "feature": "Feature Profile > Service > Lan/Vpn/Interface/Multilink",
+          "enabled": true,
+          "read": true,
+          "write": true
+        },
+        {
+          "feature": "Feature Profile > SD-Routing Service > OSPFv3 IPv4",
+          "enabled": true,
+          "read": true,
+          "write": true
+        },
+        {
+          "feature": "Feature Profile > Dns Security > Dns Policy",
+          "enabled": false,
+          "read": false,
+          "write": false
+        }
+      ],
+      "isRbacVpnGroup": false
+    },
+    {
+      "groupName": "operator",
+      "groupDesc": "",
+      "type": "Default",
+      "tasks": [
+        {
+          "feature": "Policy",
+          "enabled": true,
+          "read": true,
+          "write": false
+        },
+        {
+          "feature": "Routing",
+          "enabled": true,
+          "read": true,
+          "write": false
+        },
+        {
+          "feature": "Security",
+          "enabled": true,
+          "read": true,
+          "write": false
+        },
+        {
+          "feature": "Interface",
+          "enabled": true,
+          "read": true,
+          "write": false
+        },
+        {
+          "feature": "System",
+          "enabled": true,
+          "read": true,
+          "write": false
+        },
+        {
+          "feature": "ACL Policy",
+          "enabled": true,
+          "read": true,
+          "write": false
+        },
+        {
+          "feature": "AI Assistant",
+          "enabled": true,
+          "read": true,
+          "write": false
+        },
+        {
+          "feature": "Alarms",
+          "enabled": true,
+          "read": true,
+          "write": false
+        },
+        {
+          "feature": "AppRoute Policy",
+          "enabled": true,
+          "read": true,
+          "write": false
+        },
+        {
+          "feature": "Application Catalog > Cloud Sourced Applications",
+          "enabled": true,
+          "read": true,
+          "write": false
+        },
+        {
+          "feature": "Application Monitoring",
+          "enabled": true,
+          "read": true,
+          "write": false
+        },
+        {
+          "feature": "Audit Log",
+          "enabled": true,
+          "read": true,
+          "write": false
+        },
+        {
+          "feature": "CFlowD Policy",
+          "enabled": true,
+          "read": true,
+          "write": false
+        },
+        {
+          "feature": "CLI Add-On Template",
+          "enabled": true,
+          "read": true,
+          "write": false
+        },
+        {
+          "feature": "Cellular Profile Reset",
+          "enabled": true,
+          "read": true,
+          "write": false
+        },
+        {
+          "feature": "Certificates",
+          "enabled": true,
+          "read": true,
+          "write": false
+        },
+        {
+          "feature": "Certificates > Controller",
+          "enabled": true,
+          "read": true,
+          "write": false
+        },
+        {
+          "feature": "Certificates > Edge",
+          "enabled": true,
+          "read": true,
+          "write": false
+        },
+        {
+          "feature": "Cloud OnRamp",
+          "enabled": true,
+          "read": true,
+          "write": false
+        },
+        {
+          "feature": "Cluster",
+          "enabled": true,
+          "read": true,
+          "write": false
+        },
+        {
+          "feature": "Colocation",
+          "enabled": true,
+          "read": true,
+          "write": false
+        },
+        {
+          "feature": "Config Group",
+          "enabled": true,
+          "read": true,
+          "write": false
+        },
+        {
+          "feature": "Config Group > Device",
+          "enabled": true,
+          "read": true,
+          "write": false
+        },
+        {
+          "feature": "Config Group > Device > Deploy",
+          "enabled": true,
+          "read": true,
+          "write": false
+        },
+        {
+          "feature": "Control Component Settings",
+          "enabled": true,
+          "read": true,
+          "write": false
+        },
+        {
+          "feature": "Cortex",
+          "enabled": true,
+          "read": true,
+          "write": false
+        },
+        {
+          "feature": "Device Access Policy",
+          "enabled": true,
+          "read": true,
+          "write": false
+        },
+        {
+          "feature": "Device CLI Template",
+          "enabled": true,
+          "read": true,
+          "write": false
+        },
+        {
+          "feature": "Device Inventory",
+          "enabled": true,
+          "read": true,
+          "write": false
+        },
+        {
+          "feature": "Device Inventory > Controller",
+          "enabled": true,
+          "read": true,
+          "write": false
+        }
+      ],
+      "isRbacVpnGroup": false
+    },
+    {
+      "groupName": "security_operations",
+      "groupDesc": "",
+      "type": "Default",
+      "tasks": [
+        {
+          "feature": "Policy",
+          "enabled": false,
+          "read": false,
+          "write": false
+        },
+        {
+          "feature": "Routing",
+          "enabled": true,
+          "read": true,
+          "write": false
+        },
+        {
+          "feature": "Security",
+          "enabled": true,
+          "read": true,
+          "write": true
+        },
+        {
+          "feature": "Interface",
+          "enabled": true,
+          "read": true,
+          "write": false
+        },
+        {
+          "feature": "System",
+          "enabled": true,
+          "read": true,
+          "write": false
+        },
+        {
+          "feature": "Device Monitoring",
+          "enabled": true,
+          "read": true,
+          "write": true
+        },
+        {
+          "feature": "Feature Profile > Policy Object > Policer",
+          "enabled": true,
+          "read": true,
+          "write": false
+        },
+        {
+          "feature": "Feature Profile > SD-Routing Transport > VRF",
+          "enabled": true,
+          "read": true,
+          "write": false
+        },
+        {
+          "feature": "Software Upgrade > Edge",
+          "enabled": false,
+          "read": false,
+          "write": false
+        },
+        {
+          "feature": "Feature Profile > Nfvirtual System",
+          "enabled": true,
+          "read": true,
+          "write": false
+        },
+        {
+          "feature": "Feature Profile > Policy Object > Security Object Group",
+          "enabled": true,
+          "read": true,
+          "write": true
+        },
+        {
+          "feature": "Feature Profile > Sig Security > Sig Policy",
+          "enabled": true,
+          "read": true,
+          "write": true
+        },
+        {
+          "feature": "Feature Profile > SD-Routing Transport > VRF > Interface/IPSec",
+          "enabled": true,
+          "read": true,
+          "write": false
+        },
+        {
+          "feature": "Config Group",
+          "enabled": true,
+          "read": true,
+          "write": false
+        },
+        {
+          "feature": "Feature Profile > SD-Routing System",
+          "enabled": true,
+          "read": true,
+          "write": false
+        },
+        {
+          "feature": "Feature Profile > SD-Routing Transport > Management VRF > Interface/Ethernet",
+          "enabled": true,
+          "read": true,
+          "write": false
+        },
+        {
+          "feature": "Feature Profile > SD-Routing Service > Object Tracker",
+          "enabled": true,
+          "read": true,
+          "write": false
+        },
+        {
+          "feature": "Feature Profile > Teleworker > Wifi",
+          "enabled": true,
+          "read": true,
+          "write": false
+        },
+        {
+          "feature": "Feature Profile > Service > Routing/Ospfv3 IPv6",
+          "enabled": true,
+          "read": true,
+          "write": false
+        },
+        {
+          "feature": "Feature Profile > Service > Lan/Vpn/Interface/Ipsec",
+          "enabled": true,
+          "read": true,
+          "write": false
+        },
+        {
+          "feature": "Feature Profile > Service > Routing/Ospfv3 IPv4",
+          "enabled": true,
+          "read": true,
+          "write": false
+        },
+        {
+          "feature": "Feature Profile > SD-Routing Transport > Tracker Group",
+          "enabled": true,
+          "read": true,
+          "write": false
+        },
+        {
+          "feature": "RBAC VPN",
+          "enabled": false,
+          "read": false,
+          "write": false
+        },
+        {
+          "feature": "Feature Profile > CellularGateway > Aaa",
+          "enabled": true,
+          "read": true,
+          "write": false
+        },
+        {
+          "feature": "Feature Profile > UC Voice > Translation Profile",
+          "enabled": true,
+          "read": true,
+          "write": false
+        },
+        {
+          "feature": "Feature Profile > Policy Object > Security IPS Signature Set",
+          "enabled": true,
+          "read": true,
+          "write": true
+        },
+        {
+          "feature": "Feature Profile > SD-Routing Service > VRF > BGP",
+          "enabled": true,
+          "read": true,
+          "write": false
+        },
+        {
+          "feature": "Feature Profile > Service > Lan/Vpn/Interface/Multilink",
+          "enabled": true,
+          "read": true,
+          "write": false
+        },
+        {
+          "feature": "Feature Profile > SD-Routing Service > OSPFv3 IPv4",
+          "enabled": true,
+          "read": true,
+          "write": false
+        },
+        {
+          "feature": "Feature Profile > Dns Security > Dns Policy",
+          "enabled": true,
+          "read": true,
+          "write": true
+        }
+      ],
+      "isRbacVpnGroup": false
+    }
+  ]
+}

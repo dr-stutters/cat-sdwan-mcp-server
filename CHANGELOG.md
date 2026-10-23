@@ -95,6 +95,13 @@ All notable changes to this project are documented here. The format follows
   preview names the newest backup, warns that the Manager is busy and blocks while another backup runs or
   when no cluster IP is configured; `srcIpAddress` / `followerIpAddressList` come from the nodes' cluster IPs,
   and EXPORT_FAILED is explained). `catsdwan_manager_health` reports `cluster_ip_configured`.
+- W26 (#40): access and AAA. `catsdwan_list_users` (users with groups, status and sessions; user groups with
+  read and write feature counts; sessions per user with sources; VPN groups; this login's auth type),
+  `catsdwan_get_aaa` (login order, never set = local only, fall-back, RADIUS and TACACS+ servers with secrets
+  masked, `local_fallback`) and `catsdwan_set_external_authentication(protocol, order, servers, ...)` (write tool,
+  confirm needs `MCP_ENABLE_DANGEROUS`: the preview shows the order and servers before and after and blocks an
+  order without `local`, a method with no server and a no-op; confirm writes `/admin/tacacs` or `/admin/radius`
+  and `/admin/aaa`, then a fresh test login as the API user, and puts the previous order back if it fails).
 
 ## [0.2.0] - 2026-10-23
 

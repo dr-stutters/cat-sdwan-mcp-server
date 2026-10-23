@@ -1,0 +1,74 @@
+{
+  "header": {
+    "generatedOn": 1792758946566,
+    "viewKeys": {
+      "uniqueKey": [],
+      "preferenceKey": "grid-Aaa"
+    },
+    "columns": [
+      {
+        "title": "client.view.clientViewAaa.authOrder",
+        "property": "authOrder",
+        "width": 110,
+        "dataType": "list"
+      },
+      {
+        "title": "client.view.clientViewAaa.authFallback",
+        "property": "authFallback",
+        "width": 110,
+        "dataType": "boolean"
+      },
+      {
+        "title": "client.view.clientViewAaa.adminAuthOrder",
+        "property": "adminAuthOrder",
+        "width": 110,
+        "dataType": "boolean"
+      },
+      {
+        "title": "client.view.clientViewAaa.auditDisable",
+        "property": "auditDisable",
+        "width": 110,
+        "dataType": "boolean"
+      },
+      {
+        "title": "client.view.clientViewAaa.accounting",
+        "property": "accounting",
+        "width": 110,
+        "dataType": "boolean"
+      },
+      {
+        "title": "client.view.clientViewAaa.radiusServers",
+        "property": "radiusServers",
+        "width": 110,
+        "dataType": "string"
+      }
+    ],
+    "fields": [
+      {
+        "property": "authOrder",
+        "dataType": "list"
+      },
+      {
+        "property": "authFallback",
+        "dataType": "boolean"
+      },
+      {
+        "property": "adminAuthOrder",
+        "dataType": "boolean"
+      },
+      {
+        "property": "auditDisable",
+        "dataType": "boolean"
+      },
+      {
+        "property": "accounting",
+        "dataType": "boolean"
+      },
+      {
+        "property": "radiusServers",
+        "dataType": "string"
+      }
+    ]
+  },
+  "data": {}
+}

@@ -1,0 +1,77 @@
+{
+  "header": {
+    "generatedOn": 1792758946531,
+    "viewKeys": {
+      "uniqueKey": [],
+      "preferenceKey": "grid-VpnGroup"
+    },
+    "columns": [
+      {
+        "title": "client.view.clientViewVpnGroup.vpnGroupName",
+        "property": "name",
+        "hideable": false,
+        "dataType": "string"
+      },
+      {
+        "title": "client.view.clientViewVpnGroup.description",
+        "property": "description",
+        "dataType": "string"
+      },
+      {
+        "title": "client.view.clientViewVpnGroup.userGroupName",
+        "property": "userGroupName",
+        "hideable": true,
+        "dataType": "string"
+      },
+      {
+        "title": "client.view.clientViewVpnGroup.segments",
+        "property": "segments",
+        "hideable": true,
+        "dataType": "array"
+      },
+      {
+        "title": "client.view.clientViewVpnGroup.updatedBy",
+        "property": "owner",
+        "dataType": "string"
+      },
+      {
+        "title": "client.view.clientViewVpnGroup.lastUpdated",
+        "property": "lastUpdated",
+        "displayFormat": "DD MMM YYYY h:mm:ss A z",
+        "inputFormat": "unix-time",
+        "dataType": "date"
+      }
+    ],
+    "fields": [
+      {
+        "property": "name",
+        "dataType": "string"
+      },
+      {
+        "property": "description",
+        "dataType": "string"
+      },
+      {
+        "property": "vpnGroupId",
+        "dataType": "string"
+      },
+      {
+        "property": "userGroupName",
+        "dataType": "string"
+      },
+      {
+        "property": "segments",
+        "dataType": "array"
+      },
+      {
+        "property": "owner",
+        "dataType": "string"
+      },
+      {
+        "property": "lastUpdated",
+        "dataType": "date"
+      }
+    ]
+  },
+  "data": []
+}
