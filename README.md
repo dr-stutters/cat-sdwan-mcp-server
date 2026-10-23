@@ -40,6 +40,9 @@ servers, the production gate and the external prerequisites.
 | `catsdwan_list_policy_groups` | read | Policy groups: profiles, devices, deploy state, last change |
 | `catsdwan_list_templates` | read | Device templates (CLI or feature-based, device model, devices attached and which) or feature templates (type, device models, devices attached, device templates using them); factory defaults hidden unless `include_defaults` |
 | `catsdwan_get_device_config` | read | A device's running or intended configuration (`template/config/running` and `/attached`), secrets masked (passwords, secrets, keys, pre-shared keys, SNMP communities and user keys), `section` filter; `diff=true` compares the two by block, order-independent (only on the device, only intended, changed lines); says whether the device is in a configuration group, on a template or in CLI mode |
+| `catsdwan_set_device_variables` | write | A device's variable values in a configuration group (`PUT /v1/config-group/{id}/device/variables`): the preview shows each changed variable old -> new (secrets masked) and the old values to undo; the Manager needs every variable of the device in one write, so the tool reads them all, merges and writes them back with their original types. Stores only: nothing reaches the device until a deploy |
+| `catsdwan_deploy_config_group` | write / dangerous | Push a configuration group to named devices (`POST /v1/config-group/{id}/device/deploy`). Preview per device: the Manager's CLI preview (`POST .../device/{id}/preview`) and its diff against the running configuration, or, when that isn't available, the stored intended-vs-running diff (labelled as such). Blocked for a device not in the group, on a template, unreachable or with an action running, and for a group without feature profiles. Confirm follows `GET /device/action/status/{id}` until each device reports success or failure (with the reason) |
+| `catsdwan_attach_device_template` | write / dangerous | Attach a device template (CLI: `attachcli`, feature-based: `attachfeature`) with variables for every device or per device. Preview: the template's variables per device (`template/device/config/input`, a missing value blocks) and the rendered CLI per device (`template/device/config/config`) with its diff against running. Blocked for a configuration-group device, an unreachable device, another device model or a running action. Confirm follows the action status like the deploy |
 | `catsdwan_search_spec` | read | Search the Manager's own OpenAPI document (`GET /apidocs/vmanageapi.json`, OpenAPI 3, about 2800 paths on 20.18) for operations and schemas; paths shown as `/dataservice/...`; indexed once per Manager release and cached in `MCP_CACHE_DIR` |
 | `catsdwan_get_definition` | read | One operation (parameters, request fields, required fields; `examples=true` for the spec's examples) or schema |
 | `catsdwan_api_call` | read / write / dangerous | Any endpoint, the path checked against the spec ('did you mean' when it isn't there). GET and the query POSTs of `/statistics/<index>`, `/alarms`, `/event`, `/auditlog` are reads; with `MCP_ENABLE_WRITES` other POST/PUT/DELETE calls are preview-first; `/device/action/*` writes (reboot, software) need `MCP_ENABLE_DANGEROUS`. Secrets masked |
@@ -47,6 +50,20 @@ servers, the production gate and the external prerequisites.
 `cat-sdwan-mcp-server check` is the preflight: reachability (login and a `/dataservice` read), TLS trust,
 credentials (a wrong password reports `auth`, also on the session login whose failure is an HTML page), and the
 Manager release (tested 20.18 and 26.x, minimum 20.15). `--json` for the report as JSON.
+
+## Configuration changes
+
+Every change tool is preview-first: a call without `confirm` changes nothing and returns the preview plus a
+single-use token; the identical call with `confirm=<token>` applies it after checking that nothing it depends on
+changed (the fingerprint: the preview CLI per device and the group's or template's last change). A deploy or
+attach to **one** device is write tier (`MCP_ENABLE_WRITES`); to **several** devices, or to a hub
+(`CATSDWAN_HUB_DEVICES`) or a device at a protected site (`CATSDWAN_PROTECTED_SITES`), it is dangerous: the
+preview is blocked unless `MCP_ENABLE_DANGEROUS` is on (and, with per-user roles, the caller is admin). Every
+deploy reports `blast_radius` = its devices, so `MCP_MAX_BLAST_RADIUS` caps it. The Manager has no undo: the
+variables preview lists the old values, and a deploy's preview diff shows the running configuration it replaces.
+
+Typical flow: `catsdwan_get_config_group` (variables) -> `catsdwan_set_device_variables` (preview, confirm) ->
+`catsdwan_deploy_config_group` (preview: per-device CLI and diff; confirm) -> `catsdwan_get_device_config(diff=true)`.
 
 ## Login and throttling
 
@@ -79,7 +96,9 @@ Manager release (tested 20.18 and 26.x, minimum 20.15). `--json` for the report 
 | `CATSDWAN_INSTANCES` | | Several Managers in one server (`CATSDWAN_<NAME>_URL`, ...; `_TENANT` is never inherited): every tool gets `instance` |
 | `MCP_TRANSPORT` | `stdio` | `stdio` or `http` |
 | `MCP_AUTH_TOKENS` / `MCP_AUTH_TOKENS_FILE` | | `name:sha256:<hex>` entries; **required** for HTTP |
-| `MCP_ENABLE_WRITES` / `MCP_ENABLE_DANGEROUS` | `false` | Writes through `catsdwan_api_call` (preview-first) / its `/device/action/*` calls |
+| `CATSDWAN_HUB_DEVICES` | | Hubs (host names, system IPs or chassis, comma-separated): a deploy or attach touching one is dangerous tier |
+| `CATSDWAN_PROTECTED_SITES` | | Site ids or names (comma-separated): a deploy or attach touching a device there is dangerous tier |
+| `MCP_ENABLE_WRITES` / `MCP_ENABLE_DANGEROUS` | `false` | Write tools and `catsdwan_api_call` writes (preview-first) / `/device/action/*` calls and dangerous-tier changes |
 | `LOG_LEVEL` | `INFO` | |
 
 Everything else `MCP_*` comes from stutters-mcp-core ([PRODUCTION.md](https://github.com/dr-stutters/stutters-mcp-core/blob/main/docs/PRODUCTION.md)).
@@ -96,7 +115,7 @@ uv run cat-sdwan-mcp-server check                    # preflight against the con
 
 Configuration: copy `.env.example` to `.env`. `CATSDWAN_URL`, `CATSDWAN_USERNAME` and `CATSDWAN_PASSWORD` name the SD-WAN Manager;
 everything `MCP_*` comes from stutters-mcp-core ([PRODUCTION.md](https://github.com/dr-stutters/stutters-mcp-core/blob/main/docs/PRODUCTION.md)).
-Writes stay off until `MCP_ENABLE_WRITES=true`, and every write will be preview-first with a confirm token.
+Writes stay off until `MCP_ENABLE_WRITES=true`, and every write is preview-first with a confirm token.
 
 Docker: `docker compose up -d --build` publishes the server on port 8041 (HTTP transport; set
 `MCP_AUTH_TOKENS`).

@@ -4,6 +4,26 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/) (0.x: minor bumps may break consumers).
 
+## [Unreleased]
+
+### Added
+- W8 (#9): preview-first configuration changes. `catsdwan_set_device_variables` (read-merge-write of every
+  variable of the device with its original type, as the Manager requires; preview old -> new for the changed
+  names, secrets masked; stores only), `catsdwan_deploy_config_group` (preview per device from the Manager's CLI
+  preview `POST /v1/config-group/{id}/device/{deviceId}/preview` with a diff against running, or the stored
+  intended-vs-running diff labelled as such; `POST .../device/deploy`, then `GET /device/action/status/{id}` until
+  every device succeeds or fails, with the failing device's reason) and `catsdwan_attach_device_template`
+  (`template/device/config/input` checks the variables, `template/device/config/config` renders the CLI per
+  device; `attachcli` for CLI templates, `attachfeature` for feature templates; the same action-status follow-up).
+  Blockers: a device in the other configuration mode, not in the group, unreachable or with an action still
+  running; a group without feature profiles; a template variable without a value. One device is write tier;
+  several devices, a hub (`CATSDWAN_HUB_DEVICES`) or a protected-site device (`CATSDWAN_PROTECTED_SITES`) need
+  `MCP_ENABLE_DANGEROUS`; `blast_radius` = the devices. Settings `CATSDWAN_HUB_DEVICES`, `CATSDWAN_PROTECTED_SITES`.
+
+### Changed
+- `catsdwan_get_config_group` reads device variables in the recorded 20.18.3 shape (no `value` key for an empty
+  variable, native types).
+
 ## [0.1.0] - 2026-10-23
 
 ### Added
