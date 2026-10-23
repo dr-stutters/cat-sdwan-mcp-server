@@ -102,6 +102,13 @@ All notable changes to this project are documented here. The format follows
   confirm needs `MCP_ENABLE_DANGEROUS`: the preview shows the order and servers before and after and blocks an
   order without `local`, a method with no server and a no-op; confirm writes `/admin/tacacs` or `/admin/radius`
   and `/admin/aaa`, then a fresh test login as the API user, and puts the previous order back if it fails).
+- W27 (#41): controller upgrades. `catsdwan_upgrade_controllers(version, image_type, start, timezone)` (write tool,
+  confirm needs `MCP_ENABLE_DANGEROUS`): the preview lists the versions in the Manager's repository, the
+  validators, controllers and Manager in upgrade order with their release, the version-compliance check against
+  every edge and controller and the schedule; it blocks when the repository has no image (with that reason), the
+  version isn't available, an edge or controller is too old, every controller runs it already, or there is no
+  successful backup from the last 24 h. Confirm posts `/v1/controllers-upgrade` (now or scheduled) and returns the
+  process id; `cancel=<processId>` cancels a scheduled upgrade.
 
 ## [0.2.0] - 2026-10-23
 
