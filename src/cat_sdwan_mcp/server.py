@@ -32,8 +32,8 @@ from cat_sdwan_mcp.tools import (
     pathinsight,
     policy,
     prompts,
-    troubleshooting,
     security,
+    troubleshooting,
     trustsec,
     upgrade,
 )
