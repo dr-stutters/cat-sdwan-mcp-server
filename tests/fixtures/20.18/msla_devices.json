@@ -1,0 +1,37 @@
+{
+  "data": [
+    {
+      "UUID": "REDACTED-06",
+      "deviceModel": "vedge-C8000V",
+      "configuredSystemIP": "10.0.0.1",
+      "hostName": "hub1",
+      "hsecCompatible": "Yes",
+      "hsecStatus": "-",
+      "hsecLicenseStatus": "-",
+      "compliance_status": "Out Of Compliance",
+      "reason": "Unassigned"
+    },
+    {
+      "UUID": "REDACTED-02",
+      "deviceModel": "vedge-C8000V",
+      "configuredSystemIP": "10.0.0.2",
+      "hostName": "br1",
+      "hsecCompatible": "Yes",
+      "hsecStatus": "-",
+      "hsecLicenseStatus": "-",
+      "compliance_status": "Out Of Compliance",
+      "reason": "Unassigned"
+    },
+    {
+      "UUID": "REDACTED-04",
+      "deviceModel": "vedge-C8000V",
+      "configuredSystemIP": "10.0.0.3",
+      "hostName": "br2",
+      "hsecCompatible": "Yes",
+      "hsecStatus": "-",
+      "hsecLicenseStatus": "-",
+      "compliance_status": "Out Of Compliance",
+      "reason": "Unassigned"
+    }
+  ]
+}

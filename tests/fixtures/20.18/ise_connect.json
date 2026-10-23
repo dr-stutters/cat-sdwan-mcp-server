@@ -1,0 +1,7 @@
+{
+  "error": {
+    "message": "Failed to connect to ISE due to some failure",
+    "code": "ISEERRORR0016",
+    "details": "ISE connectivity failed"
+  }
+}

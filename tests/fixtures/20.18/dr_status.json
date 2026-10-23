@@ -1,0 +1,7 @@
+{
+  "drStatus": {
+    "pauseReplication": false,
+    "pauseDR": false,
+    "drenabled": false
+  }
+}

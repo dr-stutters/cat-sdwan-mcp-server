@@ -1,0 +1,15 @@
+{
+  "data": {
+    "complianceStatus": [
+      {
+        "complianceStatus": "Out Of Compliance",
+        "reason": "Unreported Licenses"
+      },
+      {
+        "complianceStatus": "Out Of Compliance",
+        "reason": "Unassigned"
+      }
+    ],
+    "status": "Out Of Compliance"
+  }
+}

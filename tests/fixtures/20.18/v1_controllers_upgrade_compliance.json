@@ -1,0 +1,25 @@
+{
+  "version": "20.18.3.1",
+  "minimumControllerCompatibleVersion": "20.18",
+  "minimumValidatorCompatibleVersion": "20.18",
+  "minimumDeviceCompatibleVersion": "17.12",
+  "nonCompliantControllersCount": 0,
+  "nonCompliantControllersCountLTSMinusOne": 0,
+  "nonComplianceControllerCountLTSMinusTwo": 0,
+  "nonComplianceControllerCountLTSMinusThree": 0,
+  "nonCompliantValidatorsCount": 0,
+  "nonCompliantValidatorsCountLTSMinusOne": 0,
+  "nonComplianceValidatorCountLTSMinusTwo": 0,
+  "nonComplianceValidatorCountLTSMinusThree": 0,
+  "nonCompliantDeviceCount": 0,
+  "nearNonCompliantDeviceCount": 0,
+  "tenantDetails": [
+    {
+      "tenantName": "Default",
+      "tenantId": "default",
+      "nonCompliantDevices": [],
+      "nonCompliantDeviceCount": 0,
+      "nearNonCompliantDeviceCount": 0
+    }
+  ]
+}

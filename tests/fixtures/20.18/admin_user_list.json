@@ -1,0 +1,88 @@
+{
+  "header": {
+    "generatedOn": 1792758945652,
+    "viewKeys": {
+      "uniqueKey": [],
+      "preferenceKey": "grid-AdminUser"
+    },
+    "columns": [
+      {
+        "title": "view.users.clientViewAdminUser.username",
+        "property": "userName",
+        "dataType": "string"
+      },
+      {
+        "title": "view.users.clientViewAdminUser.userGroups",
+        "property": "group",
+        "dataType": "array"
+      },
+      {
+        "title": "view.users.clientViewAdminUser.resourceDomain",
+        "property": "resourceDomainName",
+        "dataType": "string"
+      },
+      {
+        "title": "view.users.clientViewAdminUser.status",
+        "property": "status",
+        "dataType": "string"
+      },
+      {
+        "title": "view.users.clientViewAdminUser.name",
+        "property": "description",
+        "dataType": "string"
+      }
+    ],
+    "fields": [
+      {
+        "property": "userName",
+        "dataType": "string"
+      },
+      {
+        "property": "group",
+        "dataType": "array"
+      },
+      {
+        "property": "resourceDomainName",
+        "dataType": "string"
+      },
+      {
+        "property": "status",
+        "dataType": "string"
+      },
+      {
+        "property": "description",
+        "dataType": "string"
+      }
+    ]
+  },
+  "data": [
+    {
+      "userName": "admin",
+      "resourceDomainName": "all",
+      "locale": "en_US",
+      "group": []
+    },
+    {
+      "userName": "mcp-ro",
+      "description": "cat-sdwan-mcp operator",
+      "locale": "en_US",
+      "resourceDomainName": "all",
+      "resGroupName": "global",
+      "status": "active",
+      "group": [
+        "operator"
+      ]
+    },
+    {
+      "userName": "mcp-rw",
+      "description": "cat-sdwan-mcp netadmin",
+      "locale": "en_US",
+      "resourceDomainName": "all",
+      "resGroupName": "global",
+      "status": "active",
+      "group": [
+        "netadmin"
+      ]
+    }
+  ]
+}

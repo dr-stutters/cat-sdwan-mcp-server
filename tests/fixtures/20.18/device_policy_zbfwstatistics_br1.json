@@ -1,0 +1,16 @@
+{
+  "header": {
+    "generatedOn": 1792758899227,
+    "viewKeys": {
+      "uniqueKey": [
+        "vdevice-dataKey"
+      ],
+      "preferenceKey": "grid-PolicyZoneFirewallStatistics"
+    },
+    "columns": [],
+    "fields": []
+  },
+  "data": [
+    {}
+  ]
+}

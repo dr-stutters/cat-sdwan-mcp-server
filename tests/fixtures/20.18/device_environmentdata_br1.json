@@ -1,0 +1,91 @@
+{
+  "header": {
+    "generatedOn": 1792758923727,
+    "viewKeys": {
+      "uniqueKey": [
+        "vdevice-dataKey"
+      ],
+      "preferenceKey": "grid-CEdgeEnvironmentData"
+    },
+    "columns": [
+      {
+        "title": "device.trustsec.dataCedgeEnvironmentData.status",
+        "property": "status",
+        "dataType": "string"
+      },
+      {
+        "title": "device.trustsec.dataCedgeEnvironmentData.deviceSgt",
+        "property": "device-sgt",
+        "dataType": "number"
+      },
+      {
+        "title": "device.trustsec.dataCedgeEnvironmentData.totalServers",
+        "property": "total-num-servers",
+        "dataType": "number"
+      },
+      {
+        "title": "device.trustsec.dataCedgeEnvironmentData.lifeTime",
+        "property": "life-time",
+        "dataType": "string"
+      },
+      {
+        "title": "device.trustsec.dataCedgeEnvironmentData.lastUpdatedTim",
+        "property": "last-updated-time",
+        "dataType": "string"
+      },
+      {
+        "title": "device.trustsec.dataCedgeEnvironmentData.nextRefreshTim",
+        "property": "next-refresh-time",
+        "dataType": "string"
+      }
+    ],
+    "fields": [
+      {
+        "property": "vdevice-name",
+        "dataType": "string"
+      },
+      {
+        "property": "vdevice-host-name",
+        "dataType": "string"
+      },
+      {
+        "property": "status",
+        "dataType": "string"
+      },
+      {
+        "property": "device-sgt",
+        "dataType": "number"
+      },
+      {
+        "property": "total-num-servers",
+        "dataType": "number"
+      },
+      {
+        "property": "life-time",
+        "dataType": "string"
+      },
+      {
+        "property": "last-updated-time",
+        "dataType": "string"
+      },
+      {
+        "property": "next-refresh-time",
+        "dataType": "string"
+      }
+    ]
+  },
+  "data": [
+    {
+      "last-updated-time": "1970-01-01T00:00:00+00:00",
+      "next-refresh-time": "1970-01-01T00:00:00+00:00",
+      "life-time": "0",
+      "vdevice-dataKey": "10.0.0.2-br1",
+      "vdevice-name": "10.0.0.2",
+      "device-sgt": 0,
+      "lastupdated": 1792758923720,
+      "vdevice-host-name": "br1",
+      "status": "env-download-in-progress",
+      "total-num-servers": 0
+    }
+  ]
+}

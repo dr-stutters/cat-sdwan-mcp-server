@@ -1,0 +1,44 @@
+{
+  "header": {
+    "generatedOn": 1792758946597,
+    "viewKeys": {
+      "uniqueKey": [],
+      "preferenceKey": "grid-Radius"
+    },
+    "columns": [
+      {
+        "title": "client.view.clientViewRadius.timeout",
+        "property": "timeout",
+        "width": 110,
+        "dataType": "integer"
+      },
+      {
+        "title": "client.view.clientViewRadius.retransmit",
+        "property": "retransmit",
+        "width": 110,
+        "dataType": "integer"
+      },
+      {
+        "title": "client.view.clientViewRadius.server",
+        "property": "server",
+        "width": 110,
+        "dataType": "RadiusServer"
+      }
+    ],
+    "fields": [
+      {
+        "property": "timeout",
+        "dataType": "integer"
+      },
+      {
+        "property": "retransmit",
+        "dataType": "integer"
+      },
+      {
+        "property": "server",
+        "dataType": "RadiusServer"
+      }
+    ]
+  },
+  "data": {}
+}

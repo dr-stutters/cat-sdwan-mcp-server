@@ -1,0 +1,7 @@
+{
+  "error": {
+    "message": "Failed to fetch Scalable Group Tags",
+    "code": "ISEERRORR0025",
+    "details": "Fetch SGTs failed because ISE is not configured"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "jvmMemoryAllocated": "14.96 GB",
+  "jvmMemoryConsumed": "11.03 GB",
+  "jvmMemoryAvailable": "3.93 GB",
+  "thirPartionMemoryAllocated": "250.92 GB",
+  "thirPartionMemoryConsumed": "17.06 GB",
+  "thirPartionMemoryAvailable": "233.87 GB",
+  "neo4jMemoryConsumed": "523.11 MB",
+  "clickhouseMemoryConsumed": "22.72 MB",
+  "process": []
+}

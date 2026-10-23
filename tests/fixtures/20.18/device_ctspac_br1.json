@@ -1,0 +1,87 @@
+{
+  "header": {
+    "generatedOn": 1792758925072,
+    "viewKeys": {
+      "uniqueKey": [
+        "vdevice-dataKey"
+      ],
+      "preferenceKey": "grid-CEdgeCtsPac"
+    },
+    "columns": [
+      {
+        "title": "device.trustsec.dataCedgeTrustsecpac.pacType",
+        "property": "pac-type",
+        "dataType": "string"
+      },
+      {
+        "title": "device.trustsec.dataCedgeTrustsecpac.authorityId",
+        "property": "authority-id",
+        "dataType": "string"
+      },
+      {
+        "title": "device.trustsec.dataCedgeTrustsecpac.initiatorId",
+        "property": "initiator-id",
+        "dataType": "string"
+      },
+      {
+        "title": "device.trustsec.dataCedgeTrustsecpac.authorityIdInf",
+        "property": "authority-id-info",
+        "dataType": "string"
+      },
+      {
+        "title": "device.trustsec.dataCedgeTrustsecpac.pacLifetime",
+        "property": "pac-life-time",
+        "dataType": "string"
+      },
+      {
+        "title": "device.trustsec.dataCedgeTrustsecpac.pacOpaque",
+        "property": "pac-opaque",
+        "dataType": "string"
+      },
+      {
+        "title": "device.trustsec.dataCedgeTrustsecpac.pacRefreshTime",
+        "property": "pac-refresh-time",
+        "dataType": "string"
+      }
+    ],
+    "fields": [
+      {
+        "property": "vdevice-name",
+        "dataType": "string"
+      },
+      {
+        "property": "vdevice-host-name",
+        "dataType": "string"
+      },
+      {
+        "property": "pac-type",
+        "dataType": "string"
+      },
+      {
+        "property": "authority-id",
+        "dataType": "string"
+      },
+      {
+        "property": "initiator-id",
+        "dataType": "string"
+      },
+      {
+        "property": "authority-id-info",
+        "dataType": "string"
+      },
+      {
+        "property": "pac-life-time",
+        "dataType": "string"
+      },
+      {
+        "property": "pac-opaque",
+        "dataType": "string"
+      },
+      {
+        "property": "pac-refresh-time",
+        "dataType": "string"
+      }
+    ]
+  },
+  "data": []
+}

@@ -1,0 +1,44 @@
+{
+  "header": {
+    "generatedOn": 1792758946632,
+    "viewKeys": {
+      "uniqueKey": [],
+      "preferenceKey": "grid-Tacacs"
+    },
+    "columns": [
+      {
+        "title": "client.view.clientViewTacacs.timeout",
+        "property": "timeout",
+        "width": 110,
+        "dataType": "integer"
+      },
+      {
+        "title": "client.view.clientViewTacacs.authentication",
+        "property": "authentication",
+        "width": 110,
+        "dataType": "string"
+      },
+      {
+        "title": "client.view.clientViewTacacs.server",
+        "property": "server",
+        "width": 110,
+        "dataType": "TacacsServer"
+      }
+    ],
+    "fields": [
+      {
+        "property": "timeout",
+        "dataType": "integer"
+      },
+      {
+        "property": "authentication",
+        "dataType": "string"
+      },
+      {
+        "property": "server",
+        "dataType": "TacacsServer"
+      }
+    ]
+  },
+  "data": {}
+}

@@ -73,6 +73,47 @@ All notable changes to this project are documented here. The format follows
 - W19 (#33): Network Wide Path Insight. `catsdwan_list_path_traces` (trace and task history, GUI traces too; a
   trace's flows hop by hop with colours, decisions, policies, drop causes and issues) and `catsdwan_path_insight`
   (write, preview-first: start a trace at a site, wait for flows, read them, always stop it).
+- W23 (#37): edge security reads. `catsdwan_security_status(device)` (live from the edge: UTD engine,
+  image supported and recommended, IPS signatures and updates, URL-filtering cloud connection, zone-based firewall
+  zone pairs and non-zero drop counters, SSL proxy, SIG tunnels to Umbrella or Zscaler, plus the Manager's
+  security policies and embedded-security profiles; `features` and a one-line `verdict`, which says plainly when
+  there is no security policy at all) and `catsdwan_security_events(kind=ips|url|connection|dns, device or site,
+  hours)` (`POST /statistics/ipsalert`, `/urlf`, `/sul/connections`, `/umbrella`, aggregated by signature, per
+  edge or by firewall policy, action and drop reason; with no records it says whether none is expected).
+- W24 (#38): TrustSec and integrations. `catsdwan_trustsec(device)` (live from the edge: environment data
+  from ISE with what a missing download means, PAC with the opaque value masked, IP-to-SGT bindings and their
+  source, SGACLs with permit/deny counters, SXP, pxGrid status and bindings, 802.1X; tables the edge does not
+  support, such as `iptosgtbindings` on a C8000V, listed as `not_supported`; `in_use` and a `verdict`) and
+  `catsdwan_integrations` (ISE credentials masked, the connection test and ISE SGT list only when ISE is
+  configured, pxGrid, partners with a Catalyst Center partner's SD-Access sites and devices, SD-Access VPNs; says
+  plainly when no ISE, pxGrid or partner is configured).
+- W25 (#39): Manager operations. `catsdwan_manager_health` (cluster nodes and state, services per node up or
+  down, health summary and details, JVM and third-party memory with %, CPUs, statistics indexes not enabled,
+  disaster recovery with its history when configured; a `verdict`), `catsdwan_list_backups` (`/backup/list`
+  newest first with state and file, `/schedule/list`) and `catsdwan_create_backup` (write tier, preview-first:
+  `POST /backup/export` on demand, followed through `/backup/backupinfo/{id}` to ALL_SUCCESS or a failure; the
+  preview names the newest backup, warns that the Manager is busy and blocks while another backup runs or
+  when no cluster IP is configured; `srcIpAddress` / `followerIpAddressList` come from the nodes' cluster IPs,
+  and EXPORT_FAILED is explained). `catsdwan_manager_health` reports `cluster_ip_configured`.
+- W26 (#40): access and AAA. `catsdwan_list_users` (users with groups, status and sessions; user groups with
+  read and write feature counts; sessions per user with sources; VPN groups; this login's auth type),
+  `catsdwan_get_aaa` (login order, never set = local only, fall-back, RADIUS and TACACS+ servers with secrets
+  masked, `local_fallback`) and `catsdwan_set_external_authentication(protocol, order, servers, ...)` (write tool,
+  confirm needs `MCP_ENABLE_DANGEROUS`: the preview shows the order and servers before and after and blocks an
+  order without `local`, a method with no server and a no-op; confirm writes `/admin/tacacs` or `/admin/radius`
+  and `/admin/aaa`, then a fresh test login as the API user, and puts the previous order back if it fails).
+- W27 (#41): controller upgrades. `catsdwan_upgrade_controllers(version, image_type, start, timezone)` (write tool,
+  confirm needs `MCP_ENABLE_DANGEROUS`): the preview lists the versions in the Manager's repository, the
+  validators, controllers and Manager in upgrade order with their release, the version-compliance check against
+  every edge and controller and the schedule; it blocks when the repository has no image (with that reason), the
+  version isn't available, an edge or controller is too old, every controller runs it already, or there is no
+  successful backup from the last 24 h. Confirm posts `/v1/controllers-upgrade` (now or scheduled) and returns the
+  process id; `cancel=<processId>` cancels a scheduled upgrade.
+- W28 (#42): licensing reads. `catsdwan_licenses(device, include_unjoined)`: Smart Account credentials, virtual
+  accounts and sync status, licence compliance with its reasons, licensed vs total devices, the licence pool, and
+  per device its compliance, reason and licences (`/v1/licensing/devices`); with `device`, the edge's own licence
+  usage and registration. Says plainly when no Smart Account sync is configured (licences can't be fetched or
+  assigned until it is). Assigning and releasing licences stay in the GUI.
 
 ## [0.2.0] - 2026-10-23
 

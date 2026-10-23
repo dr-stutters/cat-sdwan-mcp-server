@@ -1,0 +1,231 @@
+{
+  "header": {
+    "generatedOn": 1792758903753,
+    "viewKeys": {
+      "uniqueKey": [],
+      "preferenceKey": "grid-raw_ipsalert"
+    },
+    "columns": [
+      {
+        "title": "view.rawdata.clientViewIpsalert.deviceIp",
+        "property": "vdevice_name",
+        "dataType": "string"
+      },
+      {
+        "title": "view.rawdata.clientViewIpsalert.vmanageSystemIP",
+        "property": "vmanage_system_ip",
+        "dataType": "string"
+      },
+      {
+        "title": "view.rawdata.clientViewIpsalert.hostName",
+        "property": "host_name",
+        "dataType": "string"
+      },
+      {
+        "title": "view.rawdata.clientViewIpsalert.deviceModel",
+        "property": "device_model",
+        "dataType": "string"
+      },
+      {
+        "title": "view.rawdata.clientViewIpsalert.time",
+        "property": "statcycletime",
+        "displayFormat": "DD MMM YYYY h:mm:ss A z",
+        "inputFormat": "unix-time",
+        "dataType": "date"
+      },
+      {
+        "title": "view.rawdata.clientViewIpsalert.entryTime",
+        "property": "entry_time",
+        "displayFormat": "DD MMM YYYY h:mm:ss A z",
+        "inputFormat": "unix-time",
+        "dataType": "date"
+      },
+      {
+        "title": "view.rawdata.clientViewIpsalert.uSEC",
+        "property": "usec",
+        "dataType": "number"
+      },
+      {
+        "title": "view.rawdata.clientViewIpsalert.action",
+        "property": "action",
+        "dataType": "number"
+      },
+      {
+        "title": "view.rawdata.clientViewIpsalert.sID",
+        "property": "sid",
+        "dataType": "number"
+      },
+      {
+        "title": "view.rawdata.clientViewIpsalert.gID",
+        "property": "gid",
+        "dataType": "number"
+      },
+      {
+        "title": "view.rawdata.clientViewIpsalert.rev",
+        "property": "rev",
+        "dataType": "number"
+      },
+      {
+        "title": "view.rawdata.clientViewIpsalert.message",
+        "property": "message",
+        "dataType": "string"
+      },
+      {
+        "title": "view.rawdata.clientViewIpsalert.classification",
+        "property": "classification",
+        "dataType": "number"
+      },
+      {
+        "title": "view.rawdata.clientViewIpsalert.priority",
+        "property": "priority",
+        "dataType": "number"
+      },
+      {
+        "title": "view.rawdata.clientViewIpsalert.sourceIp",
+        "property": "src_ip",
+        "dataType": "string"
+      },
+      {
+        "title": "view.rawdata.clientViewIpsalert.sourcePort",
+        "property": "src_port",
+        "dataType": "number"
+      },
+      {
+        "title": "view.rawdata.clientViewIpsalert.destinationIp",
+        "property": "dst_ip",
+        "dataType": "string"
+      },
+      {
+        "title": "view.rawdata.clientViewIpsalert.destinationPort",
+        "property": "dst_port",
+        "dataType": "number"
+      },
+      {
+        "title": "view.rawdata.clientViewIpsalert.protocol",
+        "property": "protocol",
+        "dataType": "number"
+      },
+      {
+        "title": "view.rawdata.clientViewIpsalert.vRF",
+        "property": "vrf",
+        "dataType": "number"
+      },
+      {
+        "title": "view.rawdata.clientViewIpsalert.violationPath",
+        "property": "violation_path",
+        "dataType": "string"
+      },
+      {
+        "title": "view.rawdata.clientViewIpsalert.type",
+        "property": "type",
+        "dataType": "string"
+      },
+      {
+        "title": "view.rawdata.clientViewIpsalert.timestamp",
+        "property": "timestamp",
+        "displayFormat": "DD MMM YYYY h:mm:ss A z",
+        "inputFormat": "unix-time",
+        "dataType": "date"
+      }
+    ],
+    "fields": [
+      {
+        "property": "vdevice_name",
+        "dataType": "string"
+      },
+      {
+        "property": "vmanage_system_ip",
+        "dataType": "string"
+      },
+      {
+        "property": "host_name",
+        "dataType": "string"
+      },
+      {
+        "property": "device_model",
+        "dataType": "string"
+      },
+      {
+        "property": "statcycletime",
+        "dataType": "date"
+      },
+      {
+        "property": "entry_time",
+        "dataType": "date"
+      },
+      {
+        "property": "usec",
+        "dataType": "number"
+      },
+      {
+        "property": "action",
+        "dataType": "number"
+      },
+      {
+        "property": "sid",
+        "dataType": "number"
+      },
+      {
+        "property": "gid",
+        "dataType": "number"
+      },
+      {
+        "property": "rev",
+        "dataType": "number"
+      },
+      {
+        "property": "message",
+        "dataType": "string"
+      },
+      {
+        "property": "classification",
+        "dataType": "number"
+      },
+      {
+        "property": "priority",
+        "dataType": "number"
+      },
+      {
+        "property": "src_ip",
+        "dataType": "string"
+      },
+      {
+        "property": "src_port",
+        "dataType": "number"
+      },
+      {
+        "property": "dst_ip",
+        "dataType": "string"
+      },
+      {
+        "property": "dst_port",
+        "dataType": "number"
+      },
+      {
+        "property": "protocol",
+        "dataType": "number"
+      },
+      {
+        "property": "vrf",
+        "dataType": "number"
+      },
+      {
+        "property": "violation_path",
+        "dataType": "string"
+      },
+      {
+        "property": "type",
+        "dataType": "string"
+      },
+      {
+        "property": "timestamp",
+        "dataType": "date"
+      }
+    ],
+    "chart": {}
+  },
+  "pageInfo": {
+    "count": 0
+  },
+  "data": []
+}

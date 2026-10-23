@@ -1,0 +1,100 @@
+{
+  "header": {
+    "generatedOn": 1792758903996,
+    "viewKeys": {
+      "uniqueKey": [],
+      "preferenceKey": "grid-SecurityPolicy"
+    },
+    "columns": [
+      {
+        "title": "view.template.clientViewSecurityPolicy.name",
+        "property": "policyName",
+        "hideable": false,
+        "dataType": "string"
+      },
+      {
+        "title": "view.template.clientViewSecurityPolicy.description",
+        "property": "policyDescription",
+        "dataType": "string"
+      },
+      {
+        "title": "view.template.clientViewSecurityPolicy.summary",
+        "property": "policyDefinition",
+        "dataType": "string"
+      },
+      {
+        "title": "view.template.clientViewSecurityPolicy.policyMode",
+        "property": "policyMode",
+        "dataType": "string"
+      },
+      {
+        "title": "view.template.clientViewSecurityPolicy.useCase",
+        "property": "policyUseCase",
+        "dataType": "string"
+      },
+      {
+        "title": "view.template.clientViewSecurityPolicy.devicesAttache",
+        "property": "devicesAttached",
+        "hideable": false,
+        "dataType": "number"
+      },
+      {
+        "title": "view.template.clientViewSecurityPolicy.deviceTemplate",
+        "property": "mastersAttached",
+        "hideable": false,
+        "dataType": "number"
+      },
+      {
+        "title": "view.template.clientViewSecurityPolicy.updatedBy",
+        "property": "lastUpdatedBy",
+        "dataType": "string"
+      },
+      {
+        "title": "view.template.clientViewSecurityPolicy.lastUpdated",
+        "property": "lastUpdatedOn",
+        "displayFormat": "DD MMM YYYY h:mm:ss A z",
+        "inputFormat": "unix-time",
+        "dataType": "date"
+      }
+    ],
+    "fields": [
+      {
+        "property": "policyName",
+        "dataType": "string"
+      },
+      {
+        "property": "policyDescription",
+        "dataType": "string"
+      },
+      {
+        "property": "policyDefinition",
+        "dataType": "string"
+      },
+      {
+        "property": "policyMode",
+        "dataType": "string"
+      },
+      {
+        "property": "policyUseCase",
+        "dataType": "string"
+      },
+      {
+        "property": "devicesAttached",
+        "dataType": "number"
+      },
+      {
+        "property": "mastersAttached",
+        "dataType": "number"
+      },
+      {
+        "property": "lastUpdatedBy",
+        "dataType": "string"
+      },
+      {
+        "property": "lastUpdatedOn",
+        "dataType": "date"
+      }
+    ]
+  },
+  "data": []
+}

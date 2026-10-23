@@ -1,0 +1,7 @@
+{
+  "error": {
+    "message": "Device data error",
+    "code": "DEV0001",
+    "details": "Failed to get data for device - Invalid data type CEdgeIptoSgtbindings"
+  }
+}

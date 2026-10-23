@@ -1,0 +1,74 @@
+{
+  "header": {
+    "generatedOn": 1792758944444,
+    "viewKeys": {
+      "uniqueKey": [],
+      "preferenceKey": "grid-ClusterHealthDetails"
+    },
+    "columns": [
+      {
+        "title": "view.dashboard.viewClusterHealthDetails.deviceIp",
+        "property": "deviceIP",
+        "display": "iconAndText",
+        "iconProperty": "status",
+        "hideable": false,
+        "icon": [
+          {
+            "key": "normal",
+            "value": "images/action_success.png"
+          },
+          {
+            "key": "error",
+            "value": "images/action_failure.png"
+          }
+        ],
+        "dataType": "string"
+      },
+      {
+        "title": "view.dashboard.viewClusterHealthDetails.reporters",
+        "property": "reporters",
+        "hideable": false,
+        "dataType": "string"
+      }
+    ],
+    "fields": [
+      {
+        "property": "deviceIP",
+        "dataType": "string",
+        "display": "iconAndText"
+      },
+      {
+        "property": "reporters",
+        "dataType": "string"
+      },
+      {
+        "property": "system-ip",
+        "dataType": "string"
+      },
+      {
+        "property": "local-system-ip",
+        "dataType": "string"
+      },
+      {
+        "property": "host-name",
+        "dataType": "string"
+      },
+      {
+        "property": "personality",
+        "dataType": "string",
+        "display": "keyvalue"
+      }
+    ]
+  },
+  "data": [
+    {
+      "deviceIP": "localhost",
+      "reporters": " null",
+      "status": "error",
+      "system-ip": "1.1.1.1",
+      "host-name": "manager",
+      "personality": "vmanage",
+      "local-system-ip": "1.1.1.1"
+    }
+  ]
+}

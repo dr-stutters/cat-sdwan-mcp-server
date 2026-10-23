@@ -1,0 +1,60 @@
+{
+  "header": {
+    "generatedOn": 1792758925695,
+    "viewKeys": {
+      "uniqueKey": [
+        "vdevice-dataKey"
+      ],
+      "preferenceKey": "grid-CEdgeRoleBasedSgtMap"
+    },
+    "columns": [
+      {
+        "title": "device.trustsec.trustsecrolebasedsgtmap.ip",
+        "property": "ip",
+        "dataType": "string"
+      },
+      {
+        "title": "device.trustsec.trustsecrolebasedsgtmap.vrfName",
+        "property": "vrf-name",
+        "dataType": "string"
+      },
+      {
+        "title": "device.trustsec.trustsecrolebasedsgtmap.sgt",
+        "property": "sgt",
+        "dataType": "number"
+      },
+      {
+        "title": "device.trustsec.trustsecrolebasedsgtmap.source",
+        "property": "source",
+        "dataType": "string"
+      }
+    ],
+    "fields": [
+      {
+        "property": "vdevice-name",
+        "dataType": "string"
+      },
+      {
+        "property": "vdevice-host-name",
+        "dataType": "string"
+      },
+      {
+        "property": "ip",
+        "dataType": "string"
+      },
+      {
+        "property": "vrf-name",
+        "dataType": "string"
+      },
+      {
+        "property": "sgt",
+        "dataType": "number"
+      },
+      {
+        "property": "source",
+        "dataType": "string"
+      }
+    ]
+  },
+  "data": []
+}
