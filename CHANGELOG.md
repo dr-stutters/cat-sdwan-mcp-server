@@ -55,6 +55,24 @@ All notable changes to this project are documented here. The format follows
   (`/statistics/tunnelhealth/overview`, `history=true` from `/tunnelhealth/history` as fair/poor periods),
   `catsdwan_interface_stats` (`POST /statistics/interface/aggregation`, one metric per property; circuit capacity,
   QoS drops) and `catsdwan_topology` (sites, devices, configuration intent, site-to-site tunnel links).
+- W16 (#30): certificates and trust. `catsdwan_certificates` (controller and edge certificates with status,
+  expiry, days left and what breaks when each expires, invalid/expired/expiring first; the Manager's counts,
+  signing modes, root chain, HTTPS certificate and an edge's trustpoints), `catsdwan_renew_controller_certificate`
+  (dangerous; two previewed steps: CSR on the controller, then install of the Enterprise-CA-signed certificate and
+  send to the validators; refused unless controller signing is Enterprise) and `catsdwan_sync_root_cert` (write;
+  `POST /certificate/forcesync/rootCert`).
+- W17 (#31): on-box troubleshooting through the Manager. `catsdwan_ping` (ping, or tcp/udp probes via nping),
+  `catsdwan_traceroute`, `catsdwan_tunnel_path` (the Manager's flow simulation: next hops with colours and the
+  remote edge, matched policies, drop reason), `catsdwan_device_bringup` (the onboarding checklist with the first
+  failing step, plus the control check per colour) as reads; `catsdwan_admin_tech` (write, preview-first). Request
+  bodies are the ones the Manager's own UI sends.
+- W18 (#32): device state reads. `catsdwan_routes` (the live RIB from `/device/ip/ipRoutes` or `/ip/routetable`,
+  OMP next hops named by edge, VPN/prefix/protocol filters with a `missing` verdict, BGP/OSPF/EIGRP neighbours)
+  and `catsdwan_device_state` (a catalogue of 18 real-time tables by plain name, `feature='list'`, 'did you mean',
+  zero counters left out, platform-specific tables refused).
+- W19 (#33): Network Wide Path Insight. `catsdwan_list_path_traces` (trace and task history, GUI traces too; a
+  trace's flows hop by hop with colours, decisions, policies, drop causes and issues) and `catsdwan_path_insight`
+  (write, preview-first: start a trace at a site, wait for flows, read them, always stop it).
 
 ## [0.2.0] - 2026-10-23
 

@@ -1,0 +1,69 @@
+{
+  "data": [
+    {
+      "color": "MPLS",
+      "interface": "GigabitEthernet1",
+      "private-ip": "10.60.1.14",
+      "private-port": "12426",
+      "public-ip": "10.60.1.14",
+      "public-port": "12426",
+      "nat-type": "Not learned",
+      "tloc-type": "",
+      "expected-connections": 1,
+      "actual-connections": 1,
+      "tloc-status": "green",
+      "control": [
+        {
+          "is-preferred": true,
+          "peer-type": "vmanage",
+          "system-ip": "1.1.1.1",
+          "host-name": "manager",
+          "state": "up",
+          "local-status": "green",
+          "remote-status": "green",
+          "local-status-info": "",
+          "remote-status-info": ""
+        },
+        {
+          "is-preferred": true,
+          "peer-type": "vsmart",
+          "system-ip": "1.1.1.3",
+          "host-name": "controller",
+          "state": "up",
+          "local-status": "green",
+          "remote-status": "green",
+          "local-status-info": "",
+          "remote-status-info": ""
+        }
+      ]
+    },
+    {
+      "color": "BIZ-INTERNET",
+      "interface": "GigabitEthernet2",
+      "private-ip": "10.60.2.14",
+      "private-port": "12426",
+      "public-ip": "10.60.2.14",
+      "public-port": "12426",
+      "nat-type": "Not learned",
+      "tloc-type": "",
+      "expected-connections": 1,
+      "actual-connections": 1,
+      "tloc-status": "green",
+      "control": [
+        {
+          "is-preferred": true,
+          "peer-type": "vsmart",
+          "system-ip": "1.1.1.3",
+          "host-name": "controller",
+          "state": "up",
+          "local-status": "green",
+          "remote-status": "green",
+          "local-status-info": "",
+          "remote-status-info": ""
+        }
+      ]
+    }
+  ],
+  "expectedControlConnectionsToVsmart": 2,
+  "actualControlConnectionsToVsmart": 0
+}

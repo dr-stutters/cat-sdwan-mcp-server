@@ -1,0 +1,117 @@
+{
+  "header": {
+    "generatedOn": 1792760101136,
+    "viewKeys": {
+      "uniqueKey": [
+        "vdevice-dataKey"
+      ],
+      "preferenceKey": "grid-CEdgeDHCPServer"
+    },
+    "columns": [
+      {
+        "title": "device.dhcp.deviceDataCedgeDhcpServer.vrfName",
+        "property": "vrf-name",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.dhcp.deviceDataCedgeDhcpServer.interface",
+        "property": "interface",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.dhcp.deviceDataCedgeDhcpServer.clientIp",
+        "property": "client-ip",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.dhcp.deviceDataCedgeDhcpServer.clientId",
+        "property": "client-id",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.dhcp.deviceDataCedgeDhcpServer.clientIdType",
+        "property": "client-id-type",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.dhcp.deviceDataCedgeDhcpServer.state",
+        "property": "state",
+        "width": 200,
+        "dataType": "string"
+      },
+      {
+        "title": "device.dhcp.deviceDataCedgeDhcpServer.type",
+        "property": "type",
+        "width": 200,
+        "dataType": "string"
+      },
+      {
+        "title": "device.dhcp.deviceDataCedgeDhcpServer.poolName",
+        "property": "pool-name",
+        "width": 200,
+        "dataType": "string"
+      },
+      {
+        "title": "device.dhcp.deviceDataCedgeDhcpServer.lastUpdated",
+        "property": "lastupdated",
+        "displayFormat": "DD MMM YYYY h:mm:ss A z",
+        "inputFormat": "unix-time",
+        "hideable": false,
+        "minWidth": 220,
+        "dataType": "date"
+      }
+    ],
+    "fields": [
+      {
+        "property": "vdevice-name",
+        "dataType": "string"
+      },
+      {
+        "property": "vdevice-host-name",
+        "dataType": "string"
+      },
+      {
+        "property": "vrf-name",
+        "dataType": "string"
+      },
+      {
+        "property": "interface",
+        "dataType": "string"
+      },
+      {
+        "property": "client-ip",
+        "dataType": "string"
+      },
+      {
+        "property": "client-id",
+        "dataType": "string"
+      },
+      {
+        "property": "client-id-type",
+        "dataType": "string"
+      },
+      {
+        "property": "state",
+        "dataType": "string"
+      },
+      {
+        "property": "type",
+        "dataType": "string"
+      },
+      {
+        "property": "pool-name",
+        "dataType": "string"
+      },
+      {
+        "property": "lastupdated",
+        "dataType": "date"
+      }
+    ]
+  },
+  "data": []
+}

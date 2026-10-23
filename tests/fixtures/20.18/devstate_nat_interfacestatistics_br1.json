@@ -1,0 +1,264 @@
+{
+  "header": {
+    "generatedOn": 1792760103745,
+    "viewKeys": {
+      "uniqueKey": [
+        "vdevice-dataKey"
+      ],
+      "preferenceKey": "grid-CEdgeIPNatStatistics"
+    },
+    "columns": [
+      {
+        "title": "device.ip.dataCedgeIpNatStatistics.initialized",
+        "property": "initialized",
+        "width": 100,
+        "dataType": "number"
+      },
+      {
+        "title": "device.ip.dataCedgeIpNatStatistics.entries",
+        "property": "entries",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.ip.dataCedgeIpNatStatistics.statics",
+        "property": "statics",
+        "width": 200,
+        "dataType": "number"
+      },
+      {
+        "title": "device.ip.dataCedgeIpNatStatistics.staticsSorted",
+        "property": "statics-sorted",
+        "width": 200,
+        "dataType": "number"
+      },
+      {
+        "title": "device.ip.dataCedgeIpNatStatistics.flows",
+        "property": "flows",
+        "width": 200,
+        "dataType": "number"
+      },
+      {
+        "title": "device.ip.dataCedgeIpNatStatistics.insides",
+        "property": "insides",
+        "width": 200,
+        "dataType": "number"
+      },
+      {
+        "title": "device.ip.dataCedgeIpNatStatistics.outsides",
+        "property": "outsides",
+        "width": 200,
+        "dataType": "number"
+      },
+      {
+        "title": "device.ip.dataCedgeIpNatStatistics.entryTimeouts",
+        "property": "entry-timeouts",
+        "width": 200,
+        "dataType": "number"
+      },
+      {
+        "title": "device.ip.dataCedgeIpNatStatistics.hits",
+        "property": "hits",
+        "width": 200,
+        "dataType": "number"
+      },
+      {
+        "title": "device.ip.dataCedgeIpNatStatistics.misses",
+        "property": "misses",
+        "width": 200,
+        "dataType": "number"
+      },
+      {
+        "title": "device.ip.dataCedgeIpNatStatistics.interruptSwitc",
+        "property": "interrupt-switched",
+        "width": 200,
+        "dataType": "number"
+      },
+      {
+        "title": "device.ip.dataCedgeIpNatStatistics.ipaliasAddFail",
+        "property": "ipalias-add-fail",
+        "width": 200,
+        "dataType": "number"
+      },
+      {
+        "title": "device.ip.dataCedgeIpNatStatistics.mappingStatsDr",
+        "property": "mapping-stats-drop",
+        "width": 200,
+        "dataType": "string"
+      },
+      {
+        "title": "device.ip.dataCedgeIpNatStatistics.poolStatsDrop",
+        "property": "pool-stats-drop",
+        "width": 200,
+        "dataType": "string"
+      },
+      {
+        "title": "device.ip.dataCedgeIpNatStatistics.portlistReqFai",
+        "property": "portlist-req-fail",
+        "width": 200,
+        "dataType": "string"
+      },
+      {
+        "title": "device.ip.dataCedgeIpNatStatistics.packetsPunted",
+        "property": "packets-punted",
+        "width": 200,
+        "dataType": "string"
+      },
+      {
+        "title": "device.ip.dataCedgeIpNatStatistics.fragPacketCoun",
+        "property": "frag-pak-count",
+        "width": 200,
+        "dataType": "string"
+      },
+      {
+        "title": "device.ip.dataCedgeIpNatStatistics.limitentryAddF",
+        "property": "limit-entry-add-fail",
+        "width": 200,
+        "dataType": "string"
+      },
+      {
+        "title": "device.ip.dataCedgeIpNatStatistics.in2outDrops",
+        "property": "in2out-drops",
+        "width": 200,
+        "dataType": "number"
+      },
+      {
+        "title": "device.ip.dataCedgeIpNatStatistics.out2inDrops",
+        "property": "out2in-drops",
+        "width": 200,
+        "dataType": "number"
+      },
+      {
+        "title": "device.ip.dataCedgeIpNatStatistics.lastUpdated",
+        "property": "lastupdated",
+        "displayFormat": "DD MMM YYYY h:mm:ss A z",
+        "inputFormat": "unix-time",
+        "hideable": false,
+        "minWidth": 200,
+        "dataType": "date"
+      }
+    ],
+    "fields": [
+      {
+        "property": "vdevice-name",
+        "dataType": "string"
+      },
+      {
+        "property": "vdevice-host-name",
+        "dataType": "string"
+      },
+      {
+        "property": "initialized",
+        "dataType": "number"
+      },
+      {
+        "property": "entries",
+        "dataType": "string"
+      },
+      {
+        "property": "statics",
+        "dataType": "number"
+      },
+      {
+        "property": "statics-sorted",
+        "dataType": "number"
+      },
+      {
+        "property": "flows",
+        "dataType": "number"
+      },
+      {
+        "property": "insides",
+        "dataType": "number"
+      },
+      {
+        "property": "outsides",
+        "dataType": "number"
+      },
+      {
+        "property": "entry-timeouts",
+        "dataType": "number"
+      },
+      {
+        "property": "hits",
+        "dataType": "number"
+      },
+      {
+        "property": "misses",
+        "dataType": "number"
+      },
+      {
+        "property": "interrupt-switched",
+        "dataType": "number"
+      },
+      {
+        "property": "ipalias-add-fail",
+        "dataType": "number"
+      },
+      {
+        "property": "mapping-stats-drop",
+        "dataType": "string"
+      },
+      {
+        "property": "pool-stats-drop",
+        "dataType": "string"
+      },
+      {
+        "property": "portlist-req-fail",
+        "dataType": "string"
+      },
+      {
+        "property": "packets-punted",
+        "dataType": "string"
+      },
+      {
+        "property": "frag-pak-count",
+        "dataType": "string"
+      },
+      {
+        "property": "limit-entry-add-fail",
+        "dataType": "string"
+      },
+      {
+        "property": "in2out-drops",
+        "dataType": "number"
+      },
+      {
+        "property": "out2in-drops",
+        "dataType": "number"
+      },
+      {
+        "property": "lastupdated",
+        "dataType": "date"
+      }
+    ]
+  },
+  "data": [
+    {
+      "frag-pak-count": "0",
+      "vdevice-name": "10.0.0.2",
+      "pool-stats-drop": "0",
+      "interrupt-switched": 0,
+      "vdevice-host-name": "br1",
+      "statics": 0,
+      "hits": 0,
+      "entry-timeouts": 0,
+      "entries": "0",
+      "ipalias-add-fail": 0,
+      "statics-sorted": 0,
+      "vdevice-dataKey": "10.0.0.2-0-0",
+      "flows": 0,
+      "misses": 0,
+      "portlist-req-fail": "0",
+      "initialized": 9223372036854775807,
+      "lastupdated": 1792760103736,
+      "mapping-stats-drop": "0",
+      "packets-punted": "0",
+      "limit-entry-add-fail": "0",
+      "in2out-drops": 0,
+      "out2in-drops": 0,
+      "outsides": 0,
+      "insides": 0
+    }
+  ]
+}

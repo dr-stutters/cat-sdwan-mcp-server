@@ -1,0 +1,94 @@
+{
+  "header": {
+    "generatedOn": 1792760553162,
+    "viewKeys": {
+      "uniqueKey": [],
+      "preferenceKey": "grid-nwpiTaskData"
+    },
+    "columns": [
+      {
+        "title": "client.view.clientViewNwpiTaskData.taskName",
+        "property": "taskName",
+        "dataType": "string"
+      },
+      {
+        "title": "client.view.clientViewNwpiTaskData.taskId",
+        "property": "taskId",
+        "dataType": "number"
+      },
+      {
+        "title": "client.view.clientViewNwpiTaskData.events",
+        "property": "events",
+        "dataType": "array"
+      },
+      {
+        "title": "client.view.clientViewNwpiTaskData.sites",
+        "property": "sites",
+        "dataType": "array"
+      },
+      {
+        "title": "client.view.clientViewNwpiTaskData.status",
+        "property": "state",
+        "dataType": "string"
+      },
+      {
+        "title": "client.view.clientViewNwpiTraceData.startTime",
+        "property": "startTime",
+        "displayFormat": "DD MMM YYYY h:mm:ss A z",
+        "inputFormat": "unix-time",
+        "dataType": "date"
+      },
+      {
+        "title": "client.view.clientViewNwpiTaskData.duration",
+        "property": "duration",
+        "dataType": "string"
+      },
+      {
+        "title": "client.view.clientViewNwpiTaskData.stopTime",
+        "property": "stopTime",
+        "displayFormat": "DD MMM YYYY h:mm:ss A z",
+        "inputFormat": "unix-time",
+        "dataType": "date"
+      }
+    ],
+    "fields": [
+      {
+        "property": "taskName",
+        "dataType": "string"
+      },
+      {
+        "property": "taskId",
+        "dataType": "number"
+      },
+      {
+        "property": "events",
+        "dataType": "array"
+      },
+      {
+        "property": "sites",
+        "dataType": "array"
+      },
+      {
+        "property": "state",
+        "dataType": "string"
+      },
+      {
+        "property": "startTime",
+        "dataType": "date"
+      },
+      {
+        "property": "duration",
+        "dataType": "string"
+      },
+      {
+        "property": "stopTime",
+        "dataType": "date"
+      },
+      {
+        "property": "data",
+        "dataType": "object"
+      }
+    ]
+  },
+  "data": []
+}

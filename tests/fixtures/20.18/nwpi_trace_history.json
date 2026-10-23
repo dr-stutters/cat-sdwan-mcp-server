@@ -1,0 +1,232 @@
+{
+  "header": {
+    "generatedOn": 1792760553042,
+    "viewKeys": {
+      "uniqueKey": [],
+      "preferenceKey": "grid-nwpiTraceData"
+    },
+    "columns": [
+      {
+        "title": "client.view.clientViewNwpiTraceData.startTime",
+        "property": "entry_time",
+        "displayFormat": "DD MMM YYYY h:mm:ss A z",
+        "inputFormat": "unix-time",
+        "dataType": "date"
+      },
+      {
+        "title": "client.view.clientViewNwpiTraceData.traceId",
+        "property": "trace-id",
+        "dataType": "number"
+      }
+    ],
+    "fields": [
+      {
+        "property": "entry_time",
+        "dataType": "date"
+      },
+      {
+        "property": "trace-id",
+        "dataType": "number"
+      },
+      {
+        "property": "type",
+        "dataType": "string"
+      },
+      {
+        "property": "data",
+        "dataType": "object"
+      }
+    ]
+  },
+  "data": [
+    {
+      "entry_time": 1751414771255,
+      "trace-id": 16,
+      "type": "trace-history",
+      "data": {
+        "summary": {
+          "source-site": "500",
+          "device-ip": "N/A",
+          "vpn-id": "0",
+          "vpn-list": "[\"1\",\"100\"]",
+          "src-if": "N/A",
+          "src-ip": "N/A",
+          "src-port": "N/A",
+          "dst-ip": "N/A",
+          "dst-port": "N/A",
+          "src-pfx": "N/A",
+          "src-pfx-len": "N/A",
+          "dst-pfx": "10.0.0.0",
+          "dst-pfx-len": "8",
+          "app": "N/A",
+          "username": "N/A",
+          "common_app": "N/A",
+          "app-grp": "N/A",
+          "protocol": "N/A",
+          "dscp": "N/A",
+          "duration": "10",
+          "trace-name": "nwpi_demo_example1",
+          "domain-mon": "disabled",
+          "qos-mon": "true",
+          "art-vis": "true",
+          "app-vis": "true",
+          "dia-vis": "true",
+          "hub-wan-vis": "true",
+          "te-mon": "true",
+          "te-config-user": "admin",
+          "pcap-replay": "<trimmed>",
+          "token_list": "<trimmed>",
+          "sampling": "N/A",
+          "spl-intvl": "N/A",
+          "stop-time": 1751415473742,
+          "source-site-vmanage-version": "20.18.0-166",
+          "taskId": -1,
+          "trace-trigger-event": "N/A",
+          "qos-congest-dur": "N/A",
+          "wan-loss-rate": "N/A",
+          "ar-drop-rate": "N/A",
+          "enable-cmd-header": "N/A",
+          "state": "stopped",
+          "message": "Trace Stop successfully (auto stop)",
+          "warning": "",
+          "wan-drop-rate-threshold": 5,
+          "local-drop-rate-threshold": 5,
+          "agg-client-prefix": "N/A",
+          "agg-svr-prefix": "N/A",
+          "agg-src-sgt": "N/A",
+          "agg-user-name": "N/A",
+          "test": "[{\"target-url\":\"https://www.tiktok.com\",\"dscp\":\"0\",\"test-intvl\":\"2\",\"dns-svr\":\"10.20.25.16\",\"vpn-id\":\"1\",\"username\":\"jerry\",\"user_grp\":\"cisco/testgroup\",\"test-id\":\"1\"},{\"target-url\":\"https://www.instagram.com\",\"dscp\":\"0\",\"test-intvl\":\"2\",\"dns-svr\":\"10.20.25.16\",\"vpn-id\":\"1\",\"username\":\"jerry\",\"user_grp\":\"cisco/testgroup\",\"test-id\":\"2\"},{\"target-url\":\"https://openai.com\",\"dscp\":\"0\",\"test-intvl\":\"2\",\"dns-svr\":\"10.20.25.16\",\"vpn-id\":\"1\",\"username\":\"jerry\",\"user_grp\":\"cisco/testgroup\",\"test-id\":\"3\"}]",
+          "health-server-ip": "172.16.255.22",
+          "health-server-hostname": "vm12",
+          "health-cpu-load": "9.31",
+          "health-mem-usage": "27",
+          "health-cpu-load-average": "0.09",
+          "health-cpu-core": "16",
+          "health-app-server-mem": "0.15",
+          "health-running-traces": 1,
+          "trace_stop_type": "",
+          "devicesCheckInfo": "[{\"bfd-session-with-traffic\":1,\"up-bfd-session\":1,\"health-device-cpu-load\":\"33.55\",\"health-device-mem-usage\":\"56\",\"deviceHostName\":\"vm5-172.16.255.15\",\"peerSitesCount\":1}]",
+          "te_server_status": "{\"connection_code\":200,\"code_start_time\":1751415429560,\"last_attempt_time\":1751415429560,\"token_list_status\":[{\"token_user\":\"demo@example.com\",\"token_status\":\"valid_token\",\"tests\":27,\"icmp_tests_list\":[]}]}",
+          "targetTeConnectionVmanageMgmtIp": "172.16.255.22",
+          "createdBy": "admin"
+        },
+        "devices": [
+          {
+            "device-ip": "172.16.255.15",
+            "local-system-ip": "172.16.255.15",
+            "dia-vis": "true",
+            "source-site": "500",
+            "art-vis": "true",
+            "site-id": "500",
+            "uuid": "C8K-00000000-0000-4000-8000-000000000854",
+            "duration": "10",
+            "@rid": 3593,
+            "trace-id": 16,
+            "device-type": "src",
+            "state": "completed",
+            "dscp-is-valid": "false",
+            "dst-pfx": "10.0.0.0",
+            "qos-mon": "true",
+            "entry_time": 1751414771255,
+            "connectedVManages": "172.16.255.22",
+            "dst-pfx-len": "8",
+            "parent-trace-id": 16,
+            "te-mon": "true",
+            "domain_monitor_can_be_started": "true",
+            "message": "Trace Done",
+            "vpn-id": "0",
+            "te-config-user": "admin",
+            "version": "17.18.01.0.1410",
+            "hub-wan-vis": "true",
+            "app-vis": "true",
+            "trace-name": "nwpi_demo_example1",
+            "vpn-list": "[\"1\",\"100\"]",
+            "expire-time": 1751415371255,
+            "tenantId": "default"
+          },
+          {
+            "device-ip": "172.16.255.16",
+            "traceModel": 0,
+            "local-system-ip": "172.16.255.16",
+            "dia-vis": "true",
+            "source-site": "500",
+            "art-vis": "true",
+            "site-id": "600",
+            "uuid": "C8K-00000000-0000-4000-8000-000000000855",
+            "duration": "10",
+            "wan-drop-rate-threshold": 5,
+            "@rid": 1833,
+            "trace-id": 16,
+            "device-type": "notsrc",
+            "warning": "",
+            "model": "Manual",
+            "targetTeConnectionVmanageMgmtIp": "172.16.255.22",
+            "state": "completed",
+            "dscp-is-valid": "false",
+            "dst-pfx": "10.0.0.0",
+            "qos-mon": "true",
+            "entry_time": 1751414771255,
+            "connectedVManages": "172.16.255.22",
+            "test": "[{\"target-url\":\"https://www.tiktok.com\",\"dscp\":\"0\",\"test-intvl\":\"2\",\"dns-svr\":\"10.20.25.16\",\"vpn-id\":\"1\",\"username\":\"jerry\",\"user_grp\":\"cisco/testgroup\",\"test-id\":\"1\"},{\"target-url\":\"https://www.instagram.com\",\"dscp\":\"0\",\"test-intvl\":\"2\",\"dns-svr\":\"10.20.25.16\",\"vpn-id\":\"1\",\"username\":\"jerry\",\"user_grp\":\"cisco/testgroup\",\"test-id\":\"2\"},{\"target-url\":\"https://openai.com\",\"dscp\":\"0\",\"test-intvl\":\"2\",\"dns-svr\":\"10.20.25.16\",\"vpn-id\":\"1\",\"username\":\"jerry\",\"user_grp\":\"cisco/testgroup\",\"test-id\":\"3\"}]",
+            "local-drop-rate-threshold": 5,
+            "dst-pfx-len": "8",
+            "parent-trace-id": 16,
+            "te-mon": "true",
+            "te-config-user": "admin",
+            "vpn-id": "0",
+            "message": "Trace Done",
+            "targetVmanageMgmtIp": "172.16.255.22",
+            "version": "17.18.01.0.1410",
+            "token_list": "[{\"username\":\"demo@example.com\",\"te_test_number\":27,\"te_test_list\":[{\"testId\":7256283,\"testName\":\"101043386-vm5a2a\",\"urlRaw\":\"\",\"type\":\"agent-to-agent\",\"interval\":120,\"server\":\"\",\"port\":49153,\"protocol\":\"TCP\",\"sourceAgentList\":[{\"agentId\":1492069,\"agentName\":\"101043386-vm5\",\"ipAddresses\":\"192.154.1.2\"}],\"targetAgentId\":1492071,\"targetAgentName\":\"101043386-vm6\",\"targetAgentIpAddressList\":\"192.154.3.2\"},{\"testId\":7299548,\"testName\":\"1721847234-vm5a2a\",\"urlRaw\":\"\",\"type\":\"agent-to-agent\",\"interval\":120,\"server\":\"\",\"port\":49153,\"protocol\":\"TCP\",\"sourceAgentList\":[{\"agentId\":1496794,\"agentName\":\"1721847234-vm5\",\"ipAddresses\":\"192.30.1.2\"}],\"targetAgentId\":1496795,\"targetAgentName\":\"1721847234-vm6\",\"targetAgentIpAddressList\":\"192.30.3.2\"},{\"testId\":7256280,\"testName\":\"101043386-vm5-a2s-www.box.app.com\",\"urlRaw\":\"\",\"type\":\"agent-to-server\",\"interval\":120,\"server\":\"www.box.app.com:80\",\"port\":-1,\"protocol\":\"TCP\",\"sourceAgentList\":[{\"agentId\":1492069,\"agentName\":\"101043386-vm5\",\"ipAddresses\":\"192.154.1.2\"}]}]}]",
+            "app-vis": "true",
+            "hub-wan-vis": "true",
+            "trace_stop_type": "",
+            "vpn-list": "[\"1\",\"100\"]",
+            "trace-name": "nwpi_demo_example1",
+            "source-site-vmanage-version": "20.18.0-166",
+            "createdBy": "admin",
+            "trace-trigger-event": "N/A",
+            "expire-time": 1751414771265,
+            "tenantId": "default"
+          }
+        ],
+        "readout": {
+          "detail": []
+        },
+        "flowTimeRange": {
+          "start_time": 1751414782000,
+          "end_time": 1751415391000
+        },
+        "policyKeys": [
+          "data_policy+demo_policy+Default",
+          "app_route+demo_policy+Default",
+          "app_route+demo_policy+21",
+          "qos+qosMap+demo_qos",
+          "app_route+demo_policy",
+          "zbfw+vm5_ngfw",
+          "utd_inspection+test_ips_profile",
+          "data_policy+demo_policy+11",
+          "zbfw+vm5_ngfw+Rule1",
+          "data_policy+demo_policy",
+          "data_policy+demo_policy+1"
+        ],
+        "traceExportInfo": {
+          "vdevice-host-name": "vm12",
+          "local-system-ip": "172.16.255.22",
+          "user_name": "admin",
+          "tenant_name": "DefaultTenant",
+          "trace-name": "nwpi_demo_example1",
+          "export_time": 1751416557432
+        },
+        "traceImportInfo": {
+          "importedBy": ""
+        }
+      },
+      "tenant": "default",
+      "traceModel": 0,
+      "insertTime": 0,
+      "createdBy": "admin",
+      "data_location": 1
+    }
+  ]
+}

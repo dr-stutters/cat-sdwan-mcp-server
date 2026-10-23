@@ -1,0 +1,46 @@
+{
+  "header": {
+    "columns": [
+      {
+        "title": "view.certificate.viewCertificateSummary.warning",
+        "property": "warning",
+        "dataType": "string"
+      },
+      {
+        "title": "view.certificate.viewCertificateSummary.invalid",
+        "property": "invalid",
+        "dataType": "string"
+      }
+    ],
+    "fields": [
+      {
+        "property": "warning",
+        "dataType": "string"
+      },
+      {
+        "property": "invalid",
+        "dataType": "string"
+      }
+    ],
+    "viewKeys": {
+      "uniqueKey": [],
+      "preferenceKey": "grid-CertificateSummary"
+    },
+    "modelNameMapping": {
+      "vAnalytics": "Analytics",
+      "vmanage": "Manager",
+      "vSmart": "Controller",
+      "vManage": "Manager",
+      "Cloud OnRamp": "Cloud onRamp",
+      "vedge-x86": "Controller/Validator",
+      "vBond": "Validator"
+    }
+  },
+  "data": [
+    {
+      "invalid": 0,
+      "warning": 0,
+      "revoked": 0
+    }
+  ]
+}
