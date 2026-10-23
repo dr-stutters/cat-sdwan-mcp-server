@@ -1,0 +1,386 @@
+{
+  "header": {
+    "generatedOn": 1792736308407,
+    "viewKeys": {
+      "uniqueKey": [
+        "system-ip"
+      ],
+      "preferenceKey": "grid-Device"
+    },
+    "columns": [
+      {
+        "title": "client.view.clientViewDevice.hostname",
+        "property": "host-name",
+        "display": "iconAndText",
+        "iconProperty": "device-type",
+        "hideable": false,
+        "icon": [
+          {
+            "key": "vmanage",
+            "value": "images/vmanage_table.png"
+          },
+          {
+            "key": "vedge",
+            "value": "images/vedge_table.png"
+          },
+          {
+            "key": "vedge-vbond",
+            "value": "images/vedge-vbond_table.png"
+          },
+          {
+            "key": "vsmart",
+            "value": "images/vsmart_table.png"
+          },
+          {
+            "key": "vbond",
+            "value": "images/vbond_table.png"
+          }
+        ],
+        "width": 150,
+        "dataType": "string"
+      },
+      {
+        "title": "client.view.clientViewDevice.deviceModel",
+        "property": "device-model",
+        "display": "multiColumns",
+        "hideable": false,
+        "width": 100,
+        "dataType": "deviceModel"
+      },
+      {
+        "title": "client.view.clientViewDevice.siteId",
+        "property": "site-id",
+        "hideable": false,
+        "width": 70,
+        "dataType": "numberStr"
+      },
+      {
+        "title": "client.view.clientViewDevice.siteName",
+        "property": "site-name",
+        "hideable": false,
+        "width": 70,
+        "dataType": "string"
+      },
+      {
+        "title": "client.view.clientViewDevice.systemIp",
+        "property": "system-ip",
+        "hideable": false,
+        "width": 110,
+        "dataType": "ipv4"
+      },
+      {
+        "title": "view.certificate.clientViewVedgeList.tags",
+        "property": "tags",
+        "hideable": true,
+        "dataType": "string"
+      },
+      {
+        "title": "client.view.clientViewDevice.chassisNumber",
+        "property": "uuid",
+        "width": 220,
+        "dataType": "string"
+      },
+      {
+        "title": "client.view.clientViewDevice.reachability",
+        "property": "reachability",
+        "display": "multiColumns",
+        "color": [
+          {
+            "key": "reachable",
+            "value": "616161",
+            "property": "reachability"
+          },
+          {
+            "key": "unreachable",
+            "value": "ef5350",
+            "property": "reachability"
+          },
+          {
+            "key": "auth-failed",
+            "value": "ffb300",
+            "property": "reachability"
+          },
+          {
+            "key": "staging",
+            "value": "ffb300",
+            "property": "validity"
+          }
+        ],
+        "width": 150,
+        "minWidth": 150,
+        "dataType": "string"
+      },
+      {
+        "title": "client.view.clientViewDevice.state",
+        "property": "state",
+        "display": "iconAndToolTip",
+        "iconProperty": "state",
+        "toolTipProperty": "state_description",
+        "defaultPropertyKey": "reachability",
+        "defaultPropertyValue": "reachable",
+        "icon": [
+          {
+            "key": "green",
+            "value": "images/device_state_green.png"
+          },
+          {
+            "key": "red",
+            "value": "images/device_state_red.png"
+          },
+          {
+            "key": "yellow",
+            "value": "images/device_state_yellow.png"
+          },
+          {
+            "key": "default",
+            "value": "images/device_state_other.png"
+          }
+        ],
+        "width": 20,
+        "dataType": "string"
+      },
+      {
+        "title": "client.view.clientViewDevice.bfd",
+        "property": "bfdSessions",
+        "width": 75,
+        "minWidth": 65,
+        "dataType": "numberStr"
+      },
+      {
+        "title": "client.view.clientViewDevice.control",
+        "property": "controlConnections",
+        "width": 75,
+        "minWidth": 65,
+        "dataType": "numberStr"
+      },
+      {
+        "title": "client.view.clientViewDevice.version",
+        "property": "version",
+        "width": 150,
+        "dataType": "string"
+      },
+      {
+        "title": "client.view.clientViewDevice.upSince",
+        "property": "uptime-date",
+        "displayFormat": "DD MMM YYYY h:mm:ss A z",
+        "inputFormat": "unix-time",
+        "width": 200,
+        "dataType": "date"
+      },
+      {
+        "title": "client.view.clientViewDevice.deviceGroups",
+        "property": "device-groups",
+        "width": 100,
+        "dataType": "array"
+      },
+      {
+        "title": "Connected Manager",
+        "property": "connectedVManages",
+        "width": 500,
+        "dataType": "array"
+      }
+    ],
+    "fields": [
+      {
+        "property": "host-name",
+        "dataType": "string",
+        "display": "iconAndText"
+      },
+      {
+        "property": "device-model",
+        "dataType": "deviceModel",
+        "display": "multiColumns"
+      },
+      {
+        "property": "site-id",
+        "dataType": "numberStr"
+      },
+      {
+        "property": "site-name",
+        "dataType": "string"
+      },
+      {
+        "property": "system-ip",
+        "dataType": "ipv4"
+      },
+      {
+        "property": "tags",
+        "dataType": "string"
+      },
+      {
+        "property": "uuid",
+        "dataType": "string"
+      },
+      {
+        "property": "reachability",
+        "dataType": "string",
+        "display": "multiColumns"
+      },
+      {
+        "property": "state",
+        "dataType": "string",
+        "display": "iconAndToolTip"
+      },
+      {
+        "property": "bfdSessions",
+        "dataType": "numberStr"
+      },
+      {
+        "property": "controlConnections",
+        "dataType": "numberStr"
+      },
+      {
+        "property": "version",
+        "dataType": "string"
+      },
+      {
+        "property": "uptime-date",
+        "dataType": "date"
+      },
+      {
+        "property": "device-groups",
+        "dataType": "array"
+      },
+      {
+        "property": "connectedVManages",
+        "dataType": "array"
+      },
+      {
+        "property": "number-vsmart-peers",
+        "dataType": "number"
+      },
+      {
+        "property": "board-serial",
+        "dataType": "string"
+      },
+      {
+        "property": "lastupdated",
+        "dataType": "date"
+      }
+    ]
+  },
+  "data": [
+    {
+      "deviceId": "1.1.1.1",
+      "system-ip": "1.1.1.1",
+      "host-name": "manager",
+      "reachability": "reachable",
+      "status": "normal",
+      "personality": "vmanage",
+      "device-type": "vmanage",
+      "device-groups": [
+        "No groups"
+      ],
+      "lastupdated": 1792736287791,
+      "domain-id": "0",
+      "board-serial": "A0000000000000000000000000000000000001",
+      "certificate-validity": "Valid",
+      "max-controllers": "0",
+      "uuid": "00000000-0000-4000-8000-000000000001",
+      "controlConnections": "2",
+      "device-model": "vmanage",
+      "version": "20.18.3.1",
+      "connectedVManages": [
+        "1.1.1.1"
+      ],
+      "site-id": "1",
+      "latitude": "37.666684",
+      "longitude": "-122.777023",
+      "isDeviceGeoData": false,
+      "platform": "x86_64",
+      "uptime-date": 1792735143500,
+      "statusOrder": 4,
+      "device-os": "next",
+      "validity": "valid",
+      "state": "green",
+      "state_description": "All daemons up",
+      "model_sku": "None",
+      "local-system-ip": "1.1.1.1",
+      "total_cpu_count": "8",
+      "testbed_mode": false,
+      "layoutLevel": 1,
+      "site-name": "SITE_1"
+    },
+    {
+      "deviceId": "1.1.1.3",
+      "system-ip": "1.1.1.3",
+      "host-name": "controller",
+      "reachability": "reachable",
+      "status": "normal",
+      "personality": "vsmart",
+      "device-type": "vsmart",
+      "device-groups": [
+        "No groups"
+      ],
+      "lastupdated": 1792736291677,
+      "domain-id": "1",
+      "board-serial": "A1000000000000000000000000000000000002",
+      "certificate-validity": "Valid",
+      "uuid": "00000000-0000-4000-8000-000000000002",
+      "controlConnections": "3",
+      "device-model": "vsmart",
+      "version": "20.18.3.1",
+      "connectedVManages": [
+        "1.1.1.1"
+      ],
+      "site-id": "1",
+      "ompPeers": "0",
+      "latitude": "37.666684",
+      "longitude": "-122.777023",
+      "isDeviceGeoData": false,
+      "platform": "x86_64",
+      "uptime-date": 1792735134667,
+      "statusOrder": 4,
+      "device-os": "next",
+      "validity": "valid",
+      "state": "green",
+      "state_description": "All daemons up",
+      "model_sku": "None",
+      "local-system-ip": "1.1.1.3",
+      "total_cpu_count": "2",
+      "testbed_mode": false,
+      "layoutLevel": 2,
+      "site-name": "SITE_1"
+    },
+    {
+      "deviceId": "1.1.1.2",
+      "system-ip": "1.1.1.2",
+      "host-name": "validator",
+      "reachability": "reachable",
+      "status": "normal",
+      "personality": "vbond",
+      "device-type": "vbond",
+      "device-groups": [
+        "No groups"
+      ],
+      "lastupdated": 1792736264037,
+      "board-serial": "A2000000000000000000000000000000000003",
+      "certificate-validity": "Valid",
+      "uuid": "00000000-0000-4000-8000-000000000003",
+      "controlConnections": "8",
+      "device-model": "vedge-cloud",
+      "version": "20.18.3.1",
+      "connectedVManages": [
+        "1.1.1.1"
+      ],
+      "site-id": "1",
+      "latitude": "37.666684",
+      "longitude": "-122.777023",
+      "isDeviceGeoData": false,
+      "platform": "x86_64",
+      "uptime-date": 1792735168026,
+      "statusOrder": 4,
+      "device-os": "next",
+      "validity": "valid",
+      "state": "green",
+      "state_description": "All daemons up",
+      "model_sku": "None",
+      "local-system-ip": "1.1.1.2",
+      "total_cpu_count": "2",
+      "linux_cpu_count": "1",
+      "testbed_mode": false,
+      "layoutLevel": 3,
+      "site-name": "SITE_1"
+    }
+  ]
+}

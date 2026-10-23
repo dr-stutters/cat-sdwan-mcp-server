@@ -1,3 +1,4 @@
+import respx
 from fastmcp import Client
 
 from cat_sdwan_mcp._core.testing import assert_prompt_contract, assert_tool_contract
@@ -16,9 +17,11 @@ async def test_contract_read_only() -> None:
     await assert_prompt_contract(server, "catsdwan")
 
 
-async def test_status_reports_the_scaffold() -> None:
+async def test_status_tool_reports_the_manager(api: respx.MockRouter) -> None:
     async with Client(make_server()) as c:
         names = {t.name for t in await c.list_tools()}
         result = await c.call_tool("catsdwan_status", {})
     assert "catsdwan_status" in names
-    assert "scaffold" in str(result.data or result.structured_content or result.content)
+    text = str(result.data or result.structured_content or result.content)
+    assert "20.18.3.1" in text and "JWT" in text and "validator" in text
+    assert "jwt-123" not in text and "csrf-123" not in text

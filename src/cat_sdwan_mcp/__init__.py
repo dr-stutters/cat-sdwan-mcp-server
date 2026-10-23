@@ -11,11 +11,12 @@ except ModuleNotFoundError as e:  # a source tree or git checkout without the bu
         name=e.name,
     ) from None
 from cat_sdwan_mcp.config import Settings
+from cat_sdwan_mcp.preflight import preflight
 from cat_sdwan_mcp.server import SPEC, create_server
 
 
 def main() -> None:
-    run_cli(SPEC, Settings, create_server)
+    run_cli(SPEC, Settings, create_server, preflight=preflight)
 
 
 __all__ = ["SPEC", "Settings", "create_server", "main"]
