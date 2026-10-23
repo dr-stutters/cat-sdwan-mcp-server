@@ -154,10 +154,13 @@ async def test_read_one_trace_flows(api: respx.MockRouter) -> None:
 
 # --- catsdwan_path_insight -----------------------------------------------------------------------
 
+DATASTREAM_ON = {"data": [{"enable": True, "ipType": "systemIp", "serverHostName": "systemIp", "vpn": 0}]}
+
 
 async def test_path_insight_preview_then_trace_and_stop(api: respx.MockRouter) -> None:
     mock_inventory(api)
     api.get(pi.TRACE_HISTORY_PATH).respond(json={"data": []})
+    api.get(pi.DATASTREAM_PATH).respond(json=DATASTREAM_ON)
     start = api.post(pi.TRACE_START_PATH).respond(json=START_OK)
     api.get(pi.FIN_FLOWS_PATH).mock(
         side_effect=[
@@ -183,6 +186,7 @@ async def test_path_insight_preview_then_trace_and_stop(api: respx.MockRouter) -
 async def test_path_insight_stops_even_when_the_read_fails(api: respx.MockRouter) -> None:
     mock_inventory(api)
     api.get(pi.TRACE_HISTORY_PATH).respond(json={"data": []})
+    api.get(pi.DATASTREAM_PATH).respond(json=DATASTREAM_ON)
     api.post(pi.TRACE_START_PATH).respond(json=START_OK)
     api.get(pi.FIN_FLOWS_PATH).respond(500, json={"error": {"message": "boom"}})
     stop = api.post(STOP).respond(json=STOP_OK)
@@ -196,6 +200,7 @@ async def test_path_insight_stops_even_when_the_read_fails(api: respx.MockRouter
 async def test_path_insight_no_flows_and_keep_running(api: respx.MockRouter) -> None:
     mock_inventory(api)
     api.get(pi.TRACE_HISTORY_PATH).respond(json={"data": []})
+    api.get(pi.DATASTREAM_PATH).respond(json=DATASTREAM_ON)
     api.post(pi.TRACE_START_PATH).respond(json=START_OK)
     api.get(pi.FIN_FLOWS_PATH).respond(json={"data": []})
     stop = api.post(STOP).respond(json=STOP_OK)
@@ -209,6 +214,7 @@ async def test_path_insight_no_flows_and_keep_running(api: respx.MockRouter) -> 
 async def test_path_insight_blocks_and_refuses(api: respx.MockRouter) -> None:
     mock_inventory(api, reach={"br1": "unreachable"})
     api.get(pi.TRACE_HISTORY_PATH).respond(json={"data": []})
+    api.get(pi.DATASTREAM_PATH).respond(json=DATASTREAM_ON)
     async with Client(writes()) as c:
         blocked = await run(c, "catsdwan_path_insight", {"site": "200", "vpn": [10]})
         with pytest.raises(ToolError, match="No edge is at site '999'"):
@@ -216,6 +222,26 @@ async def test_path_insight_blocks_and_refuses(api: respx.MockRouter) -> None:
         with pytest.raises(ToolError, match="not at site 200"):
             await c.call_tool("catsdwan_path_insight", {"site": "200", "vpn": [10], "devices": ["br2"]})
     assert blocked["status"] == "blocked" and "unreachable" in blocked["blockers"][0]
+
+
+async def test_path_insight_blocked_and_refused_without_data_stream(api: respx.MockRouter) -> None:
+    mock_inventory(api)
+    api.get(pi.TRACE_HISTORY_PATH).respond(json={"data": []})
+    ds = api.get(pi.DATASTREAM_PATH).respond(json={"data": [{}]})
+    async with Client(writes()) as c:
+        blocked = await run(c, "catsdwan_path_insight", {"site": "200", "vpn": [10]})
+    assert blocked["status"] == "blocked" and "Data Stream is off" in blocked["blockers"][0]
+    # the Manager's own answer when the setting changed after the preview (live 2026-10-24)
+    ds.respond(json=DATASTREAM_ON)
+    api.post(pi.TRACE_START_PATH).respond(
+        json={"state": "enable_datastream", "message": "Data Stream is disabled. Cannot start trace."}
+    )
+    async with Client(writes()) as c:
+        prev = await run(c, "catsdwan_path_insight", {"site": "200", "vpn": [10]})
+        with pytest.raises(ToolError, match="started no trace: Data Stream is disabled"):
+            await c.call_tool(
+                "catsdwan_path_insight", {"site": "200", "vpn": [10], "confirm": prev["confirm"]}
+            )
 
 
 async def test_path_insight_needs_writes() -> None:

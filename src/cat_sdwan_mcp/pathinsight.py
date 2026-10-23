@@ -26,6 +26,10 @@ Sources (20.18.3.1):
   SDWAN_MANUAL, local-drop-rate-threshold, wan-drop-rate-threshold, trace-name} (the shape the UI sends);
   answer {action, trace-id, trace-name, state, entry_time, expire-time, traces: [{device-ip, status,
   message}]}. POST /stream/device/nwpi/trace/stop/{traceId} -> {action, state: stopping, message, traces}.
+  With Data Stream off the start answers 200 {state: enable_datastream, message: 'Data Stream is disabled...'}
+  and no trace id (live 2026-10-24).
+- GET /settings/configuration/vmanagedatastream (live): {data: [{}]} when Data Stream was never set up, else
+  {data: [{enable, ipType, serverHostName, vpn}]}.
 """
 
 from __future__ import annotations
@@ -43,6 +47,7 @@ TASK_HISTORY_PATH = "/dataservice/stream/device/nwpi/tasks/taskHistory"
 TASK_TRACES_PATH = "/dataservice/stream/device/nwpi/tasks/{task_id}/traces"
 FIN_FLOWS_PATH = "/dataservice/stream/device/nwpi/traceFinFlowWithQuery"
 FIN_FLOW_COUNT_PATH = "/dataservice/stream/device/nwpi/traceFinFlowCount"
+DATASTREAM_PATH = "/dataservice/settings/configuration/vmanagedatastream"
 PRELOAD_PATH = "/dataservice/stream/device/nwpi/preloadinfo"
 
 NA = ("N/A", "", None, "UNKNOWN_INTERFACE", "INVALID")
@@ -172,6 +177,19 @@ def start_problems(answer: Any) -> list[str]:
         ):
             out.append(f"{t.get('device-ip')}: {t.get('message') or t.get('status')}")
     return out
+
+
+def datastream_enabled(body: Any) -> bool:
+    """Whether the Manager's Data Stream setting is on (path insight needs it)."""
+    rows = _as_list(body.get("data")) if isinstance(body, dict) else []
+    return any(isinstance(r, dict) and r.get("enable") in (True, "true") for r in rows)
+
+
+def start_refusal(answer: Any) -> str:
+    """Why the Manager started no trace, from an answer without a trace id."""
+    if isinstance(answer, dict) and (answer.get("message") or answer.get("state")):
+        return str(answer.get("message") or answer.get("state"))
+    return f"no trace id in the answer {answer!r}"
 
 
 # --- traces ---------------------------------------------------------------------------------------

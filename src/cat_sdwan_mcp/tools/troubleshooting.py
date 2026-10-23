@@ -65,7 +65,6 @@ Vpn = Annotated[
 SourceInterface = Annotated[
     str | None, Field(description="Source interface, e.g. 'GigabitEthernet3' (default: the device picks)")
 ]
-PERSONALITY = {"edge": "vedge", "controller": "vsmart", "validator": "vbond", "manager": "vmanage"}
 POLL_INTERVAL = 10.0  # seconds between admin-tech list reads (tests set it to 0)
 
 
@@ -308,14 +307,19 @@ def register(reg: ToolRegistrar) -> None:
         )
         existing = admintech_rows(existing_body, ip) if not isinstance(existing_body, UpstreamError) else []
         running = in_progress(progress_body) if not isinstance(progress_body, UpstreamError) else 0
-        personality = PERSONALITY.get(str(row.get("role")), "vedge")
-        body = {
+        # The Manager's own UI sends device-type only for itself ("vmanage"); for an edge or another
+        # controller 20.18 refuses the body with DEVICE0007 when it is there. The two empty lists are what
+        # the UI sends too (live 2026-10-24).
+        body: dict[str, Any] = {
             "deviceIP": ip,
-            "device-type": personality,
             "exclude-cores": exclude_cores,
-            "exclude-tech": exclude_tech,
             "exclude-logs": exclude_logs,
+            "exclude-tech": exclude_tech,
+            "tech-filter": [],
+            "custom-commands": [],
         }
+        if row.get("role") == "manager":
+            body["device-type"] = "vmanage"
         warnings = []
         if running:
             warnings.append(f"{running} admin-tech(s) already in progress on the Manager")

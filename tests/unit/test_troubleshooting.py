@@ -316,10 +316,11 @@ async def test_admin_tech_preview_then_confirm(
         done = await run(c, "catsdwan_admin_tech", {"device": "br1", "confirm": prev["confirm"]})
     assert json.loads(post.calls[0].request.content) == {
         "deviceIP": "10.0.0.2",
-        "device-type": "vedge",
         "exclude-cores": True,
-        "exclude-tech": False,
         "exclude-logs": False,
+        "exclude-tech": False,
+        "tech-filter": [],
+        "custom-commands": [],
     }
     assert done["result"]["admin_tech"]["file"] == "10.0.0.2-br1-20261023-admin-tech.tar.gz"
 
