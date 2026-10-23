@@ -1,0 +1,42 @@
+{
+  "data": [
+    {
+      "name": "Data plane connectivity established",
+      "operation": "DataPlane",
+      "status": "Error",
+      "message": [
+        "No BFD sessions found"
+      ]
+    },
+    {
+      "name": "Control plane connectivity established",
+      "operation": "ControlPlane",
+      "status": "Error",
+      "message": "Control connection is not up"
+    },
+    {
+      "name": "Router configuration",
+      "operation": "RouterConfiguration",
+      "status": "Error",
+      "message": [
+        "No template apply log found."
+      ]
+    },
+    {
+      "name": "Software image update",
+      "operation": "SoftwareImageUpdate",
+      "status": "NA",
+      "message": [
+        "Software image update is not required"
+      ]
+    },
+    {
+      "name": "Authorized by vBond",
+      "operation": "vBondAuth",
+      "status": "Unknown",
+      "message": [
+        "Unable to find vBond authorization information"
+      ]
+    }
+  ]
+}

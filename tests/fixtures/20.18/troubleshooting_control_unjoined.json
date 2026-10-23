@@ -1,0 +1,7 @@
+{
+  "error": {
+    "message": "Failed to troubleshoot control connections of device",
+    "code": "TBST1007",
+    "details": "No System IP found for management IP REDACTED-11"
+  }
+}

@@ -27,6 +27,7 @@ from cat_sdwan_mcp.tools import (
     onboarding,
     policy,
     prompts,
+    troubleshooting,
 )
 
 INSTRUCTIONS = """
@@ -127,6 +128,7 @@ def create_server(
             health.register,
             prompts.register,
             certificates.register,
+            troubleshooting.register,
         ],
         status=SdwanApp.status,
         spec_sources=spec_sources,

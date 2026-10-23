@@ -61,6 +61,11 @@ All notable changes to this project are documented here. The format follows
   (dangerous; two previewed steps: CSR on the controller, then install of the Enterprise-CA-signed certificate and
   send to the validators; refused unless controller signing is Enterprise) and `catsdwan_sync_root_cert` (write;
   `POST /certificate/forcesync/rootCert`).
+- W17 (#31): on-box troubleshooting through the Manager. `catsdwan_ping` (ping, or tcp/udp probes via nping),
+  `catsdwan_traceroute`, `catsdwan_tunnel_path` (the Manager's flow simulation: next hops with colours and the
+  remote edge, matched policies, drop reason), `catsdwan_device_bringup` (the onboarding checklist with the first
+  failing step, plus the control check per colour) as reads; `catsdwan_admin_tech` (write, preview-first). Request
+  bodies are the ones the Manager's own UI sends.
 
 ## [0.2.0] - 2026-10-23
 

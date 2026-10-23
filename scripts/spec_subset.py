@@ -131,6 +131,18 @@ PATHS = [
     "/certificate/vsmart/list",
     "/certificate/forcesync/rootCert",
     "/device/pki/trustpoint",
+    # W17 troubleshooting
+    "/device/tools/ping/{deviceIP}",
+    "/device/tools/nping/{deviceIP}",
+    "/device/tools/traceroute/{deviceIP}",
+    "/device/tools/servicepath/{deviceIP}",
+    "/device/tools/tunnelpath/{deviceIP}",
+    "/troubleshooting/devicebringup",
+    "/troubleshooting/control/{uuid}",
+    "/device/tools/admintech",
+    "/device/tools/admintechs",
+    "/device/tools/admintechs/inprogress",
+    "/device/tools/admintech/download/{filename}",
 ]
 
 

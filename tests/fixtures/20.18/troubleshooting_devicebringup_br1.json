@@ -1,0 +1,38 @@
+{
+  "data": [
+    {
+      "name": "Data plane connectivity established",
+      "operation": "DataPlane",
+      "status": "Success",
+      "timestamp": 1792752241087
+    },
+    {
+      "name": "Control plane connectivity established",
+      "operation": "ControlPlane",
+      "status": "Success",
+      "timestamp": 1792752238406
+    },
+    {
+      "name": "Router configuration",
+      "operation": "RouterConfiguration",
+      "status": "Success",
+      "message": [
+        "[23-Oct-2026 10:44:11 UTC] Configuration successfully deployed to device"
+      ]
+    },
+    {
+      "name": "Software image update",
+      "operation": "SoftwareImageUpdate",
+      "timestamp": 1792752248323,
+      "status": "NA",
+      "message": [
+        "Software image update is not required"
+      ]
+    },
+    {
+      "name": "Authorized by vBond",
+      "operation": "vBondAuth",
+      "status": "Success"
+    }
+  ]
+}
