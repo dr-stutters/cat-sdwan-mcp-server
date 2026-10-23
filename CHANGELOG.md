@@ -22,6 +22,15 @@ All notable changes to this project are documented here. The format follows
   always dangerous are listed with `MCP_ENABLE_WRITES` alone (write tier) so their preview refuses with the reason;
   with `MCP_ENABLE_DANGEROUS` they register at the dangerous tier. Recorded 20.18.3.1 policy fixtures (policy,
   definition record, definition and list types); spec subset extended with the policy operations.
+- W12 (#13): device operations. `catsdwan_list_software` (repository and image list, per edge installed, active
+  and default versions read live, the release ceiling), `catsdwan_list_device_actions` (running actions with
+  per-device progress and failure reasons; action types), `catsdwan_reboot_devices` and `catsdwan_upgrade_software`
+  (always dangerous; preview names each device's site and role, `blast_radius` = devices, refuses two edges of one
+  site in a run, unreachable or busy devices; the upgrade also refuses an empty repository, a version not in it, a
+  release train newer than the Manager and controllers, too little bootflash, a version already running, and
+  controllers; install body per the spec's `ProcessInstallReq`, activation by `changepartition` when the version is
+  installed already). Recorded 20.18.3.1 fixtures for the empty repository, installed software, reboot history,
+  action types and running tasks; spec subset extended.
 
 ## [0.2.0] - 2026-10-23
 

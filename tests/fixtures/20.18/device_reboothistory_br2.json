@@ -1,0 +1,143 @@
+{
+  "header": {
+    "generatedOn": 1792757016278,
+    "viewKeys": {
+      "uniqueKey": [
+        "vdevice-dataKey"
+      ],
+      "preferenceKey": "grid-CEdgeRebootHistoryV2"
+    },
+    "columns": [
+      {
+        "title": "device.reboot.dataRebootHistoryLog.rebootTime",
+        "property": "reload-time-date",
+        "sort": {
+          "priority": 0,
+          "direction": "asc"
+        },
+        "displayFormat": "DD MMM YYYY h:mm:ss A z",
+        "inputFormat": "unix-time",
+        "width": 220,
+        "dataType": "date"
+      },
+      {
+        "title": "device.reboot.dataRebootHistoryLog.rebootCategory",
+        "property": "reload-category",
+        "width": 350,
+        "dataType": "string"
+      },
+      {
+        "title": "device.reboot.dataRebootHistoryLog.rebootReason",
+        "property": "reload-desc",
+        "width": 350,
+        "dataType": "string"
+      },
+      {
+        "title": "device.reboot.dataRebootHistoryLog.crashDataFile",
+        "property": "crash-data-file",
+        "width": 350,
+        "dataType": "string"
+      },
+      {
+        "title": "device.reboot.dataRebootHistoryLog.softwareVersion",
+        "property": "sw-ver",
+        "width": 350,
+        "dataType": "string"
+      },
+      {
+        "title": "device.reboot.dataRebootHistoryLog.highAvailabilityRole",
+        "property": "ha-role",
+        "width": 350,
+        "dataType": "string"
+      },
+      {
+        "title": "device.reboot.dataRebootHistoryLog.rebootSeverity",
+        "property": "reload-severity",
+        "width": 350,
+        "dataType": "string"
+      },
+      {
+        "title": "device.reboot.dataRebootHistoryLog.lastUpdated",
+        "property": "lastupdated",
+        "displayFormat": "DD MMM YYYY h:mm:ss A z",
+        "inputFormat": "unix-time",
+        "hideable": false,
+        "minWidth": 200,
+        "dataType": "date"
+      }
+    ],
+    "fields": [
+      {
+        "property": "vdevice-host-name",
+        "dataType": "string"
+      },
+      {
+        "property": "vdevice-name",
+        "dataType": "string"
+      },
+      {
+        "property": "reload-time",
+        "dataType": "dateWithTZ"
+      },
+      {
+        "property": "reload-time-date",
+        "dataType": "date"
+      },
+      {
+        "property": "reload-category",
+        "dataType": "string"
+      },
+      {
+        "property": "reload-desc",
+        "dataType": "string"
+      },
+      {
+        "property": "crash-data-file",
+        "dataType": "string"
+      },
+      {
+        "property": "sw-ver",
+        "dataType": "string"
+      },
+      {
+        "property": "ha-role",
+        "dataType": "string"
+      },
+      {
+        "property": "reload-severity",
+        "dataType": "string"
+      },
+      {
+        "property": "lastupdated",
+        "dataType": "date"
+      }
+    ]
+  },
+  "data": [
+    {
+      "vdevice-dataKey": "10.0.0.3-",
+      "vdevice-name": "10.0.0.3",
+      "reload-time": "2026-10-23T09:29:01+00:00",
+      "reload-time-date": 1792747741000,
+      "reload-category": "rc-rld",
+      "ha-role": "ha-role-active",
+      "reload-desc": "reload",
+      "lastupdated": 1792757016270,
+      "sw-ver": "17.18.2",
+      "vdevice-host-name": "br2",
+      "reload-severity": "normal"
+    },
+    {
+      "vdevice-dataKey": "10.0.0.3-",
+      "vdevice-name": "10.0.0.3",
+      "reload-time": "2026-10-23T06:59:10+00:00",
+      "reload-time-date": 1792738750000,
+      "reload-category": "rc-factory-reset",
+      "ha-role": "ha-role-unknown",
+      "reload-desc": "factory-reset",
+      "lastupdated": 1792757016270,
+      "vdevice-host-name": "br2",
+      "reload-severity": "abnormal"
+    }
+  ]
+}

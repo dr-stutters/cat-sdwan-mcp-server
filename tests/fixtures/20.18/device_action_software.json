@@ -1,0 +1,76 @@
+{
+  "header": {
+    "generatedOn": 1792757014800,
+    "viewKeys": {
+      "uniqueKey": [],
+      "preferenceKey": "grid-DeviceActionSoftwareImage"
+    },
+    "columns": [
+      {
+        "title": "view.deviceaction.deviceActionSoftwareImage.softwareVersio",
+        "property": "versionName",
+        "hideable": false,
+        "width": 110,
+        "dataType": "string"
+      },
+      {
+        "title": "view.deviceaction.deviceActionSoftwareImage.controllerVers",
+        "property": "controllerVersionName",
+        "hideable": false,
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "view.deviceaction.deviceActionSoftwareImage.softwareLocati",
+        "property": "versionType",
+        "hideable": false,
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "view.deviceaction.deviceActionSoftwareImage.availableFiles",
+        "property": "availableFiles",
+        "minWidth": 300,
+        "dataType": "string"
+      },
+      {
+        "title": "view.deviceaction.deviceActionSoftwareImage.updatedOn",
+        "property": "updatedOn",
+        "displayFormat": "DD MMM YYYY h:mm:ss A z",
+        "inputFormat": "unix-time",
+        "dataType": "date"
+      }
+    ],
+    "fields": [
+      {
+        "property": "versionId",
+        "dataType": "string"
+      },
+      {
+        "property": "versionName",
+        "dataType": "string"
+      },
+      {
+        "property": "controllerVersionName",
+        "dataType": "string"
+      },
+      {
+        "property": "versionType",
+        "dataType": "string"
+      },
+      {
+        "property": "versionURL",
+        "dataType": "string"
+      },
+      {
+        "property": "availableFiles",
+        "dataType": "string"
+      },
+      {
+        "property": "updatedOn",
+        "dataType": "date"
+      }
+    ]
+  },
+  "data": []
+}

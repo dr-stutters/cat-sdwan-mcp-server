@@ -9681,103 +9681,634 @@
      }
     }
    }
+  },
+  "/device/action/software": {
+   "get": {
+    "tags": [
+     "Configuration - Software Actions"
+    ],
+    "description": "Get software images",
+    "operationId": "findSoftwareImages",
+    "responses": {
+     "200": {
+      "description": "Success",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "object"
+        },
+        "examples": {
+         "Example": {
+          "description": "Example",
+          "$ref": "examples/com/viptela/vmanage/server/deviceaction/InstallPackageURLApi/response_example/GetSoftware.json"
+         }
+        }
+       }
+      }
+     },
+     "400": {
+      "description": "Bad Request"
+     },
+     "403": {
+      "description": "Forbidden"
+     },
+     "500": {
+      "description": "Internal Server Error"
+     }
+    }
+   },
+   "post": {
+    "tags": [
+     "Configuration - Software Actions"
+    ],
+    "description": "Create software image URL",
+    "operationId": "createImageURL",
+    "requestBody": {
+     "description": "Request body",
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/CreateImageURL"
+       },
+       "examples": {
+        "Example Value": {
+         "description": "Example Value",
+         "$ref": "examples/com/viptela/vmanage/server/deviceaction/InstallPackageURLApi/request_example/PostSoftware.json"
+        }
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": "Success"
+     },
+     "400": {
+      "description": "Bad Request"
+     },
+     "403": {
+      "description": "Forbidden"
+     },
+     "500": {
+      "description": "Internal Server Error"
+     }
+    }
+   }
+  },
+  "/device/action/software/images": {
+   "get": {
+    "tags": [
+     "Configuration - Software Actions"
+    ],
+    "description": "Get software images",
+    "operationId": "findSoftwareImagesWithFilters",
+    "parameters": [
+     {
+      "name": "imageType",
+      "in": "query",
+      "description": "imageType",
+      "required": true,
+      "schema": {
+       "type": "array",
+       "items": {
+        "$ref": "#/components/schemas/Image"
+       }
+      },
+      "example": [
+       "software"
+      ]
+     },
+     {
+      "name": "vnfType",
+      "in": "query",
+      "description": "vnfType",
+      "schema": {
+       "type": "string"
+      },
+      "example": "ROUTER"
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Success",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "object"
+        },
+        "examples": {
+         "Example": {
+          "description": "Example",
+          "$ref": "examples/com/viptela/vmanage/server/deviceaction/InstallPackageURLApi/response_example/GetSoftwareImages.json"
+         }
+        }
+       }
+      }
+     },
+     "400": {
+      "description": "Bad Request"
+     },
+     "403": {
+      "description": "Forbidden"
+     },
+     "500": {
+      "description": "Internal Server Error"
+     }
+    }
+   }
+  },
+  "/device/action/install": {
+   "get": {
+    "tags": [
+     "Configuration - Device Actions"
+    ],
+    "description": "Generate install info",
+    "operationId": "generateInstallInfo",
+    "parameters": [
+     {
+      "name": "deviceId",
+      "in": "query",
+      "description": "deviceId - Device IP",
+      "required": true,
+      "schema": {
+       "type": "array",
+       "items": {
+        "$ref": "#/components/schemas/DeviceIP"
+       }
+      },
+      "example": [
+       "172.16.255.15"
+      ]
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Success",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "object"
+        },
+        "examples": {
+         "Example": {
+          "description": "Example",
+          "$ref": "examples/com/viptela/vmanage/server/deviceaction/DeviceActionApi/response_example/InstallRespGet.json"
+         }
+        }
+       }
+      }
+     },
+     "400": {
+      "description": "Bad Request"
+     },
+     "403": {
+      "description": "Forbidden"
+     },
+     "500": {
+      "description": "Internal Server Error"
+     }
+    }
+   },
+   "post": {
+    "tags": [
+     "Configuration - Device Actions"
+    ],
+    "description": "Process an installation operation",
+    "operationId": "processInstall",
+    "requestBody": {
+     "description": "Request body",
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/ProcessInstallReq"
+       },
+       "examples": {
+        "Example Value": {
+         "description": "Example Value",
+         "$ref": "examples/com/viptela/vmanage/server/deviceaction/DeviceActionApi/request_example/Install.json"
+        }
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": "Success",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "object"
+        },
+        "examples": {
+         "Task Id": {
+          "description": "Task Id",
+          "$ref": "examples/com/viptela/vmanage/server/deviceaction/DeviceActionApi/response_example/InstallRespPost.json"
+         }
+        }
+       }
+      }
+     },
+     "400": {
+      "description": "Bad Request"
+     },
+     "403": {
+      "description": "Forbidden"
+     },
+     "500": {
+      "description": "Internal Server Error"
+     }
+    }
+   }
+  },
+  "/device/action/changepartition": {
+   "get": {
+    "tags": [
+     "Configuration - Device Actions"
+    ],
+    "description": "Get change partition information",
+    "operationId": "generateChangePartitionInfo",
+    "parameters": [
+     {
+      "name": "deviceId",
+      "in": "query",
+      "description": "deviceId - Device IP",
+      "required": true,
+      "schema": {
+       "type": "array",
+       "items": {
+        "$ref": "#/components/schemas/DeviceIP"
+       }
+      },
+      "example": [
+       "172.16.255.15"
+      ]
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Success",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "object"
+        },
+        "examples": {
+         "Example": {
+          "description": "Example",
+          "$ref": "examples/com/viptela/vmanage/server/deviceaction/DeviceActionApi/response_example/GetChangePartitionResp.json"
+         }
+        }
+       }
+      }
+     },
+     "400": {
+      "description": "Bad Request"
+     },
+     "403": {
+      "description": "Forbidden"
+     },
+     "500": {
+      "description": "Internal Server Error"
+     }
+    }
+   },
+   "post": {
+    "tags": [
+     "Configuration - Device Actions"
+    ],
+    "description": "Process change partition operation",
+    "operationId": "processChangePartition",
+    "requestBody": {
+     "description": "Request body for Process change partition operation",
+     "content": {
+      "application/json": {
+       "schema": {
+        "type": "object"
+       },
+       "examples": {
+        "Example Value": {
+         "description": "Example Value",
+         "$ref": "examples/com/viptela/vmanage/server/deviceaction/DeviceActionApi/request_example/PostChangePartitionReq.json"
+        }
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": "Success",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "object"
+        },
+        "examples": {
+         "Example Value": {
+          "description": "Example Value",
+          "$ref": "examples/com/viptela/vmanage/server/deviceaction/DeviceActionApi/response_example/PostChangePartitionResp.json"
+         }
+        }
+       }
+      }
+     },
+     "400": {
+      "description": "Bad Request"
+     },
+     "403": {
+      "description": "Forbidden"
+     },
+     "500": {
+      "description": "Internal Server Error"
+     }
+    }
+   }
+  },
+  "/device/action/list": {
+   "get": {
+    "tags": [
+     "Configuration - Device Actions"
+    ],
+    "description": "Get device action list",
+    "operationId": "generateDeviceActionList",
+    "responses": {
+     "200": {
+      "description": "Success",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/GenerateDeviceActionList"
+        },
+        "examples": {
+         "Example": {
+          "description": "Example",
+          "$ref": "examples/com/viptela/vmanage/server/deviceaction/DeviceActionApi/response_example/List.json"
+         }
+        }
+       }
+      }
+     },
+     "400": {
+      "description": "Bad Request"
+     },
+     "403": {
+      "description": "Forbidden"
+     },
+     "500": {
+      "description": "Internal Server Error"
+     }
+    },
+    "x-roles-required": "Software Upgrade-read,Software Upgrade-write,Software Upgrade > Edge-write,Software Upgrade > Edge-read,Software Upgrade > Controller-write,Software Upgrade > Controller-read"
+   }
+  },
+  "/device/software": {
+   "get": {
+    "tags": [
+     "Real-Time Monitoring - Software"
+    ],
+    "description": "Get software list from device",
+    "operationId": "getAAAUcreateSoftwareListsers",
+    "parameters": [
+     {
+      "name": "deviceId",
+      "in": "query",
+      "description": "deviceId - Device IP",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "example": "169.254.10.10"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Success",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "array",
+         "items": {
+          "type": "object"
+         }
+        },
+        "examples": {
+         "Software list": {
+          "description": "Software list",
+          "value": {
+           "data": [
+            {
+             "default": "true",
+             "vdevice-dataKey": "169.254.10.10-20.6.2-432",
+             "software": true,
+             "vdevice-name": "169.254.10.10",
+             "active": "true",
+             "lastupdated": 1643356263821,
+             "version": "20.6.2-432",
+             "vdevice-host-name": "vm3"
+            }
+           ]
+          }
+         }
+        }
+       }
+      }
+     },
+     "400": {
+      "description": "Bad Request"
+     },
+     "403": {
+      "description": "Forbidden"
+     },
+     "500": {
+      "description": "Internal Server Error"
+     }
+    },
+    "x-roles-required": "System-read,System-write"
+   }
+  },
+  "/device/reboothistory": {
+   "get": {
+    "tags": [
+     "Real-Time Monitoring - Reboot History"
+    ],
+    "description": "Get device reboot history",
+    "operationId": "createRebootHistoryList",
+    "parameters": [
+     {
+      "name": "deviceId",
+      "in": "query",
+      "description": "deviceId - Device IP",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "example": "169.254.10.10"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Success",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "object"
+        },
+        "examples": {
+         "Device reboot history": {
+          "description": "Device reboot history",
+          "value": {
+           "data": [
+            {
+             "reboot_date_time-date": 1642651714000,
+             "lastupdated": 1642656685355,
+             "vdevice-dataKey": "172.16.255.11-2022-01-20T04:08:34+00:00",
+             "reboot_date_time": "2022-01-20T04:08:34+00:00",
+             "reboot_reason": "Initiated by user - Reboot issued via NETCONF",
+             "vdevice-host-name": "vm1",
+             "vdevice-name": "172.16.255.11"
+            }
+           ]
+          }
+         }
+        }
+       }
+      }
+     },
+     "400": {
+      "description": "Bad Request"
+     },
+     "403": {
+      "description": "Forbidden"
+     },
+     "500": {
+      "description": "Internal Server Error"
+     }
+    },
+    "x-roles-required": "System-read,System-write,Device Monitoring-read,Device Monitoring-write,Software Upgrade-read,Software Upgrade-write,Device Reboot-read,Device Reboot-write,dca,Software Upgrade > Edge-write,Software Upgrade > Edge-read,Software Upgrade > Controller-write,Software Upgrade > Controller-read"
+   }
+  },
+  "/device/system/status": {
+   "get": {
+    "tags": [
+     "Real-Time Monitoring - System"
+    ],
+    "description": "Get device system status list (Real Time)",
+    "operationId": "createDeviceSystemStatusList",
+    "parameters": [
+     {
+      "name": "deviceId",
+      "in": "query",
+      "description": "deviceId - Device IP",
+      "required": true,
+      "schema": {
+       "pattern": "^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?).){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$",
+       "type": "string",
+       "example": "169.254.10.10"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Success",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "object"
+        },
+        "examples": {
+         "Device system status": {
+          "description": "Device system status",
+          "value": {
+           "data": [
+            {
+             "mem_used": "954024",
+             "procs": "244",
+             "disk_avail": "7015M",
+             "disk_mount": "/",
+             "board_type": "Sim",
+             "vdevice-name": "169.254.10.10",
+             "total_cpu_count": "2",
+             "mem_cached": "740972",
+             "reboot_type": "Not Applicable",
+             "disk_fs": "/dev/root",
+             "fp_cpu_count": "1",
+             "chassis-serial-number": "None",
+             "min1_avg": "1.06",
+             "state_description": "All daemons up",
+             "personality": "vedge",
+             "disk_used": "174M",
+             "disk_use": "2",
+             "disk_status": "enabled",
+             "state": "green",
+             "config_date/date-time-string": "Mon Feb 14 04:47:05 UTC 2022",
+             "linux_cpu_count": "1",
+             "cpu_user": "5.53",
+             "testbed_mode": "1",
+             "min15_avg": "1.08",
+             "disk_size": "7615M",
+             "cpu_idle": "91.96",
+             "mem_buffers": "82140",
+             "model_sku": "None",
+             "cpu_system": "2.51",
+             "version": "20.6.2-440",
+             "min5_avg": "1.10",
+             "tcpd_cpu_count": "0",
+             "vdevice-host-name": "vm3",
+             "mem_total": "3906816",
+             "uptime": "16 days 05 hrs 08 min 45 sec",
+             "vdevice-dataKey": "169.254.10.10",
+             "mem_free": "2129680",
+             "bootloader_version": "Not applicable",
+             "fips_mode": "enabled",
+             "build_number": "440\n",
+             "lastupdated": 1644814027189,
+             "loghost_status": "disabled",
+             "uptime-date": 1643413080000
+            }
+           ]
+          }
+         }
+        }
+       }
+      }
+     },
+     "400": {
+      "description": "Bad Request"
+     },
+     "403": {
+      "description": "Forbidden"
+     },
+     "500": {
+      "description": "Internal Server Error"
+     }
+    },
+    "x-roles-required": "Device Monitoring-read,dca"
+   }
   }
  },
  "components": {
-  "examples": {
-   "getSingleSdwanTransportExample": {
-    "value": {
-     "profileName": "cg1_LAN",
-     "lastUpdatedBy": "admin",
-     "description": "cg1 transport Profile",
-     "profileParcelCount": 613,
-     "createdOn": 1701850310222,
-     "@rid": 3262,
-     "profileType": "transport",
-     "solution": "sdwan",
-     "createdBy": "admin",
-     "profileId": "bc99ae4f-0ac3-4a51-95cb-c718953143ce",
-     "lastUpdatedOn": 1702292120081,
-     "associatedProfileParcels": []
-    }
-   },
-   "getSingleSdwanSystemExample": {
-    "value": {
-     "profileName": "cg1_LAN",
-     "lastUpdatedBy": "admin",
-     "description": "cg1 system Profile",
-     "profileParcelCount": 613,
-     "createdOn": 1701850310222,
-     "@rid": 3262,
-     "profileType": "system",
-     "solution": "sdwan",
-     "createdBy": "admin",
-     "profileId": "bc99ae4f-0ac3-4a51-95cb-c718953143ce",
-     "lastUpdatedOn": 1702292120081,
-     "associatedProfileParcels": []
-    }
-   },
-   "getListSdwanSystemExample": {
-    "value": [
-     {
-      "profileId": "bc99ae4f-0ac3-4a51-95cb-c718953143ce",
-      "profileName": "cg1_LAN",
-      "solution": "sdwan",
-      "profileType": "system",
-      "createdBy": "admin",
-      "lastUpdatedBy": "admin",
-      "createdOn": 1701850310222,
-      "description": "cg1 system Profile",
-      "lastUpdatedOn": 1702292120081
-     }
-    ]
-   },
-   "getListSdwanProfileExample": {
-    "value": [
-     {
-      "profileId": "bc99ae4f-0ac3-4a51-95cb-c718953143ce",
-      "profileName": "cg1_LAN",
-      "solution": "sdwan",
-      "profileType": "profile",
-      "createdBy": "admin",
-      "lastUpdatedBy": "admin",
-      "createdOn": 1701850310222,
-      "description": "cg1 profile Profile",
-      "lastUpdatedOn": 1702292120081
-     }
-    ]
-   }
-  },
   "schemas": {
-   "AppRouteRespWithPageInfo": {
+   "TaskId": {
     "type": "object",
     "properties": {
-     "data": {
-      "type": "array",
-      "items": {
-       "$ref": "#/components/schemas/AppRouteResp"
-      }
-     },
-     "pageInfo": {
-      "$ref": "#/components/schemas/PageInfo"
+     "id": {
+      "type": "string",
+      "example": "reboot-01232017T154359940"
      }
-    },
-    "description": "app route response with page info"
+    }
    },
-   "AlarmResponse": {
+   "GenerateDeviceStateData": {
     "type": "object",
     "properties": {
      "data": {
       "type": "array",
       "items": {
-       "$ref": "#/components/schemas/Alarm"
+       "$ref": "#/components/schemas/GenerateDeviceStateDataData"
       }
-     },
-     "pageInfo": {
-      "$ref": "#/components/schemas/PageInfo"
      }
-    },
-    "description": "AlarmResponse is used for GET/POST /alarms call."
+    }
    },
    "getSingleSdwanSystemPayload": {
     "type": "object",
@@ -9852,47 +10383,50 @@
      }
     }
    },
-   "GenerateBootstrapConfigForVedge": {
+   "CreateImageURL": {
+    "required": [
+     "fileName",
+     "remoteServerId"
+    ],
     "type": "object",
     "properties": {
-     "bootstrapConfig": {
+     "cwVersion": {
       "type": "string",
-      "example": "#cloud-config\\nvinitparam:\\n - uuid : ESR-6300-LIC-K9-FAUSTEST126\\n - vbond : 10.0.12.26\\n - org : vIPtela Inc Regression\\n"
+      "description": "Software image version.",
+      "example": "17.17.01.0.210058"
+     },
+     "fileName": {
+      "type": "string",
+      "description": "Software image file name.",
+      "example": "abc.bin"
+     },
+     "isPatch": {
+      "type": "boolean",
+      "example": false
+     },
+     "platformfamily": {
+      "type": "string",
+      "description": "Software image platform family.",
+      "example": "c8000v"
+     },
+     "remoteServerId": {
+      "type": "string",
+      "description": "Remote server id to fetch the image from. ",
+      "example": "9ef53f4a-388d-4b3d-90b6-d94038ecb9ed"
      }
     }
    },
-   "TaskId": {
+   "ConfigGroup": {
+    "required": [
+     "name",
+     "solution",
+     "state",
+     "version"
+    ],
     "type": "object",
     "properties": {
-     "id": {
-      "type": "string",
-      "example": "reboot-01232017T154359940"
-     }
-    }
-   },
-   "getSingleSdwanTransportPayload": {
-    "type": "object",
-    "properties": {
-     "profileId": {
-      "$ref": "schema/common/common_defs_schema.json#/components/schemas/uuidDef"
-     },
-     "profileType": {
-      "type": "string",
-      "enum": [
-       "transport"
-      ]
-     },
-     "profileName": {
-      "$ref": "schema/common/common_defs_schema.json#/components/schemas/cgFpPpNameDef"
-     },
-     "description": {
+     "copyInfo": {
       "type": "string"
-     },
-     "solution": {
-      "type": "string",
-      "enum": [
-       "sdwan"
-      ]
      },
      "createdBy": {
       "type": "string",
@@ -9905,6 +10439,32 @@
       "format": "int64",
       "readOnly": true
      },
+     "description": {
+      "type": "string",
+      "description": "Description of the  Group.",
+      "example": " group for west coast retail stores"
+     },
+     "deviceVersion": {
+      "type": "string"
+     },
+     "devices": {
+      "uniqueItems": true,
+      "type": "array",
+      "items": {
+       "type": "string"
+      }
+     },
+     "fullConfigCli": {
+      "type": "boolean"
+     },
+     "id": {
+      "type": "string",
+      "description": "System generated unique identifier of the  Group in UUID format.",
+      "example": "6fa14197-c25f-4a14-b81b-299de32ed2ca"
+     },
+     "iosConfigCli": {
+      "type": "boolean"
+     },
      "lastUpdatedBy": {
       "type": "string",
       "description": "User who last updated this.",
@@ -9916,52 +10476,87 @@
       "format": "int64",
       "readOnly": true
      },
-     "associatedProfileParcels": {
-      "type": "array",
-      "items": {
-       "type": "object",
-       "minItems": 0,
-       "properties": {
-        "parcelId": {
-         "$ref": "schema/common/common_defs_schema.json#/components/schemas/uuidDef"
-        },
-        "parcelType": {
-         "type": "string"
-        },
-        "payload": {
-         "type": "object"
-        },
-        "subparcels": {
-         "type": "array",
-         "minItems": 0,
-         "items": {
-          "type": "object"
-         }
-        }
-       }
+     "name": {
+      "type": "string",
+      "description": "Name of the  Group. Must be unique.",
+      "example": "West coast retail stores"
+     },
+     "numberOfDevices": {
+      "type": "integer",
+      "format": "int64"
+     },
+     "numberOfDevicesUpToDate": {
+      "type": "integer",
+      "format": "int64"
+     },
+     "origin": {
+      "type": "string"
+     },
+     "originInfo": {
+      "type": "object",
+      "additionalProperties": {
+       "type": "string"
       }
+     },
+     "profiles": {
+      "type": "array",
+      "description": "List of devices UUIDs associated with this group",
+      "example": "West coast retail store devices",
+      "items": {
+       "$ref": "#/components/schemas/FeatureProfile"
+      }
+     },
+     "solution": {
+      "type": "string",
+      "description": "Specify one of the device platform solution",
+      "example": "sdwan",
+      "enum": [
+       "mobility",
+       "sdwan",
+       "sd-routing",
+       "common",
+       "nfvirtual",
+       "service-insertion",
+       "cellulargateway"
+      ]
+     },
+     "source": {
+      "type": "string",
+      "description": "Source of group",
+      "example": "retail_workflow"
+     },
+     "state": {
+      "type": "string",
+      "description": " Group Deployment state",
+      "example": " Group Deployment state.Initial state Deployed "
+     },
+     "topology": {
+      "$ref": "#/components/schemas/Topology"
+     },
+     "version": {
+      "type": "integer",
+      "description": " Group Version Flag",
+      "format": "int64"
+     },
+     "versionIncrementReason": {
+      "type": "string"
      }
     }
    },
-   "AlarmCountResponse": {
-    "type": "array",
-    "properties": {
-     "empty": {
-      "type": "boolean"
-     }
-    },
-    "items": {
-     "$ref": "#/components/schemas/AlarmCount"
-    }
-   },
-   "SyncDevicesResp": {
+   "AppRouteAggRespWithPageInfo": {
     "type": "object",
     "properties": {
-     "processId": {
-      "type": "string",
-      "example": "c82d4877-dc04-4580-aedc-3a10166dab4d"
+     "data": {
+      "type": "array",
+      "items": {
+       "$ref": "#/components/schemas/AppRouteAggResp"
+      }
+     },
+     "pageInfo": {
+      "$ref": "#/components/schemas/PageInfo"
      }
-    }
+    },
+    "description": "interface aggregation response with page info"
    },
    "PolicyGroup": {
     "required": [
@@ -10075,39 +10670,12 @@
      }
     }
    },
-   "AlarmCount": {
+   "GenerateBootstrapConfigForVedge": {
     "type": "object",
     "properties": {
-     "cleared_count": {
-      "type": "number",
-      "example": 718
-     },
-     "count": {
-      "type": "number",
-      "example": 13
-     }
-    }
-   },
-   "AppRouteAggResp": {
-    "type": "object",
-    "properties": {
-     "count": {
-      "type": "integer",
-      "format": "int32",
-      "example": 5
-     },
-     "entry_time": {
+     "bootstrapConfig": {
       "type": "string",
-      "example": "1674813600000"
-     },
-     "local_color": {
-      "type": "string",
-      "example": "3g"
-     },
-     "loss_percentage": {
-      "type": "integer",
-      "format": "int32",
-      "example": 0
+      "example": "#cloud-config\\nvinitparam:\\n - uuid : ESR-6300-LIC-K9-FAUSTEST126\\n - vbond : 10.0.12.26\\n - org : vIPtela Inc Regression\\n"
      }
     }
    },
@@ -10121,99 +10689,84 @@
     },
     "description": "List of tasks"
    },
-   "AppRouteAggRespWithPageInfo": {
-    "type": "object",
+   "AlarmCountResponse": {
+    "type": "array",
     "properties": {
-     "data": {
-      "type": "array",
-      "items": {
-       "$ref": "#/components/schemas/AppRouteAggResp"
-      }
-     },
-     "pageInfo": {
-      "$ref": "#/components/schemas/PageInfo"
+     "empty": {
+      "type": "boolean"
      }
     },
-    "description": "interface aggregation response with page info"
-   },
-   "PageInfo": {
-    "type": "object",
-    "properties": {
-     "count": {
-      "type": "integer",
-      "description": "number of alarms to be fetched",
-      "format": "int64"
-     },
-     "endTime": {
-      "type": "integer",
-      "description": "end time of alarms to be fetched",
-      "format": "int64"
-     },
-     "startTime": {
-      "type": "integer",
-      "description": "start time of alarms to be fetched",
-      "format": "int64"
-     }
+    "items": {
+     "$ref": "#/components/schemas/AlarmCount"
     }
    },
-   "GenerateDeviceStateData": {
-    "type": "object",
-    "properties": {
-     "data": {
-      "type": "array",
-      "items": {
-       "$ref": "#/components/schemas/GenerateDeviceStateDataData"
-      }
-     }
-    }
-   },
-   "GetAuditLogData": {
+   "FeatureProfile": {
     "required": [
-     "data",
-     "header"
+     "name",
+     "solution",
+     "type"
     ],
     "type": "object",
     "properties": {
-     "data": {
-      "type": "array",
-      "items": {
-       "$ref": "#/components/schemas/AuditLogEntry"
-      }
-     },
-     "header": {
-      "$ref": "#/components/schemas/AuditLogHeader"
-     }
-    }
-   },
-   "FormPostResp": {
-    "type": "object",
-    "properties": {
-     "activityList": {
+     "createdBy": {
       "type": "string",
-      "example": "[Number of vEdges uploaded successfully: 1, Uploaded vEdges (chassisId, serial number): ,  - ESR-6300-LIC-K9-FAUSTEST126, 030557201979336385BE]"
+      "description": "User who last created this.",
+      "readOnly": true
+     },
+     "createdOn": {
+      "type": "integer",
+      "description": "Timestamp of creation",
+      "format": "int64",
+      "readOnly": true
+     },
+     "description": {
+      "type": "string",
+      "description": "Description of the feature Profile.",
+      "example": "Profile file description"
      },
      "id": {
       "type": "string",
-      "example": "b5091b8e-e5ea-4096-8e4c-f17d0d60f2dd"
+      "description": "System generated unique identifier of the feature profile in UUID format.",
+      "example": "6fa14197-c25f-4a14-b81b-299de32ed2ca"
      },
-     "vedgeListUploadMsg": {
+     "lastUpdatedBy": {
       "type": "string",
-      "example": "Number of vEdges uploaded successfully: 1"
+      "description": "User who last updated this.",
+      "readOnly": true
      },
-     "vedgeListUploadStatus": {
+     "lastUpdatedOn": {
+      "type": "integer",
+      "description": "Timestamp of last update",
+      "format": "int64",
+      "readOnly": true
+     },
+     "name": {
       "type": "string",
-      "example": "vEdge list uploaded successfully"
+      "description": "Name of the feature Profile. Must be unique.",
+      "example": "system feature profile"
+     },
+     "origin": {
+      "type": "string"
+     },
+     "profileParcelCount": {
+      "type": "integer",
+      "description": "Number of Parcels attached with Feature Profile",
+      "format": "int64",
+      "readOnly": true
+     },
+     "solution": {
+      "type": "string",
+      "description": "Solution of the feature Profile.",
+      "example": "sdwan"
+     },
+     "type": {
+      "type": "string",
+      "description": "Type of the feature Profile.",
+      "example": "system"
      }
-    }
-   },
-   "DynamicSchedulerResponse": {
-    "type": "object",
-    "properties": {
-     "enabled": {
-      "type": "boolean",
-      "example": true
-     }
-    }
+    },
+    "description": "List of devices UUIDs associated with this group",
+    "example": "West coast retail store devices"
    },
    "DeviceData": {
     "type": "object",
@@ -10365,6 +10918,252 @@
      }
     }
    },
+   "ProcessInstallReq": {
+    "required": [
+     "action"
+    ],
+    "type": "object",
+    "properties": {
+     "action": {
+      "type": "string",
+      "example": "install"
+     },
+     "actionEnd": {
+      "type": "string",
+      "description": "Scheduled time for the action to end.",
+      "example": "Wed Nov 06 2024 15:27:32"
+     },
+     "actionEndMillis": {
+      "type": "integer",
+      "description": "Scheduled time in EPHOC millis for the action to end.",
+      "format": "int32",
+      "example": 1730887052000
+     },
+     "actionStart": {
+      "type": "string",
+      "description": "Scheduled time for the action to start.",
+      "example": "Wed Nov 06 2024 11:27:32"
+     },
+     "actionStartMillis": {
+      "type": "integer",
+      "description": "Scheduled time in EPHOC millis for the action to start.",
+      "format": "int32",
+      "example": 1730872652000
+     },
+     "deviceType": {
+      "type": "string",
+      "example": "vedge"
+     },
+     "devices": {
+      "type": "array",
+      "items": {
+       "$ref": "#/components/schemas/ProcessInstallReqDevices"
+      }
+     },
+     "input": {
+      "$ref": "#/components/schemas/ProcessInstallReqInput"
+     },
+     "timeZone": {
+      "type": "string",
+      "description": "Scheduled time zone for the action.",
+      "example": "UTC"
+     }
+    }
+   },
+   "Image": {
+    "type": "object",
+    "properties": {
+     "image": {
+      "type": "string"
+     }
+    },
+    "description": "This is the valid Image type "
+   },
+   "Topology": {
+    "type": "object",
+    "properties": {
+     "devices": {
+      "type": "array",
+      "items": {
+       "$ref": "#/components/schemas/ConfigGroupDevice"
+      }
+     },
+     "siteDevices": {
+      "type": "integer",
+      "format": "int32"
+     }
+    }
+   },
+   "AlarmResponse": {
+    "type": "object",
+    "properties": {
+     "data": {
+      "type": "array",
+      "items": {
+       "$ref": "#/components/schemas/Alarm"
+      }
+     },
+     "pageInfo": {
+      "$ref": "#/components/schemas/PageInfo"
+     }
+    },
+    "description": "AlarmResponse is used for GET/POST /alarms call."
+   },
+   "GenerateDeviceStateDataData": {
+    "type": "object",
+    "properties": {
+     "@rid": {
+      "type": "integer",
+      "format": "int32",
+      "example": 3413
+     },
+     "auto-downstream-bandwidth": {
+      "type": "string",
+      "example": "0"
+     },
+     "auto-upstream-bandwidth": {
+      "type": "string",
+      "example": "0"
+     },
+     "bia-address": {
+      "type": "string",
+      "example": "00:50:56:00:01:0e"
+     },
+     "createTimeStamp": {
+      "type": "string",
+      "example": "1681732399130"
+     },
+     "description": {
+      "type": "string",
+      "example": "Service Management VPN Interface Ethernet"
+     },
+     "hwaddr": {
+      "type": "string",
+      "example": "00:50:56:00:01:0e"
+     },
+     "if-admin-status": {
+      "type": "string",
+      "example": "if-state-up"
+     },
+     "if-oper-status": {
+      "type": "string",
+      "example": "if-oper-state-ready"
+     },
+     "ifindex": {
+      "type": "string",
+      "example": "1"
+     },
+     "ifname": {
+      "type": "string",
+      "example": "GigabitEthernet1"
+     },
+     "interface-type": {
+      "type": "string",
+      "example": "iana-iftype-ethernet-csmacd"
+     },
+     "ip-address": {
+      "type": "string",
+      "example": "10.0.1.14"
+     },
+     "ipv4-subnet-mask": {
+      "type": "string",
+      "example": "255.255.255.0"
+     },
+     "ipv4-tcp-adjust-mss": {
+      "type": "string",
+      "example": "0"
+     },
+     "ipv6-tcp-adjust-mss": {
+      "type": "string",
+      "example": "0"
+     },
+     "lastupdated": {
+      "type": "integer",
+      "format": "int32",
+      "example": 1682322326889
+     },
+     "mtu": {
+      "type": "string",
+      "example": "1500"
+     },
+     "recordId": {
+      "type": "string",
+      "example": "0:CEdgeInterfaceNode:1681732387143:3340"
+     },
+     "rx-drops": {
+      "type": "integer",
+      "format": "int32",
+      "example": 0
+     },
+     "rx-errors": {
+      "type": "integer",
+      "format": "int32",
+      "example": 1
+     },
+     "rx-octets": {
+      "type": "integer",
+      "format": "int32",
+      "example": 22625972
+     },
+     "rx-packets": {
+      "type": "string",
+      "example": "367109"
+     },
+     "speed-mbps": {
+      "type": "string",
+      "example": "1000"
+     },
+     "tx-drops": {
+      "type": "integer",
+      "format": "int32",
+      "example": 0
+     },
+     "tx-errors": {
+      "type": "integer",
+      "format": "int32",
+      "example": 0
+     },
+     "tx-octets": {
+      "type": "integer",
+      "format": "int32",
+      "example": 12993252
+     },
+     "tx-packets": {
+      "type": "integer",
+      "format": "int32",
+      "example": 38282
+     },
+     "vdevice-dataKey": {
+      "type": "string",
+      "example": "172.16.255.14-512-GigabitEthernet1-10.0.1.14-00:50:56:00:01:0e"
+     },
+     "vdevice-host-name": {
+      "type": "string",
+      "example": "vm4"
+     },
+     "vdevice-name": {
+      "type": "string",
+      "example": "172.16.255.14"
+     },
+     "vmanage-system-ip": {
+      "type": "string",
+      "example": "172.16.255.14"
+     },
+     "vpn-id": {
+      "type": "string",
+      "example": "512"
+     }
+    }
+   },
+   "DeviceIP": {
+    "type": "object",
+    "properties": {
+     "deviceIp": {
+      "type": "string"
+     }
+    },
+    "description": "This is the valid DeviceIP"
+   },
    "Alarm": {
     "type": "object",
     "properties": {
@@ -10514,6 +11313,140 @@
     },
     "description": "Represents any kind of alarm"
    },
+   "getListSdwanProfilePayload": {
+    "type": "array",
+    "items": {
+     "type": "object",
+     "properties": {
+      "profileId": {
+       "$ref": "schema/common/common_defs_schema.json#/components/schemas/uuidDef"
+      },
+      "profileName": {
+       "$ref": "schema/common/common_defs_schema.json#/components/schemas/cgFpPpNameDef"
+      },
+      "profileType": {
+       "type": "string",
+       "enum": [
+        "profile"
+       ]
+      },
+      "createdBy": {
+       "type": "string",
+       "description": "User who last created this.",
+       "readOnly": true
+      },
+      "createdOn": {
+       "type": "integer",
+       "description": "Timestamp of creation",
+       "format": "int64",
+       "readOnly": true
+      },
+      "lastUpdatedBy": {
+       "type": "string",
+       "description": "User who last updated this.",
+       "readOnly": true
+      },
+      "lastUpdatedOn": {
+       "type": "integer",
+       "description": "Timestamp of last update",
+       "format": "int64",
+       "readOnly": true
+      },
+      "description": {
+       "type": "string"
+      },
+      "solution": {
+       "type": "string",
+       "enum": [
+        "sdwan"
+       ]
+      }
+     }
+    }
+   },
+   "getListSdwanSystemPayload": {
+    "type": "array",
+    "items": {
+     "type": "object",
+     "properties": {
+      "profileId": {
+       "$ref": "schema/common/common_defs_schema.json#/components/schemas/uuidDef"
+      },
+      "profileName": {
+       "$ref": "schema/common/common_defs_schema.json#/components/schemas/cgFpPpNameDef"
+      },
+      "profileType": {
+       "type": "string",
+       "enum": [
+        "system"
+       ]
+      },
+      "createdBy": {
+       "type": "string",
+       "description": "User who last created this.",
+       "readOnly": true
+      },
+      "createdOn": {
+       "type": "integer",
+       "description": "Timestamp of creation",
+       "format": "int64",
+       "readOnly": true
+      },
+      "lastUpdatedBy": {
+       "type": "string",
+       "description": "User who last updated this.",
+       "readOnly": true
+      },
+      "lastUpdatedOn": {
+       "type": "integer",
+       "description": "Timestamp of last update",
+       "format": "int64",
+       "readOnly": true
+      },
+      "description": {
+       "type": "string"
+      },
+      "solution": {
+       "type": "string",
+       "enum": [
+        "sdwan"
+       ]
+      }
+     }
+    }
+   },
+   "AppRouteAggResp": {
+    "type": "object",
+    "properties": {
+     "count": {
+      "type": "integer",
+      "format": "int32",
+      "example": 5
+     },
+     "entry_time": {
+      "type": "string",
+      "example": "1674813600000"
+     },
+     "local_color": {
+      "type": "string",
+      "example": "3g"
+     },
+     "loss_percentage": {
+      "type": "integer",
+      "format": "int32",
+      "example": 0
+     }
+    }
+   },
+   "AlarmDevices": {
+    "type": "object",
+    "properties": {
+     "system-ip": {
+      "type": "string",
+      "example": "19.19.19.1"
+     }
+    }
+   },
    "InlineResponse200": {
     "type": "object",
     "properties": {
@@ -10532,6 +11465,525 @@
         "ATT"
        ]
       }
+     }
+    }
+   },
+   "GetAuditLogData": {
+    "required": [
+     "data",
+     "header"
+    ],
+    "type": "object",
+    "properties": {
+     "data": {
+      "type": "array",
+      "items": {
+       "$ref": "#/components/schemas/AuditLogEntry"
+      }
+     },
+     "header": {
+      "$ref": "#/components/schemas/AuditLogHeader"
+     }
+    }
+   },
+   "SyncDevicesResp": {
+    "type": "object",
+    "properties": {
+     "processId": {
+      "type": "string",
+      "example": "c82d4877-dc04-4580-aedc-3a10166dab4d"
+     }
+    }
+   },
+   "ProcessInstallReqDevices": {
+    "required": [
+     "deviceIP",
+     "deviceId"
+    ],
+    "type": "object",
+    "properties": {
+     "deviceIP": {
+      "type": "string",
+      "description": "Device IP address.",
+      "example": "172.16.255.14"
+     },
+     "deviceId": {
+      "type": "string",
+      "description": "Device ID.",
+      "example": "2f876a33-9944-450a-91ee-f1f80eb68348"
+     }
+    }
+   },
+   "FormPostResp": {
+    "type": "object",
+    "properties": {
+     "activityList": {
+      "type": "string",
+      "example": "[Number of vEdges uploaded successfully: 1, Uploaded vEdges (chassisId, serial number): ,  - ESR-6300-LIC-K9-FAUSTEST126, 030557201979336385BE]"
+     },
+     "id": {
+      "type": "string",
+      "example": "b5091b8e-e5ea-4096-8e4c-f17d0d60f2dd"
+     },
+     "vedgeListUploadMsg": {
+      "type": "string",
+      "example": "Number of vEdges uploaded successfully: 1"
+     },
+     "vedgeListUploadStatus": {
+      "type": "string",
+      "example": "vEdge list uploaded successfully"
+     }
+    }
+   },
+   "PageInfo": {
+    "type": "object",
+    "properties": {
+     "count": {
+      "type": "integer",
+      "description": "number of alarms to be fetched",
+      "format": "int64"
+     },
+     "endTime": {
+      "type": "integer",
+      "description": "end time of alarms to be fetched",
+      "format": "int64"
+     },
+     "startTime": {
+      "type": "integer",
+      "description": "start time of alarms to be fetched",
+      "format": "int64"
+     }
+    }
+   },
+   "ConfigGroupDevice": {
+    "type": "object",
+    "properties": {
+     "criteria": {
+      "$ref": "#/components/schemas/Criteria"
+     },
+     "unsupportedFeatures": {
+      "type": "array",
+      "items": {
+       "$ref": "#/components/schemas/UnsupportedFeature"
+      }
+     }
+    }
+   },
+   "getSingleSdwanTransportPayload": {
+    "type": "object",
+    "properties": {
+     "profileId": {
+      "$ref": "schema/common/common_defs_schema.json#/components/schemas/uuidDef"
+     },
+     "profileType": {
+      "type": "string",
+      "enum": [
+       "transport"
+      ]
+     },
+     "profileName": {
+      "$ref": "schema/common/common_defs_schema.json#/components/schemas/cgFpPpNameDef"
+     },
+     "description": {
+      "type": "string"
+     },
+     "solution": {
+      "type": "string",
+      "enum": [
+       "sdwan"
+      ]
+     },
+     "createdBy": {
+      "type": "string",
+      "description": "User who last created this.",
+      "readOnly": true
+     },
+     "createdOn": {
+      "type": "integer",
+      "description": "Timestamp of creation",
+      "format": "int64",
+      "readOnly": true
+     },
+     "lastUpdatedBy": {
+      "type": "string",
+      "description": "User who last updated this.",
+      "readOnly": true
+     },
+     "lastUpdatedOn": {
+      "type": "integer",
+      "description": "Timestamp of last update",
+      "format": "int64",
+      "readOnly": true
+     },
+     "associatedProfileParcels": {
+      "type": "array",
+      "items": {
+       "type": "object",
+       "minItems": 0,
+       "properties": {
+        "parcelId": {
+         "$ref": "schema/common/common_defs_schema.json#/components/schemas/uuidDef"
+        },
+        "parcelType": {
+         "type": "string"
+        },
+        "payload": {
+         "type": "object"
+        },
+        "subparcels": {
+         "type": "array",
+         "minItems": 0,
+         "items": {
+          "type": "object"
+         }
+        }
+       }
+      }
+     }
+    }
+   },
+   "AppRouteRespWithPageInfo": {
+    "type": "object",
+    "properties": {
+     "data": {
+      "type": "array",
+      "items": {
+       "$ref": "#/components/schemas/AppRouteResp"
+      }
+     },
+     "pageInfo": {
+      "$ref": "#/components/schemas/PageInfo"
+     }
+    },
+    "description": "app route response with page info"
+   },
+   "GenerateDeviceActionList": {
+    "type": "array",
+    "properties": {
+     "empty": {
+      "type": "boolean"
+     }
+    },
+    "items": {
+     "$ref": "#/components/schemas/GenerateDeviceActionListInner"
+    }
+   },
+   "DynamicSchedulerResponse": {
+    "type": "object",
+    "properties": {
+     "enabled": {
+      "type": "boolean",
+      "example": true
+     }
+    }
+   },
+   "ProcessInstallReqInput": {
+    "required": [
+     "data",
+     "vEdgeVPN",
+     "vSmartVPN",
+     "versionType"
+    ],
+    "type": "object",
+    "properties": {
+     "data": {
+      "type": "array",
+      "description": "Device action input data.",
+      "items": {
+       "$ref": "#/components/schemas/ProcessInstallReqInputData"
+      }
+     },
+     "reboot": {
+      "type": "boolean",
+      "example": false
+     },
+     "sync": {
+      "type": "boolean",
+      "example": true
+     },
+     "vEdgeVPN": {
+      "type": "integer",
+      "description": "VPN id of the vEdge.",
+      "format": "int32",
+      "example": 0
+     },
+     "vSmartVPN": {
+      "type": "integer",
+      "description": "VPN id of the vSmart.",
+      "format": "int32",
+      "example": 0
+     },
+     "versionType": {
+      "type": "string",
+      "description": "Version type of the software image.",
+      "example": "vmanage"
+     }
+    }
+   },
+   "OneOfAlarmConsumedEventsItems": {
+    "type": "object"
+   },
+   "GeneralSchema": {
+    "type": "object",
+    "properties": {
+     "empty": {
+      "type": "boolean"
+     }
+    },
+    "additionalProperties": {
+     "type": "string"
+    }
+   },
+   "UnsupportedFeature": {
+    "type": "object",
+    "properties": {
+     "parcelId": {
+      "type": "string",
+      "format": "uuid"
+     },
+     "parcelType": {
+      "type": "string",
+      "enum": [
+       "wan/vpn/interface/gre",
+       "wan/vpn/interface/ethernet",
+       "wan/vpn/interface/cellular",
+       "wan/vpn/interface/ipsec",
+       "wan/vpn/interface/serial",
+       "wan/vpn/interface/dsl-pppoe",
+       "wan/vpn/interface/dsl-pppoa",
+       "wan/vpn/interface/dsl-ipoe",
+       "wan/vpn/interface/ethpppoe",
+       "routing/ospf",
+       "lan/vpn/interface/ethernet",
+       "lan/vpn/interface/gre",
+       "lan/vpn/interface/svi",
+       "lan/vpn/interface/ipsec",
+       "lan/vpn",
+       "global-vrf",
+       "vrf/wan/interface/gre",
+       "vrf/wan/interface/ethernet",
+       "vrf/wan/interface/ipsec",
+       "vrf/lan/interface/gre",
+       "vrf/lan/interface/ethernet",
+       "vrf/lan/interface/ipsec",
+       "vrf",
+       "vrf/routing/bgp",
+       "global-vrf/routing/bgp",
+       "wan/multicloud-connection",
+       "lan/multicloud-connection",
+       "vrf/wan/multicloud-connection",
+       "vrf/lan/multicloud-connection",
+       "global-vrf/wan/interface/ipsec",
+       "routing/bgp",
+       "route-policy",
+       "cellular-profile",
+       "cellular-controller",
+       "service-insertion-attachment"
+      ]
+     }
+    }
+   },
+   "GenerateDeviceActionListInner": {
+    "type": "object",
+    "properties": {
+     "isCancelEnabled": {
+      "type": "boolean"
+     },
+     "isParallelExecutionEnabled": {
+      "type": "boolean"
+     },
+     "name": {
+      "type": "string"
+     }
+    }
+   },
+   "ProcessInstallReqInputData": {
+    "required": [
+     "family",
+     "version"
+    ],
+    "type": "object",
+    "properties": {
+     "family": {
+      "type": "string",
+      "description": "Platform family of the software image.",
+      "example": "c800v"
+     },
+     "version": {
+      "type": "string",
+      "description": "Version of the software image.",
+      "example": "17.17.01.0.209664.1728238032"
+     },
+     "versionId": {
+      "type": "string",
+      "description": "Version id of the software image.",
+      "example": "824ac3d6-7d2a-4dfa-8a8b-e6e5bc64acb8"
+     }
+    },
+    "description": "Device action input data."
+   },
+   "AlarmCount": {
+    "type": "object",
+    "properties": {
+     "cleared_count": {
+      "type": "number",
+      "example": 718
+     },
+     "count": {
+      "type": "number",
+      "example": 13
+     }
+    }
+   },
+   "Criteria": {
+    "type": "object",
+    "properties": {
+     "attribute": {
+      "type": "string",
+      "enum": [
+       "tag"
+      ]
+     },
+     "value": {
+      "type": "string"
+     }
+    }
+   },
+   "AuditLogHeader": {
+    "type": "object",
+    "properties": {
+     "chart": {
+      "$ref": "#/components/schemas/ChartObject"
+     },
+     "columns": {
+      "$ref": "#/components/schemas/AuditLogHeaderColumns"
+     },
+     "fields": {
+      "$ref": "#/components/schemas/GetStatDataFields"
+     },
+     "generatedOn": {
+      "type": "integer",
+      "format": "int32",
+      "example": 1655622555494
+     },
+     "viewKeys": {
+      "$ref": "#/components/schemas/AuditLogHeaderViewKeys"
+     }
+    }
+   },
+   "AuditLogEntry": {
+    "required": [
+     "auditdetails",
+     "entry_time",
+     "logdeviceid",
+     "logfeature",
+     "logid",
+     "logmessage",
+     "logmodule",
+     "loguser",
+     "logusersrcip",
+     "statcycletime",
+     "tenant"
+    ],
+    "type": "object",
+    "properties": {
+     "auditdetails": {
+      "type": "array",
+      "items": {
+       "type": "string"
+      }
+     },
+     "entry_time": {
+      "type": "integer",
+      "format": "int32",
+      "example": 1659003590292
+     },
+     "id": {
+      "type": "string",
+      "example": "iWJRRIIBMbLIyWbe1qH"
+     },
+     "logdeviceid": {
+      "type": "string",
+      "example": "172.16.255.22"
+     },
+     "logfeature": {
+      "type": "string",
+      "example": "user"
+     },
+     "logid": {
+      "type": "string",
+      "format": "uuid",
+      "example": "918c6d64-729c-4304-b2c7-955a7c0e6a61"
+     },
+     "logmessage": {
+      "type": "string",
+      "example": "Invalidated session due to server session idle time out for User: viptela-device-901d032c-0721-438e-82ba-1d429598d879"
+     },
+     "logmodule": {
+      "type": "string",
+      "example": "user"
+     },
+     "loguser": {
+      "type": "string",
+      "format": "uuid"
+     },
+     "logusersrcip": {
+      "type": "string",
+      "example": "172.16.255.19"
+     },
+     "statcycletime": {
+      "type": "integer",
+      "format": "int32",
+      "example": 1659003590292
+     },
+     "tenant": {
+      "type": "string",
+      "example": "default"
+     }
+    }
+   },
+   "GetStatDataFields": {
+    "type": "object",
+    "properties": {
+     "dataType": {
+      "type": "string",
+      "example": "date"
+     },
+     "property": {
+      "type": "string",
+      "example": "entry_time"
+     }
+    }
+   },
+   "ChartObject": {
+    "type": "object",
+    "properties": {
+     "series": {
+      "type": "array",
+      "items": {
+       "type": "string"
+      }
+     },
+     "title": {
+      "type": "string"
+     },
+     "xAxis": {
+      "type": "array",
+      "items": {
+       "type": "string"
+      }
+     },
+     "xAxisLabel": {
+      "type": "string"
+     },
+     "yAxis": {
+      "type": "array",
+      "items": {
+       "type": "string"
+      }
+     },
+     "yAxisLabel": {
+      "type": "string"
      }
     }
    },
@@ -10663,581 +12115,18 @@
     },
     "description": "app route specific response"
    },
-   "OneOfAlarmConsumedEventsItems": {
-    "type": "object"
-   },
-   "getListSdwanProfilePayload": {
-    "type": "array",
-    "items": {
-     "type": "object",
-     "properties": {
-      "profileId": {
-       "$ref": "schema/common/common_defs_schema.json#/components/schemas/uuidDef"
-      },
-      "profileName": {
-       "$ref": "schema/common/common_defs_schema.json#/components/schemas/cgFpPpNameDef"
-      },
-      "profileType": {
-       "type": "string",
-       "enum": [
-        "profile"
-       ]
-      },
-      "createdBy": {
-       "type": "string",
-       "description": "User who last created this.",
-       "readOnly": true
-      },
-      "createdOn": {
-       "type": "integer",
-       "description": "Timestamp of creation",
-       "format": "int64",
-       "readOnly": true
-      },
-      "lastUpdatedBy": {
-       "type": "string",
-       "description": "User who last updated this.",
-       "readOnly": true
-      },
-      "lastUpdatedOn": {
-       "type": "integer",
-       "description": "Timestamp of last update",
-       "format": "int64",
-       "readOnly": true
-      },
-      "description": {
-       "type": "string"
-      },
-      "solution": {
-       "type": "string",
-       "enum": [
-        "sdwan"
-       ]
-      }
-     }
-    }
-   },
-   "DeviceIP": {
+   "AuditLogHeaderViewKeys": {
     "type": "object",
     "properties": {
-     "deviceIp": {
-      "type": "string"
-     }
-    },
-    "description": "This is the valid DeviceIP"
-   },
-   "GenerateDeviceStateDataData": {
-    "type": "object",
-    "properties": {
-     "@rid": {
-      "type": "integer",
-      "format": "int32",
-      "example": 3413
-     },
-     "auto-downstream-bandwidth": {
+     "preferenceKey": {
       "type": "string",
-      "example": "0"
+      "example": "grid-AuditLogView"
      },
-     "auto-upstream-bandwidth": {
-      "type": "string",
-      "example": "0"
-     },
-     "bia-address": {
-      "type": "string",
-      "example": "00:50:56:00:01:0e"
-     },
-     "createTimeStamp": {
-      "type": "string",
-      "example": "1681732399130"
-     },
-     "description": {
-      "type": "string",
-      "example": "Service Management VPN Interface Ethernet"
-     },
-     "hwaddr": {
-      "type": "string",
-      "example": "00:50:56:00:01:0e"
-     },
-     "if-admin-status": {
-      "type": "string",
-      "example": "if-state-up"
-     },
-     "if-oper-status": {
-      "type": "string",
-      "example": "if-oper-state-ready"
-     },
-     "ifindex": {
-      "type": "string",
-      "example": "1"
-     },
-     "ifname": {
-      "type": "string",
-      "example": "GigabitEthernet1"
-     },
-     "interface-type": {
-      "type": "string",
-      "example": "iana-iftype-ethernet-csmacd"
-     },
-     "ip-address": {
-      "type": "string",
-      "example": "10.0.1.14"
-     },
-     "ipv4-subnet-mask": {
-      "type": "string",
-      "example": "255.255.255.0"
-     },
-     "ipv4-tcp-adjust-mss": {
-      "type": "string",
-      "example": "0"
-     },
-     "ipv6-tcp-adjust-mss": {
-      "type": "string",
-      "example": "0"
-     },
-     "lastupdated": {
-      "type": "integer",
-      "format": "int32",
-      "example": 1682322326889
-     },
-     "mtu": {
-      "type": "string",
-      "example": "1500"
-     },
-     "recordId": {
-      "type": "string",
-      "example": "0:CEdgeInterfaceNode:1681732387143:3340"
-     },
-     "rx-drops": {
-      "type": "integer",
-      "format": "int32",
-      "example": 0
-     },
-     "rx-errors": {
-      "type": "integer",
-      "format": "int32",
-      "example": 1
-     },
-     "rx-octets": {
-      "type": "integer",
-      "format": "int32",
-      "example": 22625972
-     },
-     "rx-packets": {
-      "type": "string",
-      "example": "367109"
-     },
-     "speed-mbps": {
-      "type": "string",
-      "example": "1000"
-     },
-     "tx-drops": {
-      "type": "integer",
-      "format": "int32",
-      "example": 0
-     },
-     "tx-errors": {
-      "type": "integer",
-      "format": "int32",
-      "example": 0
-     },
-     "tx-octets": {
-      "type": "integer",
-      "format": "int32",
-      "example": 12993252
-     },
-     "tx-packets": {
-      "type": "integer",
-      "format": "int32",
-      "example": 38282
-     },
-     "vdevice-dataKey": {
-      "type": "string",
-      "example": "172.16.255.14-512-GigabitEthernet1-10.0.1.14-00:50:56:00:01:0e"
-     },
-     "vdevice-host-name": {
-      "type": "string",
-      "example": "vm4"
-     },
-     "vdevice-name": {
-      "type": "string",
-      "example": "172.16.255.14"
-     },
-     "vmanage-system-ip": {
-      "type": "string",
-      "example": "172.16.255.14"
-     },
-     "vpn-id": {
-      "type": "string",
-      "example": "512"
-     }
-    }
-   },
-   "getListSdwanSystemPayload": {
-    "type": "array",
-    "items": {
-     "type": "object",
-     "properties": {
-      "profileId": {
-       "$ref": "schema/common/common_defs_schema.json#/components/schemas/uuidDef"
-      },
-      "profileName": {
-       "$ref": "schema/common/common_defs_schema.json#/components/schemas/cgFpPpNameDef"
-      },
-      "profileType": {
-       "type": "string",
-       "enum": [
-        "system"
-       ]
-      },
-      "createdBy": {
-       "type": "string",
-       "description": "User who last created this.",
-       "readOnly": true
-      },
-      "createdOn": {
-       "type": "integer",
-       "description": "Timestamp of creation",
-       "format": "int64",
-       "readOnly": true
-      },
-      "lastUpdatedBy": {
-       "type": "string",
-       "description": "User who last updated this.",
-       "readOnly": true
-      },
-      "lastUpdatedOn": {
-       "type": "integer",
-       "description": "Timestamp of last update",
-       "format": "int64",
-       "readOnly": true
-      },
-      "description": {
-       "type": "string"
-      },
-      "solution": {
-       "type": "string",
-       "enum": [
-        "sdwan"
-       ]
-      }
-     }
-    }
-   },
-   "ConfigGroup": {
-    "required": [
-     "name",
-     "solution",
-     "state",
-     "version"
-    ],
-    "type": "object",
-    "properties": {
-     "copyInfo": {
-      "type": "string"
-     },
-     "createdBy": {
-      "type": "string",
-      "description": "User who last created this.",
-      "readOnly": true
-     },
-     "createdOn": {
-      "type": "integer",
-      "description": "Timestamp of creation",
-      "format": "int64",
-      "readOnly": true
-     },
-     "description": {
-      "type": "string",
-      "description": "Description of the  Group.",
-      "example": " group for west coast retail stores"
-     },
-     "deviceVersion": {
-      "type": "string"
-     },
-     "devices": {
-      "uniqueItems": true,
+     "uniqueKey": {
       "type": "array",
       "items": {
        "type": "string"
       }
-     },
-     "fullConfigCli": {
-      "type": "boolean"
-     },
-     "id": {
-      "type": "string",
-      "description": "System generated unique identifier of the  Group in UUID format.",
-      "example": "6fa14197-c25f-4a14-b81b-299de32ed2ca"
-     },
-     "iosConfigCli": {
-      "type": "boolean"
-     },
-     "lastUpdatedBy": {
-      "type": "string",
-      "description": "User who last updated this.",
-      "readOnly": true
-     },
-     "lastUpdatedOn": {
-      "type": "integer",
-      "description": "Timestamp of last update",
-      "format": "int64",
-      "readOnly": true
-     },
-     "name": {
-      "type": "string",
-      "description": "Name of the  Group. Must be unique.",
-      "example": "West coast retail stores"
-     },
-     "numberOfDevices": {
-      "type": "integer",
-      "format": "int64"
-     },
-     "numberOfDevicesUpToDate": {
-      "type": "integer",
-      "format": "int64"
-     },
-     "origin": {
-      "type": "string"
-     },
-     "originInfo": {
-      "type": "object",
-      "additionalProperties": {
-       "type": "string"
-      }
-     },
-     "profiles": {
-      "type": "array",
-      "description": "List of devices UUIDs associated with this group",
-      "example": "West coast retail store devices",
-      "items": {
-       "$ref": "#/components/schemas/FeatureProfile"
-      }
-     },
-     "solution": {
-      "type": "string",
-      "description": "Specify one of the device platform solution",
-      "example": "sdwan",
-      "enum": [
-       "mobility",
-       "sdwan",
-       "sd-routing",
-       "common",
-       "nfvirtual",
-       "service-insertion",
-       "cellulargateway"
-      ]
-     },
-     "source": {
-      "type": "string",
-      "description": "Source of group",
-      "example": "retail_workflow"
-     },
-     "state": {
-      "type": "string",
-      "description": " Group Deployment state",
-      "example": " Group Deployment state.Initial state Deployed "
-     },
-     "topology": {
-      "$ref": "#/components/schemas/Topology"
-     },
-     "version": {
-      "type": "integer",
-      "description": " Group Version Flag",
-      "format": "int64"
-     },
-     "versionIncrementReason": {
-      "type": "string"
-     }
-    }
-   },
-   "FeatureProfile": {
-    "required": [
-     "name",
-     "solution",
-     "type"
-    ],
-    "type": "object",
-    "properties": {
-     "createdBy": {
-      "type": "string",
-      "description": "User who last created this.",
-      "readOnly": true
-     },
-     "createdOn": {
-      "type": "integer",
-      "description": "Timestamp of creation",
-      "format": "int64",
-      "readOnly": true
-     },
-     "description": {
-      "type": "string",
-      "description": "Description of the feature Profile.",
-      "example": "Profile file description"
-     },
-     "id": {
-      "type": "string",
-      "description": "System generated unique identifier of the feature profile in UUID format.",
-      "example": "6fa14197-c25f-4a14-b81b-299de32ed2ca"
-     },
-     "lastUpdatedBy": {
-      "type": "string",
-      "description": "User who last updated this.",
-      "readOnly": true
-     },
-     "lastUpdatedOn": {
-      "type": "integer",
-      "description": "Timestamp of last update",
-      "format": "int64",
-      "readOnly": true
-     },
-     "name": {
-      "type": "string",
-      "description": "Name of the feature Profile. Must be unique.",
-      "example": "system feature profile"
-     },
-     "origin": {
-      "type": "string"
-     },
-     "profileParcelCount": {
-      "type": "integer",
-      "description": "Number of Parcels attached with Feature Profile",
-      "format": "int64",
-      "readOnly": true
-     },
-     "solution": {
-      "type": "string",
-      "description": "Solution of the feature Profile.",
-      "example": "sdwan"
-     },
-     "type": {
-      "type": "string",
-      "description": "Type of the feature Profile.",
-      "example": "system"
-     }
-    },
-    "description": "List of devices UUIDs associated with this group",
-    "example": "West coast retail store devices"
-   },
-   "Topology": {
-    "type": "object",
-    "properties": {
-     "devices": {
-      "type": "array",
-      "items": {
-       "$ref": "#/components/schemas/ConfigGroupDevice"
-      }
-     },
-     "siteDevices": {
-      "type": "integer",
-      "format": "int32"
-     }
-    }
-   },
-   "ConfigGroupDevice": {
-    "type": "object",
-    "properties": {
-     "criteria": {
-      "$ref": "#/components/schemas/Criteria"
-     },
-     "unsupportedFeatures": {
-      "type": "array",
-      "items": {
-       "$ref": "#/components/schemas/UnsupportedFeature"
-      }
-     }
-    }
-   },
-   "AlarmDevices": {
-    "type": "object",
-    "properties": {
-     "system-ip": {
-      "type": "string",
-      "example": "19.19.19.1"
-     }
-    }
-   },
-   "Criteria": {
-    "type": "object",
-    "properties": {
-     "attribute": {
-      "type": "string",
-      "enum": [
-       "tag"
-      ]
-     },
-     "value": {
-      "type": "string"
-     }
-    }
-   },
-   "UnsupportedFeature": {
-    "type": "object",
-    "properties": {
-     "parcelId": {
-      "type": "string",
-      "format": "uuid"
-     },
-     "parcelType": {
-      "type": "string",
-      "enum": [
-       "wan/vpn/interface/gre",
-       "wan/vpn/interface/ethernet",
-       "wan/vpn/interface/cellular",
-       "wan/vpn/interface/ipsec",
-       "wan/vpn/interface/serial",
-       "wan/vpn/interface/dsl-pppoe",
-       "wan/vpn/interface/dsl-pppoa",
-       "wan/vpn/interface/dsl-ipoe",
-       "wan/vpn/interface/ethpppoe",
-       "routing/ospf",
-       "lan/vpn/interface/ethernet",
-       "lan/vpn/interface/gre",
-       "lan/vpn/interface/svi",
-       "lan/vpn/interface/ipsec",
-       "lan/vpn",
-       "global-vrf",
-       "vrf/wan/interface/gre",
-       "vrf/wan/interface/ethernet",
-       "vrf/wan/interface/ipsec",
-       "vrf/lan/interface/gre",
-       "vrf/lan/interface/ethernet",
-       "vrf/lan/interface/ipsec",
-       "vrf",
-       "vrf/routing/bgp",
-       "global-vrf/routing/bgp",
-       "wan/multicloud-connection",
-       "lan/multicloud-connection",
-       "vrf/wan/multicloud-connection",
-       "vrf/lan/multicloud-connection",
-       "global-vrf/wan/interface/ipsec",
-       "routing/bgp",
-       "route-policy",
-       "cellular-profile",
-       "cellular-controller",
-       "service-insertion-attachment"
-      ]
-     }
-    }
-   },
-   "AuditLogHeader": {
-    "type": "object",
-    "properties": {
-     "chart": {
-      "$ref": "#/components/schemas/ChartObject"
-     },
-     "columns": {
-      "$ref": "#/components/schemas/AuditLogHeaderColumns"
-     },
-     "fields": {
-      "$ref": "#/components/schemas/GetStatDataFields"
-     },
-     "generatedOn": {
-      "type": "integer",
-      "format": "int32",
-      "example": 1655622555494
-     },
-     "viewKeys": {
-      "$ref": "#/components/schemas/AuditLogHeaderViewKeys"
      }
     }
    },
@@ -11288,147 +12177,69 @@
       "example": 220
      }
     }
-   },
-   "AuditLogEntry": {
-    "required": [
-     "auditdetails",
-     "entry_time",
-     "logdeviceid",
-     "logfeature",
-     "logid",
-     "logmessage",
-     "logmodule",
-     "loguser",
-     "logusersrcip",
-     "statcycletime",
-     "tenant"
-    ],
-    "type": "object",
-    "properties": {
-     "auditdetails": {
-      "type": "array",
-      "items": {
-       "type": "string"
-      }
-     },
-     "entry_time": {
-      "type": "integer",
-      "format": "int32",
-      "example": 1659003590292
-     },
-     "id": {
-      "type": "string",
-      "example": "iWJRRIIBMbLIyWbe1qH"
-     },
-     "logdeviceid": {
-      "type": "string",
-      "example": "172.16.255.22"
-     },
-     "logfeature": {
-      "type": "string",
-      "example": "user"
-     },
-     "logid": {
-      "type": "string",
-      "format": "uuid",
-      "example": "918c6d64-729c-4304-b2c7-955a7c0e6a61"
-     },
-     "logmessage": {
-      "type": "string",
-      "example": "Invalidated session due to server session idle time out for User: viptela-device-901d032c-0721-438e-82ba-1d429598d879"
-     },
-     "logmodule": {
-      "type": "string",
-      "example": "user"
-     },
-     "loguser": {
-      "type": "string",
-      "format": "uuid"
-     },
-     "logusersrcip": {
-      "type": "string",
-      "example": "172.16.255.19"
-     },
-     "statcycletime": {
-      "type": "integer",
-      "format": "int32",
-      "example": 1659003590292
-     },
-     "tenant": {
-      "type": "string",
-      "example": "default"
+   }
+  },
+  "examples": {
+   "getListSdwanSystemExample": {
+    "value": [
+     {
+      "profileId": "bc99ae4f-0ac3-4a51-95cb-c718953143ce",
+      "profileName": "cg1_LAN",
+      "solution": "sdwan",
+      "profileType": "system",
+      "createdBy": "admin",
+      "lastUpdatedBy": "admin",
+      "createdOn": 1701850310222,
+      "description": "cg1 system Profile",
+      "lastUpdatedOn": 1702292120081
      }
+    ]
+   },
+   "getSingleSdwanSystemExample": {
+    "value": {
+     "profileName": "cg1_LAN",
+     "lastUpdatedBy": "admin",
+     "description": "cg1 system Profile",
+     "profileParcelCount": 613,
+     "createdOn": 1701850310222,
+     "@rid": 3262,
+     "profileType": "system",
+     "solution": "sdwan",
+     "createdBy": "admin",
+     "profileId": "bc99ae4f-0ac3-4a51-95cb-c718953143ce",
+     "lastUpdatedOn": 1702292120081,
+     "associatedProfileParcels": []
     }
    },
-   "AuditLogHeaderViewKeys": {
-    "type": "object",
-    "properties": {
-     "preferenceKey": {
-      "type": "string",
-      "example": "grid-AuditLogView"
-     },
-     "uniqueKey": {
-      "type": "array",
-      "items": {
-       "type": "string"
-      }
+   "getListSdwanProfileExample": {
+    "value": [
+     {
+      "profileId": "bc99ae4f-0ac3-4a51-95cb-c718953143ce",
+      "profileName": "cg1_LAN",
+      "solution": "sdwan",
+      "profileType": "profile",
+      "createdBy": "admin",
+      "lastUpdatedBy": "admin",
+      "createdOn": 1701850310222,
+      "description": "cg1 profile Profile",
+      "lastUpdatedOn": 1702292120081
      }
-    }
+    ]
    },
-   "ChartObject": {
-    "type": "object",
-    "properties": {
-     "series": {
-      "type": "array",
-      "items": {
-       "type": "string"
-      }
-     },
-     "title": {
-      "type": "string"
-     },
-     "xAxis": {
-      "type": "array",
-      "items": {
-       "type": "string"
-      }
-     },
-     "xAxisLabel": {
-      "type": "string"
-     },
-     "yAxis": {
-      "type": "array",
-      "items": {
-       "type": "string"
-      }
-     },
-     "yAxisLabel": {
-      "type": "string"
-     }
-    }
-   },
-   "GetStatDataFields": {
-    "type": "object",
-    "properties": {
-     "dataType": {
-      "type": "string",
-      "example": "date"
-     },
-     "property": {
-      "type": "string",
-      "example": "entry_time"
-     }
-    }
-   },
-   "GeneralSchema": {
-    "type": "object",
-    "properties": {
-     "empty": {
-      "type": "boolean"
-     }
-    },
-    "additionalProperties": {
-     "type": "string"
+   "getSingleSdwanTransportExample": {
+    "value": {
+     "profileName": "cg1_LAN",
+     "lastUpdatedBy": "admin",
+     "description": "cg1 transport Profile",
+     "profileParcelCount": 613,
+     "createdOn": 1701850310222,
+     "@rid": 3262,
+     "profileType": "transport",
+     "solution": "sdwan",
+     "createdBy": "admin",
+     "profileId": "bc99ae4f-0ac3-4a51-95cb-c718953143ce",
+     "lastUpdatedOn": 1702292120081,
+     "associatedProfileParcels": []
     }
    }
   }

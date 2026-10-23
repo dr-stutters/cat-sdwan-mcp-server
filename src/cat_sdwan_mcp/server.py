@@ -16,6 +16,7 @@ from cat_sdwan_mcp.tools import (
     configuration,
     control,
     dataplane,
+    devops,
     events,
     inventory,
     onboarding,
@@ -61,6 +62,10 @@ catsdwan_get_policy (sequences in plain words, lists resolved). "Why does voice 
 branch?" -> catsdwan_explain_path(source_site, destination site or prefix, app or dscp) (offline walk of the
 policy joined with each tunnel's SLA now). catsdwan_activate_policy(policy, action) is always dangerous
 (fabric-wide).
+Device operations (dangerous): catsdwan_list_software (repository, per edge installed and active, the release
+ceiling) -> catsdwan_upgrade_software(devices, version, activate) / catsdwan_reboot_devices(devices); the
+previews name each device's site and role and refuse both edges of one site in one run.
+catsdwan_list_device_actions shows the Manager's running actions (upgrades started in the GUI too).
 Prompts: catsdwan_branch_health(site) (a verdict per transport), catsdwan_onboard_branch(site) (NetBox ->
 onboard -> boot -> deploy -> prove), catsdwan_why_is_app_slow(host, app) (ISE, app-route SLA, FMC, CML).
 Anything without a tool: catsdwan_search_spec('bfd') -> catsdwan_get_definition(path) -> catsdwan_api_call
@@ -99,6 +104,7 @@ def create_server(
             changes.register,
             onboarding.register,
             policy.register,
+            devops.register,
             prompts.register,
         ],
         status=SdwanApp.status,

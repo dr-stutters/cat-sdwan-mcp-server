@@ -1,0 +1,295 @@
+{
+  "header": {
+    "generatedOn": 1792757014873,
+    "viewKeys": {
+      "uniqueKey": [],
+      "preferenceKey": "grid-DeviceActionImageRepository"
+    },
+    "columns": [
+      {
+        "title": "view.deviceaction.viewDeviceActionImageRepo.fileName",
+        "property": "availableFiles",
+        "hideable": false,
+        "minWidth": 300,
+        "dataType": "string"
+      },
+      {
+        "title": "view.deviceaction.viewDeviceActionImageRepo.description",
+        "property": "description",
+        "hideable": false,
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "view.deviceaction.viewDeviceActionImageRepo.checkSum",
+        "property": "checksumValidity",
+        "display": "icon",
+        "iconProperty": "checksumValidity",
+        "hideable": false,
+        "icon": [
+          {
+            "key": "valid",
+            "value": "images/action_success.png"
+          },
+          {
+            "key": "invalid",
+            "value": "images/action_failure.png"
+          },
+          {
+            "key": "na"
+          }
+        ],
+        "width": 70,
+        "minWidth": 50,
+        "dataType": "string"
+      },
+      {
+        "title": "view.deviceaction.viewDeviceActionImageRepo.versionType",
+        "property": "versionType",
+        "hideable": false,
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "view.deviceaction.viewDeviceActionImageRepo.fileType",
+        "property": "imageType",
+        "display": "keyvalue",
+        "keyvalueProperty": "imageType",
+        "hideable": false,
+        "keyvalue": [
+          {
+            "key": "software",
+            "value": "Software"
+          },
+          {
+            "key": "container",
+            "value": "Container"
+          },
+          {
+            "key": "lxc",
+            "value": "Lxc"
+          },
+          {
+            "key": "virtualmachine",
+            "value": "VirtualMachine Image Package"
+          },
+          {
+            "key": "virtualmachine-diskimg",
+            "value": "VirtualMachine Disk Image"
+          },
+          {
+            "key": "virtualmachine-scaffold",
+            "value": "VirtualMachine Scaffold"
+          },
+          {
+            "key": "waas",
+            "value": "WAAS"
+          },
+          {
+            "key": "dockertype",
+            "value": "Docker"
+          },
+          {
+            "key": "na",
+            "value": "-"
+          }
+        ],
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "view.deviceaction.viewDeviceActionImageRepo.tag",
+        "property": "tags",
+        "hideable": false,
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "view.deviceaction.viewDeviceActionImageRepo.serviceType",
+        "property": "networkFunctionType",
+        "display": "keyvalue",
+        "keyvalueProperty": "networkFunctionType",
+        "hideable": false,
+        "keyvalue": [
+          {
+            "key": "ROUTER",
+            "value": "Router"
+          },
+          {
+            "key": "SWITCH",
+            "value": "Switch"
+          },
+          {
+            "key": "FIREWALL",
+            "value": "Firewall"
+          },
+          {
+            "key": "LOADBALANCER",
+            "value": "Loadbalancer"
+          },
+          {
+            "key": "app-hosting",
+            "value": "App-Hosting"
+          },
+          {
+            "key": "vWAAS",
+            "value": "vWAAS"
+          },
+          {
+            "key": "WLC",
+            "value": "WLC"
+          },
+          {
+            "key": "OTHER",
+            "value": "Other"
+          }
+        ],
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "view.deviceaction.viewDeviceActionImageRepo.fileSize",
+        "property": "fileSizeStr",
+        "hideable": false,
+        "width": 110,
+        "dataType": "string"
+      },
+      {
+        "title": "view.deviceaction.viewDeviceActionImageRepo.version",
+        "property": "versionName",
+        "hideable": false,
+        "width": 110,
+        "dataType": "string"
+      },
+      {
+        "title": "view.deviceaction.viewDeviceActionImageRepo.vendor",
+        "property": "vendor",
+        "hideable": false,
+        "minWidth": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "view.deviceaction.viewDeviceActionImageRepo.version",
+        "property": "versionName",
+        "hideable": false,
+        "width": 110,
+        "dataType": "string"
+      },
+      {
+        "title": "view.deviceaction.viewDeviceActionImageRepo.vendor",
+        "property": "vendor",
+        "hideable": false,
+        "minWidth": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "view.deviceaction.viewDeviceActionImageRepo.architecture",
+        "property": "arch",
+        "hideable": false,
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "view.deviceaction.viewDeviceActionImageRepo.versionTypeNam",
+        "property": "versionTypeName",
+        "hideable": false,
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "view.deviceaction.viewDeviceActionImageRepo.updatedOn",
+        "property": "updatedOn",
+        "displayFormat": "DD MMM YYYY h:mm:ss A z",
+        "inputFormat": "unix-time",
+        "minWidth": 300,
+        "dataType": "date"
+      }
+    ],
+    "fields": [
+      {
+        "property": "versionId",
+        "dataType": "string"
+      },
+      {
+        "property": "availableFiles",
+        "dataType": "string"
+      },
+      {
+        "property": "description",
+        "dataType": "string"
+      },
+      {
+        "property": "checksumValidity",
+        "dataType": "string",
+        "display": "icon"
+      },
+      {
+        "property": "versionType",
+        "dataType": "string"
+      },
+      {
+        "property": "imageType",
+        "dataType": "string",
+        "display": "keyvalue"
+      },
+      {
+        "property": "tags",
+        "dataType": "string"
+      },
+      {
+        "property": "networkFunctionType",
+        "dataType": "string",
+        "display": "keyvalue"
+      },
+      {
+        "property": "fileSizeStr",
+        "dataType": "string"
+      },
+      {
+        "property": "versionName",
+        "dataType": "string"
+      },
+      {
+        "property": "vendor",
+        "dataType": "string"
+      },
+      {
+        "property": "controllerVersionName",
+        "dataType": "string"
+      },
+      {
+        "property": "versionName",
+        "dataType": "string"
+      },
+      {
+        "property": "vendor",
+        "dataType": "string"
+      },
+      {
+        "property": "controllerVersionName",
+        "dataType": "string"
+      },
+      {
+        "property": "versionType",
+        "dataType": "string"
+      },
+      {
+        "property": "versionURL",
+        "dataType": "string"
+      },
+      {
+        "property": "arch",
+        "dataType": "string"
+      },
+      {
+        "property": "versionTypeName",
+        "dataType": "string"
+      },
+      {
+        "property": "updatedOn",
+        "dataType": "date"
+      }
+    ]
+  },
+  "data": []
+}
