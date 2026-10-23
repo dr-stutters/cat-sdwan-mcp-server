@@ -18,8 +18,8 @@ from pathlib import Path
 
 METHODS = ("get", "post", "put", "delete", "patch")
 
-# (tag regex, item, note). Items: W-ids, "api_call" (reachable through catsdwan_api_call, no tool planned)
-# or "not planned" (see ROADMAP.md "Not planned" for the reason).
+# (tag regex, item, note). Items: W-ids (W29-W39 are the spec-proven track) or "api_call" (reachable through
+# catsdwan_api_call, no tool planned).
 RULES: list[tuple[str, str, str]] = [
     # Done (v0.1.0, v0.2.0)
     (r"^Client - ", "W1", "login and XSRF token"),
@@ -112,12 +112,60 @@ RULES: list[tuple[str, str, str]] = [
     (r"^Administration - User and Group$", "W26", "users, groups, sessions, AAA; W14 user-group script"),
     (r"^Workflows - Controllers Upgrade$", "W27", ""),
     (r"^(Licensing - Next Generation|MSLA|Smart License|SmartLicensing - .*)$", "W28", "reads"),
-    # Reachable through catsdwan_api_call, no tool planned
+    # Spec-proven track (W29-W39): built with proof levels, see ROADMAP.md
+    (r"^Monitoring - (Cflowd|Cedge Cflowd|Crypto VPN)$", "W22", "flow and crypto statistics, lab-provable"),
+    (r"^Monitoring - SDRA$", "W23", "secure remote access statistics, spec-proven"),
+    (
+        r"^(Configuration - (Cloud On Ramp|Cloud On Ramp SaaS|CloudExpress|Multi Cloud|Azure Connect)|MultiCloud - .*|Multicloud Interconnect - .*|Monitoring - CloudExpress|Real-Time Monitoring - CloudExpress)$",
+        "W30",
+        "spec-proven; live with a cloud account",
+    ),
+    (
+        r"^(Configuration - Secure Internet Gateway|Configuration - Secure Internet Gateway Tunnels|Umbrella|System - Cloud Service.*|Monitoring - SecureX Integration)$",
+        "W31",
+        "spec-proven; Umbrella half live with a trial",
+    ),
+    (
+        r"^(Real-Time Monitoring -LTE450 Cellular|Real-Time Monitoring - (Cellular.*|Voice|WLAN|Wireless|VDSL Service|SFP|Power Consumption|Geo-fencing|Ignition Status)|Overview - Cellular|Monitoring - (Cellular-EIOLTE|Wlan Client Info|Power Consumption Statistics)|Troubleshooting Tools - UMTS|Configuration - Device Firmware Update)$",
+        "W32",
+        "hardware modules, spec-proven",
+    ),
+    (
+        r"^Real-Time Monitoring - (Appqoe|DRE|TCP Optimization|Tcpproxy)$",
+        "W33",
+        "spec-proven; TCP optimisation maybe live",
+    ),
+    (
+        r"^(Colocation|Real-Time Monitoring - (Container Lifecycle|NetworkHub Resources|RBAC|VM|App Hosting|Ucse|Orchestrator|App Logs)|Monitoring - (App Hosting|VNF Interface Statistics|Bridge)|Service Chain Mapping|Kubernetes Services)$",
+        "W34",
+        "NFV and app hosting, spec-proven",
+    ),
+    (
+        r"^(Multitenant APIs - Provider|Tenant Backup Restore|Tenant Migration)$",
+        "W35",
+        "spec-proven; live with a multitenant Manager",
+    ),
+    (
+        r"^(SD AVC.*|Protocol Pack .*|Cloud Sourced Application .*|Configuration - App Registry|Configuration - Policy App Registry|System - Container|Wani Recommendations|url monitor)$",
+        "W36",
+        "application recognition, spec-proven",
+    ),
+    (
+        r"^Configuration - Feature Profile \((NFVirtual|Mobility)\)$",
+        "W37",
+        "W21 parcel tools, spec-proven writes",
+    ),
     (
         r"^Configuration - (Policy .*|.* List Builder|.* Definition Builder|.* Definition|Rule Set Definition|Security Group Definition|Advanced Inspection Profile Definition|FQDN List Builder|Preferred Color Group List Builder|SSL Decryption .*)$",
-        "api_call",
-        "legacy policy objects: read in W11, written through api_call",
+        "W38",
+        "legacy policy objects: read in W11, written in W38 (lab-provable)",
     ),
+    (
+        r"^(Data Collection Agent|Deployment Mode|HSEC|Hsec|Tools - TAC Cases|CCI Authorization Service.*|Cisco Software|Partner - (ACI Policy Builder|WCM Configs)|Configuration - Multidomain Policy|developers|Rules|Device - Messaging|System - Reverse Proxy|Secure Device O[nN]Boarding - .*|Secure Device Onboarding - .*)$",
+        "W39",
+        "partner and Cisco plumbing reads",
+    ),
+    # Reachable through catsdwan_api_call, no tool planned
     (
         r"^Configuration - (Settings|Segments|Circuits|Network Design|Network Design Templates|Template Lock|Quick Connect|Control Component Setting|Feature Certificate)$",
         "api_call",
@@ -144,37 +192,6 @@ RULES: list[tuple[str, str, str]] = [
         r"^(Troubleshooting Tools - Diagnostics|Troubleshooting MRE - Workflow|Setting - Dynamic Scheduler|Real Time Monitoring - Raw Socket|File based RealTime Data Collection - .*|Monitoring - DPI - On-demand troubleshooting)$",
         "api_call",
         "packet capture, speed test and log streaming need a browser session",
-    ),
-    # Not planned (ROADMAP.md "Not planned")
-    (
-        r"^(Configuration - (Cloud On Ramp|Cloud On Ramp SaaS|CloudExpress|Multi Cloud|Azure Connect|Secure Internet Gateway|Secure Internet Gateway Tunnels)|MultiCloud - .*|Multicloud Interconnect - .*|Monitoring - CloudExpress|Real-Time Monitoring - CloudExpress|Monitoring - SecureX Integration|System - Cloud Service.*|Umbrella|Kubernetes Services)$",
-        "not planned",
-        "cloud accounts",
-    ),
-    (
-        r"^(Configuration - Feature Profile \((NFVirtual|Mobility)\)|Colocation|Real-Time Monitoring - (Container Lifecycle|NetworkHub Resources|RBAC|VM|App Hosting|Ucse|Orchestrator|App Logs)|Monitoring - (App Hosting|VNF Interface Statistics|Bridge)|Service Chain Mapping)$",
-        "not planned",
-        "NFV, colocation and app hosting hardware",
-    ),
-    (
-        r"^(Real-Time Monitoring -LTE450 Cellular|Real-Time Monitoring - (Cellular.*|Voice|WLAN|Wireless|VDSL Service|SFP|Power Consumption|Geo-fencing|Ignition Status|Appqoe|DRE|TCP Optimization|Tcpproxy)|Overview - Cellular|Monitoring - (Cellular-EIOLTE|Wlan Client Info|SDRA|Cflowd|Cedge Cflowd|Crypto VPN)|Troubleshooting Tools - UMTS|Configuration - Device Firmware Update|Secure Device O[nN]Boarding - .*|Secure Device Onboarding - .*)$",
-        "not planned",
-        "hardware modules, voice, wireless, AppQoE and cellular the CML edges cannot run",
-    ),
-    (
-        r"^(Multitenant APIs - Provider|Tenant Backup Restore|Tenant Migration)$",
-        "not planned",
-        "provider-mode Manager",
-    ),
-    (
-        r"^(SD AVC.*|Protocol Pack .*|Cloud Sourced Application .*|Configuration - App Registry|Configuration - Policy App Registry|System - Container|Wani Recommendations|url monitor)$",
-        "not planned",
-        "SD-AVC, protocol packs and analytics recommendations",
-    ),
-    (
-        r"^(Data Collection Agent|Deployment Mode|HSEC|Hsec|Tools - TAC Cases|CCI Authorization Service.*|Cisco Software|Partner - (ACI Policy Builder|WCM Configs)|Configuration - Multidomain Policy|developers|Rules|Device - Messaging|System - Reverse Proxy)$",
-        "not planned",
-        "Cisco cloud, FedRAMP, ACI and other partner plumbing",
     ),
 ]
 
@@ -203,7 +220,7 @@ def main() -> int:
 
     def order(item: str) -> tuple[int, int]:
         m = re.match(r"W(\d+)", item)
-        return (0, int(m.group(1))) if m else ((1, 0) if item == "api_call" else (2, 0))
+        return (0, int(m.group(1))) if m else (1, 0)
 
     by_item: dict[str, list[int]] = collections.defaultdict(lambda: [0, 0, 0])
     for item, _tag, r, w, _note in rows:
@@ -220,8 +237,9 @@ def main() -> int:
         "roadmap item. Generated by `scripts/spec_coverage.py` from `GET /apidocs/vmanageapi.json`; rerun it on "
         "each new release (W15) and treat an unmatched tag as a roadmap question. Reads are GET; writes are every "
         "other method, including the statistics and alarm query POSTs that change nothing. `api_call` means "
-        "reachable through `catsdwan_api_call` with no tool planned; `not planned` is explained in "
-        "[ROADMAP.md](../ROADMAP.md#not-planned).",
+        "reachable through `catsdwan_api_call` with no tool planned. W29–W39 are the spec-proven track "
+        "([ROADMAP.md](../ROADMAP.md#spec-proven-track-no-lab-proof)): built with proof levels where the lab "
+        "cannot prove them.",
         "",
         "## By item",
         "| Item | Tags | Reads | Writes |",
