@@ -43,7 +43,7 @@ Manager release (tested 20.18 and 26.x, minimum 20.15). `--json` for the report 
 | `CATSDWAN_URL` | (required) | SD-WAN Manager base URL, e.g. `https://sdwan-manager.example.com` |
 | `CATSDWAN_USERNAME` / `CATSDWAN_PASSWORD` | | API account (`CATSDWAN_PASSWORD_FILE` or `_REF` instead of the password) |
 | `CATSDWAN_AUTH` | `auto` | `auto` (JWT, else session), `jwt` (20.18.1+) or `session` |
-| `CATSDWAN_SESSION_SECONDS` | `3600` | JWT lifetime asked for at login (300 to 604800) |
+| `CATSDWAN_SESSION_SECONDS` | `1800` | JWT lifetime asked for at login (300 to 1800: 20.18.3 refuses more) |
 | `CATSDWAN_TENANT` | | Multi-tenant Manager with a provider login: tenant name or id; requests carry its `VSessionId` (needs the Tenant Management read role) |
 | `CATSDWAN_VERIFY_SSL` | `true` | TLS verification; `false` for self-signed labs |
 | `CATSDWAN_CA_BUNDLE` | | CA bundle for the Manager certificate |

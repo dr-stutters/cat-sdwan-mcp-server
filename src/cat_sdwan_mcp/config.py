@@ -21,8 +21,9 @@ class Settings(BaseServerSettings):
     # session login when the Manager has no JWT endpoint (404/405).
     auth: Literal["auto", "jwt", "session"] = "auto"
 
-    # CATSDWAN_SESSION_SECONDS: the JWT lifetime asked for at login (the Manager allows up to 604800 s).
-    session_seconds: int = Field(default=3600, ge=300, le=604_800)
+    # CATSDWAN_SESSION_SECONDS: the JWT lifetime asked for at login. 20.18.3 refuses more than 1800 s
+    # (an HTML 400: 'Duration must be ... less than or equal to 1800 seconds'); it is refreshed before expiry.
+    session_seconds: int = Field(default=1800, ge=300, le=1800)
 
     # CATSDWAN_TENANT: a tenant name or id for a provider login on a multi-tenant Manager; requests then carry
     # that tenant's VSessionId. Off by default (single-tenant Managers).

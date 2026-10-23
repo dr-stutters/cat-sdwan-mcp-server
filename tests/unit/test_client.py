@@ -57,7 +57,7 @@ async def test_jwt_login_bearer_and_xsrf_on_writes_only(api: respx.MockRouter) -
     finally:
         await app.aclose()
     login = json.loads(api.routes[0].calls.last.request.content)
-    assert login == {"username": "admin", "password": "pw", "duration": 3600}
+    assert login == {"username": "admin", "password": "pw", "duration": 1800}
     got = read.calls.last.request.headers
     assert got["Authorization"] == "Bearer jwt-123" and "X-XSRF-TOKEN" not in got
     sent = write.calls.last.request.headers
@@ -67,10 +67,10 @@ async def test_jwt_login_bearer_and_xsrf_on_writes_only(api: respx.MockRouter) -
 
 
 async def test_jwt_duration_from_settings(api: respx.MockRouter) -> None:
-    app = SdwanApp(make_settings(session_seconds=7200))
+    app = SdwanApp(make_settings(session_seconds=900))
     await app.devices()
     await app.aclose()
-    assert json.loads(api.routes[0].calls.last.request.content)["duration"] == 7200
+    assert json.loads(api.routes[0].calls.last.request.content)["duration"] == 900
 
 
 async def test_jwt_refresh_before_expiry(api: respx.MockRouter) -> None:
