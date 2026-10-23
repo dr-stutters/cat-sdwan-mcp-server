@@ -253,7 +253,12 @@ def action_done(body: Any) -> bool:
     rows = action_rows(body)
     if rows and all(_state(r) != "running" for r in rows):
         return True
-    return isinstance(summary, dict) and str(summary.get("status", "")).lower() == "done" and bool(rows)
+    # Some actions (the root certificate force-sync) list no device rows at all: the summary is all there is.
+    return _summary_done(summary)
+
+
+def _summary_done(summary: Any) -> bool:
+    return isinstance(summary, dict) and str(summary.get("status", "")).lower() == "done"
 
 
 def _reason(row: dict[str, Any]) -> str | None:
@@ -296,6 +301,8 @@ def action_outcome(body: Any, process_id: str) -> dict[str, Any]:
         outcome = "failed"
     elif failed and ok:
         outcome = "partial"
+    elif not devices and not bad and _summary_done(body.get("summary") if isinstance(body, dict) else None):
+        outcome = "done"
     elif failed or not devices:
         outcome = "failed"
     else:

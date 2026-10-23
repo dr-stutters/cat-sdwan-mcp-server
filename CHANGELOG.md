@@ -7,6 +7,8 @@ All notable changes to this project are documented here. The format follows
 ## [Unreleased]
 
 ### Fixed
+- Following a Manager action that lists no device rows (the root certificate force-sync) no longer waits
+  until the task timeout: a summary of `done` ends the wait, outcome `done`.
 - `catsdwan_admin_tech`: the request body is now the one the Manager's UI sends (no `device-type` except for the
   Manager itself, empty `tech-filter` / `custom-commands`); 20.18 refused the old one with DEVICE0007 (live).
 - `catsdwan_path_insight`: the preview is blocked while the Manager's Data Stream setting is off, and a start the

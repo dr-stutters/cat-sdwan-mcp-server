@@ -150,6 +150,10 @@ def test_action_outcome_success_partial_and_validation() -> None:
     assert not ch.action_done(running)
     bad = {"data": running["data"], "validation": {"statusId": "validation_failure", "activity": ["bad cfg"]}}
     assert ch.action_done(bad) and ch.action_outcome(bad, PID)["outcome"] == "failed"
+    # the root certificate force-sync lists no device rows, only the summary (live 2026-10-24)
+    rowless = {"data": [], "summary": {"status": "done"}}
+    assert ch.action_done(rowless) and ch.action_outcome(rowless, PID)["outcome"] == "done"
+    assert not ch.action_done({"data": [], "summary": {"status": "in_progress"}})
 
 
 def test_preview_text_and_template_matching() -> None:
