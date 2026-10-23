@@ -1,0 +1,167 @@
+{
+  "header": {
+    "generatedOn": 1792758995985,
+    "viewKeys": {
+      "uniqueKey": [
+        "vdevice-dataKey"
+      ],
+      "preferenceKey": "grid-CEdgeSmartLicenseRegInfo"
+    },
+    "columns": [
+      {
+        "title": "device.license.cedgeSmartRegistration.alwaysEnabled",
+        "property": "always-enabled",
+        "hideable": true,
+        "dataType": "boolean"
+      },
+      {
+        "title": "device.license.cedgeSmartRegistration.enabled",
+        "property": "smart-enabled",
+        "hideable": false,
+        "dataType": "boolean"
+      },
+      {
+        "title": "device.license.cedgeSmartRegistration.version",
+        "property": "version",
+        "hideable": false,
+        "dataType": "string"
+      },
+      {
+        "title": "device.license.cedgeSmartRegistration.registrationSt",
+        "property": "registration-state",
+        "hideable": true,
+        "dataType": "string"
+      },
+      {
+        "title": "device.license.cedgeSmartRegistration.exportControlA",
+        "property": "export-control-allowed",
+        "hideable": true,
+        "dataType": "boolean"
+      },
+      {
+        "title": "device.license.cedgeSmartRegistration.registratiionC",
+        "property": "complete-time",
+        "hideable": true,
+        "dataType": "date-and-time"
+      },
+      {
+        "title": "device.license.cedgeSmartRegistration.lastRenew",
+        "property": "last-renew-time",
+        "hideable": true,
+        "dataType": "date-and-time"
+      },
+      {
+        "title": "device.license.cedgeSmartRegistration.nextRenew",
+        "property": "next-renew-time",
+        "hideable": true,
+        "dataType": "date-and-time"
+      },
+      {
+        "title": "device.license.cedgeSmartRegistration.expire",
+        "property": "expire-time",
+        "hideable": true,
+        "dataType": "date-and-time"
+      },
+      {
+        "title": "device.license.cedgeSmartRegistration.lastRenewSucce",
+        "property": "last-renew-success",
+        "hideable": true,
+        "dataType": "boolean"
+      },
+      {
+        "title": "device.license.cedgeSmartRegistration.failMessage",
+        "property": "fail-message",
+        "hideable": true,
+        "dataType": "string"
+      },
+      {
+        "title": "device.license.cedgeSmartRegistration.smartAccount",
+        "property": "smart-account",
+        "hideable": true,
+        "dataType": "string"
+      },
+      {
+        "title": "device.license.cedgeSmartRegistration.virtualAccount",
+        "property": "virtual-account",
+        "hideable": true,
+        "dataType": "string"
+      },
+      {
+        "title": "device.license.cedgeSmartRegistration.lastUpdated",
+        "property": "lastupdated",
+        "displayFormat": "DD MMM YYYY h:mm:ss A z",
+        "inputFormat": "unix-time",
+        "hideable": false,
+        "minWidth": 200,
+        "dataType": "date"
+      }
+    ],
+    "fields": [
+      {
+        "property": "vdevice-name",
+        "dataType": "string"
+      },
+      {
+        "property": "vdevice-host-name",
+        "dataType": "string"
+      },
+      {
+        "property": "always-enabled",
+        "dataType": "boolean"
+      },
+      {
+        "property": "smart-enabled",
+        "dataType": "boolean"
+      },
+      {
+        "property": "version",
+        "dataType": "string"
+      },
+      {
+        "property": "registration-state",
+        "dataType": "string"
+      },
+      {
+        "property": "export-control-allowed",
+        "dataType": "boolean"
+      },
+      {
+        "property": "complete-time",
+        "dataType": "date-and-time"
+      },
+      {
+        "property": "last-renew-time",
+        "dataType": "date-and-time"
+      },
+      {
+        "property": "next-renew-time",
+        "dataType": "date-and-time"
+      },
+      {
+        "property": "expire-time",
+        "dataType": "date-and-time"
+      },
+      {
+        "property": "last-renew-success",
+        "dataType": "boolean"
+      },
+      {
+        "property": "fail-message",
+        "dataType": "string"
+      },
+      {
+        "property": "smart-account",
+        "dataType": "string"
+      },
+      {
+        "property": "virtual-account",
+        "dataType": "string"
+      },
+      {
+        "property": "lastupdated",
+        "dataType": "date"
+      }
+    ]
+  },
+  "data": []
+}

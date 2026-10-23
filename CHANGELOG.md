@@ -109,6 +109,11 @@ All notable changes to this project are documented here. The format follows
   version isn't available, an edge or controller is too old, every controller runs it already, or there is no
   successful backup from the last 24 h. Confirm posts `/v1/controllers-upgrade` (now or scheduled) and returns the
   process id; `cancel=<processId>` cancels a scheduled upgrade.
+- W28 (#42): licensing reads. `catsdwan_licenses(device, include_unjoined)`: Smart Account credentials, virtual
+  accounts and sync status, licence compliance with its reasons, licensed vs total devices, the licence pool, and
+  per device its compliance, reason and licences (`/v1/licensing/devices`); with `device`, the edge's own licence
+  usage and registration. Says plainly when no Smart Account sync is configured (licences can't be fetched or
+  assigned until it is). Assigning and releasing licences stay in the GUI.
 
 ## [0.2.0] - 2026-10-23
 

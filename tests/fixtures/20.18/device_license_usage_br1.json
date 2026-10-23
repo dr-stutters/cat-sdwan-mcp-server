@@ -1,0 +1,117 @@
+{
+  "header": {
+    "generatedOn": 1792758995395,
+    "viewKeys": {
+      "uniqueKey": [
+        "vdevice-dataKey"
+      ],
+      "preferenceKey": "grid-CEdgeSmartLicenseUsageInfo"
+    },
+    "columns": [
+      {
+        "title": "device.license.deviceDataCedgeSmartUsage.entitlementTag",
+        "property": "entitlement-tag",
+        "hideable": false,
+        "dataType": "string"
+      },
+      {
+        "title": "device.license.deviceDataCedgeSmartUsage.name",
+        "property": "short-name",
+        "hideable": false,
+        "dataType": "string"
+      },
+      {
+        "title": "device.license.deviceDataCedgeSmartUsage.licenseName",
+        "property": "license-name",
+        "hideable": false,
+        "dataType": "string"
+      },
+      {
+        "title": "device.license.deviceDataCedgeSmartUsage.description",
+        "property": "description",
+        "hideable": false,
+        "dataType": "string"
+      },
+      {
+        "title": "device.license.deviceDataCedgeSmartUsage.inuseCount",
+        "property": "count",
+        "hideable": false,
+        "dataType": "number"
+      },
+      {
+        "title": "device.license.deviceDataCedgeSmartUsage.enforcementMod",
+        "property": "enforcement-mode",
+        "hideable": true,
+        "dataType": "enum"
+      },
+      {
+        "title": "device.license.deviceDataCedgeSmartUsage.postPaid",
+        "property": "post-paid",
+        "hideable": true,
+        "dataType": "boolean"
+      },
+      {
+        "title": "device.license.deviceDataCedgeSmartUsage.subscriptionId",
+        "property": "subscription-id",
+        "hideable": true,
+        "dataType": "string"
+      },
+      {
+        "title": "device.license.deviceDataCedgeSmartUsage.lastUpdated",
+        "property": "lastupdated",
+        "displayFormat": "DD MMM YYYY h:mm:ss A z",
+        "inputFormat": "unix-time",
+        "hideable": false,
+        "minWidth": 200,
+        "dataType": "date"
+      }
+    ],
+    "fields": [
+      {
+        "property": "vdevice-name",
+        "dataType": "string"
+      },
+      {
+        "property": "vdevice-host-name",
+        "dataType": "string"
+      },
+      {
+        "property": "entitlement-tag",
+        "dataType": "string"
+      },
+      {
+        "property": "short-name",
+        "dataType": "string"
+      },
+      {
+        "property": "license-name",
+        "dataType": "string"
+      },
+      {
+        "property": "description",
+        "dataType": "string"
+      },
+      {
+        "property": "count",
+        "dataType": "number"
+      },
+      {
+        "property": "enforcement-mode",
+        "dataType": "enum"
+      },
+      {
+        "property": "post-paid",
+        "dataType": "boolean"
+      },
+      {
+        "property": "subscription-id",
+        "dataType": "string"
+      },
+      {
+        "property": "lastupdated",
+        "dataType": "date"
+      }
+    ]
+  },
+  "data": []
+}
