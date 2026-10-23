@@ -10,7 +10,7 @@ from cat_sdwan_mcp._core import ServerSpec, ToolRegistrar, build_server
 from cat_sdwan_mcp.client import SdwanApp
 from cat_sdwan_mcp.config import Settings
 from cat_sdwan_mcp.spec import spec_sources
-from cat_sdwan_mcp.tools import api, control, dataplane, events, inventory
+from cat_sdwan_mcp.tools import api, configuration, control, dataplane, events, inventory
 
 INSTRUCTIONS = """
 Tools for Catalyst SD-WAN Manager (formerly vManage): fabric inventory and health, tunnels, BFD and
@@ -30,6 +30,11 @@ Logs: "what changed and who did it?" -> catsdwan_audit_log(changes_only=true); "
 this site?" -> catsdwan_recent_activity(site) (alarms, events and audit lines on one timeline);
 catsdwan_list_alarms (active by default), catsdwan_list_events (busy: keep since_hours short).
 Real-time reads go over the Manager's control connection, so an unreachable edge has none.
+Configuration: "how is this edge configured, and did it drift?" -> catsdwan_get_device_config(device,
+diff=true) (running vs intended, secrets masked; says configuration group, template or CLI mode);
+catsdwan_list_config_groups -> catsdwan_get_config_group(group) (feature profiles, values, devices and their
+variables); catsdwan_list_templates(type='device'|'feature'); catsdwan_list_policy_groups. A device is in a
+configuration group or on a device template, never both.
 Anything without a tool: catsdwan_search_spec('bfd') -> catsdwan_get_definition(path) -> catsdwan_api_call
 (paths as /dataservice/..., checked against the Manager's own OpenAPI document; GET and the statistics, alarm,
 event and audit query POSTs are reads, other writes are preview-first, /device/action/* is dangerous).
@@ -57,7 +62,13 @@ def create_server(
         SPEC,
         settings,
         client_factory=lambda s: SdwanApp(s, transport=transport),
-        register=[inventory.register, control.register, dataplane.register, events.register],
+        register=[
+            inventory.register,
+            control.register,
+            dataplane.register,
+            events.register,
+            configuration.register,
+        ],
         status=SdwanApp.status,
         spec_sources=spec_sources,
         auth=auth,

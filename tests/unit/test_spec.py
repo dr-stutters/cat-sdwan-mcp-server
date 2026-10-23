@@ -1,5 +1,5 @@
 """W6: catsdwan_search_spec, catsdwan_get_definition and catsdwan_api_call on a subset of the recorded
-20.18.3.1 OpenAPI document (GET /apidocs/vmanageapi.json; `scripts/spec_subset.py` cut 37 of its 2811
+20.18.3.1 OpenAPI document (GET /apidocs/vmanageapi.json; `scripts/spec_subset.py` cut 39 of its 2811
 paths with the components they reference, same structure: OpenAPI 3.0.1, paths relative to
 `servers: /dataservice`)."""
 
@@ -168,6 +168,18 @@ async def test_api_call_masks_secrets(api: respx.MockRouter) -> None:
     )
     out = await call("catsdwan_api_call", {"path": "/admin/user"})
     assert out["data"][0]["userName"] == "ops" and "Sup3rS3cret" not in json.dumps(out)
+
+
+async def test_api_call_masks_secrets_in_configuration_text(api: respx.MockRouter) -> None:
+    mock_spec(api)
+    config = (
+        "hostname br2\nusername admin privilege 15 secret 9 $9$synthetic\nsnmp-server community Publ1c RO\n"
+    )
+    api.get("/dataservice/template/config/running/REDACTED-22").respond(json={"config": config})
+    out = await call("catsdwan_api_call", {"path": "/template/config/running/REDACTED-22"})
+    assert (
+        "hostname br2" in out["config"] and "synthetic" not in out["config"] and "Publ1c" not in out["config"]
+    )
 
 
 async def test_api_call_without_spec_allows_get_with_a_note(api: respx.MockRouter) -> None:

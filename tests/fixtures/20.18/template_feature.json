@@ -1,0 +1,176 @@
+{
+  "header": {
+    "generatedOn": 1792746131761
+  },
+  "data": [
+    {
+      "templateId": "00000000-0000-4000-8000-000000000860",
+      "templateName": "Default_BootStrap_Cisco_Static_VPN_Template",
+      "templateDescription": "vpn0_static",
+      "templateType": "cisco_vpn",
+      "deviceType": [
+        "cellular-gateway-CG113-W6E",
+        "vedge-C1111-4PLTEEA",
+        "vedge-C1161-8P",
+        "cellular-gateway-CG113-W6H",
+        "cellular-gateway-CG113-W6B",
+        "vedge-C1121X-8P",
+        "cellular-gateway-CG113-W6A",
+        "vedge-ISR-4331"
+      ],
+      "lastUpdatedBy": "system",
+      "lastUpdatedOn": 1792742185812,
+      "factoryDefault": true,
+      "devicesAttached": 0,
+      "attachedMastersCount": 1,
+      "templateMinVersion": "15.0.0",
+      "configType": "xml",
+      "createdBy": "system",
+      "createdOn": 1792742185812,
+      "resourceGroup": "global"
+    },
+    {
+      "templateId": "00000000-0000-4000-8000-000000000861",
+      "templateName": "Default_Azure_vWAN_C8000V_VPN0_INTF_GE2_V01",
+      "templateDescription": "Default VPN 0 Interface GigabitEthernet2 template for Azure vWAN C8000V",
+      "templateType": "cisco_vpn_interface",
+      "deviceType": [
+        "vedge-C8000V"
+      ],
+      "lastUpdatedBy": "system",
+      "lastUpdatedOn": 1792742186641,
+      "factoryDefault": true,
+      "devicesAttached": 0,
+      "attachedMastersCount": 1,
+      "templateMinVersion": "20.4.0",
+      "configType": "xml",
+      "createdBy": "system",
+      "createdOn": 1792742186641,
+      "resourceGroup": "global"
+    },
+    {
+      "templateId": "00000000-0000-4000-8000-000000000862",
+      "templateName": "Factory_Default_Logging_Template_V01",
+      "templateDescription": "Default Logging template settings Version 01",
+      "templateType": "logging",
+      "deviceType": [
+        "vedge-1000",
+        "vedge-2000",
+        "vedge-cloud",
+        "vedge-5000",
+        "vedge-ISR1100-6G",
+        "vedge-100-B",
+        "vedge-ISR1100-4G",
+        "vedge-100"
+      ],
+      "lastUpdatedBy": "system",
+      "lastUpdatedOn": 1792742187213,
+      "factoryDefault": true,
+      "devicesAttached": 0,
+      "attachedMastersCount": 1,
+      "templateMinVersion": "20.1.0",
+      "configType": "xml",
+      "createdBy": "system",
+      "createdOn": 1792742187213,
+      "resourceGroup": "global"
+    },
+    {
+      "templateId": "00000000-0000-4000-8000-000000000867",
+      "templateName": "Factory_Default_DC1_EMPLOYEE_DHCP_SERVER",
+      "templateDescription": "Factory_Default_DC1_EMPLOYEE_DHCP_SERVER",
+      "templateType": "cisco_dhcp_server",
+      "deviceType": [
+        "vedge-C8000V"
+      ],
+      "lastUpdatedBy": "system",
+      "lastUpdatedOn": 1792742191494,
+      "factoryDefault": true,
+      "devicesAttached": 0,
+      "attachedMastersCount": 1,
+      "templateMinVersion": "15.0.0",
+      "configType": "xml",
+      "createdBy": "system",
+      "createdOn": 1792742191494,
+      "resourceGroup": "global"
+    },
+    {
+      "templateId": "00000000-0000-4000-8000-000000000870",
+      "templateName": "Default_C1111_Cellular_V01",
+      "templateDescription": "Factory Default template for C1111 cellular",
+      "templateType": "cellular-cedge-controller",
+      "deviceType": [
+        "vedge-C1111-8PLTELA"
+      ],
+      "lastUpdatedBy": "system",
+      "lastUpdatedOn": 1792742193655,
+      "factoryDefault": true,
+      "devicesAttached": 0,
+      "attachedMastersCount": 1,
+      "templateMinVersion": "15.0.0",
+      "configType": "xml",
+      "createdBy": "system",
+      "createdOn": 1792742193655,
+      "resourceGroup": "global"
+    },
+    {
+      "templateId": "00000000-0000-4000-8000-000000000873",
+      "templateName": "Factory_Default_Retail_BGP_To_OMP",
+      "templateDescription": "Factory Default Retail BGP To OMP",
+      "templateType": "cisco_omp",
+      "deviceType": [
+        "vedge-C8000V"
+      ],
+      "lastUpdatedBy": "system",
+      "lastUpdatedOn": 1792742195375,
+      "factoryDefault": true,
+      "devicesAttached": 0,
+      "attachedMastersCount": 2,
+      "templateMinVersion": "15.0.0",
+      "configType": "xml",
+      "createdBy": "system",
+      "createdOn": 1792742195375,
+      "resourceGroup": "global"
+    },
+    {
+      "templateId": "00000000-0000-4000-8000-000000000878",
+      "templateName": "Default_Logging_Cisco_V01",
+      "templateDescription": "Factory Default template for Logging Cisco",
+      "templateType": "cisco_logging",
+      "deviceType": [
+        "vedge-C8000V",
+        "vedge-C1111-8PLTELA",
+        "vedge-CSR-1000v",
+        "vedge-ISR-4331"
+      ],
+      "lastUpdatedBy": "system",
+      "lastUpdatedOn": 1792742198650,
+      "factoryDefault": true,
+      "devicesAttached": 0,
+      "attachedMastersCount": 15,
+      "templateMinVersion": "15.0.0",
+      "configType": "xml",
+      "createdBy": "system",
+      "createdOn": 1792742198650,
+      "resourceGroup": "global"
+    },
+    {
+      "templateId": "00000000-0000-4000-8000-000000000887",
+      "templateName": "Default_C1111_Switch_Port_V01",
+      "templateDescription": "Factory Default template for C1111 switch port",
+      "templateType": "switchport",
+      "deviceType": [
+        "vedge-C1111-8PLTELA"
+      ],
+      "lastUpdatedBy": "system",
+      "lastUpdatedOn": 1792742203725,
+      "factoryDefault": true,
+      "devicesAttached": 0,
+      "attachedMastersCount": 1,
+      "templateMinVersion": "15.0.0",
+      "configType": "xml",
+      "createdBy": "system",
+      "createdOn": 1792742203725,
+      "resourceGroup": "global"
+    }
+  ]
+}
