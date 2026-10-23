@@ -21,6 +21,7 @@ from __future__ import annotations
 import asyncio
 import difflib
 import time
+from collections.abc import Callable
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
 from typing import Any
@@ -327,7 +328,8 @@ def reboots(rows: list[dict[str, Any]], keep: int = 5) -> list[dict[str, Any]]:
     return out
 
 
-REALTIME = (
+Shaper = Callable[[list[dict[str, Any]]], Any]
+REALTIME: tuple[tuple[str, str, Shaper], ...] = (
     ("system", STATUS_PATH, system_status),
     ("interfaces", INTERFACE_PATH, interfaces),
     ("software", SOFTWARE_PATH, software),

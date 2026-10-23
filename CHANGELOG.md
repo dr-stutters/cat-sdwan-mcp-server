@@ -57,6 +57,16 @@ All notable changes to this project are documented here. The format follows
 - `catsdwan_control_connections` adds `rejected_joins` for the fabric view and an edge that is down: the validator's
   `vbond-reject-vedge-connection` and `control-connection-auth-fail` events of the last 24 h with the chassis and the
   reason in plain words (`ERR_BID_NOT_VERIFIED` and friends).
+- W6 (#7): API discovery over the Manager's own OpenAPI document. `catsdwan_search_spec` and `catsdwan_get_definition`
+  index `GET /apidocs/vmanageapi.json` (recorded on 20.18.3.1: OpenAPI 3.0.1, 2811 paths, 13.4 MB, behind the API
+  login; paths relative to `servers: /dataservice`, shown with the prefix), cached per Manager release in
+  `MCP_CACHE_DIR`. `catsdwan_api_call` replaces core's generic call: the path must be an operation in the spec
+  ('did you mean' otherwise; `/device/...` is read as `/dataservice/device/...`), GET and the query POSTs of
+  `/statistics/<index>`, `/alarms`, `/event` and `/auditlog` are reads (also on a read-only server), every other
+  POST/PUT/DELETE is write tier and preview-first, `/device/action/*` writes are dangerous; XSRF and the rate buckets
+  as for every other call, secrets masked. When the Manager won't serve the spec, GETs go through unchecked with a
+  note and writes are refused (a bundled per-release copy as fallback is not shipped yet). `scripts/spec_subset.py`
+  cuts the test fixture out of a recorded document.
 - `cat-sdwan-mcp-server check`: reachability, TLS, auth and version (tested 20.18 and 26.x, minimum 20.15).
 - Unit tests on recorded, redacted 20.18 payloads (`tests/fixtures/20.18/`).
 - Scaffold on stutters-mcp-core v0.14.4 (bundled as `cat_sdwan_mcp._core`, ADR-005): `catsdwan_status` (reports the

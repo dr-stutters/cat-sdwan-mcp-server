@@ -6,8 +6,8 @@ An [MCP](https://modelcontextprotocol.io) server for **Cisco Catalyst SD-WAN Man
 
 > **Status: early.** The client (JWT and session login, throttling, error mapping), `catsdwan_status` and the
 > `check` preflight (W1), the inventory and device health tools (W2), the control-plane tools (W3), the data-plane
-> and app-route tools (W4) and the alarm, event and audit tools (W5) exist, unit-tested against recorded 20.18
-> payloads; nothing is proven live yet. The rest is planned in [ROADMAP.md](ROADMAP.md) (item W0 is the lab fabric in CML) and tracked on the suite board.
+> and app-route tools (W4), the alarm, event and audit tools (W5) and API discovery over the Manager's own OpenAPI
+> document (W6) exist, unit-tested against recorded 20.18 payloads; nothing is proven live yet. The rest is planned in [ROADMAP.md](ROADMAP.md) (item W0 is the lab fabric in CML) and tracked on the suite board.
 
 ## What it will do
 
@@ -35,6 +35,9 @@ servers, the production gate and the external prerequisites.
 | `catsdwan_list_events` | read | Device events (BFD, control and OMP state changes, interface changes, reboots, logins, validator rejections, ...) with their details, filtered by device, site, event name, component, severity; `by_event` counts |
 | `catsdwan_audit_log` | read | Who did what on the Manager (user, source IP, module, message, device); `changes_only` drops logins and logouts, `device` finds lines that name it, `include_details` adds the bodies with secrets masked |
 | `catsdwan_recent_activity` | read | One newest-first timeline of alarms, events and audit lines for a device, a site or the whole fabric; a source that fails is reported and the others still answer |
+| `catsdwan_search_spec` | read | Search the Manager's own OpenAPI document (`GET /apidocs/vmanageapi.json`, OpenAPI 3, about 2800 paths on 20.18) for operations and schemas; paths shown as `/dataservice/...`; indexed once per Manager release and cached in `MCP_CACHE_DIR` |
+| `catsdwan_get_definition` | read | One operation (parameters, request fields, required fields; `examples=true` for the spec's examples) or schema |
+| `catsdwan_api_call` | read / write / dangerous | Any endpoint, the path checked against the spec ('did you mean' when it isn't there). GET and the query POSTs of `/statistics/<index>`, `/alarms`, `/event`, `/auditlog` are reads; with `MCP_ENABLE_WRITES` other POST/PUT/DELETE calls are preview-first; `/device/action/*` writes (reboot, software) need `MCP_ENABLE_DANGEROUS`. Secrets masked |
 
 `cat-sdwan-mcp-server check` is the preflight: reachability (login and a `/dataservice` read), TLS trust,
 credentials (a wrong password reports `auth`, also on the session login whose failure is an HTML page), and the
@@ -71,7 +74,7 @@ Manager release (tested 20.18 and 26.x, minimum 20.15). `--json` for the report 
 | `CATSDWAN_INSTANCES` | | Several Managers in one server (`CATSDWAN_<NAME>_URL`, ...; `_TENANT` is never inherited): every tool gets `instance` |
 | `MCP_TRANSPORT` | `stdio` | `stdio` or `http` |
 | `MCP_AUTH_TOKENS` / `MCP_AUTH_TOKENS_FILE` | | `name:sha256:<hex>` entries; **required** for HTTP |
-| `MCP_ENABLE_WRITES` / `MCP_ENABLE_DANGEROUS` | `false` | Register the write / dangerous tools (none yet) |
+| `MCP_ENABLE_WRITES` / `MCP_ENABLE_DANGEROUS` | `false` | Writes through `catsdwan_api_call` (preview-first) / its `/device/action/*` calls |
 | `LOG_LEVEL` | `INFO` | |
 
 Everything else `MCP_*` comes from stutters-mcp-core ([PRODUCTION.md](https://github.com/dr-stutters/stutters-mcp-core/blob/main/docs/PRODUCTION.md)).
