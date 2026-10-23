@@ -1,0 +1,31 @@
+{
+  "header": {
+    "generatedOn": 1792758931555
+  },
+  "data": [
+    {
+      "vpnId": "10",
+      "vpnType": "configuredVPN"
+    },
+    {
+      "vpnId": "0",
+      "vpnType": "vmanageVPN"
+    },
+    {
+      "vpnId": "512",
+      "vpnType": "vmanageVPN"
+    },
+    {
+      "vpnId": "65528",
+      "vpnType": "vmanageVPN"
+    },
+    {
+      "vpnId": "65529",
+      "vpnType": "vmanageVPN"
+    },
+    {
+      "vpnId": "Mgmt-intf",
+      "vpnType": "vmanageVPN"
+    }
+  ]
+}

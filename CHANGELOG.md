@@ -80,6 +80,13 @@ All notable changes to this project are documented here. The format follows
   there is no security policy at all) and `catsdwan_security_events(kind=ips|url|connection|dns, device or site,
   hours)` (`POST /statistics/ipsalert`, `/urlf`, `/sul/connections`, `/umbrella`, aggregated by signature, per
   edge or by firewall policy, action and drop reason; with no records it says whether none is expected).
+- W24 (#38): TrustSec and integrations. `catsdwan_trustsec(device)` (live from the edge: environment data
+  from ISE with what a missing download means, PAC with the opaque value masked, IP-to-SGT bindings and their
+  source, SGACLs with permit/deny counters, SXP, pxGrid status and bindings, 802.1X; tables the edge does not
+  support, such as `iptosgtbindings` on a C8000V, listed as `not_supported`; `in_use` and a `verdict`) and
+  `catsdwan_integrations` (ISE credentials masked, the connection test and ISE SGT list only when ISE is
+  configured, pxGrid, partners with a Catalyst Center partner's SD-Access sites and devices, SD-Access VPNs; says
+  plainly when no ISE, pxGrid or partner is configured).
 
 ## [0.2.0] - 2026-10-23
 
