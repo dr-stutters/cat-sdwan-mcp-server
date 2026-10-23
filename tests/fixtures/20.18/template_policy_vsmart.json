@@ -1,0 +1,124 @@
+{
+  "header": {
+    "generatedOn": 1792743430226,
+    "viewKeys": {
+      "uniqueKey": [],
+      "preferenceKey": "grid-VSmartPolicy"
+    },
+    "columns": [
+      {
+        "title": "view.template.clientViewVsmartPolicy.name",
+        "property": "policyName",
+        "hideable": false,
+        "dataType": "string"
+      },
+      {
+        "title": "view.template.clientViewVsmartPolicy.description",
+        "property": "policyDescription",
+        "dataType": "string"
+      },
+      {
+        "title": "view.template.clientViewVsmartPolicy.type",
+        "property": "policyType",
+        "display": "keyvalue",
+        "keyvalueProperty": "policyType",
+        "hideable": false,
+        "keyvalue": [
+          {
+            "key": "cli",
+            "value": "CLI"
+          },
+          {
+            "key": "feature",
+            "value": "UI Policy Builder"
+          }
+        ],
+        "dataType": "string"
+      },
+      {
+        "title": "view.template.clientViewVsmartPolicy.activated",
+        "property": "isPolicyActivated",
+        "display": "iconAndText",
+        "iconProperty": "isPolicyActivated",
+        "hideable": false,
+        "icon": [
+          {
+            "key": "true",
+            "value": "images/policy_active.png"
+          },
+          {
+            "key": "false",
+            "value": "images/policy_inactive.png"
+          }
+        ],
+        "dataType": "string"
+      },
+      {
+        "title": "view.template.clientViewVsmartPolicy.updatedBy",
+        "property": "lastUpdatedBy",
+        "dataType": "string"
+      },
+      {
+        "title": "view.template.clientViewVsmartPolicy.policyVersion",
+        "property": "policyVersion",
+        "dataType": "string"
+      },
+      {
+        "title": "view.template.clientViewVsmartPolicy.lastUpdated",
+        "property": "lastUpdatedOn",
+        "displayFormat": "DD MMM YYYY h:mm:ss A z",
+        "inputFormat": "unix-time",
+        "dataType": "date"
+      }
+    ],
+    "fields": [
+      {
+        "property": "policyName",
+        "dataType": "string"
+      },
+      {
+        "property": "policyDescription",
+        "dataType": "string"
+      },
+      {
+        "property": "policyType",
+        "dataType": "string",
+        "display": "keyvalue"
+      },
+      {
+        "property": "isPolicyActivated",
+        "dataType": "string",
+        "display": "iconAndText"
+      },
+      {
+        "property": "lastUpdatedBy",
+        "dataType": "string"
+      },
+      {
+        "property": "policyVersion",
+        "dataType": "string"
+      },
+      {
+        "property": "lastUpdatedOn",
+        "dataType": "date"
+      }
+    ]
+  },
+  "data": [
+    {
+      "lastUpdatedBy": "admin",
+      "policyVersion": "10232026T081020820",
+      "policyName": "mcp-test-policy",
+      "policyDefinition": "{\"assembly\":[{\"definitionId\":\"00000000-0000-4000-8000-000000000127\",\"type\":\"appRoute\",\"entries\":[{\"siteLists\":[\"00000000-0000-4000-8000-000000000128\"],\"vpnLists\":[\"00000000-0000-4000-8000-000000000129\"]}]}]}",
+      "createdOn": 1792743020820,
+      "isPolicyActivated": false,
+      "policyDescription": "app-route SLA for the lab sites (not activated)",
+      "@rid": 3314,
+      "policyId": "00000000-0000-4000-8000-000000000860",
+      "createdBy": "admin",
+      "policyType": "feature",
+      "tenantId": "default",
+      "lastUpdatedOn": 1792743020820
+    }
+  ]
+}

@@ -24,6 +24,7 @@ from __future__ import annotations
 
 import logging
 from collections import Counter
+from dataclasses import dataclass, field
 from typing import Any
 from urllib.parse import quote
 
@@ -51,6 +52,7 @@ CONTROLLERS_PATH = "/dataservice/system/device/controllers"
 VEDGES_PATH = "/dataservice/system/device/vedges"
 BULK_STATE_PATH = "/dataservice/data/device/state/{name}"
 BULK_PAGE = 1000
+QUERY_PAGE = 1000  # rows per statistics/alarm/event/audit request (the Manager's own cap is 10000)
 
 REQUESTS_PER_MINUTE = 6000  # 100 requests/s, the Manager's per-user limit
 BULK_PREFIXES = ("dataservice/data/device/",)
@@ -366,6 +368,40 @@ class SdwanApp:
                 return rows, False
             params = {"count": min(page_size, limit - len(rows)), "startId": end}
 
+    async def query(
+        self, path: str, query: dict[str, Any], *, limit: int, page_size: int = QUERY_PAGE
+    ) -> QueryResult:
+        """POST a query body to a statistics-style API (/dataservice/statistics/<index>, /alarms, /event,
+        /auditlog) and follow its scroll until `limit` rows.
+
+        The first request is POST <path> {"query": ..., "size": n} (recorded on 20.18.3: `pageInfo` with
+        `startTime`, `endTime`, `count`). When `pageInfo` carries a `scrollId` with `hasMoreData`, the next
+        pages come from POST <path>/page?scrollId=<id>&count=<n> with the same query (Cisco's documented
+        scroll; not recorded yet). The Manager does not always honour `size` (/event returned 717 rows for
+        50), so rows are cut to `limit` here and `more` says whether rows were left out. Reads, so 5xx
+        answers are retried; statistics paths queue on the two-at-a-time semaphore."""
+        size = max(1, min(limit, page_size))
+        body = await self.api.post(path, {"query": query, "size": size}, retry=True)
+        rows, info = _query_page(body)
+        pages = 1
+        while len(rows) < limit and info.get("scrollId") and _truthy(info.get("hasMoreData")):
+            want = max(1, min(page_size, limit - len(rows)))
+            body = await self.api.post(
+                f"{path}/page",
+                {"query": query, "size": want},
+                params={"scrollId": info["scrollId"], "count": want},
+                retry=True,
+            )
+            batch, info = _query_page(body)
+            pages += 1
+            if not batch:
+                break
+            rows.extend(batch)
+        scroll_more = bool(info.get("scrollId")) and _truthy(info.get("hasMoreData"))
+        # Without a scroll, a full first page may hide more rows (the Manager stops at `size`).
+        more = len(rows) > limit or scroll_more or (pages == 1 and len(rows) >= size)
+        return QueryResult(rows[:limit], more, pages, info)
+
     async def devices(self) -> list[dict[str, Any]]:
         """GET /dataservice/device: every controller and edge with its live state."""
         return [d for d in _as_list(await self.get_data(DEVICE_PATH)) if isinstance(d, dict)]
@@ -416,6 +452,39 @@ def _as_list(v: Any) -> list[Any]:
     if v is None:
         return []
     return v if isinstance(v, list) else [v]
+
+
+@dataclass
+class QueryResult:
+    """Rows of a query-body API, whether rows were left out (`more`), requests made and the last pageInfo."""
+
+    rows: list[dict[str, Any]]
+    more: bool
+    pages: int = 1
+    page_info: dict[str, Any] = field(default_factory=dict)
+
+
+def _truthy(v: Any) -> bool:
+    return v is True or str(v).lower() == "true"
+
+
+def _query_page(body: Any) -> tuple[list[dict[str, Any]], dict[str, Any]]:
+    data = body.get("data") if isinstance(body, dict) else body
+    info = body.get("pageInfo") if isinstance(body, dict) else None
+    return [r for r in _as_list(data) if isinstance(r, dict)], info if isinstance(info, dict) else {}
+
+
+def rule(field_name: str, values: Any, *, type_: str = "string", operator: str = "in") -> dict[str, Any]:
+    """One rule of a query body, e.g. rule("local_color", ["mpls"])."""
+    vals = values if isinstance(values, list) else [values]
+    return {"value": [str(v) for v in vals], "field": field_name, "type": type_, "operator": operator}
+
+
+def last_hours(hours: int, *rules: dict[str, Any], time_field: str = "entry_time") -> dict[str, Any]:
+    """The query of a statistics/alarm/event/audit read: the last `hours` hours AND every extra rule (the
+    shape recorded on 20.18.3)."""
+    first = rule(time_field, [hours], type_="date", operator="last_n_hours")
+    return {"condition": "AND", "rules": [first, *rules]}
 
 
 def _body(resp: httpx.Response) -> Any:

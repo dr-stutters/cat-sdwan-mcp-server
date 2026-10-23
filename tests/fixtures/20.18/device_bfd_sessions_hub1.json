@@ -1,0 +1,357 @@
+{
+  "header": {
+    "generatedOn": 1792743426067,
+    "viewKeys": {
+      "uniqueKey": [
+        "vdevice-dataKey"
+      ],
+      "preferenceKey": "grid-BFDSessions"
+    },
+    "columns": [
+      {
+        "title": "device.bfd.deviceDataBfdSessions.systemIp",
+        "property": "system-ip",
+        "hideable": false,
+        "width": 120,
+        "dataType": "ip"
+      },
+      {
+        "title": "device.bfd.deviceDataBfdSessions.siteId",
+        "property": "site-id",
+        "width": 100,
+        "dataType": "number"
+      },
+      {
+        "title": "device.bfd.deviceDataBfdSessions.state",
+        "property": "state",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.bfd.deviceDataBfdSessions.sourceTlocColo",
+        "property": "local-color",
+        "width": 150,
+        "dataType": "string"
+      },
+      {
+        "title": "device.bfd.deviceDataBfdSessions.remoteTlocColo",
+        "property": "color",
+        "width": 150,
+        "dataType": "string"
+      },
+      {
+        "title": "device.bfd.deviceDataBfdSessions.sourceIp",
+        "property": "src-ip",
+        "width": 100,
+        "dataType": "ip"
+      },
+      {
+        "title": "device.bfd.deviceDataBfdSessions.destinationPublicIp",
+        "property": "dst-ip",
+        "width": 150,
+        "dataType": "ip"
+      },
+      {
+        "title": "device.bfd.deviceDataBfdSessions.destinationPublicPort",
+        "property": "dst-port",
+        "width": 150,
+        "dataType": "number"
+      },
+      {
+        "title": "device.bfd.deviceDataBfdSessions.encapsulation",
+        "property": "proto",
+        "width": 150,
+        "dataType": "string"
+      },
+      {
+        "title": "device.bfd.deviceDataBfdSessions.sourcePort",
+        "property": "src-port",
+        "width": 150,
+        "dataType": "number"
+      },
+      {
+        "title": "device.bfd.deviceDataBfdSessions.detectMultipli",
+        "property": "detect-multiplier",
+        "width": 150,
+        "dataType": "string"
+      },
+      {
+        "title": "device.bfd.deviceDataBfdSessions.txInterval",
+        "property": "tx-interval",
+        "width": 150,
+        "dataType": "number"
+      },
+      {
+        "title": "device.bfd.deviceDataBfdSessions.transitions",
+        "property": "transitions",
+        "width": 150,
+        "dataType": "number"
+      },
+      {
+        "title": "device.bfd.deviceDataBfdSessions.upSince",
+        "property": "uptime-date",
+        "displayFormat": "DD MMM YYYY h:mm:ss A z",
+        "inputFormat": "unix-time",
+        "minWidth": 150,
+        "dataType": "date"
+      },
+      {
+        "title": "device.bfd.deviceDataBfdSessions.lastUpdated",
+        "property": "lastupdated",
+        "displayFormat": "DD MMM YYYY h:mm:ss A z",
+        "inputFormat": "unix-time",
+        "hideable": false,
+        "minWidth": 200,
+        "dataType": "date"
+      }
+    ],
+    "fields": [
+      {
+        "property": "vdevice-name",
+        "dataType": "string"
+      },
+      {
+        "property": "vdevice-host-name",
+        "dataType": "string"
+      },
+      {
+        "property": "system-ip",
+        "dataType": "ip"
+      },
+      {
+        "property": "site-id",
+        "dataType": "number"
+      },
+      {
+        "property": "state",
+        "dataType": "string"
+      },
+      {
+        "property": "local-color",
+        "dataType": "string"
+      },
+      {
+        "property": "color",
+        "dataType": "string"
+      },
+      {
+        "property": "src-ip",
+        "dataType": "ip"
+      },
+      {
+        "property": "dst-ip",
+        "dataType": "ip"
+      },
+      {
+        "property": "dst-port",
+        "dataType": "number"
+      },
+      {
+        "property": "proto",
+        "dataType": "string"
+      },
+      {
+        "property": "src-port",
+        "dataType": "number"
+      },
+      {
+        "property": "detect-multiplier",
+        "dataType": "string"
+      },
+      {
+        "property": "tx-interval",
+        "dataType": "number"
+      },
+      {
+        "property": "transitions",
+        "dataType": "number"
+      },
+      {
+        "property": "region",
+        "dataType": "number"
+      },
+      {
+        "property": "uptime-date",
+        "dataType": "date"
+      },
+      {
+        "property": "uptime",
+        "dataType": "uptime"
+      },
+      {
+        "property": "lastupdated",
+        "dataType": "date"
+      }
+    ]
+  },
+  "data": [
+    {
+      "src-ip": "10.60.1.13",
+      "dst-ip": "10.60.1.14",
+      "color": "mpls",
+      "vdevice-name": "10.0.0.1",
+      "src-port": 12386,
+      "system-ip": "10.0.0.2",
+      "dst-port": 12426,
+      "site-id": 200,
+      "transitions": 0,
+      "vdevice-host-name": "hub1",
+      "local-color": "mpls",
+      "uptime": "0:00:09:24",
+      "detect-multiplier": "7",
+      "vdevice-dataKey": "10.0.0.1-mpls-10.0.0.2-mpls-ipsec",
+      "proto": "ipsec",
+      "lastupdated": 1792743426051,
+      "state": "up",
+      "tx-interval": 1000,
+      "uptime-date": 1792742862053
+    },
+    {
+      "src-ip": "10.60.1.13",
+      "dst-ip": "10.60.1.15",
+      "color": "mpls",
+      "vdevice-name": "10.0.0.1",
+      "src-port": 12386,
+      "system-ip": "10.0.0.3",
+      "dst-port": 12386,
+      "site-id": 201,
+      "transitions": 0,
+      "vdevice-host-name": "hub1",
+      "local-color": "mpls",
+      "uptime": "0:00:09:04",
+      "detect-multiplier": "7",
+      "vdevice-dataKey": "10.0.0.1-mpls-10.0.0.3-mpls-ipsec",
+      "proto": "ipsec",
+      "lastupdated": 1792743426051,
+      "state": "up",
+      "tx-interval": 1000,
+      "uptime-date": 1792742882053
+    },
+    {
+      "src-ip": "10.60.1.13",
+      "dst-ip": "10.60.2.14",
+      "color": "biz-internet",
+      "vdevice-name": "10.0.0.1",
+      "src-port": 12386,
+      "system-ip": "10.0.0.2",
+      "dst-port": 12426,
+      "site-id": 200,
+      "transitions": 0,
+      "vdevice-host-name": "hub1",
+      "local-color": "mpls",
+      "uptime": "0:00:09:24",
+      "detect-multiplier": "7",
+      "vdevice-dataKey": "10.0.0.1-mpls-10.0.0.2-biz-internet-ipsec",
+      "proto": "ipsec",
+      "lastupdated": 1792743426051,
+      "state": "up",
+      "tx-interval": 1000,
+      "uptime-date": 1792742862055
+    },
+    {
+      "src-ip": "10.60.1.13",
+      "dst-ip": "10.60.2.15",
+      "color": "biz-internet",
+      "vdevice-name": "10.0.0.1",
+      "src-port": 12386,
+      "system-ip": "10.0.0.3",
+      "dst-port": 12386,
+      "site-id": 201,
+      "transitions": 0,
+      "vdevice-host-name": "hub1",
+      "local-color": "mpls",
+      "uptime": "0:00:09:04",
+      "detect-multiplier": "7",
+      "vdevice-dataKey": "10.0.0.1-mpls-10.0.0.3-biz-internet-ipsec",
+      "proto": "ipsec",
+      "lastupdated": 1792743426051,
+      "state": "up",
+      "tx-interval": 1000,
+      "uptime-date": 1792742882056
+    },
+    {
+      "src-ip": "10.60.2.13",
+      "dst-ip": "10.60.1.14",
+      "color": "mpls",
+      "vdevice-name": "10.0.0.1",
+      "src-port": 12386,
+      "system-ip": "10.0.0.2",
+      "dst-port": 12426,
+      "site-id": 200,
+      "transitions": 0,
+      "vdevice-host-name": "hub1",
+      "local-color": "biz-internet",
+      "uptime": "0:00:09:24",
+      "detect-multiplier": "7",
+      "vdevice-dataKey": "10.0.0.1-biz-internet-10.0.0.2-mpls-ipsec",
+      "proto": "ipsec",
+      "lastupdated": 1792743426051,
+      "state": "up",
+      "tx-interval": 1000,
+      "uptime-date": 1792742862056
+    },
+    {
+      "src-ip": "10.60.2.13",
+      "dst-ip": "10.60.1.15",
+      "color": "mpls",
+      "vdevice-name": "10.0.0.1",
+      "src-port": 12386,
+      "system-ip": "10.0.0.3",
+      "dst-port": 12386,
+      "site-id": 201,
+      "transitions": 0,
+      "vdevice-host-name": "hub1",
+      "local-color": "biz-internet",
+      "uptime": "0:00:09:04",
+      "detect-multiplier": "7",
+      "vdevice-dataKey": "10.0.0.1-biz-internet-10.0.0.3-mpls-ipsec",
+      "proto": "ipsec",
+      "lastupdated": 1792743426051,
+      "state": "up",
+      "tx-interval": 1000,
+      "uptime-date": 1792742882056
+    },
+    {
+      "src-ip": "10.60.2.13",
+      "dst-ip": "10.60.2.14",
+      "color": "biz-internet",
+      "vdevice-name": "10.0.0.1",
+      "src-port": 12386,
+      "system-ip": "10.0.0.2",
+      "dst-port": 12426,
+      "site-id": 200,
+      "transitions": 0,
+      "vdevice-host-name": "hub1",
+      "local-color": "biz-internet",
+      "uptime": "0:00:09:24",
+      "detect-multiplier": "7",
+      "vdevice-dataKey": "10.0.0.1-biz-internet-10.0.0.2-biz-internet-ipsec",
+      "proto": "ipsec",
+      "lastupdated": 1792743426051,
+      "state": "up",
+      "tx-interval": 1000,
+      "uptime-date": 1792742862056
+    },
+    {
+      "src-ip": "10.60.2.13",
+      "dst-ip": "10.60.2.15",
+      "color": "biz-internet",
+      "vdevice-name": "10.0.0.1",
+      "src-port": 12386,
+      "system-ip": "10.0.0.3",
+      "dst-port": 12386,
+      "site-id": 201,
+      "transitions": 0,
+      "vdevice-host-name": "hub1",
+      "local-color": "biz-internet",
+      "uptime": "0:00:09:04",
+      "detect-multiplier": "7",
+      "vdevice-dataKey": "10.0.0.1-biz-internet-10.0.0.3-biz-internet-ipsec",
+      "proto": "ipsec",
+      "lastupdated": 1792743426051,
+      "state": "up",
+      "tx-interval": 1000,
+      "uptime-date": 1792742882057
+    }
+  ]
+}
