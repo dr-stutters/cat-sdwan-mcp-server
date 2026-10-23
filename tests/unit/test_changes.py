@@ -517,6 +517,45 @@ async def test_attach_cli_template_preview_then_confirm(api: respx.MockRouter) -
     assert done["result"]["outcome"] == "success"
 
 
+async def test_attach_render_accepts_text_plain(api: respx.MockRouter) -> None:
+    """Live 20.18.3: template/device/config/config answers text/plain and refuses Accept: application/json
+    (406)."""
+    mock_inventory(api)
+    _, cfg = mock_template(api)
+    args = {"template": "mcp-test-br2", "devices": ["br2"], "variables": {"banner_motd": "lab only"}}
+    async with Client(writes()) as c:
+        prev = await run(c, "catsdwan_attach_device_template", args)
+    assert prev["status"] == "preview"
+    assert cfg.calls[0].request.headers["Accept"] == "*/*"
+
+
+async def test_deploy_blocks_when_the_manager_refuses_the_group(api: respx.MockRouter) -> None:
+    """Live 20.18.3: the CLI preview validates the group like a deploy (CFGRP0012: a missing transport
+    profile or a profile without its mandatory parcels); the deploy would fail the same way, so the preview
+    blocks."""
+    mock_inventory(api)
+    mock_group(api)
+    mock_variables(api, BR1_VARS)
+    mock_configs(api, BR1, RUNNING_BR1, None)
+    api.post(f"{GROUP}/device/{BR1}/preview").respond(
+        400,
+        json={
+            "error": {
+                "message": "Config Group validation error",
+                "code": "CFGRP0012",
+                "details": "Group validation error Reason: Missing mandatory feature profile for "
+                "config-group Deploy operation, missing profile type: transport",
+                "type": "error",
+            }
+        },
+    )
+    api.get(f"/dataservice/template/config/attached/{BR1}").respond(json={"config": PREVIEW_BR1})
+    async with Client(writes()) as c:
+        prev = await run(c, "catsdwan_deploy_config_group", {"group": "mcp-test", "devices": ["br1"]})
+    assert prev["status"] == "blocked"
+    assert any("refuses to deploy" in b and "transport" in b for b in prev["blockers"])
+
+
 async def test_attach_blocks_a_missing_value(api: respx.MockRouter) -> None:
     mock_inventory(api)
     _, cfg = mock_template(api)

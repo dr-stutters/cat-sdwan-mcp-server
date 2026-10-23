@@ -364,6 +364,13 @@ def register(reg: ToolRegistrar) -> None:
                 if new is None:
                     raise ValueError("the CLI preview returned no configuration text")
             except (UpstreamError, ValueError) as e:
+                if "CFGRP0012" in str(e) or "validation error" in str(e).lower():
+                    # the Manager validates the group for a deploy here (live, 20.18.3: a missing transport
+                    # profile or a profile without its mandatory parcels): the deploy would fail the same way
+                    msg = str(e)
+                    view["deploy_refused"] = (
+                        msg[msg.find("Reason:") + 7 :].strip()[:300] if "Reason:" in msg else msg[:300]
+                    )
                 view["cli_preview_unavailable"] = str(e)[:200]
                 source = (
                     "NOT a CLI preview: the Manager's stored intended configuration (GET "
@@ -388,6 +395,12 @@ def register(reg: ToolRegistrar) -> None:
             return view, {"cli": text_hash(new), "variables": variables.get(c)}
 
         got = await asyncio.gather(*(one(r) for r in rows))
+        blockers += [
+            f"{v.get('host') or v.get('chassis')}: the Manager refuses to deploy this group: "
+            f"{v['deploy_refused']}"
+            for v, _ in got
+            if v.get("deploy_refused")
+        ]
         plan = Plan(
             f"Deploy configuration group {gname} to {len(rows)} device(s): "
             + ", ".join(str(r.get("host") or r.get("chassis")) for r in rows),
@@ -545,6 +558,8 @@ def register(reg: ToolRegistrar) -> None:
                     await app.api.post(
                         TEMPLATE_CONFIG_PATH,
                         {"templateId": tid, "device": row, "isEdited": False, "isMasterEdited": False},
+                        # it answers text/plain; Accept: application/json gets a 406 (live, 20.18.3)
+                        headers={"Accept": "*/*"},
                     )
                 )
             except UpstreamError as e:
