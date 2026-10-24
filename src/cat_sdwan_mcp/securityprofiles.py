@@ -317,9 +317,6 @@ def aip_data(*, tls_action: str, refs: dict[str, str]) -> dict[str, Any]:
     return data
 
 
-ASSEMBLY_KEYS = ("advancedInspectionProfile", "sslDecryption")
-
-
 def policy_data(
     current: dict[str, Any],
     *,
@@ -329,12 +326,16 @@ def policy_data(
     resource_profile: str,
     url_database: bool,
 ) -> dict[str, Any]:
-    """The embedded-security policy parcel's data: this tool's assembly entries (advanced inspection, SSL
-    decryption) replaced, every other entry (ngfirewall rules from W47) and setting kept."""
+    """The embedded-security policy parcel's data: the assembly entries given here (advanced inspection, SSL
+    decryption) replaced, every other entry kept: one not given (None keeps the stored advanced inspection
+    profile or SSL decryption policy), ngfirewall rules from W47, and the settings."""
+    given = {
+        k
+        for k, v in (("advancedInspectionProfile", inspection_id), ("sslDecryption", ssl_decryption_id))
+        if v
+    }
     keep = [
-        e
-        for e in _as_list(current.get("assembly"))
-        if isinstance(e, dict) and not any(k in e for k in ASSEMBLY_KEYS)
+        e for e in _as_list(current.get("assembly")) if isinstance(e, dict) and not any(k in e for k in given)
     ]
     assembly: list[dict[str, Any]] = []
     if inspection_id:

@@ -143,6 +143,12 @@ def test_policy_data_keeps_firewall_entries() -> None:
         and data["settings"]["failureMode"]["value"] == "close"
     )
     assert data["appHosting"]["resourceProfile"]["value"] == "low"
+    # Only the SSL decryption policy given: the stored advanced inspection profile stays applied.
+    data = policy_data(current, inspection_id=None, ssl_decryption_id="ssl-1", failure_mode="open",
+                       resource_profile="low", url_database=False)  # fmt: skip
+    kinds = [next(iter(e)) for e in data["assembly"]]
+    assert kinds == ["sslDecryption", "advancedInspectionProfile", "ngfirewall"]
+    assert data["assembly"][1]["advancedInspectionProfile"]["refId"]["value"] == "old"
 
 
 async def test_ips_create_preview_and_confirm(api: respx.MockRouter) -> None:

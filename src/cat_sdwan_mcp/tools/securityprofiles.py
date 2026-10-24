@@ -197,6 +197,14 @@ async def _policy_parcels(app: SdwanApp, profile_id: str) -> list[dict[str, Any]
     return out
 
 
+def _kept(data: dict[str, Any], key: str) -> str | None:
+    """'kept (ref <id>)' when the policy keeps its stored `key` assembly entry, else None."""
+    for e in data.get("assembly") or []:
+        if isinstance(e, dict) and isinstance(e.get(key), dict):
+            return f"kept ({plain(e)[key]})"
+    return None
+
+
 def register(reg: ToolRegistrar) -> None:
     @reg.write(title="Set an SD-WAN IPS profile")
     async def catsdwan_set_ips_profile(
@@ -466,11 +474,17 @@ def register(reg: ToolRegistrar) -> None:
         ],
         inspection_profile: Annotated[
             str | None,
-            Field(description="Advanced inspection profile to apply (catsdwan_set_inspection_profile)"),
+            Field(
+                description="Advanced inspection profile to apply (catsdwan_set_inspection_profile); "
+                "default: keep the one the policy has"
+            ),
         ] = None,
         ssl_decryption: Annotated[
             str | None,
-            Field(description="SSL decryption policy (catsdwan_set_ssl_decryption): the proxy settings"),
+            Field(
+                description="SSL decryption policy (catsdwan_set_ssl_decryption): the proxy settings; "
+                "default: keep the one the policy has"
+            ),
         ] = None,
         failure_mode: Annotated[
             Literal["open", "close"],
@@ -586,8 +600,8 @@ def register(reg: ToolRegistrar) -> None:
             "profile": prof_ref,
             "action": "update" if existing else "create",
             "values": {
-                "inspection_profile": aip.get("name") if aip else None,
-                "ssl_decryption": ssl.get("name") if ssl else None,
+                "inspection_profile": aip.get("name") if aip else _kept(data, "advancedInspectionProfile"),
+                "ssl_decryption": ssl.get("name") if ssl else _kept(data, "sslDecryption"),
                 **plain({"settings": data["settings"], "appHosting": data["appHosting"]}),
                 "other_assembly_entries_kept": len(data["assembly"]) - int(bool(aip)) - int(bool(ssl)),
             },
