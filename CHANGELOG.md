@@ -6,6 +6,27 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+## [0.5.0] - 2026-10-24
+
+### Added
+- W40 (#66): `catsdwan_test_login(username)` proves an account logs in and reports the user groups the Manager
+  granted and the auth source; the password comes only from the server's settings (`CATSDWAN_PASSWORD`,
+  `CATSDWAN_TEST_LOGIN_PASSWORDS`), never a tool argument or a client prompt. Dangerous prompt
+  `catsdwan_admin_access_via_ise`: Manager admin logins from AD through ISE over RADIUS with `Viptela-Group-Name`,
+  local admin tested before and after, with the undo.
+- W41 (#67): `catsdwan_set_ise_integration` connects the Manager to ISE and pxGrid (dangerous, preview-first;
+  `action='disconnect'` is the undo; ISE login from `CATSDWAN_ISE_USERNAME` / `CATSDWAN_ISE_PASSWORD`);
+  `catsdwan_integrations` names the pxGrid state.
+- W42 (#68): `catsdwan_trustsec_path` follows an SGT across the overlay (inline tagging per tunnel, SXP, the
+  destination edge's SGACL); prompt `catsdwan_sgt_path` compares it with ISE's egress matrix.
+- W51 (#71): branch triage prompts `catsdwan_wifi_lan_or_wan`, `catsdwan_network_or_ise`, `catsdwan_site_down`
+  and `catsdwan_brownout_drill`.
+
+### Changed
+- `catsdwan_set_external_authentication` sends the spec's defaults on the first RADIUS/TACACS+/AAA write
+  (`adminAuthOrder` false keeps admin on local login); its warning says a reject never falls back to local users.
+- Peer manifests refreshed (ise 0.14.0, catc 0.15.0, cml 0.12.2).
+
 ## [0.4.0] - 2026-10-24
 
 ### Added
