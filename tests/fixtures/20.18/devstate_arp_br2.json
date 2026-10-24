@@ -1,0 +1,212 @@
+{
+  "header": {
+    "generatedOn": 1792811325710,
+    "viewKeys": {
+      "uniqueKey": [
+        "vdevice-dataKey"
+      ],
+      "preferenceKey": "grid-CEdge-Arp-v2"
+    },
+    "columns": [
+      {
+        "title": "device.arp.deviceDataCedgeArp.vrf",
+        "property": "vpn-id",
+        "hideable": false,
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.arp.deviceDataCedgeArp.address",
+        "property": "address",
+        "hideable": false,
+        "width": 100,
+        "dataType": "ip"
+      },
+      {
+        "title": "device.arp.deviceDataCedgeArp.ifName",
+        "property": "interface",
+        "hideable": false,
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.arp.deviceDataCedgeArp.type",
+        "property": "type",
+        "width": 200,
+        "dataType": "string"
+      },
+      {
+        "title": "device.arp.deviceDataCedgeArp.hardwareType",
+        "property": "hwtype",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.arp.deviceDataCedgeArp.mode",
+        "property": "mode",
+        "width": 220,
+        "dataType": "string"
+      },
+      {
+        "title": "device.arp.deviceDataCedgeArp.encryptionType",
+        "property": "enctype",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.arp.deviceDataCedgeArp.hardware",
+        "property": "hardware",
+        "width": 100,
+        "dataType": "mac"
+      },
+      {
+        "title": "device.arp.deviceDataCedgeArp.upTime",
+        "property": "time",
+        "width": 100,
+        "dataType": "string"
+      },
+      {
+        "title": "device.arp.deviceDataCedgeArp.lastUpdated",
+        "property": "lastupdated",
+        "displayFormat": "DD MMM YYYY h:mm:ss A z",
+        "inputFormat": "unix-time",
+        "minWidth": 200,
+        "dataType": "date"
+      }
+    ],
+    "fields": [
+      {
+        "property": "vdevice-name",
+        "dataType": "string"
+      },
+      {
+        "property": "vdevice-host-name",
+        "dataType": "string"
+      },
+      {
+        "property": "vpn-id",
+        "dataType": "string"
+      },
+      {
+        "property": "address",
+        "dataType": "ip"
+      },
+      {
+        "property": "interface",
+        "dataType": "string"
+      },
+      {
+        "property": "type",
+        "dataType": "string"
+      },
+      {
+        "property": "hwtype",
+        "dataType": "string"
+      },
+      {
+        "property": "mode",
+        "dataType": "string"
+      },
+      {
+        "property": "enctype",
+        "dataType": "string"
+      },
+      {
+        "property": "hardware",
+        "dataType": "mac"
+      },
+      {
+        "property": "time",
+        "dataType": "string"
+      },
+      {
+        "property": "lastupdated",
+        "dataType": "date"
+      }
+    ]
+  },
+  "data": [
+    {
+      "enctype": "ios-encaps-type-arpa",
+      "address": "10.60.1.13",
+      "vdevice-name": "10.0.0.3",
+      "vpn-id": "Default",
+      "interface": "GigabitEthernet1",
+      "type": "ios-linktype-ip",
+      "vdevice-host-name": "br2",
+      "mode": "ios-arp-mode-dynamic",
+      "hwtype": "ios-snpa-type-ieee48",
+      "vdevice-dataKey": "10.0.0.3-10.60.1.13-GigabitEthernet1-52:54:00:8e:f4:1a",
+      "lastupdated": 1792811325710,
+      "time": "2026-10-24T00:56:39.955+00:00",
+      "hardware": "52:54:00:8e:f4:1a"
+    },
+    {
+      "enctype": "ios-encaps-type-arpa",
+      "address": "10.60.1.15",
+      "vdevice-name": "10.0.0.3",
+      "vpn-id": "Default",
+      "interface": "GigabitEthernet1",
+      "type": "ios-linktype-ip",
+      "vdevice-host-name": "br2",
+      "mode": "ios-arp-mode-interface",
+      "hwtype": "ios-snpa-type-ieee48",
+      "vdevice-dataKey": "10.0.0.3-10.60.1.15-GigabitEthernet1-52:54:00:15:27:fb",
+      "lastupdated": 1792811325710,
+      "time": "2026-10-23T20:46:09.146+00:00",
+      "hardware": "52:54:00:15:27:fb"
+    },
+    {
+      "enctype": "ios-encaps-type-arpa",
+      "address": "10.60.2.254",
+      "vdevice-name": "10.0.0.3",
+      "vpn-id": "Default",
+      "interface": "GigabitEthernet2",
+      "type": "ios-linktype-ip",
+      "vdevice-host-name": "br2",
+      "mode": "ios-arp-mode-dynamic",
+      "hwtype": "ios-snpa-type-ieee48",
+      "vdevice-dataKey": "10.0.0.3-10.60.2.254-GigabitEthernet2-52:54:00:0d:24:f4",
+      "lastupdated": 1792811325710,
+      "time": "2026-10-24T03:08:40.734+00:00",
+      "hardware": "52:54:00:0d:24:f4"
+    },
+    {
+      "enctype": "ios-encaps-type-arpa",
+      "address": "10.61.201.1",
+      "vdevice-name": "10.0.0.3",
+      "vpn-id": "10",
+      "interface": "GigabitEthernet3",
+      "type": "ios-linktype-ip",
+      "vdevice-host-name": "br2",
+      "mode": "ios-arp-mode-interface",
+      "hwtype": "ios-snpa-type-ieee48",
+      "vdevice-dataKey": "10.0.0.3-10.61.201.1-GigabitEthernet3-52:54:00:f1:f6:51",
+      "lastupdated": 1792811325710,
+      "time": "2026-10-23T20:46:09.143+00:00",
+      "hardware": "52:54:00:f1:f6:51"
+    },
+    {
+      "lastupdated": 1792811325710,
+      "vdevice-dataKey": "10.0.0.3---",
+      "vpn-id": "65528",
+      "vdevice-name": "10.0.0.3",
+      "vdevice-host-name": "br2"
+    },
+    {
+      "enctype": "ios-encaps-type-arpa",
+      "address": "198.18.128.1",
+      "vdevice-name": "10.0.0.3",
+      "vpn-id": "Mgmt-intf",
+      "interface": "GigabitEthernet4",
+      "type": "ios-linktype-ip",
+      "vdevice-host-name": "br2",
+      "mode": "ios-arp-mode-dynamic",
+      "hwtype": "ios-snpa-type-ieee48",
+      "vdevice-dataKey": "10.0.0.3-198.18.128.1-GigabitEthernet4-00:50:56:00:00:01",
+      "lastupdated": 1792811325710,
+      "time": "2026-10-24T03:08:44.594+00:00",
+      "hardware": "00:50:56:00:00:01"
+    }
+  ]
+}

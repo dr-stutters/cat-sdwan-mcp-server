@@ -1,0 +1,46 @@
+{
+  "header": {
+    "generatedOn": 1792811326746,
+    "viewKeys": {
+      "uniqueKey": [
+        "vdevice-dataKey"
+      ],
+      "preferenceKey": "grid-CEdgeBridgeMac"
+    },
+    "fields": [
+      {
+        "property": "vdevice-name",
+        "dataType": "string"
+      },
+      {
+        "property": "vdevice-host-name",
+        "dataType": "string"
+      },
+      {
+        "property": "bridge-id",
+        "dataType": "string"
+      },
+      {
+        "property": "if-name",
+        "dataType": "string"
+      },
+      {
+        "property": "mac-address",
+        "dataType": "string"
+      },
+      {
+        "property": "interface",
+        "dataType": "string"
+      },
+      {
+        "property": "vlan",
+        "dataType": "string"
+      },
+      {
+        "property": "type",
+        "dataType": "string"
+      }
+    ]
+  },
+  "data": []
+}
