@@ -4,8 +4,9 @@ permissions: {contents: write, packages: write, id-token: write}   # required: c
 jobs:
   release:   # wheel + sdist (core bundled) + Python SBOM on the GitHub release; a -rc tag makes a pre-release
     uses: dr-stutters/stutters-mcp-core/.github/workflows/python-release.yml@main
-    with: {bundle-core: true}
+    with: {bundle-core: true, runner: self-hosted}
     secrets: inherit
   image:     # ghcr.io/dr-stutters/cat-sdwan-mcp-server, amd64 + arm64, cosign keyless, SBOM attestation
     needs: release
     uses: dr-stutters/stutters-mcp-core/.github/workflows/publish-image.yml@main
+    with: {runner: self-hosted}
