@@ -48,6 +48,18 @@ from cat_sdwan_mcp.access import (
 from cat_sdwan_mcp.client import SdwanApp, _as_list, is_html_response
 from cat_sdwan_mcp.tools.changes import dangerous_blockers
 
+# The first write of /admin/radius, /admin/tacacs and /admin/aaa (never set: `"data": {}`) sends the 20.18
+# spec's defaults explicitly; #40's POST /admin/tacacs with the servers alone answered 400 without detail.
+FIRST_SERVER_DEFAULTS: dict[str, dict[str, Any]] = {
+    "radius": {"timeout": 5, "retransmit": 3},
+    "tacacs": {"timeout": 5, "authentication": "pap"},
+}
+FIRST_AAA_DEFAULTS: dict[str, Any] = {
+    "authFallback": False,
+    "adminAuthOrder": False,
+    "accounting": False,
+    "auditDisable": False,
+}
 USER_COLUMNS = ["user", "groups", "status", "sessions", "description"]
 Method = Literal["local", "radius", "tacacs"]
 
@@ -225,6 +237,8 @@ def register(reg: ToolRegistrar) -> None:
             server_req = {
                 k: v for k, v in cur_srv.items() if k in ("timeout", "retransmit", "authentication")
             }
+            if not cur_srv:  # first write: the spec's defaults, sent explicitly (#40)
+                server_req = FIRST_SERVER_DEFAULTS[protocol] | server_req
             server_req[srv_key] = (
                 [server_body(protocol, s.model_dump()) for s in servers]
                 if servers is not None
@@ -240,6 +254,8 @@ def register(reg: ToolRegistrar) -> None:
             for k, v in cur_aaa.items()
             if k in ("authFallback", "adminAuthOrder", "accounting", "auditDisable")
         }
+        if not cur_aaa:  # first write: every field explicit; adminAuthOrder false keeps admin local (#40)
+            aaa_req = {**FIRST_AAA_DEFAULTS, **aaa_req}
         aaa_req["authOrder"] = list(order)
         if fallback is not None:
             aaa_req["authFallback"] = fallback
@@ -267,9 +283,10 @@ def register(reg: ToolRegistrar) -> None:
         locals_ = ", ".join(dict.fromkeys(["admin", user]))
         if order[0] != "local":
             warnings.append(
-                f"{order[0]} is tried first: local users ({locals_}) log in only when it falls back "
-                f"along the order. Create {user!r} in ISE with a netadmin role, or test with a second "
-                "session first."
+                f"{order[0]} is tried first: a RADIUS/TACACS+ reject ends the login and never falls back, "
+                f"so local users ({locals_}) log in only while that server is unreachable or times out. "
+                f"Create {user!r} in ISE with a netadmin role, or put 'local' first and test with a "
+                "second session."
             )
         method = "the" + (" new" if servers is not None else "") + f" {protocol} servers"
         plan = Plan(

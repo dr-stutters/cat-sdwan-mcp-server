@@ -21,6 +21,15 @@ SNAPSHOTS = TESTS / "snapshots" / "prompts-rw"
 KNOWN = {"cml", "ise", "fmc", "catc", "netbox", "win", "catsdwan"}
 
 SAMPLES = {
+    "catsdwan_admin_access_via_ise": {
+        "manager_ip": "192.0.2.10",
+        "ise_ip": "192.0.2.20",
+        "ad_group": "mcp-sdwan-admins",
+        "ad_user": "mcp-sdwan-op1",
+        "sdwan_group": "operator",
+        "vpn": "0",
+        "keep_enabled": "false",
+    },
     "catsdwan_branch_health": {"site": "200", "lab": "mcp-cat-sdwan"},
     "catsdwan_onboard_branch": {
         "site": "201",
@@ -86,6 +95,7 @@ async def test_prompts_declare_their_servers() -> None:
         prompts = {p.name: p for p in await c.list_prompts()}
     uses = {n: (p.meta or {}).get("uses") for n, p in prompts.items()}
     assert uses == {
+        "catsdwan_admin_access_via_ise": ["catsdwan", "ise", "win"],
         "catsdwan_branch_health": ["catsdwan", "cml", "netbox"],
         "catsdwan_onboard_branch": ["catsdwan", "netbox", "cml"],
         "catsdwan_why_is_app_slow": ["catsdwan", "ise", "fmc", "cml", "netbox"],
@@ -188,3 +198,32 @@ async def test_sgt_path_walks_edge_overlay_and_ise() -> None:
 async def test_sgt_path_without_vpn() -> None:
     text = await text_of("catsdwan_sgt_path", {"source": "alice", "destination": "10.61.100.10"})
     assert 'host="alice")' not in text and 'host="alice"' in text and "vpn=" not in text
+
+
+async def test_admin_access_via_ise_local_first_and_lockout() -> None:
+    text = await text_of("catsdwan_admin_access_via_ise", SAMPLES["catsdwan_admin_access_via_ise"])
+    assert "order=['local', 'radius']" in text and "never falls back to local" in text
+    assert 'sdwan_group="operator"' in text and 'sdwan_group="netadmin"' in text
+    assert "Viptela-Group-Name" in text and 'scope="policyset"' in text
+    assert text.index("6. Baseline") < text.index("8. External authentication") < text.index("9. Right after")
+    assert "`catsdwan_test_login`" in text and "order=['local'] (preview, approval)" in text
+    kept = await text_of(
+        "catsdwan_admin_access_via_ise", {**SAMPLES["catsdwan_admin_access_via_ise"], "keep_enabled": "true"}
+    )
+    assert "Leave it on" in kept and "ise_delete_object" not in kept and "mcp_sdwan_admins" in kept
+    # The undo removes the identity sequence step 5 created; no password is ever asked through the client.
+    undo = text[text.index("12. Switch off") :]
+    assert "mcp_sdwan_admins" in undo and "`ise_delete_policy_set`" in undo
+    assert "CATSDWAN_TEST_LOGIN_PASSWORDS" in text and "prompts the user" not in text
+
+
+async def test_admin_access_via_ise_needs_dangerous_and_valid_ips() -> None:
+    async with Client(make_server(mcp_enable_writes=True)) as c:  # type: ignore[arg-type]
+        assert "catsdwan_admin_access_via_ise" not in {p.name for p in await c.list_prompts()}
+    async with Client(all_tiers()) as c:  # type: ignore[arg-type]
+        try:
+            await c.get_prompt("catsdwan_admin_access_via_ise", {"manager_ip": "mgr", "ise_ip": "192.0.2.20"})
+        except Exception as e:  # noqa: BLE001
+            assert "IP addresses" in str(e)
+        else:
+            raise AssertionError("a host name for manager_ip must be refused")

@@ -1,0 +1,28 @@
+{
+  "header": {"generatedOn": 1792819571006},
+  "data": {
+    "server": "manager",
+    "tenancyMode": "SingleTenant",
+    "userMode": "tenant",
+    "VSessionId": "REDACTED-VSESSION",
+    "isSamlUser": false,
+    "isRbacVpnUser": false,
+    "vpns": [],
+    "CSRFToken": "REDACTED-CSRF-TOKEN",
+    "tenantId": "default",
+    "viewMode": "tenant",
+    "capabilities": [],
+    "user": "admin",
+    "description": "",
+    "locale": "en_US",
+    "roles": ["netadmin"],
+    "externalUser": false,
+    "platformVersion": "20.18.3.1",
+    "generalTemplate": true,
+    "disableFullConfigPush": false,
+    "enableServerEvents": true,
+    "cloudx": "off",
+    "reverseproxy": "off",
+    "vmanageMode": "default"
+  }
+}

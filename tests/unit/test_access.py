@@ -135,7 +135,15 @@ async def test_set_external_auth_confirm_writes_and_tests_login(api: respx.MockR
         "vpn": 0,
         "priority": 0,
     }
-    assert json.loads(aaa.calls[0].request.content) == {"authOrder": ["tacacs", "local"]}
+    # Never set before: the spec's defaults go along explicitly (#40), adminAuthOrder false keeps admin local.
+    assert sent["timeout"] == 5 and sent["authentication"] == "pap"
+    assert json.loads(aaa.calls[0].request.content) == {
+        "authOrder": ["tacacs", "local"],
+        "authFallback": False,
+        "adminAuthOrder": False,
+        "accounting": False,
+        "auditDisable": False,
+    }
     assert login.called and done["outcome"] == "done" and done["test_login"]["ok"] is True
     assert SECRET not in json.dumps(done)
 
