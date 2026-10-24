@@ -3,6 +3,53 @@
   "manifest": 1,
   "prefix": "catsdwan",
   "prompts": {
+    "catsdwan_admin_access_via_ise": {
+      "arguments": [
+        "manager_ip",
+        "ise_ip",
+        "ad_group",
+        "ad_user",
+        "sdwan_group",
+        "vpn",
+        "keep_enabled"
+      ],
+      "references": [
+        "catsdwan_get_aaa",
+        "catsdwan_list_users",
+        "ise_status",
+        "ise_list_dictionary_attributes",
+        "win_list_ad_groups",
+        "win_create_ad_group",
+        "win_get_ad_user",
+        "win_create_ad_user",
+        "win_add_group_member",
+        "ise_get_ad_join_point",
+        "ise_list_ad_groups",
+        "ise_add_ad_groups",
+        "ise_test_ad_user",
+        "ise_get_nad",
+        "ise_create_nad",
+        "ise_update_nad",
+        "ise_create_authz_profile",
+        "ise_create_policy_set",
+        "ise_set_identity_sequence",
+        "ise_create_authn_rule",
+        "ise_create_authz_rule",
+        "ise_get_policy_set",
+        "catsdwan_test_login",
+        "catsdwan_set_external_authentication",
+        "ise_get_auth_list",
+        "ise_recent_auth_failures",
+        "ise_update_policy_rule"
+      ],
+      "rendered": true,
+      "tier": "dangerous",
+      "uses": [
+        "catsdwan",
+        "ise",
+        "win"
+      ]
+    },
     "catsdwan_branch_health": {
       "arguments": [
         "site",
@@ -537,6 +584,10 @@
     "catsdwan_sync_root_cert": {
       "tier": "write",
       "title": "Sync the SD-WAN root certificate"
+    },
+    "catsdwan_test_login": {
+      "tier": "read",
+      "title": "Test a login to the SD-WAN Manager"
     },
     "catsdwan_top_applications": {
       "tier": "read",

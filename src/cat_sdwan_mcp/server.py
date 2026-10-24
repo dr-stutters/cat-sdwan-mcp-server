@@ -12,6 +12,7 @@ from cat_sdwan_mcp.config import Settings
 from cat_sdwan_mcp.spec import spec_sources
 from cat_sdwan_mcp.tools import (
     access,
+    adminlogin,
     api,
     certificates,
     changes,
@@ -105,6 +106,9 @@ SGTs across the overlay: catsdwan_trustsec_path(source_edge, destination_edge, s
 Identity: catsdwan_integrations (ISE, pxGrid, partners) and catsdwan_trustsec(device) read it;
 catsdwan_set_ise_integration(ise_host) connects ISE and pxGrid (dangerous) -> ise_approve_pxgrid_client on
 ISE -> run it again to sync the controllers; action='disconnect' undoes it.
+Admin login through ISE: catsdwan_get_aaa -> ISE NAD + authorization profile returning Viptela-Group-Name ->
+catsdwan_set_external_authentication(radius, order ['local', 'radius']) -> catsdwan_test_login (local admin
+first: a RADIUS reject never falls back to local). Prompt catsdwan_admin_access_via_ise.
 Prompts: catsdwan_branch_health(site) (a verdict per transport), catsdwan_onboard_branch(site) (NetBox ->
 onboard -> boot -> deploy -> prove), catsdwan_why_is_app_slow(host, app) (ISE, app-route SLA, FMC, CML).
 Branch triage: catsdwan_wifi_lan_or_wan(host), catsdwan_network_or_ise(site), catsdwan_site_down(site),
@@ -163,6 +167,7 @@ def create_server(
             iseintegration.register,
             manager.register,
             access.register,
+            adminlogin.register,
             upgrade.register,
             licensing.register,
             snapshot.register,

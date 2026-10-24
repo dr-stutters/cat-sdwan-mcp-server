@@ -48,6 +48,18 @@ from cat_sdwan_mcp.access import (
 from cat_sdwan_mcp.client import SdwanApp, _as_list, is_html_response
 from cat_sdwan_mcp.tools.changes import dangerous_blockers
 
+# The first write of /admin/radius, /admin/tacacs and /admin/aaa (never set: `"data": {}`) sends the 20.18
+# spec's defaults explicitly; #40's POST /admin/tacacs with the servers alone answered 400 without detail.
+FIRST_SERVER_DEFAULTS: dict[str, dict[str, Any]] = {
+    "radius": {"timeout": 5, "retransmit": 3},
+    "tacacs": {"timeout": 5, "authentication": "pap"},
+}
+FIRST_AAA_DEFAULTS: dict[str, Any] = {
+    "authFallback": False,
+    "adminAuthOrder": False,
+    "accounting": False,
+    "auditDisable": False,
+}
 USER_COLUMNS = ["user", "groups", "status", "sessions", "description"]
 Method = Literal["local", "radius", "tacacs"]
 
@@ -225,6 +237,8 @@ def register(reg: ToolRegistrar) -> None:
             server_req = {
                 k: v for k, v in cur_srv.items() if k in ("timeout", "retransmit", "authentication")
             }
+            if not cur_srv:  # first write: the spec's defaults, sent explicitly (#40)
+                server_req = FIRST_SERVER_DEFAULTS[protocol] | server_req
             server_req[srv_key] = (
                 [server_body(protocol, s.model_dump()) for s in servers]
                 if servers is not None
@@ -240,6 +254,8 @@ def register(reg: ToolRegistrar) -> None:
             for k, v in cur_aaa.items()
             if k in ("authFallback", "adminAuthOrder", "accounting", "auditDisable")
         }
+        if not cur_aaa:  # first write: every field explicit; adminAuthOrder false keeps admin local (#40)
+            aaa_req = {**FIRST_AAA_DEFAULTS, **aaa_req}
         aaa_req["authOrder"] = list(order)
         if fallback is not None:
             aaa_req["authFallback"] = fallback
