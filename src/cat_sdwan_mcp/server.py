@@ -39,6 +39,7 @@ from cat_sdwan_mcp.tools import (
     prompts,
     security,
     securityprofiles,
+    serviceinsertion,
     sgtpath,
     snapshot,
     sslproxy,
@@ -118,6 +119,11 @@ Manager, key never leaves it) -> win_sign_csr(template='SubCA') ->
 catsdwan_set_ssl_proxy_ca(signed_certificate) -> catsdwan_set_ssl_decryption +
 catsdwan_set_ssl_decryption_profile (decrypt / never-decrypt categories) ->
 catsdwan_set_inspection_profile(tls_action='decrypt') -> catsdwan_set_security_policy(ssl_decryption).
+Service insertion (FTD in a service chain): catsdwan_service_chains(vpn, device) (firewall services per VPN,
+the steering rules, what an edge knows in OMP) -> catsdwan_set_service_chain(profile, vpn, addresses) (the LAN
+VPN's FW service, tracking) -> catsdwan_set_service_steering(group, name, vpns, rules) (traffic policy setting
+service FW; dangerous) -> deploy; the prompt catsdwan_trace_through_firewall(source, destination, app) adds
+fmc_packet_tracer on the hub or branch FTD.
 Identity: catsdwan_integrations (ISE, pxGrid, partners) and catsdwan_trustsec(device) read it;
 catsdwan_set_ise_integration(ise_host) connects ISE and pxGrid (dangerous) -> ise_approve_pxgrid_client on
 ISE -> run it again to sync the controllers; action='disconnect' undoes it.
@@ -182,6 +188,7 @@ def create_server(
             utd.register,
             securityprofiles.register,
             sslproxy.register,
+            serviceinsertion.register,
             trustsec.register,
             sgtpath.register,
             iseintegration.register,
