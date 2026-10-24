@@ -12,7 +12,16 @@ from typing import Any
 import respx
 from fastmcp import Client
 
-from cat_sdwan_mcp.iseintegration import cert_check, differences, pxgrid_state, server_body, stored
+from cat_sdwan_mcp.iseintegration import (
+    cert_check,
+    connectivity_hints,
+    differences,
+    is_host,
+    keep_stored_certs,
+    pxgrid_state,
+    server_body,
+    stored,
+)
 
 from .conftest import fixture, make_server
 from .test_inventory import call, mock_inventory
@@ -130,7 +139,8 @@ async def test_pending_with_manager_approval(api: respx.MockRouter) -> None:
         done = (await tool(c, {"ise_host": ISE, "approve_on_manager": True, "confirm": prev["confirm"]}))[
             "result"
         ]
-    assert waiting["status"] == "blocked" and "nothing to change" in waiting["blockers"][0]
+    assert waiting["status"] == "blocked" and "nothing to change yet" in waiting["blockers"][0]
+    assert "ise_approve_pxgrid_client(name='vmanage-manager')" in waiting["blockers"][0]
     assert prev["preview"]["requests"][0].startswith("PUT /dataservice/ise/pxgrid/approve")
     assert approve.called and done["outcome"] == "done"
 
@@ -234,8 +244,8 @@ def _self_signed(cn: str, days: int) -> str:
 def test_cert_check_root_and_expiry() -> None:
     ok = cert_check(_self_signed("Lab Root CA", 365))
     assert ok["ok"] is True and ok["common_name"] == "Lab Root CA"
-    soon = cert_check(_self_signed("Lab Root CA", 10))
-    assert soon["ok"] is False and "expires in" in soon["problems"][0]
+    soon = cert_check(_self_signed("Lab Root CA", 10))  # still valid: a warning, not a blocker
+    assert soon["ok"] is True and "expires in" in soon["warnings"][0] and "problems" not in soon
 
 
 async def test_connect_with_root_cert_sends_it(api: respx.MockRouter) -> None:
@@ -251,3 +261,122 @@ async def test_connect_with_root_cert_sends_it(api: respx.MockRouter) -> None:
     sent = json.loads(post.calls[0].request.content)
     assert sent["iseRootCert"] == pem and sent["pxGridRootCert"] == pem
     assert sync.called  # without pxGrid the ISE settings go to the controllers at once
+
+
+# --- Wave 8 W41 fixes: FQDN, pxgrid_root_cert, cert kept on PUT, <30-day warning, TestConnectivity hints
+# The GUI capture of the ISE integration has not happened yet (no Manager session in the owner's browser), so
+# the bodies stay the 20.18.3 schema's; the REST0002 answer is the one recorded in the Wave 7 live run.
+
+ISE_FQDN = "ise.example.com"
+TEST_CONNECTIVITY = {
+    "error": {"message": "Server error", "details": "TestConnectivity failed", "code": "REST0002"}
+}
+
+
+async def test_fqdn_host_is_sent_as_given(api: respx.MockRouter) -> None:
+    mock_state(api)
+    post = api.post(CREDS).respond(json=True)
+    api.post("/dataservice/ise/credentials/vsmart/sync").respond(json={"id": "s"})
+    args = {"ise_host": ISE_FQDN, "pxgrid": False}
+    async with Client(server()) as c:
+        prev = await tool(c, args)
+        assert not any("named by IP" in w for w in prev["preview"].get("warnings", []))
+        await tool(c, {**args, "confirm": prev["confirm"]})
+    assert json.loads(post.calls[0].request.content)["iseServerIP"] == ISE_FQDN
+
+
+async def test_ip_host_warns_about_the_fqdn(api: respx.MockRouter) -> None:
+    mock_state(api)
+    async with Client(server()) as c:
+        prev = await tool(c, {"ise_host": ISE})
+    assert any("named by IP" in w for w in prev["preview"]["warnings"])
+
+
+async def test_bad_host_is_refused(api: respx.MockRouter) -> None:
+    mock_state(api)
+    async with Client(server()) as c:
+        res = await c.call_tool(
+            "catsdwan_set_ise_integration", {"ise_host": "ise host;rm"}, raise_on_error=False
+        )
+    assert res.is_error and "neither an IP address nor a host name" in res.content[0].text  # type: ignore[union-attr]
+
+
+async def test_separate_pxgrid_root_cert(api: respx.MockRouter) -> None:
+    mock_state(api)
+    post = api.post(CREDS).respond(json=True)
+    api.post("/dataservice/ise/credentials/vsmart/sync").respond(json={"id": "s"})
+    admin = _self_signed("ise.example.com", 700)  # ISE's default self-signed admin certificate
+    px = _self_signed("Lab Root CA", 3000)
+    args = {"ise_host": ISE_FQDN, "ise_root_cert": admin, "pxgrid_root_cert": px, "pxgrid": False}
+    async with Client(server()) as c:
+        prev = await tool(c, args)
+        p = prev["preview"]
+        assert p["certificate_check"]["common_name"] == "ise.example.com"
+        assert p["pxgrid_certificate_check"]["common_name"] == "Lab Root CA"
+        await tool(c, {**args, "confirm": prev["confirm"]})
+    sent = json.loads(post.calls[0].request.content)
+    assert sent["iseRootCert"] == admin and sent["pxGridRootCert"] == px
+
+
+async def test_bad_pxgrid_root_cert_blocks(api: respx.MockRouter) -> None:
+    mock_state(api)
+    async with Client(server()) as c:
+        prev = await tool(c, {"ise_host": ISE, "pxgrid_root_cert": "junk"})
+    assert prev["status"] == "blocked" and any(b.startswith("pxgrid_root_cert:") for b in prev["blockers"])
+
+
+async def test_root_cert_expiring_soon_warns_not_blocks(api: respx.MockRouter) -> None:
+    mock_state(api)
+    async with Client(server()) as c:
+        prev = await tool(c, {"ise_host": ISE, "ise_root_cert": _self_signed("Lab Root CA", 12)})
+    assert prev["status"] == "preview"
+    assert any(w.startswith("ise_root_cert: expires in") for w in prev["preview"]["warnings"])
+
+
+async def test_put_without_root_cert_keeps_the_stored_one(api: respx.MockRouter) -> None:
+    pem = _self_signed("Lab Root CA", 365)
+    stored_rec = {**SET, "iseRootCert": pem, "iseCertName": "iseCertificate", "pxGridRootCert": pem}
+    mock_state(api, creds={"data": stored_rec}, px={**PX_PENDING, "status": "ENABLED"})
+    put = api.put(CREDS).respond(json=True)
+    args = {"ise_host": ISE, "vpn": 512, "pxgrid": False, "sync_controllers": False}
+    async with Client(server()) as c:
+        prev = await tool(c, args)
+        assert prev["preview"]["certificates_kept"] == ["iseRootCert", "pxGridRootCert"]
+        await tool(c, {**args, "confirm": prev["confirm"]})
+    sent = json.loads(put.calls[0].request.content)
+    assert sent["iseRootCert"] == pem and sent["iseCertName"] == "iseCertificate"
+    assert sent["pxGridRootCert"] == pem and sent["vpn"] == "512"
+
+
+async def test_put_with_no_cert_anywhere_warns(api: respx.MockRouter) -> None:
+    mock_state(api, creds={"data": SET}, px={**PX_PENDING, "status": "ENABLED"})
+    async with Client(server()) as c:
+        prev = await tool(c, {"ise_host": ISE, "vpn": 512, "pxgrid": False, "sync_controllers": False})
+    assert any("may clear it" in w for w in prev["preview"]["warnings"])
+
+
+async def test_test_connectivity_failure_names_the_suspects(api: respx.MockRouter) -> None:
+    mock_state(api)
+    api.post(CREDS).respond(400, json=TEST_CONNECTIVITY)
+    create = api.post("/dataservice/ise/pxgrid/create").respond(json={})
+    async with Client(server()) as c:
+        prev = await tool(c, {"ise_host": ISE})
+        res = await c.call_tool(
+            "catsdwan_set_ise_integration",
+            {"ise_host": ISE, "confirm": prev["confirm"]},
+            raise_on_error=False,
+        )
+    text = res.content[0].text  # type: ignore[union-attr]
+    assert res.is_error and "REST0002: Server error: TestConnectivity failed" in text
+    assert "Nothing was stored" in text and "ise_host=<the FQDN" in text and "ERS Admin" in text
+    assert ISE_PW not in text and not create.called
+
+
+def test_host_helpers() -> None:
+    assert is_host("198.51.100.35") and is_host("2001:db8::35") and is_host("ise.example.com")
+    assert not is_host("198.51.100") and not is_host("ise host") and not is_host("-bad.example.com")
+    assert not any("FQDN" in h for h in connectivity_hints(512, "ise.example.com"))
+    assert "VPN 512" in connectivity_hints(512, "198.51.100.35")[0]
+    wanted = {"iseRootCert": "given"}
+    assert keep_stored_certs(wanted, {"iseRootCert": "old", "pxGridRootCert": "px"}) == ["pxGridRootCert"]
+    assert wanted == {"iseRootCert": "given", "pxGridRootCert": "px"}

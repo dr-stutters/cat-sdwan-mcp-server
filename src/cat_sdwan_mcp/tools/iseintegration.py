@@ -28,8 +28,12 @@ from cat_sdwan_mcp.iseintegration import (
     PXGRID_PATH,
     SYNC_PATH,
     cert_check,
+    connectivity_hints,
     differences,
     first_value,
+    is_host,
+    is_ip,
+    keep_stored_certs,
     masked,
     node_name_of,
     pxgrid_state,
@@ -63,7 +67,11 @@ def register(reg: ToolRegistrar) -> None:
             Field(description="connect (add or finish the integration) or disconnect (remove it: the undo)"),
         ] = "connect",
         ise_host: Annotated[
-            str | None, Field(description="connect: ISE's IP address (the PAN with ERS and pxGrid)")
+            str | None,
+            Field(
+                description="connect: ISE (the PAN with ERS and pxGrid): its FQDN as ISE's admin certificate "
+                "names it (the Manager must resolve it), or its IP address"
+            ),
         ] = None,
         vpn: Annotated[
             int, Field(ge=0, le=65530, description="VPN the Manager reaches ISE in (0 or 512)")
@@ -81,7 +89,16 @@ def register(reg: ToolRegistrar) -> None:
         ise_root_cert: Annotated[
             str | None,
             Field(
-                description="PEM of the root CA that signed ISE's admin and pxGrid certificates (optional)"
+                description="PEM of the root CA that signed ISE's admin certificate (443/9060; ISE's own "
+                "self-signed one when it has no CA-signed one), optional; also used for pxGrid unless "
+                "pxgrid_root_cert is given. Omitted on an update: the stored one is kept"
+            ),
+        ] = None,
+        pxgrid_root_cert: Annotated[
+            str | None,
+            Field(
+                description="PEM of the root CA that signed ISE's pxGrid certificate (8910), when it differs "
+                "from ise_root_cert (ise_pxgrid_status shows the chain); default ise_root_cert"
             ),
         ] = None,
         pxgrid: Annotated[bool, Field(description="Also create and activate the pxGrid client")] = True,
@@ -109,7 +126,10 @@ def register(reg: ToolRegistrar) -> None:
         subscriptions (SGTs, users and groups), then the pxGrid client: created and activated on ISE, where it
         waits as pending for ise_approve_pxgrid_client (or approve_on_manager=true), then the settings sent to
         the controllers. Run it again after the approval: the preview plans only what is still missing (the
-        controller sync). The preview shows the ISE host, VPN, subscriptions, the root-certificate check, the
+        controller sync). Name ISE by the FQDN its admin certificate carries where the Manager resolves it
+        (an IP draws a warning: 'TestConnectivity failed' errors list the suspects); give pxgrid_root_cert
+        when pxGrid's chain differs from the admin one; an update keeps the stored root certificates. The
+        preview shows the ISE host, VPN, subscriptions, the root-certificate checks, the
         pxGrid client name ISE will list, every request in order, and what the controllers and edges receive
         (identity lists for identity-based policy). action='disconnect' removes both on the Manager and the
         pxGrid client on ISE. Dangerous tier: identity-based policy on every edge depends on it. Check with
@@ -167,7 +187,9 @@ def register(reg: ToolRegistrar) -> None:
                 register_secret(secret)
             host = (ise_host or "").strip() or str(creds.get("iseServerIP") or "")
             if not host:
-                raise InvalidRequest("ise_host is required to connect (ISE's IP address).")
+                raise InvalidRequest("ise_host is required to connect (ISE's FQDN or IP address).")
+            if not is_host(host):
+                raise InvalidRequest(f"ise_host {host!r} is neither an IP address nor a host name.")
             if subscribe_users and not (ad_domain and join_point):
                 raise InvalidRequest(
                     "subscribe_users needs ad_domain and join_point (ise_get_ad_join_point)."
@@ -182,13 +204,22 @@ def register(reg: ToolRegistrar) -> None:
                 ad_domain=ad_domain,
                 join_point=join_point,
                 root_cert=ise_root_cert,
-                pxgrid_root_cert=None,
+                pxgrid_root_cert=pxgrid_root_cert,
             )
             diff = differences(creds, wanted) if creds else {}
             if not creds:
                 write = "POST"
-            elif diff or rotate_password or ise_root_cert:
+            elif diff or rotate_password or ise_root_cert or pxgrid_root_cert:
                 write = "PUT"
+            if write == "PUT":
+                kept = keep_stored_certs(wanted, creds)
+                if kept:
+                    details["certificates_kept"] = kept
+                elif not (ise_root_cert or pxgrid_root_cert):
+                    warnings.append(
+                        "the stored record shows no root certificate and none is given: if the Manager holds "
+                        "one, a PUT without it may clear it (give ise_root_cert again to be sure)"
+                    )
             if write and not (user and secret):
                 blockers.append(
                     "no ISE login configured on this server: set CATSDWAN_ISE_USERNAME and "
@@ -230,16 +261,36 @@ def register(reg: ToolRegistrar) -> None:
                     )
             elif sync_controllers and write and controllers:
                 steps.append(f"POST {SYNC_PATH} (send the ISE settings to {', '.join(controllers)})")
-            if not steps:
+            if not steps and pxgrid and state == "pending":
+                blockers.append(
+                    f"nothing to change yet: the pxGrid client {node!r} is pending on ISE. Approve it with "
+                    f"ise_approve_pxgrid_client(name={node!r}) (or approve_on_manager=true), then run this "
+                    "tool again: it plans the controller sync"
+                )
+            elif not steps:
                 blockers.append(
                     "nothing to change: ISE is configured as asked"
                     + (f" and pxGrid is {state}" if pxgrid else "")
                     + " (catsdwan_integrations shows it)"
                 )
-            cert = cert_check(ise_root_cert)
-            if cert.get("given") and not cert.get("ok"):
-                blockers += [f"ise_root_cert: {p}" for p in cert.get("problems", [cert.get("problem")]) if p]
-            details["certificate_check"] = cert
+            for arg, pem, key in (
+                ("ise_root_cert", ise_root_cert, "certificate_check"),
+                ("pxgrid_root_cert", pxgrid_root_cert, "pxgrid_certificate_check"),
+            ):
+                if key == "pxgrid_certificate_check" and not pem:
+                    continue
+                cert = cert_check(pem)
+                if cert.get("given") and not cert.get("ok"):
+                    blockers += [f"{arg}: {p}" for p in cert.get("problems", [cert.get("problem")]) if p]
+                warnings += [f"{arg}: {w}" for w in cert.get("warnings", [])]
+                details[key] = cert
+            if ise_root_cert and not pxgrid_root_cert:
+                details["pxgrid_certificate_check"] = "same as ise_root_cert"
+            if is_ip(host):
+                warnings.append(
+                    f"ISE is named by IP ({host}): if the Manager answers 'TestConnectivity failed', try the "
+                    "FQDN ISE's admin certificate names (the Manager must resolve it)"
+                )
             details["after"] = {
                 "ise": masked(wanted),
                 "pxgrid": {"node": node, "state": state_after} if pxgrid else "not requested",
@@ -300,12 +351,21 @@ def register(reg: ToolRegistrar) -> None:
                 out["check"] = "catsdwan_integrations (not configured); ise_list_pxgrid_clients (client gone)"
                 return out
             assert wanted is not None
-            if write == "POST":
-                await app.api.post(CREDENTIALS_PATH, wanted)
-                done.append(f"ISE {wanted['iseServerIP']} added")
-            elif write == "PUT":
-                await app.api.put(CREDENTIALS_PATH, wanted)
-                done.append(f"ISE {wanted['iseServerIP']} updated")
+            if write in ("POST", "PUT"):
+                try:
+                    if write == "POST":
+                        await app.api.post(CREDENTIALS_PATH, wanted)
+                    else:
+                        await app.api.put(CREDENTIALS_PATH, wanted)
+                except UpstreamError as e:
+                    if "testconnectivity" not in str(e).lower().replace(" ", ""):
+                        raise
+                    hints = connectivity_hints(vpn, str(wanted["iseServerIP"]))
+                    raise type(e)(
+                        f"{e} Nothing was stored. Check, in this order: " + "; ".join(hints) + ".",
+                        e.status_code,
+                    ) from e
+                done.append(f"ISE {wanted['iseServerIP']} {'added' if write == 'POST' else 'updated'}")
             now = state
             if pxgrid and now in ("none", "created"):
                 created = await app.api.post(PXGRID_CREATE_PATH, {"nodeName": node})
@@ -357,6 +417,7 @@ def register(reg: ToolRegistrar) -> None:
                 "ad_domain": ad_domain,
                 "join_point": join_point,
                 "ise_root_cert": ise_root_cert,
+                "pxgrid_root_cert": pxgrid_root_cert,
                 "pxgrid": pxgrid,
                 "pxgrid_node_name": pxgrid_node_name,
                 "approve_on_manager": approve_on_manager,
