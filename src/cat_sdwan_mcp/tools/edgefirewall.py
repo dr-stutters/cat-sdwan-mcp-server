@@ -460,6 +460,11 @@ def register(reg: ToolRegistrar) -> None:
             sec = by_name([{**p, "id": p["id"]} for p in all_sec], profile)
             if sec is None:
                 new_profile_name = profile.strip()
+                if sec_in_group:
+                    blockers.append(
+                        f"{gname} already has embedded-security profile {sec_in_group[0]['name']} (one per "
+                        f"group): leave `profile` out to use it, not a new profile {new_profile_name}"
+                    )
             elif all(p["id"] != sec["id"] for p in sec_in_group):
                 attach = True
                 if sec_in_group:

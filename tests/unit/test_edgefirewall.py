@@ -336,6 +336,11 @@ async def test_firewall_blockers(api: respx.MockRouter) -> None:
     assert "used twice" in text and "IPv4 prefix" in text
     none = await preview("catsdwan_set_firewall_policy", {"group": "mcp-w8-pg", "name": "x"})
     assert any("zone pair" in b for b in none["blockers"])
+    second = await preview(
+        "catsdwan_set_firewall_policy",
+        {"group": "mcp-w8-pg", "name": "br-fw", "zone_pairs": PAIRS, "profile": "another-security"},
+    )
+    assert any("one per group" in b for b in second["blockers"])
 
 
 async def test_firewall_remove(api: respx.MockRouter) -> None:
