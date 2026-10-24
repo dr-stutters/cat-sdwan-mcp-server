@@ -6,6 +6,8 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+## [0.3.1] - 2026-10-24
+
 ### Fixed
 - Following a Manager action that lists no device rows (the root certificate force-sync) no longer waits
   until the task timeout: a summary of `done` ends the wait, outcome `done`.
