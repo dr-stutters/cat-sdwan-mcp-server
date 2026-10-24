@@ -18,6 +18,7 @@ from cat_sdwan_mcp.tools import (
     changes,
     confighistory,
     configuration,
+    containment,
     control,
     dataplane,
     devicestate,
@@ -124,6 +125,13 @@ the steering rules, what an edge knows in OMP) -> catsdwan_set_service_chain(pro
 VPN's FW service, tracking) -> catsdwan_set_service_steering(group, name, vpns, rules) (traffic policy setting
 service FW; dangerous) -> deploy; the prompt catsdwan_trace_through_firewall(source, destination, app) adds
 fmc_packet_tracer on the hub or branch FTD.
+Contain a host (prompt catsdwan_contain_host; dangerous): once per policy group, the standing baseline
+catsdwan_set_containment_baseline(group, quarantine_sgt, remediation) (mcp-quarantine-* rules on the
+Quarantine SGT + per-device edge slots; deploy it in a change window). Main path: ISE ise_apply_anc assigns
+the Quarantine SGT, no Manager change per incident (needs TrustSec on the edges:
+catsdwan_containment_status(trustsec=true)). No ISE session: catsdwan_contain_at_edge(ip, reason, hours)
+writes one slot variable of the host's edge and deploys that edge only (record mcp-contain-<ip> with the
+expiry) -> catsdwan_release_at_edge(ip).
 Identity: catsdwan_integrations (ISE, pxGrid, partners) and catsdwan_trustsec(device) read it;
 catsdwan_set_ise_integration(ise_host) connects ISE and pxGrid (dangerous) -> ise_approve_pxgrid_client on
 ISE -> run it again to sync the controllers; action='disconnect' undoes it.
@@ -176,6 +184,7 @@ def create_server(
             features.register,
             policygroups.register,
             edgefirewall.register,
+            containment.register,
             health.register,
             prompts.register,
             triage.register,
