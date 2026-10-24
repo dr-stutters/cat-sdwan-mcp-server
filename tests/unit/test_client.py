@@ -10,13 +10,15 @@ import httpx
 import pytest
 import respx
 
-from cat_sdwan_mcp._core import AuthError, UpstreamError, ValidationFailed
+from cat_sdwan_mcp._core import AuthError, NotFound, UpstreamError, ValidationFailed
 from cat_sdwan_mcp.client import (
     BULK_PER_MINUTE,
     REQUESTS_PER_MINUTE,
     SdwanApp,
+    body_excerpt,
     controller_summary,
     edge_summary,
+    is_generic_detail,
     sdwan_error_detail,
 )
 
@@ -277,6 +279,135 @@ async def test_error_body_is_readable(api: respx.MockRouter) -> None:
     with pytest.raises(ValidationFailed, match="TEMP0001: Template exists: name br2 in use"):
         await app.api.post("/dataservice/template/device", {})
     await app.aclose()
+
+
+# --- #100: the Manager's own words on every 4xx ----------------------------------------------------------
+# The /admin/radius 400 of the Wave 7 live run surfaced as a bare "Bad Request". The bodies below are
+# hand-built (no capture of that body exists yet): the shapes a 4xx can take, secrets as the tool sends them.
+
+RADIUS = "/dataservice/admin/radius"
+RADIUS_BODY = {
+    "timeout": 5,
+    "retransmit": 3,
+    "server": [{"address": "198.51.100.35", "secretKey": "s3cret-proof", "vpn": 512, "tag": "mcpw8ise"}],
+}
+
+
+async def test_400_with_empty_body_says_no_reason(api: respx.MockRouter) -> None:
+    api.post(RADIUS).respond(400)
+    app = SdwanApp(make_settings())
+    with pytest.raises(ValidationFailed) as e:
+        await app.api.post(RADIUS, RADIUS_BODY)
+    await app.aclose()
+    assert "(400) on POST /dataservice/admin/radius: Bad Request" in str(e.value)
+    assert "gave no reason" in str(e.value)
+    assert e.value.status_code == 400
+
+
+async def test_400_servlet_body_is_quoted_with_secrets_masked(api: respx.MockRouter) -> None:
+    # A servlet-style error body: "error" is only the reason phrase, the useful part is elsewhere, and the
+    # Manager echoes the rejected request (secretKey included).
+    body = {
+        "timestamp": 1761300000000,
+        "status": 400,
+        "error": "Bad Request",
+        "message": "",
+        "exception": "JsonMappingException",
+        "trace": 'Cannot deserialize "vpn" ... {"secretKey":"s3cret-proof"}',
+        "request": RADIUS_BODY,
+        "path": RADIUS,
+    }
+    api.post(RADIUS).respond(400, json=body)
+    app = SdwanApp(make_settings())
+    with pytest.raises(ValidationFailed) as e:
+        await app.api.post(RADIUS, RADIUS_BODY)
+    await app.aclose()
+    text = str(e.value)
+    assert "the Manager's whole answer:" in text
+    assert "JsonMappingException" in text and "Cannot deserialize" in text
+    assert "s3cret-proof" not in text
+
+
+async def test_400_standard_body_unchanged(api: respx.MockRouter) -> None:
+    api.post("/dataservice/ise/credentials").respond(
+        400,
+        json={"error": {"message": "Server error", "details": "TestConnectivity failed", "code": "REST0002"}},
+    )
+    app = SdwanApp(make_settings())
+    with pytest.raises(ValidationFailed) as e:
+        await app.api.post("/dataservice/ise/credentials", {})
+    await app.aclose()
+    assert str(e.value).endswith("REST0002: Server error: TestConnectivity failed")
+
+
+async def test_400_message_echoing_a_secret_is_masked(api: respx.MockRouter) -> None:
+    api.post(RADIUS).respond(
+        400,
+        json={
+            "error": {
+                "message": "Invalid RADIUS server",
+                "details": "secretKey=s3cret-proof is not valid for address 198.51.100.35",
+                "code": "USER0019",
+            }
+        },
+    )
+    app = SdwanApp(make_settings())
+    with pytest.raises(ValidationFailed) as e:
+        await app.api.post(RADIUS, RADIUS_BODY)
+    await app.aclose()
+    text = str(e.value)
+    assert "USER0019: Invalid RADIUS server: secretKey=********" in text
+    assert "s3cret-proof" not in text
+
+
+async def test_400_text_body_is_quoted(api: respx.MockRouter) -> None:
+    api.put(RADIUS).respond(400, text="Invalid value for vpn: '512'")
+    app = SdwanApp(make_settings())
+    with pytest.raises(ValidationFailed, match="Invalid value for vpn"):
+        await app.api.put(RADIUS, RADIUS_BODY)
+    await app.aclose()
+
+
+async def test_404_carries_the_managers_message(api: respx.MockRouter) -> None:
+    api.get("/dataservice/template/device/object/t-9").respond(
+        404, json={"error": {"message": "Template not found", "details": "t-9", "code": "TEMP0002"}}
+    )
+    app = SdwanApp(make_settings())
+    with pytest.raises(NotFound) as e:
+        await app.api.get("/dataservice/template/device/object/t-9")
+    await app.aclose()
+    assert "Not found (404)" in str(e.value)
+    assert "The Manager said: TEMP0002: Template not found: t-9" in str(e.value)
+
+
+async def test_403_keeps_core_text_and_adds_the_body(api: respx.MockRouter) -> None:
+    api.post("/dataservice/admin/aaa").respond(403, json={"status": 403, "error": "Forbidden", "path": "/x"})
+    app = SdwanApp(make_settings())
+    with pytest.raises(AuthError) as e:
+        await app.api.post("/dataservice/admin/aaa", {})
+    await app.aclose()
+    assert "denied access (403)" in str(e.value)
+    assert '"path":"/x"' in str(e.value)
+
+
+async def test_5xx_untouched(api: respx.MockRouter) -> None:
+    api.post(RADIUS).respond(500, json={"error": "Internal Server Error"})
+    app = SdwanApp(make_settings(retries=0))
+    with pytest.raises(UpstreamError) as e:
+        await app.api.post(RADIUS, RADIUS_BODY)
+    await app.aclose()
+    assert "whole answer" not in str(e.value)
+
+
+def test_body_excerpt_and_generic() -> None:
+    assert is_generic_detail(None) and is_generic_detail("Bad Request") and is_generic_detail("Not Found.")
+    assert not is_generic_detail("TestConnectivity failed")
+    assert body_excerpt(None) == "" and body_excerpt({}) == ""
+    assert body_excerpt("<html><body>x</body></html>") == "an HTML page"
+    long = body_excerpt({"x": "y" * 1000})
+    assert long.endswith("...(truncated)") and len(long) < 330
+    assert "********" in body_excerpt({"server": [{"secretKey": "k1", "password": "p1"}]})
+    assert "k1" not in body_excerpt({"server": [{"secretKey": "k1"}]})
 
 
 async def test_rate_limit_buckets(api: respx.MockRouter) -> None:

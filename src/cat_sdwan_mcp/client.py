@@ -17,23 +17,31 @@ request), so a re-login replaces it everywhere at once and LoginTokenAuth's sing
 Throttling: the Manager allows 100 requests/s per user (since 20.6), bulk APIs (/dataservice/data/device/...)
 48/min and two concurrent bulk statistics requests; a throttled Manager slows every GUI user too.
 
-Errors: the Manager's {"error": {"message", "details", "code"}} body becomes the error text.
+Errors: the Manager's {"error": {"message", "details", "code"}} body becomes the error text. On every 4xx
+the Manager's own words reach the error: when its body has no such message (an empty body, a bare "Bad
+Request", a servlet-style {"status", "error", "path"} body), a short excerpt of the body is quoted instead,
+and 404/429 errors carry the Manager's message too. Secret fields (secretKey, password...) are masked in what
+is quoted (#100).
 """
 
 from __future__ import annotations
 
+import json
 import logging
+import re
 from collections import Counter
 from dataclasses import dataclass, field
+from http import HTTPStatus
 from typing import Any
 from urllib.parse import quote
 
 import httpx
 
 from cat_sdwan_mcp._core import AuthError, UpstreamError
+from cat_sdwan_mcp._core.audit import redact_value
 from cat_sdwan_mcp._core.http import ApiClient, LoginTokenAuth, NoPaging, RateLimiter, Token
 from cat_sdwan_mcp._core.http.client import Expect, default_error_detail
-from cat_sdwan_mcp._core.secrets import register_secret
+from cat_sdwan_mcp._core.secrets import MASK, register_secret, scrub_text
 from cat_sdwan_mcp.config import Settings
 
 log = logging.getLogger(__name__)
@@ -78,6 +86,27 @@ def looks_html(text: str) -> bool:
     return head.startswith(("<!doctype html", "<html")) or "<html" in head
 
 
+# A secret the Manager may echo back inside a message ("secretKey": "...", secretKey=...): scrub_text's word
+# list doesn't take secretKey/sharedSecret, so these are masked here too.
+_ECHOED_SECRET = re.compile(
+    r"(?P<key>(?:secretKey|secret_key|sharedSecret|sharedKey|pxGridPassword)\\?[\"']?\s*[:=]\s*"
+    r"\\?[\"']?)(?P<value>[^\\\"',;}\s]+)",
+    re.IGNORECASE,
+)
+# HTTP reason phrases ("Bad Request", "Not Found"...): a detail that is only one of these says nothing.
+_GENERIC = {s.phrase.lower() for s in HTTPStatus} | {"no detail", "error", "failed", "bad request"}
+BODY_EXCERPT_CHARS = 300
+
+
+def mask_echoed(text: str) -> str:
+    """Credential shapes and echoed secret fields masked."""
+
+    def masked(m: re.Match[str]) -> str:
+        return f"{m.group('key')}{MASK}"
+
+    return _ECHOED_SECRET.sub(masked, scrub_text(text))
+
+
 def sdwan_error_detail(body: Any) -> str | None:
     """Readable message from the Manager's {"error": {"message", "details", "code"}} body (code first, the
     details only when they add something); an HTML page (the login page) is named, not quoted."""
@@ -90,8 +119,29 @@ def sdwan_error_detail(body: Any) -> str | None:
         if details and details != message:
             parts.append(details)
         if parts:
-            return ": ".join(parts)[:500]
-    return default_error_detail(body)
+            return mask_echoed(": ".join(parts)[:500])
+    detail = default_error_detail(body)
+    return mask_echoed(detail) if detail else None
+
+
+def is_generic_detail(detail: str | None) -> bool:
+    """True when the detail is empty or only an HTTP reason phrase (the Manager gave no reason)."""
+    return not detail or detail.strip().strip(".").lower() in _GENERIC
+
+
+def body_excerpt(body: Any) -> str:
+    """The error body as an error text quotes it: secret-named fields masked, credential shapes scrubbed, at
+    most BODY_EXCERPT_CHARS characters; "" for an empty body."""
+    if body is None or body == "" or body == {} or body == []:
+        return ""
+    if isinstance(body, str):
+        if looks_html(body):
+            return "an HTML page"
+        text = " ".join(body.split())
+    else:
+        text = json.dumps(redact_value(body), separators=(",", ":"), default=str)
+    text = mask_echoed(text)
+    return text if len(text) <= BODY_EXCERPT_CHARS else text[:BODY_EXCERPT_CHARS] + "...(truncated)"
 
 
 def _rel(base_url: str, path: str) -> str:
@@ -141,6 +191,30 @@ class SdwanApiClient(ApiClient):
             return await super()._send(method, path, **kwargs)
         async with limiter.slot():
             return await super()._send(method, path, **kwargs)
+
+    def error_from_response(self, resp: httpx.Response) -> UpstreamError:
+        """Core's mapping, plus the Manager's own words on every 4xx (#100): a body with no message of its
+        own (an empty body, a bare reason phrase, a servlet-style {status, error, path}) is quoted in short,
+        secrets masked, and 404/429 errors (whose core text leaves the body out) carry the message."""
+        err = super().error_from_response(resp)
+        code = resp.status_code
+        if not 400 <= code < 500:
+            return err
+        body = _body(resp)
+        detail = sdwan_error_detail(body)
+        text = str(err)
+        if is_generic_detail(detail):
+            excerpt = body_excerpt(body)
+            note = (
+                f" (the Manager's whole answer: {excerpt})"
+                if excerpt and excerpt.lower() != (detail or "").lower()
+                else " (the Manager gave no reason: its answer had no error message)"
+            )
+        elif detail and detail not in text:
+            note = f" The Manager said: {detail}"
+        else:
+            return err
+        return type(err)(text + note, err.status_code)
 
     async def request(self, method: str, path: str, *, expect: Expect = "json", **kw: Any) -> Any:
         if expect != "json" or not _rel(self.base_url, path).startswith("dataservice/"):
