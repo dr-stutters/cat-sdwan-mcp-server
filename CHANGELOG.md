@@ -6,6 +6,18 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+## [0.6.1] - 2026-10-24
+
+### Added
+- W45 (#72): WAN-edge containment in two paths (owner: "akin to a real-world deployment"). Main path, ISE quarantine:
+  `catsdwan_set_containment_baseline` stores standing rules that drop a Quarantine SGT (user tags 3..65519 only) except to
+  remediation prefixes, at the top of every zone-pair NGFW policy in a policy group, plus inert per-device edge slots;
+  per incident ISE ANC + CoA does the work (no Manager push). Fallback for a host without an ISE session:
+  `catsdwan_contain_at_edge` / `catsdwan_release_at_edge` write one device variable on the host's own edge only and deploy
+  that edge (time-boxed record, audit entries, stops if any other device's variables moved). `catsdwan_containment_status`
+  shows the baseline, TrustSec readiness per edge and expired holds. Prompt `catsdwan_contain_host` (ISE ANC first). All
+  writes dangerous and preview-first.
+
 ## [0.6.0] - 2026-10-24
 
 ### Added
