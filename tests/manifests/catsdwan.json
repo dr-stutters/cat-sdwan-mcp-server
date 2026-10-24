@@ -606,6 +606,18 @@
       "tier": "write",
       "title": "Set an SD-WAN embedded security policy (UTD)"
     },
+    "catsdwan_set_ssl_decryption": {
+      "tier": "write",
+      "title": "Set an SD-WAN SSL decryption policy"
+    },
+    "catsdwan_set_ssl_decryption_profile": {
+      "tier": "write",
+      "title": "Set an SD-WAN SSL decryption profile"
+    },
+    "catsdwan_set_ssl_proxy_ca": {
+      "tier": "write",
+      "title": "Set the SD-WAN SSL proxy CA"
+    },
     "catsdwan_set_url_filtering_profile": {
       "tier": "write",
       "title": "Set an SD-WAN URL-filtering profile"
@@ -625,6 +637,10 @@
     "catsdwan_snapshot": {
       "tier": "read",
       "title": "Catalyst SD-WAN Manager snapshot"
+    },
+    "catsdwan_ssl_proxy_ca": {
+      "tier": "read",
+      "title": "SD-WAN SSL proxy CA"
     },
     "catsdwan_status": {
       "tier": "read",
