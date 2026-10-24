@@ -284,9 +284,10 @@ def field_names(dschema: dict[str, Any], prefix: str = "", depth: int = 3) -> li
 
 
 def _branches(fs: dict[str, Any]) -> dict[str, dict[str, Any]]:
-    """{optionType: branch} of a leaf schema's oneOf."""
+    """{optionType: branch} of a leaf schema's oneOf; a leaf with one kind only may carry its optionType
+    directly, without a oneOf (20.18's traffic-policy schema: trafficCategory, appList.refId)."""
     out: dict[str, dict[str, Any]] = {}
-    for br in _as_list(fs.get("oneOf")):
+    for br in _as_list(fs.get("oneOf")) or [fs]:
         props = br.get("properties") if isinstance(br, dict) else None
         opt = props.get("optionType") if isinstance(props, dict) else None
         for kind in _as_list(opt.get("enum") if isinstance(opt, dict) else None):
@@ -365,14 +366,23 @@ def default_leaf(fs: dict[str, Any]) -> dict[str, Any] | None:
     return None
 
 
+# The option kinds a feature-profile leaf can take (the Manager's schemas: every leaf is a oneOf of these).
+OPTION_TYPES = ("global", "variable", "default")
+
+
 def check_leaf(fs: dict[str, Any], leaf: Any) -> str | None:
     """Why a leaf breaks its field schema, or None. A plain (non-option) field is checked as a value."""
     if not is_leaf(leaf):
         return check_value(fs, leaf)
     kind = str(leaf.get("optionType"))
+    if kind not in OPTION_TYPES:
+        return f"optionType {kind!r} is not one of {', '.join(OPTION_TYPES)}"
     branches = _branches(fs)
     if not branches:
-        return None  # not an option field in this schema (left to the Manager)
+        if fs.get("type") or fs.get("enum") or fs.get("properties"):
+            # A plain field (the CLI parcel's config, a list of objects): an option leaf doesn't belong.
+            return f"is a plain {fs.get('type') or 'value'} field: give the value itself, not an optionType"
+        return None  # nothing in this schema to check against (left to the Manager)
     br = branches.get(kind)
     if br is None:
         return f"can't be {kind} (allowed: {', '.join(branches)})"
@@ -521,6 +531,36 @@ def cli_replace(text: str, edits: dict[str, str]) -> tuple[str, list[str]]:
             continue
         out = out.replace(old, new)
     return out, problems
+
+
+def cli_undo(text: str, edits: dict[str, str]) -> dict[str, str] | None:
+    """The cli_replace that turns the edited text back into `text`, or None when there is none that applies
+    cleanly. An edit's new text alone is no anchor when it is empty (a deletion: {'': ...} can't be applied,
+    #120) or not unique, so the undo's search text grows by whole neighbouring lines until it occurs exactly
+    once."""
+    cur, steps = text, []
+    for old, new in edits.items():
+        idx = cur.find(old)
+        if idx < 0 or cur.count(old) != 1:
+            return None
+        after = cur.replace(old, new)
+        steps.append((idx, len(old), len(new), cur, after))
+        cur = after
+    final = cur
+    undo: dict[str, str] = {}
+    for idx, n_old, n_new, before, after in reversed(steps):
+        lo, hi = idx, idx + n_new
+        while not (after[lo:hi] and final.count(after[lo:hi]) == 1):
+            if lo > 0:
+                lo = after.rfind("\n", 0, lo - 1) + 1  # the start of the line before
+            elif hi < len(after):
+                nl = after.find("\n", hi + 1)
+                hi = len(after) if nl < 0 else nl + 1  # the end of the line after
+            else:
+                return None
+        undo[after[lo:hi]] = before[lo : hi - n_new + n_old]
+    back, problems = cli_replace(final, undo)
+    return undo if not problems and back == text else None
 
 
 def cli_diff(old: str, new: str) -> list[str]:

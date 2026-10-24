@@ -125,8 +125,9 @@ def register(reg: ToolRegistrar) -> None:
         """Prove that an account can log in to the Manager (a local user, or a RADIUS/TACACS+ user through
         ISE once external authentication is on) and report what the Manager granted: one login with that
         account, separate from this server's session, then two reads as that user. Returns pass/fail with
-        the Manager's reason, the user groups (roles: netadmin, operator, ...), whether the Manager treats
-        it as an external (remote) user, and whether a local account of that name exists. The password
+        the Manager's reason, the user groups (roles: netadmin, operator, ...), whether a local account of
+        that name exists, and the auth source that follows from it (local account, or external:
+        RADIUS/TACACS+). The password
         never is a tool argument and is never asked for through the client (the MCP spec forbids form
         elicitation of passwords): CATSDWAN_PASSWORD for the API user, CATSDWAN_TEST_LOGIN_PASSWORDS
         (user=password per line, _FILE / _REF) on the server for any other account; without one the tool
@@ -184,6 +185,11 @@ def register(reg: ToolRegistrar) -> None:
             out["local_account"] = f"unknown: {str(e)[:150]}"
         out["roles"] = granted.get("roles") or "not reported"
         out["auth_source"] = auth_source(granted, local_users, user)
+        if granted.get("external_user") is False and out.get("local_account") is False:
+            out["external_user_note"] = (
+                "the Manager reports externalUser false for RADIUS/TACACS+ users too (20.18.3.1): "
+                "auth_source follows the local user list (no local account of this name)"
+            )
         out["granted"] = granted or "the Manager gave no session details"
         if granted.get("user") and granted["user"] != user:
             out["note"] = f"the Manager names the session's user {granted['user']!r}"
@@ -202,7 +208,11 @@ def register(reg: ToolRegistrar) -> None:
     )
     def catsdwan_admin_access_via_ise(
         manager_ip: Annotated[
-            str, Field(description="The IP the Manager sends RADIUS from (its VPN 0 or VPN 512 interface)")
+            str,
+            Field(
+                description="The IP the Manager sends RADIUS from (its VPN 0 or VPN 512 interface); ISE "
+                "matches it as Network Access:Device IP Address"
+            ),
         ],
         ise_ip: Annotated[str, Field(description="The ISE node (PSN) address the Manager sends RADIUS to")],
         ad_group: Annotated[
@@ -249,8 +259,9 @@ def register(reg: ToolRegistrar) -> None:
     order=['local'] on a multi-tenant provider (the /admin/radius entry may stay, unused; remove it
     only if the user asks: {tool_ref("catsdwan_api_call")} DELETE /dataservice/admin/radius,
     preview-first). Then {tool_ref("catsdwan_test_login")} with the local admin once more and the
-    step 1 read again (no RADIUS in the order). Template mcp-manager-system-aaa stays attached to the
-    Manager; detaching it (back to CLI mode, configuration kept) is the user's call. Then the
+    step 1 read again (no radius block; radius may stay in the factory order 'local radius tacacs',
+    skipped with no server). Template mcp-manager-system-aaa stays attached to the Manager;
+    detaching it (back to CLI mode, configuration kept) is the user's call. Then the
     ISE undo, each preview-first: policy set {pset} ({tool_ref("ise_delete_policy_set")}), the identity
     source sequence mcp_sdwan_admins from step 5 (no delete tool: {tool_ref("ise_api_call")} DELETE
     /ers/config/idstoresequence/<id>), profiles {profile} and {other_profile}
@@ -313,6 +324,11 @@ Lockout rules (read them to the user before step 8):
    Authorization ({tool_ref("ise_create_authz_rule")}): rule mcp-sdwan-ad with condition
    "<join point>:ExternalGroups equals <domain>/<path>/{group}" (the exact value from step 2) ->
    {profile}. The set's Default rule stays DenyAccess. Review it with {tool_ref("ise_get_policy_set")}.
+   Match on "Network Access:Device IP Address" (the packet's source, {ip}), never on
+   "Radius:NAS-IP-Address": the Manager's Access-Request carries no NAS-IP-Address (recorded on
+   20.18.3.1: only User-Name, Service-Type=Login, User-Password, Message-Authenticator), so a NAS-IP
+   condition never matches and the login lands in ISE's Default policy set (PermitAccess, no
+   Viptela-Group-Name: the Manager grants role basic).
 6. Baseline: {tool_ref("catsdwan_test_login")} with the local admin the user names (blank username =
    this server's API user): it must pass with roles [netadmin] and auth_source "local account".
 7. A second break-glass check: ask the user to keep a GUI session to the Manager open as a local
@@ -336,14 +352,17 @@ Lockout rules (read them to the user before step 8):
 10. The AD login: {tool_ref("catsdwan_test_login")} with username="{user}" (its password from
     CATSDWAN_TEST_LOGIN_PASSWORDS; if it isn't there the tool names the setting: stop and ask the
     operator): it must pass with roles [{role}],
-    external_user true and local_account false. ISE: {tool_ref("ise_get_policy_set")} "{pset}": the
-    set, the authentication rule and mcp-sdwan-ad must have counted the login (a hit on Default means
-    the group or condition didn't match: {tool_ref("ise_test_ad_user")});
-    {tool_ref("ise_get_auth_list")} for the NAD or user when ISE logged a session. A failed login:
-    {tool_ref("ise_recent_auth_failures")} for the reason (no reject logged and the login timed out:
-    {tool_ref("ise_nad_radius_stats")} for the Manager's NAD, then the VPN {vpn} path to ISE); passed
-    but roles not [{role}]: the profile didn't return Viptela-Group-Name, or the group doesn't exist
-    on the Manager (step 1).
+    local_account false and auth_source external (granted.external_user may still say false: the
+    Manager reports that for RADIUS users too). The roles this tool reports are the proof: these
+    logins carry no MAC, so ISE keeps no MnT session for them ({tool_ref("ise_get_auth_list")} is
+    usually empty) and the policy-set hit counters of {tool_ref("ise_get_policy_set")} "{pset}" can
+    lag by minutes. A failed login: {tool_ref("ise_recent_auth_failures")} for the reason (no reject
+    logged and the login timed out: {tool_ref("ise_nad_radius_stats")} for the Manager's NAD, then
+    the VPN {vpn} path to ISE). Passed with role basic: the login hit ISE's Default policy set, so
+    "{pset}"'s condition didn't match (Network Access:Device IP Address must be the address the
+    Manager sends from, step 5). Passed with another role: the authorization rule or the group
+    didn't match ({tool_ref("ise_test_ad_user")}), the profile didn't return Viptela-Group-Name, or
+    the group doesn't exist on the Manager (step 1).
     Then the group change: point mcp-sdwan-ad at {other_profile} with
     {tool_ref("ise_update_policy_rule")} (preview, approval), test {user} again: roles [{other}].
     Point the rule back at {profile} the same way.

@@ -4,7 +4,8 @@ A test login is one login with the caller's credentials, separate from this serv
 (POST /jwt/login, 20.18.1 and later; the token simply expires, there is no logout) or the form login
 (POST /j_security_check, logged out again at once). With the new session the tool reads what the Manager
 granted, as that user: GET /dataservice/client/server (recorded on 20.18.3.1: `user`, `roles` such as
-["netadmin"], `externalUser` false for a local account, `isSamlUser`, plus the session's CSRFToken and
+["netadmin"], `externalUser` false for a local account (and, on 20.18.3.1, for a RADIUS user too: the
+local user list decides), `isSamlUser`, plus the session's CSRFToken and
 VSessionId, which are dropped) and GET /dataservice/admin/user/userAuthType.
 
 Passwords come from the server's settings (CATSDWAN_PASSWORD for the API user, CATSDWAN_TEST_LOGIN_PASSWORDS
@@ -74,15 +75,17 @@ def granted_view(body: Any) -> dict[str, Any]:
     return out
 
 
+EXTERNAL = "external (RADIUS/TACACS+ server, e.g. ISE)"
+
+
 def auth_source(granted: dict[str, Any], local_users: set[str] | None, user: str) -> str:
-    """Local account or a remote server (RADIUS/TACACS+, e.g. ISE), from externalUser and the user list."""
-    ext = granted.get("external_user")
-    if ext is True:
-        return "remote (RADIUS or TACACS+ server, e.g. ISE)"
+    """Local account or an external server (RADIUS/TACACS+, e.g. ISE). The local user list decides: the
+    Manager's externalUser flag is not reliable (20.18.3.1 answered externalUser false for an AD user who
+    logged in through ISE RADIUS and has no local account, #120)."""
+    if granted.get("external_user") is True:
+        return EXTERNAL
     if granted.get("saml_user") is True:
         return "SAML (single sign-on)"
-    if ext is False:
-        return "local account"
     if local_users is not None:
-        return "local account" if user in local_users else "remote (not a local user)"
-    return "unknown"
+        return "local account" if user in local_users else EXTERNAL
+    return "unknown (the local user list could not be read)"

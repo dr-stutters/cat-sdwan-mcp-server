@@ -308,7 +308,10 @@ def register(reg: ToolRegistrar) -> None:
             if ise_root_cert and not pxgrid_root_cert:
                 details["pxgrid_certificate_check"] = "same as ise_root_cert"
             details["after"] = {
-                "ise": masked(wanted),
+                # No credentials write planned (a re-run for pxGrid only): the stored record stays as it is,
+                # so show that, not the body a write would send (its certificates are "" when none is given).
+                "ise": masked(wanted) if write else masked(creds),
+                "ise_record": f"{write} {CREDENTIALS_PATH}" if write else "unchanged (no credentials write)",
                 "pxgrid": {"node": node, "state": state_after} if pxgrid else "not requested",
             }
             if vpn not in (0, 512):

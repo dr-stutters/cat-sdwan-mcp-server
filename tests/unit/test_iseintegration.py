@@ -453,3 +453,21 @@ def test_host_helpers() -> None:
     assert wanted["iseRootCert"] == "given" and wanted["pxGridRootCert"] == "px"
     assert wanted["pxGridCertName"] == "pxgrid-root-ca.pem"
     assert username_problem("mcpw8capture") is None and username_problem("ers_admin")
+
+
+async def test_pxgrid_only_rerun_shows_the_stored_record(api: respx.MockRouter) -> None:
+    # #120: a re-run that plans only pxGrid create/activate showed after.ise's certificates as "" (the
+    # body a write would send) although no credentials write was planned.
+    pem = _self_signed("Lab Root CA", 365)
+    stored_rec = {**SET, "iseRootCert": pem, "iseCertName": "iseCertificate", "pxGridRootCert": pem}
+    mock_state(api, creds={"data": stored_rec}, px={})
+    async with Client(server()) as c:
+        prev = await tool(c, {"ise_host": ISE})
+    p = prev["preview"]
+    assert prev["status"] == "preview", prev.get("blockers")
+    assert not any(r.startswith(("PUT", "POST")) and CREDS + " " in r for r in p["requests"])
+    assert p["after"]["ise_record"] == "unchanged (no credentials write)"
+    assert p["after"]["ise"]["iseRootCert"]["common_name"] == "Lab Root CA"
+    assert p["after"]["ise"]["pxGridRootCert"]["common_name"] == "Lab Root CA"
+    assert p["after"]["ise"]["password"] == "********"
+    assert p["after"]["pxgrid"]["state"] == "pending"
