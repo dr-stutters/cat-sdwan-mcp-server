@@ -5,7 +5,7 @@ MCP_* settings for this server come from stutters-mcp-core.
 
 from typing import ClassVar, Literal
 
-from pydantic import Field
+from pydantic import Field, SecretStr
 
 from cat_sdwan_mcp._core import BaseServerSettings, server_config
 
@@ -36,3 +36,9 @@ class Settings(BaseServerSettings):
     # CATSDWAN_PROTECTED_SITES: comma-separated site ids (or site names). A configuration change touching a
     # device at one of these sites is dangerous tier, like a hub.
     protected_sites: str | None = None
+
+    # CATSDWAN_ISE_USERNAME / CATSDWAN_ISE_PASSWORD (or CATSDWAN_ISE_PASSWORD_FILE / _REF): the ISE ERS admin
+    # login catsdwan_set_ise_integration hands to the Manager (Administration > Integration Management). Kept
+    # in the server's settings so the password never travels in a tool argument.
+    ise_username: str | None = None
+    ise_password: SecretStr | None = None
