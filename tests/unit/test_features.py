@@ -459,3 +459,84 @@ async def test_policy_hub_is_dangerous_and_template_device_refused(api: respx.Mo
     api.get(f"/dataservice/template/config/running/{BR2}").respond(json={"config": "hostname br2\n"})
     br2 = await write("catsdwan_deploy_policy_group", {"group": "mcp-policy", "devices": ["br2"]})
     assert any("device template" in b for b in br2["blockers"])
+
+
+def test_check_leaf_refuses_unknown_option_types_and_leaves_on_plain_fields() -> None:
+    # #120: {"optionType": "__raw__", "value": null} passed the schema check ("sent as given").
+    baud = ft.field_schema(schema(), "consoleBaudRate")
+    assert baud is not None
+    assert "is not one of global, variable, default" in str(
+        ft.check_leaf(baud, {"optionType": "__raw__", "value": None})
+    )
+    plain = {"type": "string"}  # the CLI parcel's config
+    assert "plain string field" in str(ft.check_leaf(plain, {"optionType": "global", "value": "x"}))
+    assert "is not one of" in str(ft.check_leaf(plain, {"optionType": "__raw__", "value": None}))
+    assert ft.check_leaf(plain, "hostname a") is None
+    # 20.18's traffic-policy schema: a one-kind leaf carries optionType without a oneOf.
+    direct = {
+        "type": "object",
+        "properties": {
+            "optionType": {"type": "string", "enum": ["global"]},
+            "value": {"type": "string", "enum": ["optimize", "all"]},
+        },
+        "required": ["optionType", "value"],
+    }
+    assert ft.check_leaf(direct, {"optionType": "global", "value": "all"}) is None
+    assert "not one of" in str(ft.check_leaf(direct, {"optionType": "global", "value": "x"}))
+    assert "can't be variable" in str(ft.check_leaf(direct, {"optionType": "variable", "value": "{{v}}"}))
+    assert ft.to_leaf(direct, ft.MISSING, "all") == {"optionType": "global", "value": "all"}
+
+
+def test_cli_undo_anchors_a_deletion_on_its_neighbour() -> None:
+    text = "hostname a\nservice FW vrf 10\nbanner motd #x#\n"
+    edits = {"service FW vrf 10\n": ""}
+    new, _ = ft.cli_replace(text, edits)
+    undo = ft.cli_undo(text, edits)
+    assert undo == {"hostname a\n": "hostname a\nservice FW vrf 10\n"}
+    assert ft.cli_replace(new, undo) == (text, [])
+    # deleting the first line: anchored on the line after it
+    first = {"hostname a\n": ""}
+    undo = ft.cli_undo(text, first)
+    assert undo is not None and "" not in undo
+    assert ft.cli_replace(ft.cli_replace(text, first)[0], undo)[0] == text
+    # a new text that isn't unique grows until it is
+    dup = "a\n x\nb\n y\n"
+    edits = {" y\n": " x\n"}
+    undo = ft.cli_undo(dup, edits)
+    assert undo is not None and ft.cli_replace(ft.cli_replace(dup, edits)[0], undo)[0] == dup
+    # the plain swap stays a plain swap; several edits undo in reverse
+    assert ft.cli_undo(text, {"banner motd #x#": "banner motd #y#"}) == {"banner motd #y#": "banner motd #x#"}
+    two = {"hostname a": "hostname b", "banner motd #x#\n": ""}
+    undo = ft.cli_undo(text, two)
+    assert undo is not None and ft.cli_replace(ft.cli_replace(text, two)[0], undo)[0] == text
+    assert ft.cli_undo(text, {"nothere": "y"}) is None
+
+
+async def test_set_cli_deletion_undo_is_appliable(api: respx.MockRouter) -> None:
+    mock_inventory(api)
+    mock_profiles(api)
+    text = ft.parcel_view(fixture("v1_feature_profile_cli_config_parcel"))["cli"]
+    line = "\nbanner motd #{{banner_motd}}#"  # the last line
+    assert text.count(line) == 1
+    out = await write(
+        "catsdwan_set_feature_parcel",
+        {"profile": "mcp-test", "parcel": "config", "cli_replace": {line: ""}},
+    )
+    undo = out["preview"]["undo"]["cli_replace"]
+    assert "" not in undo and len(undo) == 1
+    deleted = text.replace(line, "")
+    assert ft.cli_replace(deleted, undo) == (text, [])
+
+
+async def test_set_refuses_a_raw_option_type(api: respx.MockRouter) -> None:
+    mock_inventory(api)
+    mock_profiles(api)
+    out = await write(
+        "catsdwan_set_feature_parcel",
+        {
+            "profile": "mcp-test-system",
+            "parcel": "basic",
+            "values": {"consoleBaudRate": {"optionType": "__raw__", "value": None}},
+        },
+    )
+    assert out["status"] == "blocked" and "is not one of global" in out["blockers"][0]

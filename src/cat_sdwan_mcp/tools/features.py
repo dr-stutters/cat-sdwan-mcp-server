@@ -51,6 +51,7 @@ from cat_sdwan_mcp.features import (
     as_dict,
     check_leaf,
     cli_diff,
+    cli_undo,
     data_schema,
     default_leaf,
     defaults_for,
@@ -346,7 +347,8 @@ def register(reg: ToolRegistrar) -> None:
             Field(
                 description="Field path -> new value, e.g. {'consoleBaudRate': '115200', 'clock.timezone': "
                 "'Europe/London'}. A value is global; '{{name}}' makes it a device variable; null resets it "
-                "to the schema's default; {'optionType': ..., 'value': ...} is sent as given. Paths as "
+                "to the schema's default; {'optionType': global|variable|default, 'value': ...} is taken as "
+                "given and schema-checked like any value. Paths as "
                 "catsdwan_get_feature_parcel(fields=true) lists them; list items as name[0].field"
             ),
         ] = None,
@@ -492,7 +494,13 @@ def register(reg: ToolRegistrar) -> None:
         if creating:
             details["undo"] = "delete the new parcel (catsdwan_api_call DELETE on its path, preview-first)"
         elif cli_lines and not changes:
-            details["undo"] = {"cli_replace": {new: old for old, new in edits.items()}}
+            text = get_at(current_data, "config")
+            undo = cli_undo(text, edits) if isinstance(text, str) else None
+            details["undo"] = (
+                {"cli_replace": undo}
+                if undo
+                else "re-PUT the parcel read before the change (catsdwan_get_feature_parcel shows its CLI)"
+            )
         else:
             details["undo"] = (
                 "catsdwan_set_feature_parcel with the 'from' values (null for a field that was default), or "

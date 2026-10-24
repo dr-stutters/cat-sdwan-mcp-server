@@ -99,7 +99,7 @@ async def test_login_radius_user_from_the_settings(
     assert asked == []
     assert out["login"] == "passed" and out["password_from"] == "CATSDWAN_TEST_LOGIN_PASSWORDS"
     assert out["roles"] == ["operator"] and out["local_account"] is False
-    assert out["auth_source"].startswith("remote")
+    assert out["auth_source"].startswith("external")
     assert AD_PASSWORD not in json.dumps(out) and TEST_TOKEN not in json.dumps(out)
     assert AD_PASSWORD not in caplog.text and TEST_TOKEN not in caplog.text
 
@@ -175,8 +175,23 @@ def test_parse_passwords_and_views() -> None:
         "tenant": "default",
         "user_mode": "tenant",
     }
-    assert auth_source({}, {"admin"}, "ad-op1") == "remote (not a local user)"
-    assert auth_source({}, None, "x") == "unknown"
+    assert auth_source({}, {"admin"}, "ad-op1").startswith("external (RADIUS/TACACS+")
+    assert auth_source({}, None, "x").startswith("unknown")
+    # #120: 20.18.3.1 answered externalUser false for an ISE RADIUS user: the local user list decides
+    assert auth_source({"external_user": False}, {"admin"}, "mcp-alice").startswith("external")
+    assert auth_source({"external_user": False}, {"admin"}, "admin") == "local account"
+    assert auth_source({"external_user": False}, None, "admin").startswith("unknown")
+
+
+async def test_login_radius_user_reported_as_not_external(api: respx.MockRouter) -> None:
+    # #120, live on 20.18.3.1: mcp-alice (AD via ISE RADIUS, no local account) came back externalUser false
+    jwt_router(api, {"mcp-alice": {}})
+    alice = {"data": {**RADIUS_USER["data"], "user": "mcp-alice", "externalUser": False}}
+    as_user(api, alice)
+    async with Client(make_server(test_login_passwords=f"mcp-alice={AD_PASSWORD}")) as c:
+        out = (await c.call_tool("catsdwan_test_login", {"username": "mcp-alice"})).structured_content
+    assert out["local_account"] is False and out["auth_source"].startswith("external (RADIUS/TACACS+")
+    assert out["granted"]["external_user"] is False and "externalUser false" in out["external_user_note"]
 
 
 async def test_set_external_auth_first_radius_write_sends_defaults(api: respx.MockRouter) -> None:

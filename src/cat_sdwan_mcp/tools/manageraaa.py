@@ -14,6 +14,7 @@ from cat_sdwan_mcp.configuration import DEVICE_TEMPLATES_PATH, path
 from cat_sdwan_mcp.inventory import load_inventory
 from cat_sdwan_mcp.manageraaa import (
     CLI_TEMPLATE_PATH,
+    DEFAULT_SYSTEM_ORDER,
     MASK,
     TEMPLATE_NAME,
     TEMPLATE_PATH,
@@ -37,6 +38,16 @@ PROVIDER_ONLY = (
     "the API answers a bare 400), so the Manager's own logins are set in its system AAA configuration instead"
 )
 DEFAULT_TIMEOUT, DEFAULT_RETRANSMIT = 5, 3
+
+
+def undo_order(before: dict[str, Any]) -> list[str]:
+    """The order that puts `before` back and passes this tool's own lockout guard (#120): the old order, but
+    without radius when no RADIUS server was configured, unless it is the Manager's factory order (which the
+    guard allows)."""
+    order = list(before["order"])
+    if before["radius"] == "not configured" and "radius" in order and order != DEFAULT_SYSTEM_ORDER:
+        order = [m for m in order if m != "radius"]
+    return order
 
 
 async def system_path(
@@ -105,6 +116,14 @@ async def system_path(
     if "tacacs" in order and protocol == "radius":
         blockers = [b for b in blockers if "no TACACS server" not in b]
         warnings.append("tacacs stays in the order with no TACACS+ server: it is skipped")
+    if not has_radius and list(order) == DEFAULT_SYSTEM_ORDER:
+        # The Manager's factory order (what the running configuration has before RADIUS is set, and so the
+        # preview's own undo, #120): radius without a server is skipped, local stays first.
+        blockers = [b for b in blockers if "no RADIUS server" not in b]
+        warnings.append(
+            "radius stays in the Manager's factory order with no RADIUS server: it is skipped, local "
+            "accounts log in as before"
+        )
     new: str | None = None
     if running is not None and not any("system" in b and "block" in b for b in blockers):
         try:
@@ -186,7 +205,7 @@ async def system_path(
             "tier_reasons": reasons,
             **({"warnings": warnings} if warnings else {}),
             "undo": (
-                f"catsdwan_set_external_authentication(protocol='radius', order={before['order']!r}, "
+                f"catsdwan_set_external_authentication(protocol='radius', order={undo_order(before)!r}, "
                 + ("servers=[])" if before["radius"] == "not configured" else "servers=<the old servers>)")
             ),
             "then": f"catsdwan_test_login with the local admin, then with an ISE user; {host} stays on "

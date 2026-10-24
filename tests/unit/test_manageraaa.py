@@ -239,3 +239,34 @@ def test_tenancy_and_provider_radius_body() -> None:
     }  # fmt: skip
     vpn0 = server_body("radius", {"address": ISE, "secret": "k"})
     assert "vpn" not in vpn0 and "vpnIpSubnet" not in vpn0 and "tag" not in vpn0 and vpn0["sourceVpn"] == 0
+
+
+async def test_single_tenant_undo_of_a_first_radius_change_is_not_blocked(api: respx.MockRouter) -> None:
+    # #120: the first change's undo (order local radius tacacs, servers=[]) was refused by the tool's own
+    # rule "uses radius, but no RADIUS server is configured". The factory order is allowed back.
+    mock_single(api)
+    with_radius = edit_system_aaa(
+        running_text(),
+        order=["local", "radius"],
+        fallback=True,
+        servers=[{"address": ISE, "secret": SECRET, "vpn": 512}],
+        timeout=5,
+        retransmit=3,
+    )
+    api.get(RUNNING).respond(json={**fixture("template_config_running_manager"), "config": with_radius})
+    async with Client(server()) as c:
+        prev = await tool(c, {"protocol": "radius", "order": ["local", "radius", "tacacs"], "servers": []})
+        bare = await tool(c, {"protocol": "radius", "order": ["local", "radius"], "servers": []})
+    assert prev["status"] == "preview", prev.get("blockers")
+    assert prev["preview"]["after"]["radius"] == "removed"
+    assert any("factory order" in w for w in prev["preview"]["warnings"])
+    assert bare["status"] == "blocked" and any("no RADIUS server" in b for b in bare["blockers"])
+
+
+def test_undo_order_passes_the_guard() -> None:
+    from cat_sdwan_mcp.tools.manageraaa import undo_order
+
+    factory = {"order": ["local", "radius", "tacacs"], "radius": "not configured"}
+    assert undo_order(factory) == ["local", "radius", "tacacs"]
+    assert undo_order({"order": ["local", "radius"], "radius": "not configured"}) == ["local"]
+    assert undo_order({"order": ["local", "radius"], "radius": {"servers": [{}]}}) == ["local", "radius"]
