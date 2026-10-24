@@ -23,6 +23,7 @@ from cat_sdwan_mcp.tools import (
     devops,
     events,
     features,
+    findhost,
     health,
     history,
     inventory,
@@ -49,7 +50,8 @@ catsdwan_list_controllers (control plane and certificate expiry). "What is unhea
 catsdwan_device_health(health='poor'). Control plane: "why didn't this edge join?" ->
 catsdwan_control_connections(device) (failed attempts with the reason in plain words; no device = the
 fabric); "why can't branch A reach B?" -> catsdwan_omp_routes(A, vpn, prefix) then catsdwan_list_tlocs and
-catsdwan_omp_peers. Data plane: "which tunnels are down?" -> catsdwan_bfd_sessions(state='not_up');
+catsdwan_omp_peers. "Where is this host?" -> catsdwan_find_host(ip or mac) (edge, site, VPN, interface,
+the OMP route advertising it). Data plane: "which tunnels are down?" -> catsdwan_bfd_sessions(state='not_up');
 "which are lossy / is the voice SLA met?" -> catsdwan_app_route_stats(sla_class=...) (statistics every
 10 minutes; source='realtime' for now), catsdwan_list_sla_classes, catsdwan_tunnel_stats. The Manager's own
 health model: catsdwan_site_health(health='not_good'), catsdwan_tunnel_health(site, history=true: when was it
@@ -138,6 +140,7 @@ def create_server(
             certificates.register,
             troubleshooting.register,
             devicestate.register,
+            findhost.register,
             pathinsight.register,
             security.register,
             trustsec.register,
