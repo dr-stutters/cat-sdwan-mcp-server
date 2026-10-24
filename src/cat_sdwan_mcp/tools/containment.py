@@ -58,9 +58,11 @@ from cat_sdwan_mcp.containment import (
     host_zones,
     is_expired,
     is_slot_object,
+    moved_devices,
     ngfw_put_body,
     parse_record,
     pick_slot,
+    quarantine_tag_problems,
     record_description,
     record_ip,
     record_name,
@@ -530,6 +532,7 @@ def register(reg: ToolRegistrar) -> None:
             blockers += [f"quarantine_sgt: {p}" for p in problems]
             if len(entries) != 1:
                 blockers.append("quarantine_sgt: give exactly one SGT")
+            blockers += [f"quarantine_sgt: {p}" for p in quarantine_tag_problems(entries)]
             body = object_body(
                 QUARANTINE_OBJECT, "mcp containment baseline: the Quarantine SGT ISE ANC assigns", entries
             )
@@ -712,7 +715,17 @@ def register(reg: ToolRegistrar) -> None:
             side_effects=[
                 "Stores on the Manager only. Once deployed, every edge of the group(s) above drops traffic "
                 "from and to the Quarantine SGT (except remediation) and from and to its own slot hosts; "
-                "with every slot inert, the slot rules match only unused documentation addresses."
+                "with every slot inert, the slot rules match only unused documentation addresses.",
+                *(
+                    [
+                        f"{SLOT_OBJECT} lives in the shared policy-object profile: in EVERY policy group, "
+                        "devices whose mcp_contain_* variables are unset get the inert values (values only, "
+                        "nothing deployed; checked after each write, stopped if another device's values "
+                        "moved); the result's inert_slots_filled names them."
+                    ]
+                    if edge_slots
+                    else []
+                ),
             ]
             if not remove
             else ["Once deployed, the edges no longer drop quarantined hosts."],
@@ -788,6 +801,17 @@ def register(reg: ToolRegistrar) -> None:
                             path(PG_VARIABLES_PATH, id=str(grp.get("id"))), _variables_body(grp, todo)
                         )
                         filled[str(grp.get("name"))] = [str(_host(chassis_rows.get(c)) or c) for c in todo]
+                        # Safety stop: the devices not in this PUT must keep their values.
+                        rest = {c: _by_name(v) for c, v in cur.items() if c not in todo}
+                        moved = moved_devices(rest, await pg_variables(app, str(grp.get("id"))))
+                        if moved:
+                            names = ", ".join(str(_host(chassis_rows.get(c)) or c) for c in moved)
+                            raise UpstreamError(
+                                f"after the inert-value write in policy group {grp.get('name')}, the "
+                                f"variables of {names} differ from before: stopped (nothing is deployed by "
+                                f"this tool). Filled so far: {filled}. Check with catsdwan_get_config_group "
+                                "/ catsdwan_containment_status before any deploy"
+                            )
                 out["inert_slots_filled"] = filled
                 if problems:
                     out["warnings"] = problems
@@ -1071,7 +1095,7 @@ def register(reg: ToolRegistrar) -> None:
             )
             # Safety stop: the write must not have changed any other device's variables.
             after = await pg_variables(app, str(group["id"]))
-            moved = [c for c, before in others_before.items() if _by_name(after.get(c, [])) != before]
+            moved = moved_devices(others_before, after)
             if moved:
                 names = ", ".join(str(_host(_by_chassis(inv).get(c)) or c) for c in moved)
                 raise UpstreamError(
@@ -1170,12 +1194,14 @@ def register(reg: ToolRegistrar) -> None:
             rec_obj = None
 
         holders: list[dict[str, Any]] = []
+        group_vars: dict[str, dict[str, list[dict[str, Any]]]] = {}
         for grp in groups:
             try:
                 cur = await pg_variables(app, str(grp.get("id")))
             except UpstreamError as e:
                 warnings.append(f"policy group {grp.get('name')}: variables not read: {str(e)[:150]}")
                 continue
+            group_vars[str(grp.get("id"))] = cur
             for ch, variables in cur.items():
                 slots = [s for s, h in contained_at(slot_values(variables)).items() if h == addr]
                 if slots:
@@ -1202,6 +1228,14 @@ def register(reg: ToolRegistrar) -> None:
                 blockers += more
                 warnings += busy_warn
         names = [str(_host(h["row"]) or h["chassis"]) for h in holders]
+        # Every other device of the holders' groups, as read now: the safety stop compares against it.
+        held_in: dict[str, set[str]] = {}
+        for h in holders:
+            held_in.setdefault(str(h["group"].get("id")), set()).add(h["chassis"])
+        others_before = {
+            gid: {c: _by_name(v) for c, v in group_vars.get(gid, {}).items() if c not in held}
+            for gid, held in held_in.items()
+        }
         requests = [
             f"PUT {PG_VARIABLES_PATH} ({n}: {', '.join(h['slots'])} back to inert)"
             for n, h in zip(names, holders, strict=True)
@@ -1239,6 +1273,7 @@ def register(reg: ToolRegistrar) -> None:
             else [],
             fingerprint={
                 "variables": {h["chassis"]: h["before"] for h in holders},
+                "other_devices_variables": others_before,
                 "record": (rec_obj or {}).get("raw", {}).get("lastUpdatedOn") if rec_obj else None,
             },
             blockers=blockers if contained else [],
@@ -1255,6 +1290,15 @@ def register(reg: ToolRegistrar) -> None:
                     path(PG_VARIABLES_PATH, id=gid),
                     _variables_body(hs[0]["group"], {h["chassis"]: h["after"] for h in hs}),
                 )
+                # Safety stop: the write must not have changed any other device's variables.
+                moved = moved_devices(others_before.get(gid, {}), await pg_variables(app, gid))
+                if moved:
+                    who = ", ".join(str(_host(chassis_rows.get(c)) or c) for c in moved)
+                    raise UpstreamError(
+                        f"after the variables write in policy group {hs[0]['group'].get('name')}, the "
+                        f"variables of {who} differ from before: nothing was deployed and the record is "
+                        "kept. Check with catsdwan_containment_status"
+                    )
             if rec_obj and po_id:
                 await app.api.delete(
                     path(

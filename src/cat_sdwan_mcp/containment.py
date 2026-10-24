@@ -94,6 +94,38 @@ def record_ip(name: Any) -> str | None:
     return m.group(1).replace("-", ".") if m else None
 
 
+# Reserved TrustSec tags (Cisco TrustSec / ISE): 0 Unknown (every untagged packet: on an edge without TrustSec
+# that is ALL traffic), 2 TrustSec_Devices (the network devices themselves), 65520-65535 reserved (65535
+# ANY). So a quarantine tag must be a user SGT, 3..65519 (ISE's default Quarantined_Systems is 255).
+QUARANTINE_TAG_MIN, QUARANTINE_TAG_MAX = 3, 65519
+
+
+def quarantine_tag_problems(entries: list[dict[str, Any]]) -> list[str]:
+    """Why an SGT list entry can't be the Quarantine SGT: a drop rule on a reserved tag drops far more than
+    the quarantined hosts (tag 0 is every untagged flow, fleet-wide)."""
+    out = []
+    for e in entries:
+        tag = str(leaf_value(e.get("tag")) or "").strip()
+        if not tag.isdigit() or not QUARANTINE_TAG_MIN <= int(tag) <= QUARANTINE_TAG_MAX:
+            out.append(
+                f"SGT tag {tag or '?'} can't be the Quarantine SGT: tags 0 (Unknown: every untagged flow, "
+                "all traffic where TrustSec is not running), 2 (TrustSec_Devices: the network devices) and "
+                f"65520-65535 (reserved, ANY) would drop far more than quarantined hosts; use a user SGT "
+                f"{QUARANTINE_TAG_MIN}-{QUARANTINE_TAG_MAX} (ISE's Quarantined_Systems is 255)"
+            )
+    return out
+
+
+def moved_devices(before: dict[str, dict[str, Any]], after: dict[str, list[dict[str, Any]]]) -> list[str]:
+    """Chassis whose variables ({name: value} before) differ in `after` (a device-variables read): the
+    safety stop after a policy-group variables PUT that must leave these devices alone."""
+    return [
+        c
+        for c, vals in before.items()
+        if {str(v.get("name")): v.get("value") for v in after.get(c, [])} != vals
+    ]
+
+
 def remediation_problems(values: list[str]) -> list[str]:
     out = []
     for v in values:

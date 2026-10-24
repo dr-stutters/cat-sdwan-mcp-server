@@ -593,3 +593,77 @@ async def test_writes_hidden_without_writes(tool: str) -> None:
     async with Client(make_server()) as c:
         names = {t.name for t in await c.list_tools()}
     assert tool not in names and "catsdwan_containment_status" in names
+
+
+# --- review fixes: reserved SGTs, safety stops on every variables write ---------------------------
+
+
+@pytest.mark.parametrize("tag", ["0", "2", "65535", "Unknown:0"])
+async def test_baseline_refuses_a_reserved_quarantine_tag(api: respx.MockRouter, tag: str) -> None:
+    mock_all(api, ngfw=[ngfw_row()], prefixes=[], sgts=[])
+    mock_trustsec(api)
+    out = await preview("catsdwan_set_containment_baseline", {"group": "mcp-w8-pg", "quarantine_sgt": tag})
+    assert any("can't be the Quarantine SGT" in b for b in out["blockers"]), out.get("blockers")
+
+
+def test_quarantine_tag_problems() -> None:
+    ok = [{"sgtName": fw.g("Quarantined_Systems"), "tag": fw.g("255")}]
+    assert ct.quarantine_tag_problems(ok) == []
+    assert ct.quarantine_tag_problems([{"tag": fw.g("3")}]) == []
+    assert ct.quarantine_tag_problems([{"tag": fw.g("65519")}]) == []
+    for bad in ("0", "1", "2", "65520", "65535", "x"):
+        assert ct.quarantine_tag_problems([{"tag": fw.g(bad)}]), bad
+
+
+def _moving(api: respx.MockRouter, first: dict[str, Any], after: int) -> None:
+    """Device variables as `first` for the first `after` reads, then br1's mcp_contain_2 moved."""
+    reads: list[httpx.Request] = []
+
+    def answer(request: httpx.Request) -> httpx.Response:
+        reads.append(request)
+        if len(reads) <= after:
+            return httpx.Response(200, json=first)
+        moved = copy.deepcopy(first)
+        for d in moved["devices"]:
+            if d["device-id"] == BR1:
+                for v in d["variables"]:
+                    if v["name"] == "mcp_contain_2":
+                        v["value"] = "10.61.100.50/32"
+        return httpx.Response(200, json=moved)
+
+    api.get(VARS).mock(side_effect=answer)
+
+
+async def test_release_stops_before_deploy_when_another_device_moved(api: respx.MockRouter) -> None:
+    held = {HUB1: {"mcp_contain_1": f"{HOST}/32"}}
+    r = mock_all(api, prefixes=[slot_obj(), record()], held=held)
+    _moving(api, variables(**held), after=2)  # preview read, confirm's preview read, then the check
+    args = {"ip": HOST}
+    async with Client(make_server(mcp_enable_writes=True, mcp_enable_dangerous=True)) as c:
+        first = (await c.call_tool("catsdwan_release_at_edge", args)).structured_content
+        assert not first.get("blockers"), first.get("blockers")
+        with pytest.raises(ToolError, match="nothing was deployed"):
+            await c.call_tool("catsdwan_release_at_edge", {**args, "confirm": first["confirm"]})
+    assert r["vars_put"].called and not r["deploy"].called and not r["prefix_delete"].called
+
+
+async def test_baseline_fill_stops_when_a_device_outside_the_write_moved(api: respx.MockRouter) -> None:
+    body = {
+        "family": "sdwan",
+        "devices": [
+            {"device-id": HUB1, "variables": [{"name": "host_name", "value": "hub1"}, *UNSET]},
+            {"device-id": BR1, "variables": [{"name": k, "value": v} for k, v in ct.INERT.items()]},
+        ],
+    }
+    r = mock_all(api, ngfw=[ngfw_row()], prefixes=[], sgts=[])
+    mock_trustsec(api)
+    _moving(api, body, after=1)  # apply's read, then the check (the preview reads no variables here)
+    args = {"group": "mcp-w8-pg", "quarantine_sgt": "Quarantined_Systems:255"}
+    async with Client(make_server(mcp_enable_writes=True, mcp_enable_dangerous=True)) as c:
+        first = (await c.call_tool("catsdwan_set_containment_baseline", args)).structured_content
+        assert not first.get("blockers"), first.get("blockers")
+        assert any("shared policy-object profile" in s for s in first["side_effects"])
+        with pytest.raises(ToolError, match="differ from before: stopped"):
+            await c.call_tool("catsdwan_set_containment_baseline", {**args, "confirm": first["confirm"]})
+    body_put = json.loads(r["vars_put"].calls.last.request.content)
+    assert [d["device-id"] for d in body_put["devices"]] == [HUB1]
