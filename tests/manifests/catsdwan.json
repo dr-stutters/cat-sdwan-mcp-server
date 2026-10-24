@@ -106,6 +106,40 @@
         "cml"
       ]
     },
+    "catsdwan_contain_host": {
+      "arguments": [
+        "host",
+        "reason",
+        "anc_policy",
+        "hours"
+      ],
+      "references": [
+        "catsdwan_find_host",
+        "catsdwan_containment_status",
+        "catsdwan_set_containment_baseline",
+        "catsdwan_deploy_policy_group",
+        "ise_find_session",
+        "ise_endpoint_360",
+        "ise_list_anc_policies",
+        "ise_create_anc_policy",
+        "ise_apply_anc",
+        "catsdwan_trustsec",
+        "catsdwan_trustsec_path",
+        "catsdwan_security_status",
+        "catsdwan_ping",
+        "ise_clear_anc",
+        "catsdwan_contain_at_edge",
+        "catsdwan_get_device_config",
+        "catsdwan_audit_log",
+        "catsdwan_release_at_edge"
+      ],
+      "rendered": true,
+      "tier": "dangerous",
+      "uses": [
+        "catsdwan",
+        "ise"
+      ]
+    },
     "catsdwan_network_or_ise": {
       "arguments": [
         "site",
@@ -383,6 +417,14 @@
       "tier": "read",
       "title": "SD-WAN configuration history"
     },
+    "catsdwan_contain_at_edge": {
+      "tier": "dangerous",
+      "title": "Contain a host at its SD-WAN edge only"
+    },
+    "catsdwan_containment_status": {
+      "tier": "read",
+      "title": "SD-WAN contained hosts and containment baseline"
+    },
     "catsdwan_control_connections": {
       "tier": "read",
       "title": "SD-WAN control connections"
@@ -571,6 +613,10 @@
       "tier": "read",
       "title": "SD-WAN recent activity"
     },
+    "catsdwan_release_at_edge": {
+      "tier": "dangerous",
+      "title": "Release a host contained at its SD-WAN edge"
+    },
     "catsdwan_renew_controller_certificate": {
       "tier": "write",
       "title": "Renew an SD-WAN controller certificate"
@@ -598,6 +644,10 @@
     "catsdwan_set_amp_profile": {
       "tier": "write",
       "title": "Set an SD-WAN AMP (file) profile"
+    },
+    "catsdwan_set_containment_baseline": {
+      "tier": "dangerous",
+      "title": "Set the SD-WAN containment baseline"
     },
     "catsdwan_set_device_variables": {
       "tier": "write",
@@ -744,5 +794,5 @@
       "title": "SD-WAN UTD engine status"
     }
   },
-  "version": "0.5.0"
+  "version": "0.6.0"
 }

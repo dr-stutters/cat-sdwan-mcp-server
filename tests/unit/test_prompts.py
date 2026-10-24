@@ -38,6 +38,12 @@ SAMPLES = {
         "hostname": "br2",
         "lab": "mcp-cat-sdwan",
     },
+    "catsdwan_contain_host": {
+        "host": "10.61.100.10",
+        "reason": "INC-1 beaconing",
+        "anc_policy": "",
+        "hours": "24",
+    },
     "catsdwan_sgt_path": {"source": "10.61.200.10", "destination": "10.61.100.10", "vpn": "10"},
     "catsdwan_trace_through_firewall": {
         "source": "10.61.220.10",
@@ -107,6 +113,7 @@ async def test_prompts_declare_their_servers() -> None:
         "catsdwan_why_is_app_slow": ["catsdwan", "ise", "fmc", "cml", "netbox"],
         "catsdwan_sgt_path": ["catsdwan", "ise"],
         "catsdwan_trace_through_firewall": ["catsdwan", "fmc"],
+        "catsdwan_contain_host": ["catsdwan", "ise"],
         "suite_change_check": ["catsdwan", "ise", "catc", "fmc"],
         "catsdwan_wifi_lan_or_wan": ["catsdwan", "catc", "ise", "cml"],
         "catsdwan_network_or_ise": ["catsdwan", "ise"],
@@ -237,3 +244,36 @@ async def test_admin_access_via_ise_needs_dangerous_and_valid_ips() -> None:
             assert "IP addresses" in str(e)
         else:
             raise AssertionError("a host name for manager_ip must be refused")
+
+
+async def test_contain_host_takes_ise_first_then_the_edge_fallback() -> None:
+    text = await text_of("catsdwan_contain_host", SAMPLES["catsdwan_contain_host"])
+    order = [
+        "catsdwan_find_host",
+        "catsdwan_containment_status",
+        "catsdwan_set_containment_baseline",
+        "ise_find_session",
+        "ise_endpoint_360",
+        "ise_list_anc_policies",
+        "ise_apply_anc",
+        "catsdwan_trustsec",
+        "catsdwan_trustsec_path",
+        "catsdwan_security_status",
+        "ise_clear_anc",
+        "catsdwan_contain_at_edge",
+        "catsdwan_release_at_edge",
+    ]
+    positions = [text.index(f"`{ref}`") for ref in order]
+    assert positions == sorted(positions)
+    assert "PREVIEW-FIRST" in text and "Never confirm on your own" in text
+    assert "TrustSec" in text and "W42" in text and "EVERY edge of the group" in text
+    assert 'ip="10.61.100.10", reason="INC-1 beaconing", hours=24' in text
+    assert "policy=<the policy from step 3>" in text
+    args = {**SAMPLES["catsdwan_contain_host"], "anc_policy": "Quarantine"}
+    named = await text_of("catsdwan_contain_host", args)
+    assert 'policy="Quarantine"' in named
+
+
+async def test_contain_host_hidden_without_dangerous() -> None:
+    async with Client(make_server(mcp_enable_writes=True)) as c:  # type: ignore[arg-type]
+        assert "catsdwan_contain_host" not in {p.name for p in await c.list_prompts()}
