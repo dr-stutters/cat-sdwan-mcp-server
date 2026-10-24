@@ -98,7 +98,10 @@ class SteeringRule(BaseModel):
     chain: str | None = Field(
         default=None, description="A service chain SC1-SC16 instead of a single service (20.13+ chains)"
     )
-    service_vpn: int | None = Field(default=None, description="The VPN the service is in (default the same)")
+    service_vpn: int | None = Field(
+        default=None,
+        description="The VPN the service is in (default the policy's VPN; required when it targets several)",
+    )
     local: bool = Field(default=False, description="Only a service on this edge (a branch's own firewall)")
     restrict: bool = Field(
         default=False, description="Drop the traffic when the service is down, instead of routing around it"
@@ -341,7 +344,7 @@ def register(reg: ToolRegistrar) -> None:
     ) -> dict[str, Any]:
         """Service insertion per service VPN: which firewall (or IDS, IDP, netsvc, AppQoE) services the
         configuration groups give their edges (the service profile's LAN VPN parcel: type, the firewall's
-        addresses, tracking; or `service FW vrf <n>` lines in a CLI profile), the policy-group traffic
+        addresses, tracking; or `service firewall vrf <n>` lines in a CLI profile), the policy-group traffic
         policies that steer traffic into them (sequence, match, service or chain SC1-SC16, local, restrict
         and what happens when the service is down), the Manager's service-chain numbering, and with `device`
         the services that edge knows in OMP right now (a tracked firewall that stopped answering is
@@ -673,6 +676,15 @@ def register(reg: ToolRegistrar) -> None:
                     blockers.append(f"rule {r['name']}: chain {r['chain']!r} is not SC1-SC16")
                 if r.get("service_vpn") is not None and (p := vpn_problem(int(r["service_vpn"]))):
                     blockers.append(f"rule {r['name']}: {p}")
+                if (
+                    r.get("service_vpn") is None
+                    and len(vpn_list) > 1
+                    and not (r.get("chain") and r.get("local"))
+                ):
+                    blockers.append(
+                        f"rule {r['name']}: give service_vpn (the VPN the service is in): the policy targets "
+                        "several VPNs and the Manager needs the service's VPN"
+                    )
                 if not any(
                     r[f]
                     for f in ("source_prefixes", "destination_prefixes", "source_lists", "destination_lists")
@@ -691,7 +703,7 @@ def register(reg: ToolRegistrar) -> None:
                 except UpstreamError as e:
                     schema = {}
                     warnings.append(
-                        "traffic policy not checked against the Manager's schema (none published on 20.18: "
+                        "traffic policy not checked against the Manager's schema (not read: "
                         f"{str(e)[:120]}); the Manager validates it on confirm"
                     )
                 blockers += [f"traffic policy: {p}" for p in schema_problems(schema, body)]

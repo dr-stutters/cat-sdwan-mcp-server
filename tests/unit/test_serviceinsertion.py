@@ -7,6 +7,8 @@ only), the mcp-test configuration group and its CLI profile. Hand-built from Cis
 (the lab has none; marked where used): a LAN VPN parcel with a FW service, the LAN VPN schema's `service`
 subtree, a traffic-policy parcel, an application-priority profile and the FW row in OMP services. Addresses
 follow the L65 recipe (hub-ftd inside 10.61.110.2, br1-lan 10.61.220.0/24); ids are documentation UUIDs.
+Recorded in the W50 live run (20.18.3.1, 2026-10-24, #119): the traffic-policy POST schema (ids replaced by
+documentation UUIDs) and hub1's running `sdwan` block with `service firewall vrf 10`.
 """
 
 import copy
@@ -105,6 +107,16 @@ STEERING_RULE = {
     "protocols": [6],
     "destination_ports": [22],
 }
+
+
+# Recorded: hub1's running `sdwan` block after the live run stored the service in its CLI profile (trimmed to
+# the service and the first tunnel interface).
+HUB1_SDWAN = (
+    "sdwan\n service firewall vrf 10\n  ipv4 address 10.61.110.2\n interface GigabitEthernet1\n"
+    "  tunnel-interface\n   encapsulation ipsec\n   color mpls\n  exit\n exit\n appqoe\n"
+    "  no tcpopt enable\n omp\n  no shutdown\n  address-family ipv4 vrf 10\n   advertise connected\n"
+)
+TP_SCHEMA = fixture("v1_feature_profile_application_priority_traffic_policy_schema_post")
 
 
 def cli_parcel(extra: str = "") -> dict[str, Any]:
@@ -230,6 +242,23 @@ def test_problems() -> None:
     assert si.address_problems(["10.61.110.2"]) == []
 
 
+def test_cli_services_read_the_recorded_firewall_line() -> None:
+    assert si.cli_services(HUB1_SDWAN) == [
+        {"type": "FW", "vpn": 10, "addresses": ["10.61.110.2"], "tracking": True}
+    ]
+
+
+def test_cli_lines_use_the_ios_xe_keyword() -> None:
+    lines = si.cli_lines("FW", 10, ["10.61.110.2"], True)
+    assert lines == ["sdwan", " service firewall vrf 10", "  ipv4 address 10.61.110.2"]
+    assert si.cli_services("\n".join(lines))[0]["type"] == "FW"
+    assert si.cli_lines("netsvc1", 20, ["192.0.2.5"], False)[1:] == [
+        " service netsvc1 vrf 20",
+        "  ipv4 address 192.0.2.5",
+        "  no track-enable",
+    ]
+
+
 def test_cli_services_parse_the_ios_xe_form() -> None:
     text = (
         "sdwan\n service FW vrf 10\n  ipv4 address 10.61.110.2 10.61.110.3\n  no track-enable\n!\n"
@@ -261,15 +290,16 @@ def test_traffic_policy_body_and_words() -> None:
     assert data["target"] == {"vpn": g(["10"]), "direction": g("service")}
     seq = data["sequences"][0]
     assert seq["match"]["entries"] == [
-        {"sourceDataPrefix": {"sourceIpPrefix": g("10.61.220.0/24")}},
-        {"destinationDataPrefix": {"destinationDataPrefixList": {"refId": g(DPL)}}},
+        {"sourceIp": g("10.61.220.0/24")},
+        {"destinationDataPrefixList": {"refId": g(DPL)}},
         {"protocol": g(["6"])},
         {"destinationPort": g(["22"])},
     ]
+    # service.vpn is required on 20.18: the policy's one target VPN when the rule names none.
     assert seq["actions"] == [
-        {"set": [{"service": {"type": g("FW"), "local": g(False), "restrict": g(True)}}]}
+        {"set": [{"service": {"type": g("FW"), "local": g(False), "restrict": g(True), "vpn": g(10)}}]}
     ]
-    assert data["sequences"][1]["actions"][0]["set"][0]["serviceChain"]["serviceChainType"] == g("SC1")
+    assert data["sequences"][1]["actions"][0]["set"][0]["serviceChain"]["type"] == g("SC1")
     rows = si.steering_rows(data, {DPL: "dc-prefixes"})
     assert rows[0]["match"] == [
         "from 10.61.220.0/24",
@@ -281,6 +311,47 @@ def test_traffic_policy_body_and_words() -> None:
     assert rows[1]["chain"] == "SC1" and rows[1]["vpn"] == 10 and "bypassing" in rows[1]["if_down"]
     assert si.target_of(data) == {"vpns": ["10"], "direction": "service", "default_action": "accept"}
     assert si.steering_rows({"sequences": [{"actions": [{"set": [{"dscp": g(46)}]}]}]}) == []
+
+
+def test_steering_body_fits_the_recorded_20_18_schema() -> None:
+    schema = fw.request_schema(TP_SCHEMA)
+    rules = [
+        {**STEERING_RULE, "restrict": True},
+        {"name": "dc-chain", "destination_prefixes": ["10.61.100.0/24"], "chain": "SC2", "service_vpn": 10},
+    ]
+    body = si.traffic_policy_body("p", "", [10], "service", "accept", rules, {"dc-prefixes": DPL})
+    assert fw.schema_problems(schema, body) == []
+    # What 0.6.1 sent (the nested match form, no service vpn) is what the Manager's schema refused.
+    old = copy.deepcopy(body)
+    seq = old["data"]["sequences"][0]
+    seq["match"]["entries"][0] = {"sourceDataPrefix": {"sourceIpPrefix": g("10.61.220.0/24")}}
+    del seq["actions"][0]["set"][0]["service"]["vpn"]
+    problems = " | ".join(fw.schema_problems(schema, old))
+    assert "sourceDataPrefix is not allowed" in problems and "vpn is required" in problems
+    # Several target VPNs: the service VPN comes from the rule only.
+    multi = si.traffic_policy_body(
+        "p", "", [10, 20], "service", "accept", [STEERING_RULE], {"dc-prefixes": DPL}
+    )
+    assert "vpn" not in multi["data"]["sequences"][0]["actions"][0]["set"][0]["service"]
+
+
+def test_match_words_read_both_forms() -> None:
+    names = {DPL: "dc-prefixes"}
+    new = [{"sourceIp": g("10.61.220.0/24")}, {"destinationDataPrefixList": {"refId": g(DPL)}}]
+    old = [
+        {"sourceDataPrefix": {"sourceIpPrefix": g("10.61.220.0/24")}},
+        {"destinationDataPrefix": {"destinationDataPrefixList": {"refId": g(DPL)}}},
+    ]
+    assert (
+        si._match_words(new, names)
+        == si._match_words(old, names)
+        == [
+            "from 10.61.220.0/24",
+            "to list dc-prefixes",
+        ]
+    )
+    legacy_chain = {"sequences": [{"actions": [{"set": [{"serviceChain": {"serviceChainType": g("SC3")}}]}]}]}
+    assert si.steering_rows(legacy_chain)[0]["chain"] == "SC3"
 
 
 def test_body_fits_the_hand_built_schema() -> None:
@@ -333,9 +404,10 @@ async def test_service_chains_names_the_chain(api: respx.MockRouter) -> None:
 
 
 async def test_service_chains_reads_cli_profile_services(api: respx.MockRouter) -> None:
-    mock_lab(api, service_profile=False, cli_extra="sdwan\n service FW vrf 10\n  ipv4 address 10.61.110.2\n")
+    mock_lab(api, service_profile=False, cli_extra=HUB1_SDWAN)
     out = await call("catsdwan_service_chains", {})
     assert out["services"][0]["source"] == "CLI profile" and out["services"][0]["profile"] == "mcp-test-cli"
+    assert out["services"][0]["type"] == "FW" and out["services"][0]["addresses"] == ["10.61.110.2"]
     assert "no policy-group traffic policy steers" in out["verdict"]
     out20 = await call("catsdwan_service_chains", {"vpn": 20})
     assert out20["services"] == []
@@ -381,7 +453,7 @@ async def test_set_service_chain_blockers(api: respx.MockRouter) -> None:
 
 async def test_set_service_chain_cli_group_gives_the_lines(api: respx.MockRouter) -> None:
     mock_lab(api, service_profile=False)
-    with pytest.raises(ToolError, match="service FW vrf 10 /   ipv4 address 10.61.110.2"):
+    with pytest.raises(ToolError, match="service firewall vrf 10 /   ipv4 address 10.61.110.2"):
         await call(
             "catsdwan_set_service_chain",
             {"profile": "mcp-test", "vpn": 10, "addresses": ["10.61.110.2"]},
@@ -479,6 +551,31 @@ async def test_set_service_steering_blockers(api: respx.MockRouter) -> None:
             await c.call_tool("catsdwan_set_service_steering", {**STEER_ARGS, "profile": "other"})
         ).structured_content
     assert any("one per" in b for b in pre["blockers"])
+
+
+async def test_set_service_steering_checks_the_recorded_schema(api: respx.MockRouter) -> None:
+    mock_lab(api, services=[FW_SERVICE])
+    api.get(f"{FP}/application-priority/traffic-policy/schema").respond(json=TP_SCHEMA)
+    post_tp = api.post(f"{FP}/application-priority/{AP}/traffic-policy").respond(json={"parcelId": TP})
+    async with Client(make_server(mcp_enable_writes=True, mcp_enable_dangerous=True)) as c:
+        pre = (await c.call_tool("catsdwan_set_service_steering", STEER_ARGS)).structured_content
+    assert not pre.get("blockers"), pre["blockers"]
+    assert not any("schema" in w for w in details(pre).get("warnings", []))
+    await confirmed("catsdwan_set_service_steering", STEER_ARGS)
+    seq = json.loads(post_tp.calls.last.request.content)["data"]["sequences"][0]
+    assert seq["match"]["entries"][0] == {"sourceIp": g("10.61.220.0/24")}
+    assert seq["actions"][0]["set"][0]["service"]["vpn"] == g(10)
+
+
+async def test_set_service_steering_several_vpns_need_service_vpn(api: respx.MockRouter) -> None:
+    mock_lab(api, services=[FW_SERVICE])
+    args = {**STEER_ARGS, "vpns": [10, 20]}
+    async with Client(make_server(mcp_enable_writes=True, mcp_enable_dangerous=True)) as c:
+        pre = (await c.call_tool("catsdwan_set_service_steering", args)).structured_content
+        assert any("give service_vpn" in b for b in pre["blockers"])
+        ok = {**args, "rules": [{**STEERING_RULE, "service_vpn": 10}]}
+        pre = (await c.call_tool("catsdwan_set_service_steering", ok)).structured_content
+    assert not any("service_vpn" in b for b in pre.get("blockers", []))
 
 
 async def test_set_service_steering_is_dangerous(api: respx.MockRouter) -> None:
