@@ -13,6 +13,7 @@ from cat_sdwan_mcp._core import ResponseFormat, ToolRegistrar, UpstreamError, ge
 from cat_sdwan_mcp._core.formatting import mask_secrets
 from cat_sdwan_mcp.client import SdwanApp, _as_list
 from cat_sdwan_mcp.fabric import device_rows, find_device, require_reachable
+from cat_sdwan_mcp.iseintegration import node_name_of, pxgrid_state, stored
 from cat_sdwan_mcp.trustsec import (
     DNAC_DEVICES_PATH,
     DNAC_SITES_PATH,
@@ -162,8 +163,9 @@ def register(reg: ToolRegistrar) -> None:
         (/template/policy/ise/identity/sgt), registered partners (/partner) and, for a Catalyst Center
         partner, its SD-Access sites and devices (/partner/dnac/sda/site and /sda/device) plus the VPNs
         offered to SD-Access (/partner/dnac/sda/vpn). When no ISE is configured it says so plainly (identity
-        lists and user-based policy then have no source) instead of quoting the Manager's errors. Reads only:
-        ISE credentials, pxGrid activation and partner onboarding stay in the GUI or catsdwan_api_call."""
+        lists and user-based policy then have no source) instead of quoting the Manager's errors. pxGrid's
+        state (pending = approve it with ise_approve_pxgrid_client) is named. Reads only: connect ISE and
+        pxGrid with catsdwan_set_ise_integration; partner onboarding stays in the GUI or catsdwan_api_call."""
         app: SdwanApp = get_client(ctx)
         creds, pxgrid_creds, partner_body, vpns = await asyncio.gather(
             _get(app, ISE_CREDENTIALS_PATH),
@@ -193,9 +195,19 @@ def register(reg: ToolRegistrar) -> None:
             )
         pxgrid: dict[str, Any] = {"configured": pxgrid_on}
         if pxgrid_on:
-            pxgrid["credentials"] = mask_secrets(
+            px_rec = (
                 pxgrid_creds.get("data", pxgrid_creds) if isinstance(pxgrid_creds, dict) else pxgrid_creds
             )
+            pxgrid["credentials"] = mask_secrets(px_rec)
+            px_state = pxgrid_state(stored(px_rec))
+            pxgrid["state"] = px_state
+            if px_state == "pending":
+                node = node_name_of(stored(px_rec))
+                pxgrid["meaning"] = (
+                    f"the pxGrid client{' ' + node if node else ''} waits for approval on ISE: "
+                    "ise_approve_pxgrid_client, then catsdwan_set_ise_integration again to sync the "
+                    "controllers"
+                )
         out: dict[str, Any] = {"ise": ise, "pxgrid": pxgrid}
         plist = [] if _err(partner_body) else partners(partner_body)
         out["partners"] = plist or "none registered"
@@ -228,8 +240,7 @@ def register(reg: ToolRegistrar) -> None:
             out["verdict"] = (
                 "No ISE, pxGrid or partner integration is configured on this Manager: identity-based "
                 "policy, SGT lists from ISE and the Catalyst Center SD-Access hand-off are not in use. "
-                "Connect ISE in Administration > Integration Management (or catsdwan_api_call POST "
-                f"{ISE_CREDENTIALS_PATH})."
+                "Connect ISE with catsdwan_set_ise_integration (Administration > Integration Management)."
             )
         else:
             parts = [n for n, on in (("ISE", ise_on), ("pxGrid", pxgrid_on)) if on]

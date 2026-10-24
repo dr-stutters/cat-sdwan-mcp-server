@@ -510,6 +510,10 @@
       "tier": "write",
       "title": "Set SD-WAN feature parcel"
     },
+    "catsdwan_set_ise_integration": {
+      "tier": "dangerous",
+      "title": "Set the SD-WAN Manager's ISE and pxGrid integration"
+    },
     "catsdwan_site_health": {
       "tier": "read",
       "title": "SD-WAN site health"
