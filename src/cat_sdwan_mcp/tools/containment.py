@@ -705,8 +705,7 @@ def register(reg: ToolRegistrar) -> None:
                 **({"trustsec": trustsec} if trustsec else {}),
                 "needs": TRUSTSEC_NEEDED if quarantine and not remove else None,
                 "next": f"catsdwan_deploy_policy_group(group='{gname}', devices=[every edge of the group]) "
-                "in a "
-                "change window, then catsdwan_containment_status(group)",
+                "in a change window, then catsdwan_containment_status(group)",
                 "undo": f"catsdwan_set_containment_baseline(group='{gname}', remove=true)",
                 **({"warnings": warnings} if warnings else {}),
             },
@@ -794,8 +793,7 @@ def register(reg: ToolRegistrar) -> None:
                     out["warnings"] = problems
             out["next"] = (
                 f"catsdwan_deploy_policy_group(group='{gname}', devices=[...]) to every edge of the group "
-                "in a "
-                "change window (preview first), then catsdwan_containment_status(group)"
+                "in a change window (preview first), then catsdwan_containment_status(group)"
             )
             return out
 
@@ -1365,7 +1363,11 @@ def register(reg: ToolRegistrar) -> None:
             except UpstreamError as e:
                 warnings.append(f"policy group {grp.get('name')}: variables not read: {str(e)[:150]}")
             if trustsec:
-                members = await group_devices(app, str(grp.get("id")))
+                try:
+                    members = await group_devices(app, str(grp.get("id")))
+                except UpstreamError as e:
+                    warnings.append(f"policy group {grp.get('name')}: devices not read: {str(e)[:150]}")
+                    members = []
                 rows = [
                     r
                     for m in members
