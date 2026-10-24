@@ -94,7 +94,7 @@ def register(reg: ToolRegistrar) -> None:
         Secure Internet Gateway tunnels (Umbrella, Zscaler), plus the Manager's security policies. `features`
         says which are running and `verdict` says it in one line; when there is no security policy at all, it
         says so plainly (nothing on the edge filters traffic: look at the WAN or the firewall behind it).
-        Reads only: security policy is written in FMC or the Manager's GUI."""
+        Reads only: the edge firewall is written with catsdwan_set_firewall_policy (W47), the FTD in FMC."""
         app: SdwanApp = get_client(ctx)
         row, _ = await find_device(app, device)
         ip = require_reachable(row, "catsdwan_list_devices shows each device's reachability.")

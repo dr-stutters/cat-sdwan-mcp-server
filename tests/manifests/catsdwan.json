@@ -422,6 +422,10 @@
       "tier": "read",
       "title": "Get SD-WAN feature parcel"
     },
+    "catsdwan_get_firewall_policy": {
+      "tier": "read",
+      "title": "SD-WAN edge firewall policy"
+    },
     "catsdwan_get_policy": {
       "tier": "read",
       "title": "Get SD-WAN policy"
@@ -570,9 +574,17 @@
       "tier": "write",
       "title": "Set SD-WAN feature parcel"
     },
+    "catsdwan_set_firewall_policy": {
+      "tier": "dangerous",
+      "title": "Set SD-WAN edge firewall policy"
+    },
     "catsdwan_set_ise_integration": {
       "tier": "dangerous",
       "title": "Set the SD-WAN Manager's ISE and pxGrid integration"
+    },
+    "catsdwan_set_security_object": {
+      "tier": "dangerous",
+      "title": "Set SD-WAN security object"
     },
     "catsdwan_site_health": {
       "tier": "read",
