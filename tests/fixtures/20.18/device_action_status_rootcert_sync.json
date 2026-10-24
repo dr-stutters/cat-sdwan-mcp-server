@@ -1,0 +1,105 @@
+{
+  "header": {
+    "generatedOn": 1792814119229,
+    "viewKeys": {
+      "uniqueKey": [],
+      "preferenceKey": "grid-DeviceActionDefault"
+    },
+    "columns": [
+      {
+        "title": "view.deviceaction.viewDeviceActionDefault.status",
+        "property": "status",
+        "display": "iconAndText",
+        "iconProperty": "statusId",
+        "icon": [
+          {
+            "key": "success",
+            "value": "images/action_success.png"
+          },
+          {
+            "key": "success_warning",
+            "value": "images/action_success_warning.png"
+          },
+          {
+            "key": "failure",
+            "value": "images/action_failure.png"
+          },
+          {
+            "key": "in_progress",
+            "value": "images/action_in_progress.png"
+          },
+          {
+            "key": "scheduled",
+            "value": "images/action_scheduled.png"
+          },
+          {
+            "key": "time_out",
+            "value": "images/action_timedout.png"
+          },
+          {
+            "key": "skipped",
+            "value": "images/action_skipped.png"
+          }
+        ],
+        "dataType": "string"
+      },
+      {
+        "title": "view.deviceaction.viewDeviceActionDefault.chassisNumber",
+        "property": "uuid",
+        "dataType": "string"
+      },
+      {
+        "title": "view.deviceaction.viewDeviceActionDefault.hostName",
+        "property": "host-name",
+        "dataType": "string"
+      },
+      {
+        "title": "view.deviceaction.viewDeviceActionDefault.message",
+        "property": "currentActivity",
+        "minWidth": 300,
+        "dataType": "string"
+      },
+      {
+        "title": "view.deviceaction.viewDeviceActionDefault.startTime",
+        "property": "startTime",
+        "displayFormat": "DD MMM YYYY h:mm:ss A z",
+        "inputFormat": "unix-time",
+        "width": 220,
+        "dataType": "date"
+      },
+      {
+        "title": "view.deviceaction.viewDeviceActionDefault.systemIp",
+        "property": "local-system-ip",
+        "dataType": "string"
+      }
+    ],
+    "fields": [
+      {
+        "property": "status",
+        "dataType": "string",
+        "display": "iconAndText"
+      },
+      {
+        "property": "uuid",
+        "dataType": "string"
+      },
+      {
+        "property": "host-name",
+        "dataType": "string"
+      },
+      {
+        "property": "currentActivity",
+        "dataType": "string"
+      },
+      {
+        "property": "startTime",
+        "dataType": "date"
+      },
+      {
+        "property": "local-system-ip",
+        "dataType": "string"
+      }
+    ]
+  },
+  "data": []
+}

@@ -189,6 +189,16 @@ async def test_ping_loss_and_nping(api: respx.MockRouter) -> None:
         await call("catsdwan_ping", {"device": "br1", "destination": "x", "probe": "udp"})
 
 
+async def test_ping_count_is_the_managers_range(api: respx.MockRouter) -> None:
+    # live 2026-10-24: count 31+ answers DEVICE0009; the Manager allows 1 to 30
+    mock_inventory(api)
+    ping = api.post("/dataservice/device/tools/ping/10.0.0.2").respond(json=PING_OK)
+    await call("catsdwan_ping", {"device": "br1", "destination": "10.61.201.10", "vpn": 10, "count": 30})
+    assert json.loads(ping.calls[0].request.content)["count"] == "30"
+    with pytest.raises(ToolError, match="30"):
+        await call("catsdwan_ping", {"device": "br1", "destination": "10.61.201.10", "count": 31})
+
+
 async def test_ping_refuses_an_unreachable_device(api: respx.MockRouter) -> None:
     mock_inventory(api, reach={"br2": "unreachable"})
     with pytest.raises(ToolError, match="unreachable"):

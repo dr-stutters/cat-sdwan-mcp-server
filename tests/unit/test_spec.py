@@ -214,6 +214,22 @@ async def test_api_call_write_is_preview_first(api: respx.MockRouter) -> None:
     assert json.loads(sent.calls[0].request.content)["secret"] == "Sup3rS3cret!"
 
 
+async def test_api_call_delete_sends_its_body(api: respx.MockRouter) -> None:
+    # live 2026-10-24: the policy group dissociate is a DELETE with {devices: [...]}; without the body: 400
+    mock_spec(api)
+    sent = api.delete("/dataservice/v1/policy-group/pg-1/device/associate").respond(204)
+    args = {
+        "path": "/v1/policy-group/pg-1/device/associate",
+        "method": "DELETE",
+        "body": {"devices": [{"id": "C8K-00000000-0000-0000-0000-000000000001"}]},
+    }
+    async with Client(make_server(mcp_enable_writes=True)) as c:
+        preview = json.loads((await c.call_tool("catsdwan_api_call", args)).content[0].text)
+        assert preview["status"] == "preview" and preview["preview"]["body"] == args["body"]
+        await c.call_tool("catsdwan_api_call", {**args, "confirm": preview["confirm"]})
+    assert json.loads(sent.calls[0].request.content) == args["body"]
+
+
 async def test_api_call_device_action_needs_dangerous(api: respx.MockRouter) -> None:
     mock_spec(api)
     sent = api.post("/dataservice/device/action/reboot").respond(json={"id": "reboot-1"})

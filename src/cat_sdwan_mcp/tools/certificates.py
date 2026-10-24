@@ -516,7 +516,15 @@ def register(reg: ToolRegistrar) -> None:
 
         async def apply() -> Any:
             answer = await app.api.post(FORCE_SYNC_ROOT_PATH, None)
-            return {"sync": await _started(app, ctx, answer, wait, "root certificate sync")}
+            # The force-sync's action status never lists device rows (live 20.18.3): follow it until it
+            # leaves the running tasks, and point at the audit log for the per-device installs.
+            sync = await _started(app, ctx, answer, wait, "root certificate sync", rowless=True)
+            if sync.get("outcome") == "done" and not sync.get("devices"):
+                sync["note"] = (
+                    "the Manager lists no devices for this action; each device's install shows in "
+                    "catsdwan_audit_log(module='vmanage-root-ca') as 'Installed root cert chain on ...'"
+                )
+            return {"sync": sync}
 
         return await preview_or_apply(
             ctx,

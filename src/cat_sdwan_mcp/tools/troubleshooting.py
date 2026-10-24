@@ -118,7 +118,9 @@ def register(reg: ToolRegistrar) -> None:
         destination: Destination,
         vpn: Vpn = 0,
         source_interface: SourceInterface = None,
-        count: Annotated[int, Field(ge=1, le=100, description="Probes to send")] = 5,
+        count: Annotated[
+            int, Field(ge=1, le=30, description="Probes to send (the Manager allows 1 to 30)")
+        ] = 5,
         size: Annotated[int | None, Field(ge=36, le=18000, description="Packet size in bytes")] = None,
         probe: Annotated[
             Literal["icmp", "tcp", "udp"],
