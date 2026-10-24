@@ -322,6 +322,10 @@
       "tier": "write",
       "title": "Associate devices with SD-WAN configuration group"
     },
+    "catsdwan_associate_policy_group": {
+      "tier": "write",
+      "title": "Associate devices with SD-WAN policy group"
+    },
     "catsdwan_attach_device_template": {
       "tier": "write",
       "title": "Attach SD-WAN device template"
@@ -357,6 +361,14 @@
     "catsdwan_create_backup": {
       "tier": "write",
       "title": "Create SD-WAN Manager backup"
+    },
+    "catsdwan_create_policy_group": {
+      "tier": "write",
+      "title": "Create SD-WAN policy group"
+    },
+    "catsdwan_delete_policy_group": {
+      "tier": "write",
+      "title": "Delete SD-WAN policy group"
     },
     "catsdwan_deploy_config_group": {
       "tier": "write",
@@ -631,5 +643,5 @@
       "title": "Upgrade SD-WAN software"
     }
   },
-  "version": "0.4.0"
+  "version": "0.5.0"
 }
