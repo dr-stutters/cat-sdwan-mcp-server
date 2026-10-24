@@ -199,14 +199,16 @@ async def test_set_external_auth_first_radius_write_sends_defaults(api: respx.Mo
         ).structured_content["result"]
     sent = json.loads(radius.calls[0].request.content)
     assert sent["timeout"] == 5 and sent["retransmit"] == 3
+    # The 20.18 GUI's own server entry (Wave 8 capture): key "", sourceVpn, no vpn/vpnIpSubnet/tag at VPN 0.
     assert sent["server"] == [
         {
             "address": "192.0.2.20",
-            "secretKey": "radius-s3cret",
             "authPort": 1812,
             "acctPort": 1813,
-            "vpn": 0,
+            "key": "",
+            "secretKey": "radius-s3cret",
             "priority": 0,
+            "sourceVpn": 0,
         }
     ]
     assert done["outcome"] == "done" and "radius-s3cret" not in json.dumps(done)
