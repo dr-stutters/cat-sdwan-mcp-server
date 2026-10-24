@@ -216,6 +216,33 @@
         "cml"
       ]
     },
+    "catsdwan_trace_through_firewall": {
+      "arguments": [
+        "source",
+        "destination",
+        "app",
+        "vpn"
+      ],
+      "references": [
+        "catsdwan_find_host",
+        "catsdwan_explain_path",
+        "catsdwan_service_chains",
+        "catsdwan_get_policy",
+        "fmc_find_address",
+        "fmc_list_devices",
+        "fmc_list_device_interfaces",
+        "fmc_packet_tracer",
+        "fmc_rule_lookup",
+        "fmc_get_hit_counts",
+        "fmc_device_health"
+      ],
+      "rendered": true,
+      "tier": "read",
+      "uses": [
+        "catsdwan",
+        "fmc"
+      ]
+    },
     "catsdwan_why_is_app_slow": {
       "arguments": [
         "host",
@@ -564,6 +591,10 @@
       "tier": "read",
       "title": "SD-WAN edge security status"
     },
+    "catsdwan_service_chains": {
+      "tier": "read",
+      "title": "SD-WAN service chains"
+    },
     "catsdwan_set_amp_profile": {
       "tier": "write",
       "title": "Set an SD-WAN AMP (file) profile"
@@ -607,6 +638,14 @@
     "catsdwan_set_security_policy": {
       "tier": "write",
       "title": "Set an SD-WAN embedded security policy (UTD)"
+    },
+    "catsdwan_set_service_chain": {
+      "tier": "write",
+      "title": "Set SD-WAN service chain (firewall service)"
+    },
+    "catsdwan_set_service_steering": {
+      "tier": "dangerous",
+      "title": "Set SD-WAN service steering policy"
     },
     "catsdwan_set_ssl_decryption": {
       "tier": "write",

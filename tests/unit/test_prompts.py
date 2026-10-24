@@ -39,6 +39,12 @@ SAMPLES = {
         "lab": "mcp-cat-sdwan",
     },
     "catsdwan_sgt_path": {"source": "10.61.200.10", "destination": "10.61.100.10", "vpn": "10"},
+    "catsdwan_trace_through_firewall": {
+        "source": "10.61.220.10",
+        "destination": "10.61.100.10",
+        "app": "tcp/22",
+        "vpn": "10",
+    },
     "catsdwan_why_is_app_slow": {
         "host": "10.61.200.10",
         "app": "ssh to 10.61.100.10",
@@ -100,6 +106,7 @@ async def test_prompts_declare_their_servers() -> None:
         "catsdwan_onboard_branch": ["catsdwan", "netbox", "cml"],
         "catsdwan_why_is_app_slow": ["catsdwan", "ise", "fmc", "cml", "netbox"],
         "catsdwan_sgt_path": ["catsdwan", "ise"],
+        "catsdwan_trace_through_firewall": ["catsdwan", "fmc"],
         "suite_change_check": ["catsdwan", "ise", "catc", "fmc"],
         "catsdwan_wifi_lan_or_wan": ["catsdwan", "catc", "ise", "cml"],
         "catsdwan_network_or_ise": ["catsdwan", "ise"],
