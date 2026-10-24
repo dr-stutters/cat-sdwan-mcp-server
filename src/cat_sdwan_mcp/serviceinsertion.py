@@ -20,8 +20,15 @@ service chain SC1-SC16) on the matching traffic. Sources:
   (POST .../application-priority/{id}/traffic-policy: data {dataDefaultAction, target: {vpn: [..],
   direction: service|tunnel|all}, sequences: [{sequenceId, sequenceName, baseAction, sequenceIpType, match:
   {entries}, actions: [{set: [{service: {type, vpn, local, restrict}} | {serviceChain: {serviceChainType,
-  vpn, local, restrict}}]}]}]}); the IOS XE CLI form of a service (`sdwan` / ` service FW vrf 10` /
-  `  ipv4 address <ip>`), used when the VPN is CLI-profile configuration.
+  vpn, local, restrict}}]}]}]}).
+- Recorded (20.18.3.1, the W50 live run 2026-10-24): the traffic-policy POST schema
+  (GET .../application-priority/traffic-policy/schema?schemaType=post): a match entry has exactly one key
+  (`sourceIp` / `destinationIp` {global "a.b.c.d/n"}, `sourceDataPrefixList` / `destinationDataPrefixList`
+  {refId}, `protocol`, `destinationPort`, ...); `service` requires `type` and `vpn`; `serviceChain` names
+  its chain in `type` and needs `vpn` unless `local`. The IOS XE CLI form of a firewall service is
+  `sdwan` / ` service firewall vrf 10` / `  ipv4 address <ip>` (the Manager refuses `service FW vrf 10`:
+  `"FW" is an invalid`); hub1 then advertises FW in VPN 10 into OMP. Used when the VPN is CLI-profile
+  configuration.
 """
 
 from __future__ import annotations
@@ -147,24 +154,43 @@ def with_service(data: dict[str, Any], stype: str, entry: dict[str, Any] | None)
 
 # --- the CLI form (CLI-profile configuration groups) ------------------------------------------------
 
+# The parcel's service type -> the IOS XE keyword under `sdwan`. Only `firewall` is proven (17.18, the Manager
+# refuses `FW`); the others are written as the parcel names them until an edge shows otherwise.
+CLI_KEYWORDS = {"FW": "firewall"}
+# Read generously: the IOS XE keywords and the parcel's names, both mapped back to the parcel's type.
+_CLI_TYPES = {
+    "firewall": "FW",
+    "fw": "FW",
+    "intrusion-detection": "IDS",
+    "ids": "IDS",
+    "intrusion-prevention": "IDP",
+    "intrusion-detection-prevention": "IDP",
+    "idp": "IDP",
+    "appqoe": "appqoe",
+    **{f"netsvc{i}": f"netsvc{i}" for i in range(1, 5)},
+}
 _CLI_SERVICE = re.compile(
-    r"^\s*service\s+(?P<type>FW|IDS|IDP|netsvc[1-4]|appqoe)\s+(?:vrf|vpn)\s+(?P<vpn>\d+)\b"
+    r"^\s*service\s+(?P<type>firewall|intrusion-detection-prevention|intrusion-detection|"
+    r"intrusion-prevention|FW|IDS|IDP|netsvc[1-4]|appqoe)\s+(?:vrf|vpn)\s+(?P<vpn>\d+)\b",
+    re.IGNORECASE,
 )
 _CLI_ADDRESS = re.compile(r"^\s*(?:ipv4\s+)?address\s+(?P<addrs>[\d.\s]+?)\s*$")
 _CLI_TRACK_OFF = re.compile(r"^\s*no\s+track-enable\b")
 
 
 def cli_services(text: str) -> list[dict[str, Any]]:
-    """Services in a CLI-profile text: [{type, vpn, addresses, tracking}] (IOS XE `sdwan` / `service FW vrf
-    10` / `ipv4 address ...`; the vEdge-style `service FW address ...` under a VPN is matched too when it
-    names the VPN). Unrecognised lines are ignored."""
+    """Services in a CLI-profile text: [{type, vpn, addresses, tracking}], `type` as the parcel names it (FW
+    for IOS XE `sdwan` / `service firewall vrf 10` / `ipv4 address ...`; the parcel-style `service FW vrf
+    10` and the vEdge-style `service FW address ...` are matched too when they name the VPN). Unrecognised
+    lines are ignored."""
     out: list[dict[str, Any]] = []
     cur: dict[str, Any] | None = None
     indent = 0
     for line in text.splitlines():
         m = _CLI_SERVICE.match(line)
         if m:
-            cur = {"type": m.group("type"), "vpn": int(m.group("vpn")), "addresses": [], "tracking": True}
+            stype = _CLI_TYPES.get(m.group("type").lower(), m.group("type"))
+            cur = {"type": stype, "vpn": int(m.group("vpn")), "addresses": [], "tracking": True}
             indent = len(line) - len(line.lstrip())
             out.append(cur)
             rest = line[m.end() :]
@@ -189,9 +215,10 @@ def cli_services(text: str) -> list[dict[str, Any]]:
 
 
 def cli_lines(stype: str, vpn: int, addresses: list[str], tracking: bool) -> list[str]:
-    """The IOS XE lines for a service (for a CLI-profile group; unverified on 17.18, check the edge's running
-    config after the deploy)."""
-    lines = ["sdwan", f" service {stype} vrf {vpn}", f"  ipv4 address {' '.join(addresses)}"]
+    """The IOS XE lines for a service (for a CLI-profile group). `service firewall vrf <n>` is proven on
+    17.18; for the other types check the edge's running config after the deploy."""
+    keyword = CLI_KEYWORDS.get(stype, stype)
+    lines = ["sdwan", f" service {keyword} vrf {vpn}", f"  ipv4 address {' '.join(addresses)}"]
     if not tracking:
         lines.append("  no track-enable")
     return lines
@@ -230,17 +257,21 @@ def omp_service_rows(rows: list[dict[str, Any]], vpn: int | None = None) -> list
 
 
 def _prefix_match(side: str, lists: list[str], prefixes: list[str]) -> list[dict[str, Any]]:
-    """sourceDataPrefix / destinationDataPrefix entries: a data-prefix list by refId, or a literal prefix."""
-    key = f"{side}DataPrefix"
+    """Match entries for one side, one key each (20.18 schema): `<side>DataPrefixList` {refId} for a
+    data-prefix list, `<side>Ip` for a literal prefix."""
     out: list[dict[str, Any]] = []
     for pid in lists:
-        out.append({key: {f"{side}DataPrefixList": {"refId": g(pid)}}})
+        out.append({f"{side}DataPrefixList": {"refId": g(pid)}})
     for p in prefixes:
-        out.append({key: {f"{side}IpPrefix": g(p)}})
+        out.append({f"{side}Ip": g(p)})
     return out
 
 
-def steering_sequence(seq_id: int, rule: dict[str, Any], refs: dict[str, str]) -> dict[str, Any]:
+def steering_sequence(
+    seq_id: int, rule: dict[str, Any], refs: dict[str, str], default_vpn: int | None = None
+) -> dict[str, Any]:
+    """One sequence. The service's VPN is `service_vpn`, else `default_vpn` (the policy's one target VPN):
+    20.18 requires it on `service`, and on `serviceChain` unless the chain is local."""
     entries = _prefix_match(
         "source", [refs[n] for n in rule.get("source_lists") or []], rule.get("source_prefixes") or []
     )
@@ -254,10 +285,11 @@ def steering_sequence(seq_id: int, rule: dict[str, Any], refs: dict[str, str]) -
     if rule.get("destination_ports"):
         entries.append({"destinationPort": g([str(p) for p in rule["destination_ports"]])})
     target: dict[str, Any] = {"local": g(bool(rule.get("local"))), "restrict": g(bool(rule.get("restrict")))}
-    if rule.get("service_vpn") is not None:
-        target["vpn"] = g(int(rule["service_vpn"]))
+    svc_vpn = rule.get("service_vpn") if rule.get("service_vpn") is not None else default_vpn
+    if svc_vpn is not None:
+        target["vpn"] = g(int(svc_vpn))
     if rule.get("chain"):
-        action = {"serviceChain": {"serviceChainType": g(rule["chain"]), **target}}
+        action = {"serviceChain": {"type": g(rule["chain"]), **target}}
     else:
         action = {"service": {"type": g(rule.get("service") or "FW"), **target}}
     return {
@@ -279,13 +311,14 @@ def traffic_policy_body(
     rules: list[dict[str, Any]],
     refs: dict[str, str],
 ) -> dict[str, Any]:
+    default_vpn = vpns[0] if len(vpns) == 1 else None
     return {
         "name": name,
         "description": description,
         "data": {
             "dataDefaultAction": g(default_action),
             "target": {"vpn": g([str(v) for v in vpns]), "direction": g(direction)},
-            "sequences": [steering_sequence(i, r, refs) for i, r in enumerate(rules, start=1)],
+            "sequences": [steering_sequence(i, r, refs, default_vpn) for i, r in enumerate(rules, start=1)],
         },
     }
 
@@ -304,7 +337,13 @@ def _match_words(entries: list[Any], names: dict[str, str]) -> list[str]:
         if not isinstance(e, dict):
             continue
         for k, v in e.items():
-            if k in ("sourceDataPrefix", "destinationDataPrefix") and isinstance(v, dict):
+            if k in ("sourceIp", "destinationIp", "sourceDataPrefixList", "destinationDataPrefixList"):
+                side = "from" if k.startswith("source") else "to"
+                w = _ref_or_value(v, names)
+                if w:
+                    words.append(f"{side} {w}")
+            elif k in ("sourceDataPrefix", "destinationDataPrefix") and isinstance(v, dict):
+                # The pre-20.18 nested form, still read so older parcels show in plain words.
                 side = "from" if k.startswith("source") else "to"
                 for sub in v.values():
                     w = _ref_or_value(sub, names)
@@ -347,7 +386,7 @@ def steering_rows(data: dict[str, Any], names: dict[str, str] | None = None) -> 
                 if svc is not None:
                     row["service"] = leaf_value(svc.get("type"))
                 else:
-                    row["chain"] = leaf_value(body.get("serviceChainType"))
+                    row["chain"] = leaf_value(body.get("type") or body.get("serviceChainType"))
                 for k in ("vpn", "local", "restrict"):
                     if k in body:
                         row[k] = leaf_value(body[k])
