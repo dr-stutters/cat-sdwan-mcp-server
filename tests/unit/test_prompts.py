@@ -9,6 +9,7 @@ from cat_sdwan_mcp._core.prompts import rendered_text
 from cat_sdwan_mcp._core.testing import (
     assert_prompt_contract,
     assert_prompt_snapshots,
+    assert_suite_pack,
     load_tool_manifests,
 )
 
@@ -47,9 +48,28 @@ async def text_of(name: str, args: dict[str, str], server: object | None = None)
 
 def test_manifests_cover_the_other_servers() -> None:
     manifests = load_tool_manifests(MANIFESTS)
-    assert set(manifests) == {"cml", "ise", "fmc", "netbox"}
+    assert set(manifests) == {"catsdwan", "cml", "ise", "fmc", "netbox"}
     assert {"cml_get_link_scenarios", "cml_check_reachability", "cml_build_recipe"} <= manifests["cml"]
     assert {"netbox_site_summary", "netbox_add_journal_entry"} <= manifests["netbox"]
+    # This server's own manifest (`cat-sdwan-mcp-server tools --json --out tests/manifests/catsdwan.json`),
+    # for peers checking their catsdwan legs.
+    assert {"catsdwan_snapshot", "catsdwan_compare_snapshot", "suite_change_check"} <= manifests["catsdwan"]
+
+
+async def test_manifest_of_this_server_is_current() -> None:
+    async with Client(all_tiers()) as c:  # type: ignore[arg-type]
+        names = {t.name for t in await c.list_tools()} | {p.name for p in await c.list_prompts()}
+    assert load_tool_manifests(MANIFESTS / "catsdwan.json")["catsdwan"] == names
+
+
+async def test_suite_pack() -> None:
+    # ise_snapshot (I82) and fmc_snapshot (F89) are not in the committed peer manifests yet; no catc one.
+    await assert_suite_pack(
+        all_tiers(),  # type: ignore[arg-type]
+        "catsdwan",
+        MANIFESTS,
+        pending=["ise_snapshot", "ise_compare_snapshot", "fmc_snapshot", "fmc_compare_snapshot"],
+    )
 
 
 async def test_prompt_contract_against_the_manifests() -> None:
@@ -74,6 +94,7 @@ async def test_prompts_declare_their_servers() -> None:
         "catsdwan_branch_health": ["catsdwan", "cml", "netbox"],
         "catsdwan_onboard_branch": ["catsdwan", "netbox", "cml"],
         "catsdwan_why_is_app_slow": ["catsdwan", "ise", "fmc", "cml", "netbox"],
+        "suite_change_check": ["catsdwan", "ise", "catc", "fmc"],
     }
 
 
@@ -129,7 +150,7 @@ async def test_onboard_branch_without_optional_arguments() -> None:
 async def test_onboard_branch_hidden_without_writes() -> None:
     async with Client(make_server()) as c:
         names = {p.name for p in await c.list_prompts()}
-    assert names == {"catsdwan_branch_health", "catsdwan_why_is_app_slow"}
+    assert names == {"catsdwan_branch_health", "catsdwan_why_is_app_slow", "suite_change_check"}
 
 
 async def test_why_is_app_slow_renders() -> None:

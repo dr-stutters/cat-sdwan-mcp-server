@@ -6,7 +6,7 @@ import httpx
 from fastmcp import FastMCP
 from fastmcp.server.auth import AuthProvider
 
-from cat_sdwan_mcp._core import ServerSpec, ToolRegistrar, build_server
+from cat_sdwan_mcp._core import ServerSpec, ToolRegistrar, build_server, suite
 from cat_sdwan_mcp.client import SdwanApp
 from cat_sdwan_mcp.config import Settings
 from cat_sdwan_mcp.spec import spec_sources
@@ -34,6 +34,7 @@ from cat_sdwan_mcp.tools import (
     policy,
     prompts,
     security,
+    snapshot,
     troubleshooting,
     trustsec,
     upgrade,
@@ -93,6 +94,9 @@ History: "is this site getting worse?" -> catsdwan_site_report(site, days) (avai
 transport, control drops, top alarms and applications) or catsdwan_sla_history(site or tunnel, sla_class or
 app, days) (hourly/daily buckets, the periods each tunnel missed its SLA); "what is using the link?" ->
 catsdwan_top_applications(site) (needs application visibility (DPI) on the edges; says so when it is off).
+Change checks: catsdwan_snapshot(site) before a change (a blob to keep in the conversation), then
+catsdwan_compare_snapshot(before) after it names what changed by severity (control, BFD, OMP, app-route SLA,
+alarms, devices); the suite prompt suite_change_check runs the same on every connected server.
 Prompts: catsdwan_branch_health(site) (a verdict per transport), catsdwan_onboard_branch(site) (NetBox ->
 onboard -> boot -> deploy -> prove), catsdwan_why_is_app_slow(host, app) (ISE, app-route SLA, FMC, CML).
 Anything without a tool: catsdwan_search_spec('bfd') -> catsdwan_get_definition(path) -> catsdwan_api_call
@@ -148,6 +152,8 @@ def create_server(
             access.register,
             upgrade.register,
             licensing.register,
+            snapshot.register,
+            suite.register,
         ],
         status=SdwanApp.status,
         spec_sources=spec_sources,
