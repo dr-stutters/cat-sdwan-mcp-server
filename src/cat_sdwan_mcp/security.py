@@ -1,7 +1,7 @@
 """W23 edge security reads: the UTD container (Snort IPS, URL filtering), the zone-based firewall, the SSL
 proxy and the Secure Internet Gateway tunnels on one edge, and the security event indexes.
 
-Reads only: security policy is written in FMC (firewalling in this suite) or the Manager's GUI. Recorded on
+Reads only: the edge firewall is written by tools/edgefirewall.py (W47), FTD policy in FMC. Recorded on
 20.18.3.1 (a lab without any security policy): every real-time table answers 200 with no rows (the zone-based
 firewall statistics with one empty record, the drop counters with every counter at "0"), the four statistics
 indexes answer with no rows, and `utd/version-status` reports whether the edge's IOS XE supports the UTD image
