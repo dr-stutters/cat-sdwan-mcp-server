@@ -14,6 +14,8 @@
         "keep_enabled"
       ],
       "references": [
+        "catsdwan_status",
+        "catsdwan_get_device_config",
         "catsdwan_get_aaa",
         "catsdwan_list_users",
         "ise_status",
