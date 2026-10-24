@@ -8,8 +8,8 @@ granted, as that user: GET /dataservice/client/server (recorded on 20.18.3.1: `u
 VSessionId, which are dropped) and GET /dataservice/admin/user/userAuthType.
 
 Passwords come from the server's settings (CATSDWAN_PASSWORD for the API user, CATSDWAN_TEST_LOGIN_PASSWORDS
-for other accounts) or from an elicitation the client shows the user; never from a tool argument, so they
-never pass through the conversation. They are registered as secrets (masked in logs) and never returned.
+for other accounts) only: never from a tool argument and never from a client prompt (the MCP spec forbids
+asking for passwords through form-mode elicitation), so they never pass through the conversation. They are registered as secrets (masked in logs) and never returned.
 """
 
 from __future__ import annotations

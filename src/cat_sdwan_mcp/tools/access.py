@@ -283,9 +283,10 @@ def register(reg: ToolRegistrar) -> None:
         locals_ = ", ".join(dict.fromkeys(["admin", user]))
         if order[0] != "local":
             warnings.append(
-                f"{order[0]} is tried first: local users ({locals_}) log in only when it falls back "
-                f"along the order. Create {user!r} in ISE with a netadmin role, or test with a second "
-                "session first."
+                f"{order[0]} is tried first: a RADIUS/TACACS+ reject ends the login and never falls back, "
+                f"so local users ({locals_}) log in only while that server is unreachable or times out. "
+                f"Create {user!r} in ISE with a netadmin role, or put 'local' first and test with a "
+                "second session."
             )
         method = "the" + (" new" if servers is not None else "") + f" {protocol} servers"
         plan = Plan(

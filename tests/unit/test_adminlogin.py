@@ -13,7 +13,6 @@ import httpx
 import pytest
 import respx
 from fastmcp import Client
-from fastmcp.client.elicitation import ElicitResult
 from fastmcp.exceptions import ToolError
 
 from cat_sdwan_mcp.adminlogin import auth_source, granted_view, parse_passwords
@@ -69,7 +68,7 @@ async def test_login_api_user_from_settings(api: respx.MockRouter) -> None:
     async with Client(make_server()) as c:
         out = (await c.call_tool("catsdwan_test_login", {})).structured_content
     assert out["login"] == "passed" and out["username"] == "admin" and out["method"] == "jwt"
-    assert out["password_from"] == "settings" and out["roles"] == ["netadmin"]
+    assert out["password_from"] == "CATSDWAN_PASSWORD" and out["roles"] == ["netadmin"]
     assert out["auth_source"] == "local account" and out["local_account"] is True
     assert out["granted"]["external_user"] is False and out["granted"]["auth_type"] == "OTHER"
     bodies = [json.loads(c.request.content) for c in login.calls]
@@ -82,22 +81,23 @@ async def test_login_api_user_from_settings(api: respx.MockRouter) -> None:
         assert secret not in text
 
 
-async def test_login_radius_user_through_the_client_prompt(
+async def test_login_radius_user_from_the_settings(
     api: respx.MockRouter, caplog: pytest.LogCaptureFixture
 ) -> None:
     jwt_router(api, {"ad-op1": {}})
     as_user(api, RADIUS_USER)
     asked: list[str] = []
 
-    async def prompt(message: str, response_type: Any, params: Any, context: Any) -> dict[str, str]:
+    async def prompt(message: str, *_: Any) -> dict[str, str]:  # must never be called
         asked.append(message)
-        return {"password": AD_PASSWORD}
+        return {"password": "wrong"}
 
     caplog.set_level(logging.DEBUG)
-    async with Client(make_server(), elicitation_handler=prompt) as c:
+    server = make_server(test_login_passwords=f"ad-op1={AD_PASSWORD}")
+    async with Client(server, elicitation_handler=prompt) as c:
         out = (await c.call_tool("catsdwan_test_login", {"username": "ad-op1"})).structured_content
-    assert len(asked) == 1 and "'ad-op1'" in asked[0] and "not stored" in asked[0]
-    assert out["login"] == "passed" and out["password_from"] == "prompt"
+    assert asked == []
+    assert out["login"] == "passed" and out["password_from"] == "CATSDWAN_TEST_LOGIN_PASSWORDS"
     assert out["roles"] == ["operator"] and out["local_account"] is False
     assert out["auth_source"].startswith("remote")
     assert AD_PASSWORD not in json.dumps(out) and TEST_TOKEN not in json.dumps(out)
@@ -106,34 +106,26 @@ async def test_login_radius_user_through_the_client_prompt(
 
 async def test_login_rejected_reports_the_reason(api: respx.MockRouter) -> None:
     jwt_router(api, {})  # every test login answers 401
-
-    async def prompt(*_: Any) -> dict[str, str]:
-        return {"password": AD_PASSWORD}
-
-    async with Client(make_server(), elicitation_handler=prompt) as c:
+    async with Client(make_server(test_login_passwords=f"ad-op1={AD_PASSWORD}")) as c:
         out = (await c.call_tool("catsdwan_test_login", {"username": "ad-op1"})).structured_content
     assert out["login"] == "failed" and out["reason"].startswith("HTTP 401")
     assert "Authentication failed" in out["reason"] and AD_PASSWORD not in json.dumps(out)
 
 
-async def test_login_declined_prompt_tests_nothing(api: respx.MockRouter) -> None:
+async def test_login_without_a_settings_password_names_the_setting(api: respx.MockRouter) -> None:
     login = jwt_router(api, {"ad-op1": {}})
+    asked: list[str] = []
 
-    async def decline(*_: Any) -> ElicitResult[Any]:
-        return ElicitResult(action="decline")
+    async def prompt(message: str, *_: Any) -> dict[str, str]:  # the server never elicits a password
+        asked.append(message)
+        return {"password": AD_PASSWORD}
 
-    async with Client(make_server(), elicitation_handler=decline) as c:
-        out = (await c.call_tool("catsdwan_test_login", {"username": "ad-op1"})).structured_content
-    assert out == {"username": "ad-op1", "login": "not tested", "reason": "the password prompt was declined"}
+    for server in (make_server(), make_server(test_login_passwords="someone-else=x")):
+        async with Client(server, elicitation_handler=prompt) as c:
+            with pytest.raises(ToolError, match="No password for 'ad-op1'.*CATSDWAN_TEST_LOGIN_PASSWORDS"):
+                await c.call_tool("catsdwan_test_login", {"username": "ad-op1"})
+    assert asked == []
     assert all(json.loads(c.request.content)["duration"] != 300 for c in login.calls)
-
-
-async def test_login_without_a_prompt_names_the_setting(api: respx.MockRouter) -> None:
-    async with Client(make_server()) as c:
-        with pytest.raises(ToolError, match="CATSDWAN_TEST_LOGIN_PASSWORDS"):
-            await c.call_tool("catsdwan_test_login", {"username": "ad-op1"})
-        with pytest.raises(ToolError, match="No password for 'ad-op1' in the settings"):
-            await c.call_tool("catsdwan_test_login", {"username": "ad-op1", "password_from": "settings"})
 
 
 async def test_login_settings_password_on_the_session_login(router: respx.MockRouter) -> None:
@@ -153,9 +145,9 @@ async def test_login_settings_password_on_the_session_login(router: respx.MockRo
     server = make_server(test_login_passwords='{"mcp-ro": "ro-s3cret"}')
     async with Client(server) as c:
         out = (
-            await c.call_tool("catsdwan_test_login", {"username": "mcp-ro", "password_from": "settings"})
+            await c.call_tool("catsdwan_test_login", {"username": "mcp-ro"})
         ).structured_content
-    assert out["login"] == "passed" and out["method"] == "session" and out["password_from"] == "settings"
+    assert out["login"] == "passed" and out["method"] == "session"
     assert out["roles"] == ["operator"] and out["auth_source"] == "local account"
     assert any(c.request.headers.get("Cookie") == "JSESSIONID=sess-mcp-ro" for c in logout.calls)
     assert "ro-s3cret" not in json.dumps(out) and "sess-mcp-ro" not in json.dumps(out)

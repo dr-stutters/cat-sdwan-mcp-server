@@ -44,5 +44,5 @@ class Settings(BaseServerSettings):
     ise_password: SecretStr | None = None
     # CATSDWAN_TEST_LOGIN_PASSWORDS: passwords catsdwan_test_login may use for accounts other than the API
     # user (a break-glass admin, an AD test user), as a JSON object {"user": "password"} or one user=password
-    # per line. A secret like CATSDWAN_PASSWORD (_FILE and _REF work); without it the tool asks the client.
+    # per line. A secret like CATSDWAN_PASSWORD (_FILE and _REF work); without an entry the tool names this setting.
     test_login_passwords: SecretStr | None = None

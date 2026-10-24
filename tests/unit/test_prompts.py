@@ -208,7 +208,11 @@ async def test_admin_access_via_ise_local_first_and_lockout() -> None:
     kept = await text_of(
         "catsdwan_admin_access_via_ise", {**SAMPLES["catsdwan_admin_access_via_ise"], "keep_enabled": "true"}
     )
-    assert "Leave it on" in kept and "ise_delete_object" not in kept
+    assert "Leave it on" in kept and "ise_delete_object" not in kept and "mcp_sdwan_admins" in kept
+    # The undo removes the identity sequence step 5 created; no password is ever asked through the client.
+    undo = text[text.index("12. Switch off") :]
+    assert "mcp_sdwan_admins" in undo and "`ise_delete_policy_set`" in undo
+    assert "CATSDWAN_TEST_LOGIN_PASSWORDS" in text and "prompts the user" not in text
 
 
 async def test_admin_access_via_ise_needs_dangerous_and_valid_ips() -> None:
