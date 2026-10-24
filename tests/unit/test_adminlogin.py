@@ -144,9 +144,7 @@ async def test_login_settings_password_on_the_session_login(router: respx.MockRo
     router.get("/dataservice/admin/user").respond(json=fixture("admin_user_list"))
     server = make_server(test_login_passwords='{"mcp-ro": "ro-s3cret"}')
     async with Client(server) as c:
-        out = (
-            await c.call_tool("catsdwan_test_login", {"username": "mcp-ro"})
-        ).structured_content
+        out = (await c.call_tool("catsdwan_test_login", {"username": "mcp-ro"})).structured_content
     assert out["login"] == "passed" and out["method"] == "session"
     assert out["roles"] == ["operator"] and out["auth_source"] == "local account"
     assert any(c.request.headers.get("Cookie") == "JSESSIONID=sess-mcp-ro" for c in logout.calls)

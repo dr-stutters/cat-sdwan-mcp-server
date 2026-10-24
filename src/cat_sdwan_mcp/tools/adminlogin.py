@@ -130,9 +130,10 @@ def register(reg: ToolRegistrar) -> None:
         never is a tool argument and is never asked for through the client (the MCP spec forbids form
         elicitation of passwords): CATSDWAN_PASSWORD for the API user, CATSDWAN_TEST_LOGIN_PASSWORDS
         (user=password per line, _FILE / _REF) on the server for any other account; without one the tool
-        says which setting to fill. It is not stored, logged or returned (nor is the session token, which expires within 5
-        minutes; a form-login session is logged out). Each failed try counts towards the Manager's lockout
-        of that account. Use it before and after catsdwan_set_external_authentication (local admin first)."""
+        says which setting to fill. It is not stored, logged or returned (nor is the session token, which
+        expires within 5 minutes; a form-login session is logged out). Each failed try counts towards the
+        Manager's lockout of that account. Use it before and after catsdwan_set_external_authentication
+        (local admin first)."""
         app: SdwanApp = get_client(ctx)
         user = username.strip() or (app.settings.username or "")
         if not user:
@@ -249,9 +250,10 @@ def register(reg: ToolRegistrar) -> None:
     asks ({tool_ref("catsdwan_api_call")} DELETE /dataservice/admin/radius, preview-first). Then the
     ISE undo, each preview-first: policy set {pset} ({tool_ref("ise_delete_policy_set")}), the identity
     source sequence mcp_sdwan_admins from step 5 (no delete tool: {tool_ref("ise_api_call")} DELETE
-    /ers/config/idstoresequence/<id>), profiles {profile} and {other_profile} ({tool_ref("ise_delete_object")}
-    kind='authz_profile'), the NAD's RADIUS secret or the NAD itself if step 3 created it ({tool_ref("ise_delete_nad")}), and the AD user/group if step 2 created them for this proof (ask
-    first)."""
+    /ers/config/idstoresequence/<id>), profiles {profile} and {other_profile}
+    ({tool_ref("ise_delete_object")} kind='authz_profile'), the NAD's RADIUS secret or the NAD itself
+    if step 3 created it ({tool_ref("ise_delete_nad")}), and the AD user/group if step 2 created them
+    for this proof (ask first)."""
             if keep_enabled == "false"
             else f"""12. Leave it on (keep_enabled=true). Write the undo list down: the order back to
     ['local'], then the ISE objects created here (policy set {pset}, identity source sequence
@@ -325,8 +327,9 @@ Lockout rules (read them to the user before step 8):
     the group or condition didn't match: {tool_ref("ise_test_ad_user")});
     {tool_ref("ise_get_auth_list")} for the NAD or user when ISE logged a session. A failed login:
     {tool_ref("ise_recent_auth_failures")} for the reason (no reject logged and the login timed out:
-    {tool_ref("ise_nad_radius_stats")} for the Manager's NAD, then the VPN {vpn} path to ISE); passed but roles not [{role}]: the profile
-    didn't return Viptela-Group-Name, or the group doesn't exist on the Manager (step 1).
+    {tool_ref("ise_nad_radius_stats")} for the Manager's NAD, then the VPN {vpn} path to ISE); passed
+    but roles not [{role}]: the profile didn't return Viptela-Group-Name, or the group doesn't exist
+    on the Manager (step 1).
     Then the group change: point mcp-sdwan-ad at {other_profile} with
     {tool_ref("ise_update_policy_rule")} (preview, approval), test {user} again: roles [{other}].
     Point the rule back at {profile} the same way.

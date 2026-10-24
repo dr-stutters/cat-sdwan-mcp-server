@@ -16,7 +16,9 @@ Move SD-WAN Manager admin logins onto AD through ISE (RADIUS): members of AD gro
 (PAP) from 192.0.2.10 to ISE at 192.0.2.20 in VPN 0. Every write is preview-first: show the preview, wait for
 the user's approval, then repeat the call with the confirm token. Stop and report on any failure.
 Passwords and shared secrets: the user types them where a tool asks; never repeat one in the chat.
-catsdwan_test_login takes no password argument: it uses the server's settings or prompts the user.
+catsdwan_test_login takes no password argument and never asks for one: the API user's comes from
+CATSDWAN_PASSWORD, any other account's from CATSDWAN_TEST_LOGIN_PASSWORDS on the server (user=password per
+line). Before step 10, ask the server's operator to add the AD user's password there (never in the chat).
 
 Lockout rules (read them to the user before step 8):
 - authFallback only falls back when the RADIUS server is unreachable or times out. A RADIUS REJECT
@@ -69,14 +71,17 @@ Lockout rules (read them to the user before step 8):
 9. Right after: `catsdwan_test_login` with the local admin again (must still pass, auth
    source local). If it fails, at once `catsdwan_set_external_authentication`
    protocol='radius', order=['local'] (preview, approval) from this server's session and stop.
-10. The AD login: `catsdwan_test_login` with username="mcp-sdwan-op1" (the client prompts the user
-    for the password, or it comes from the server's settings): it must pass with roles [operator],
+10. The AD login: `catsdwan_test_login` with username="mcp-sdwan-op1" (its password from
+    CATSDWAN_TEST_LOGIN_PASSWORDS; if it isn't there the tool names the setting: stop and ask the
+    operator): it must pass with roles [operator],
     external_user true and local_account false. ISE: `ise_get_policy_set` "mcp-sdwan-admin-login": the
     set, the authentication rule and mcp-sdwan-ad must have counted the login (a hit on Default means
     the group or condition didn't match: `ise_test_ad_user`);
     `ise_get_auth_list` for the NAD or user when ISE logged a session. A failed login:
-    `ise_recent_auth_failures` for the reason; passed but roles not [operator]: the profile
-    didn't return Viptela-Group-Name, or the group doesn't exist on the Manager (step 1).
+    `ise_recent_auth_failures` for the reason (no reject logged and the login timed out:
+    `ise_nad_radius_stats` for the Manager's NAD, then the VPN 0 path to ISE); passed
+    but roles not [operator]: the profile didn't return Viptela-Group-Name, or the group doesn't exist
+    on the Manager (step 1).
     Then the group change: point mcp-sdwan-ad at mcp-sdwan-netadmin with
     `ise_update_policy_rule` (preview, approval), test mcp-sdwan-op1 again: roles [netadmin].
     Point the rule back at mcp-sdwan-operator the same way.
@@ -87,7 +92,9 @@ Lockout rules (read them to the user before step 8):
     with the local admin once more and `catsdwan_get_aaa` (order ['local']). The RADIUS
     server entry may stay on the Manager (unused while the order is local); remove it only if the user
     asks (`catsdwan_api_call` DELETE /dataservice/admin/radius, preview-first). Then the
-    ISE undo, each preview-first: policy set mcp-sdwan-admin-login (`ise_delete_object`), profiles
-    mcp-sdwan-operator and mcp-sdwan-netadmin, the NAD's RADIUS secret or the NAD itself if step 3 created it
-    (`ise_delete_nad`), and the AD user/group if step 2 created them for this proof (ask
-    first).
+    ISE undo, each preview-first: policy set mcp-sdwan-admin-login (`ise_delete_policy_set`), the identity
+    source sequence mcp_sdwan_admins from step 5 (no delete tool: `ise_api_call` DELETE
+    /ers/config/idstoresequence/<id>), profiles mcp-sdwan-operator and mcp-sdwan-netadmin
+    (`ise_delete_object` kind='authz_profile'), the NAD's RADIUS secret or the NAD itself
+    if step 3 created it (`ise_delete_nad`), and the AD user/group if step 2 created them
+    for this proof (ask first).

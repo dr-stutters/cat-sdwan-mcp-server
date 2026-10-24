@@ -40,6 +40,7 @@
         "catsdwan_set_external_authentication",
         "ise_get_auth_list",
         "ise_recent_auth_failures",
+        "ise_nad_radius_stats",
         "ise_update_policy_rule"
       ],
       "rendered": true,

@@ -198,6 +198,8 @@ async def test_sgt_path_walks_edge_overlay_and_ise() -> None:
 async def test_sgt_path_without_vpn() -> None:
     text = await text_of("catsdwan_sgt_path", {"source": "alice", "destination": "10.61.100.10"})
     assert 'host="alice")' not in text and 'host="alice"' in text and "vpn=" not in text
+
+
 async def test_admin_access_via_ise_local_first_and_lockout() -> None:
     text = await text_of("catsdwan_admin_access_via_ise", SAMPLES["catsdwan_admin_access_via_ise"])
     assert "order=['local', 'radius']" in text and "never falls back to local" in text
