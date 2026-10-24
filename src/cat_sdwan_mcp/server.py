@@ -35,6 +35,7 @@ from cat_sdwan_mcp.tools import (
     prompts,
     security,
     snapshot,
+    triage,
     troubleshooting,
     trustsec,
     upgrade,
@@ -99,6 +100,8 @@ catsdwan_compare_snapshot(before) after it names what changed by severity (contr
 alarms, devices); the suite prompt suite_change_check runs the same on every connected server.
 Prompts: catsdwan_branch_health(site) (a verdict per transport), catsdwan_onboard_branch(site) (NetBox ->
 onboard -> boot -> deploy -> prove), catsdwan_why_is_app_slow(host, app) (ISE, app-route SLA, FMC, CML).
+Branch triage: catsdwan_wifi_lan_or_wan(host), catsdwan_network_or_ise(site), catsdwan_site_down(site),
+catsdwan_brownout_drill(site) (CML scenarios per transport, preview-first).
 Anything without a tool: catsdwan_search_spec('bfd') -> catsdwan_get_definition(path) -> catsdwan_api_call
 (paths as /dataservice/..., checked against the Manager's own OpenAPI document; GET and the statistics, alarm,
 event and audit query POSTs are reads, other writes are preview-first, /device/action/* is dangerous).
@@ -141,6 +144,7 @@ def create_server(
             features.register,
             health.register,
             prompts.register,
+            triage.register,
             certificates.register,
             troubleshooting.register,
             devicestate.register,
