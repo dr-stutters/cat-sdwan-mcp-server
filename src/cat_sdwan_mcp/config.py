@@ -3,6 +3,7 @@
 MCP_* settings for this server come from stutters-mcp-core.
 """
 
+from pathlib import Path
 from typing import ClassVar, Literal
 
 from pydantic import Field, SecretStr
@@ -47,3 +48,8 @@ class Settings(BaseServerSettings):
     # per line. A secret like CATSDWAN_PASSWORD (_FILE and _REF work); without an entry the tool names this
     # setting (it never asks the client for a password).
     test_login_passwords: SecretStr | None = None
+
+    # CATSDWAN_IMAGE_DIR: the directory on the MCP server host catsdwan_upload_utd_image reads UTD engine
+    # images from (like FMC_PKI_DIR): only the file name travels in the tool call, never the file's bytes.
+    # Unset: uploads are off.
+    image_dir: Path | None = None
