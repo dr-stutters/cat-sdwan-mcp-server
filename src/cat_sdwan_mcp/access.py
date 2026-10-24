@@ -8,8 +8,10 @@ for the API login; `/admin/aaa`, `/admin/radius` and `/admin/tacacs` answer `"da
 set (local authentication only, the Manager's default). The write bodies follow the 20.18 OpenAPI document:
 `/admin/aaa` {authOrder [local|radius|tacacs], authFallback, adminAuthOrder, accounting, auditDisable},
 `/admin/tacacs` {authentication pap|ascii, timeout, servers [{address, secretKey, authPort, acctPort, vpn,
-priority}]}, `/admin/radius` {timeout, retransmit, server [{address, secretKey, authPort, acctPort, vpn,
-priority, tag}]}.
+priority}]}, `/admin/radius` {timeout, retransmit, server [...]} in the GUI's shape (server_body).
+These /admin/* objects are the Remote AAA of a multi-tenant provider only (Wave 8 GUI capture: a
+single-tenant 20.18 Manager has no Remote AAA tab); a single-tenant Manager's own logins are its system AAA
+(manageraaa.py).
 """
 
 from __future__ import annotations
@@ -141,19 +143,32 @@ def mask_server(s: dict[str, Any]) -> dict[str, Any]:
 
 
 def server_body(protocol: str, s: dict[str, Any]) -> dict[str, Any]:
-    default_port = 1812 if protocol == "radius" else 49
-    default_acct = 1813 if protocol == "radius" else 49
-    body: dict[str, Any] = {
+    """One server of /admin/radius or /admin/tacacs (a multi-tenant provider's Remote AAA). RADIUS is the
+    20.18 GUI's own shape (Wave 8 capture, read from the GUI's code): {address, authPort, acctPort, key "",
+    secretKey, priority, sourceVpn}, plus vpn (destination VPN) and vpnIpSubnet only when sourceVpn is 512;
+    no tag."""
+    if protocol == "radius":
+        body: dict[str, Any] = {
+            "address": s["address"],
+            "authPort": s.get("auth_port") or 1812,
+            "acctPort": s.get("acct_port") or 1813,
+            "key": "",
+            "secretKey": s["secret"],
+            "priority": s.get("priority", 0),
+            "sourceVpn": s.get("vpn", 0),
+        }
+        if body["sourceVpn"] == 512:
+            body["vpn"] = s.get("destination_vpn") or 0
+            body["vpnIpSubnet"] = s.get("vpn_ip_subnet") or ""
+        return body
+    return {
         "address": s["address"],
         "secretKey": s["secret"],
-        "authPort": s.get("auth_port") or default_port,
-        "acctPort": s.get("acct_port") or default_acct,
+        "authPort": s.get("auth_port") or 49,
+        "acctPort": s.get("acct_port") or 49,
         "vpn": s.get("vpn", 0),
         "priority": s.get("priority", 0),
     }
-    if protocol == "radius" and s.get("tag"):
-        body["tag"] = s["tag"]
-    return body
 
 
 def order_problems(order: list[str], has_servers: dict[str, bool]) -> list[str]:

@@ -206,7 +206,10 @@ async def test_admin_access_via_ise_local_first_and_lockout() -> None:
     assert 'sdwan_group="operator"' in text and 'sdwan_group="netadmin"' in text
     assert "Viptela-Group-Name" in text and 'scope="policyset"' in text
     assert text.index("6. Baseline") < text.index("8. External authentication") < text.index("9. Right after")
-    assert "`catsdwan_test_login`" in text and "order=['local'] (preview, approval)" in text
+    assert "`catsdwan_test_login`" in text and "run the preview's `undo` (preview, approval)" in text
+    # W40: a single-tenant Manager's own logins are its system AAA (template), a provider's /admin/radius.
+    assert "single-tenant" in text and "mcp-manager-system-aaa" in text and "section='system'" in text
+    assert "servers=[] on a single-tenant Manager" in text[text.index("12. Switch off") :]
     kept = await text_of(
         "catsdwan_admin_access_via_ise", {**SAMPLES["catsdwan_admin_access_via_ise"], "keep_enabled": "true"}
     )

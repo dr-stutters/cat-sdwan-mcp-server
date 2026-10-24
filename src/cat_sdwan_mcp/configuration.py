@@ -317,8 +317,9 @@ _NOT_SECRET = (
     r"encryption|exchange|pair|rotation|hash|ascii|modulus)\b)"
 )
 _SECRET = re.compile(
-    r"(?P<kw>(?<![\w-])(?:password|secret|key-string|key|community|psk|pre-shared-key|pre-shared-secret|"
-    r"passphrase|server-key|authentication-key|auth-password|priv-password|shared-secret|ascii))"
+    r"(?P<kw>(?<![\w-])(?:secret-key|password|secret|key-string|key|community|psk|pre-shared-key|"
+    r"pre-shared-secret|passphrase|server-key|authentication-key|auth-password|priv-password|shared-secret|"
+    r"ascii))"
     rf"(?P<sep>\s+){_TYPE}{_NOT_SECRET}(?P<secret>[^\s*<]\S*)",
     re.IGNORECASE,
 )

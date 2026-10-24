@@ -46,7 +46,9 @@ from cat_sdwan_mcp.access import (
     user_row,
 )
 from cat_sdwan_mcp.client import SdwanApp, _as_list, is_html_response
+from cat_sdwan_mcp.manageraaa import CLIENT_SERVER_PATH, tenancy
 from cat_sdwan_mcp.tools.changes import dangerous_blockers
+from cat_sdwan_mcp.tools.manageraaa import system_path
 
 # The first write of /admin/radius, /admin/tacacs and /admin/aaa (never set: `"data": {}`) sends the 20.18
 # spec's defaults explicitly; #40's POST /admin/tacacs with the servers alone answered 400 without detail.
@@ -69,9 +71,21 @@ class AuthServer(BaseModel):
     secret: str = Field(description="Shared secret (masked in every preview and result)")
     auth_port: int | None = Field(default=None, ge=1, le=65535, description="Default 49 / 1812")
     acct_port: int | None = Field(default=None, ge=1, le=65535, description="Default 49 / 1813")
-    vpn: Literal[0, 512] = Field(default=0, description="VPN the Manager reaches it in")
+    vpn: Literal[0, 512] = Field(default=0, description="VPN the Manager reaches it in (RADIUS: sourceVpn)")
     priority: int = Field(default=0, ge=0, le=7, description="0-7, lower first")
-    tag: str | None = Field(default=None, description="RADIUS only: a 4-16 character name")
+    tag: str | None = Field(
+        default=None,
+        description="RADIUS on a single-tenant Manager (system AAA) only: a name, 4-16 characters",
+    )
+    destination_vpn: int | None = Field(
+        default=None,
+        ge=0,
+        le=65530,
+        description="Multi-tenant provider RADIUS with vpn 512 only: the destination VPN (GUI default 0)",
+    )
+    vpn_ip_subnet: str | None = Field(
+        default=None, description="Multi-tenant provider RADIUS with vpn 512 only: the source subnet"
+    )
 
 
 async def _get(app: SdwanApp, path: str) -> Any:
@@ -90,6 +104,14 @@ async def _aaa(app: SdwanApp) -> tuple[Any, Any, Any]:
         app.api.get(AAA_PATH), app.api.get(RADIUS_PATH), app.api.get(TACACS_PATH)
     )
     return aaa, radius, tacacs
+
+
+async def manager_tenancy(app: SdwanApp) -> str | None:
+    """'single' / 'multi' from /client/server (tenancyMode), None when it can't be read."""
+    try:
+        return tenancy(await app.api.get(CLIENT_SERVER_PATH))
+    except UpstreamError:
+        return None
 
 
 async def login_check(app: SdwanApp) -> dict[str, Any]:
@@ -195,7 +217,10 @@ def register(reg: ToolRegistrar) -> None:
         ],
         servers: Annotated[
             list[AuthServer] | None,
-            Field(description="Replace the servers of `protocol` (1-8); omit to keep the current ones"),
+            Field(
+                description="Replace the servers of `protocol` (1-8); omit to keep the current ones; [] "
+                "removes them (single-tenant system AAA)"
+            ),
         ] = None,
         fallback: Annotated[
             bool | None,
@@ -209,19 +234,49 @@ def register(reg: ToolRegistrar) -> None:
         ] = None,
         confirm: Confirm = None,
     ) -> dict[str, Any]:
-        """Point Manager logins at TACACS+ or RADIUS servers (ISE) and set the login order. Lockout risk:
-        the preview shows the order and servers before and after, names the local fallback, and BLOCKS an
-        order without 'local', an order naming a method with no server, and a change that alters nothing.
-        Confirm (needs MCP_ENABLE_DANGEROUS) writes /admin/tacacs or /admin/radius, then /admin/aaa, then logs
-        in afresh as the API user; if that login fails, the previous order is put back. Secrets are always
-        masked. The ISE side: ise_set_tacacs_server / ise_set_shell_profile. Undo: the preview's `undo`."""
+        """Point Manager logins at RADIUS (ISE) or TACACS+ servers and set the login order. The path follows
+        the Manager's tenancy (/client/server tenancyMode). Single-tenant (the usual case): /admin/radius and
+        /admin/aaa are a multi-tenant provider's Remote AAA only (the 20.18 GUI has no Remote AAA tab there),
+        so RADIUS for the Manager's own logins goes into its system AAA: the preview shows the running
+        configuration's AAA lines before and after (auth-order, auth-fallback, the radius block; nothing else
+        changes) and the diff; confirm tests the API user's login, puts that configuration in CLI device
+        template mcp-manager-system-aaa attached to the Manager, follows the attach, tests the login again
+        and re-attaches the old configuration if it fails (the Manager leaves CLI mode). Multi-tenant
+        provider: /admin/radius in the GUI's body shape, or /admin/tacacs, then /admin/aaa, then a test login
+        with the old order put back if it fails. Lockout risk: BLOCKS an order without 'local', a method with
+        no server and a no-op; keep 'local' first with fallback. Secrets are always masked. Dangerous tier.
+        Prove with catsdwan_test_login before and after. Undo: the preview's `undo`."""
         app: SdwanApp = get_client(ctx)
-        if servers is not None and not 1 <= len(servers) <= 8:
+        if servers is not None and len(servers) > 8:
             raise InvalidRequest("servers takes 1 to 8 servers (omit it to keep the current ones).")
         if authentication and protocol != "tacacs":
             raise InvalidRequest("authentication (pap or ascii) is a TACACS+ setting.")
         for s in servers or []:
             register_secret(s.secret)
+        call_args = {
+            "protocol": protocol,
+            "order": list(order),
+            "servers": [s.model_dump() for s in servers] if servers is not None else None,
+            "fallback": fallback,
+            "server_timeout": server_timeout,
+            "authentication": authentication,
+        }
+        mode = await manager_tenancy(app)
+        if mode == "single":
+            return await system_path(
+                ctx,
+                app,
+                protocol=protocol,
+                order=list(order),
+                servers=[s.model_dump() for s in servers] if servers is not None else None,
+                fallback=fallback,
+                server_timeout=server_timeout,
+                args=call_args,
+                confirm=confirm,
+                login_check=login_check,
+            )
+        if servers is not None and not servers:
+            raise InvalidRequest("servers takes 1 to 8 servers (omit it to keep the current ones).")
         aaa, radius, tacacs = await _aaa(app)
         before = aaa_view(aaa, radius, tacacs)
         cur_aaa = data_of(aaa) if isinstance(data_of(aaa), dict) else {}
@@ -260,6 +315,12 @@ def register(reg: ToolRegistrar) -> None:
         if fallback is not None:
             aaa_req["authFallback"] = fallback
         blockers = order_problems(list(order), has)
+        tenancy_warning = (
+            ["the Manager's tenancy (/client/server tenancyMode) could not be read: this uses the "
+             "multi-tenant provider's /admin/* Remote AAA, which a single-tenant Manager refuses"]
+            if mode is None
+            else []
+        )  # fmt: skip
         if (
             server_req is None
             and list(order) == before["order"]
@@ -279,7 +340,11 @@ def register(reg: ToolRegistrar) -> None:
             return {**req, srv_key: [{**s, "secretKey": MASK} for s in req[srv_key]]}
 
         user = app.settings.username or "the API user"
-        warnings = []
+        warnings = list(tenancy_warning)
+        if protocol == "radius" and any(s.tag for s in servers or []):
+            warnings.append(
+                "tag is left out: the provider's Remote AAA has no tag field (the GUI sends none)"
+            )
         locals_ = ", ".join(dict.fromkeys(["admin", user]))
         if order[0] != "local":
             warnings.append(
@@ -293,6 +358,7 @@ def register(reg: ToolRegistrar) -> None:
             f"Set Manager login order {before['order']} -> {list(order)}"
             + (f" and replace the {protocol.upper()} servers" if servers is not None else ""),
             details={
+                "path": "Remote AAA (/admin/*, multi-tenant provider)",
                 "before": {
                     "order": before["order"],
                     "fallback": before.get("fallback"),
@@ -366,14 +432,7 @@ def register(reg: ToolRegistrar) -> None:
         return await preview_or_apply(
             ctx,
             tool="catsdwan_set_external_authentication",
-            args={
-                "protocol": protocol,
-                "order": list(order),
-                "servers": [s.model_dump() for s in servers] if servers is not None else None,
-                "fallback": fallback,
-                "server_timeout": server_timeout,
-                "authentication": authentication,
-            },
+            args=call_args,
             confirm=confirm,
             plan=plan,
             apply=apply,

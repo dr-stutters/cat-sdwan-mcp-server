@@ -244,10 +244,13 @@ def register(reg: ToolRegistrar) -> None:
         pset = "mcp-sdwan-admin-login"
         end = (
             f"""12. Switch off (keep_enabled=false): {tool_ref("catsdwan_set_external_authentication")}
-    protocol='radius', order=['local'] (preview, approval), then {tool_ref("catsdwan_test_login")}
-    with the local admin once more and {tool_ref("catsdwan_get_aaa")} (order ['local']). The RADIUS
-    server entry may stay on the Manager (unused while the order is local); remove it only if the user
-    asks ({tool_ref("catsdwan_api_call")} DELETE /dataservice/admin/radius, preview-first). Then the
+    protocol='radius', order=<the order step 1 noted> with servers=[] on a single-tenant Manager (the
+    preview's undo: the radius block leaves the system AAA, the template is attached again), or
+    order=['local'] on a multi-tenant provider (the /admin/radius entry may stay, unused; remove it
+    only if the user asks: {tool_ref("catsdwan_api_call")} DELETE /dataservice/admin/radius,
+    preview-first). Then {tool_ref("catsdwan_test_login")} with the local admin once more and the
+    step 1 read again (no RADIUS in the order). Template mcp-manager-system-aaa stays attached to the
+    Manager; detaching it (back to CLI mode, configuration kept) is the user's call. Then the
     ISE undo, each preview-first: policy set {pset} ({tool_ref("ise_delete_policy_set")}), the identity
     source sequence mcp_sdwan_admins from step 5 (no delete tool: {tool_ref("ise_api_call")} DELETE
     /ers/config/idstoresequence/<id>), profiles {profile} and {other_profile}
@@ -276,8 +279,11 @@ Lockout rules (read them to the user before step 8):
   first, a name that isn't a local user goes on to ISE. Never remove 'local' from the order.
 - Keep this server's session open until step 9 passes: it is the undo path.
 
-1. Preconditions: {tool_ref("catsdwan_get_aaa")}: note the order, fallback and any RADIUS server
-   (local_fallback must stay true). {tool_ref("catsdwan_list_users")}: the local accounts and the
+1. Preconditions: {tool_ref("catsdwan_status")} and the tenancy: a single-tenant Manager (the usual
+   case) keeps its own logins in its system AAA, read with {tool_ref("catsdwan_get_device_config")}
+   device='manager', section='system' (the aaa auth-order line and any radius block); a multi-tenant
+   provider's Remote AAA reads with {tool_ref("catsdwan_get_aaa")}. Note the order, fallback and any
+   RADIUS server (local must stay in the order). {tool_ref("catsdwan_list_users")}: the local accounts and the
    user groups; {role} must be among `user_groups` (a custom group must exist on the Manager first,
    or the RADIUS user gets no rights). ISE: {tool_ref("ise_status")}, then
    {tool_ref("ise_list_dictionary_attributes")} with dictionary="Viptela" and scope="policyset":
@@ -310,15 +316,23 @@ Lockout rules (read them to the user before step 8):
 6. Baseline: {tool_ref("catsdwan_test_login")} with the local admin the user names (blank username =
    this server's API user): it must pass with roles [netadmin] and auth_source "local account".
 7. A second break-glass check: ask the user to keep a GUI session to the Manager open as a local
-   admin until step 9 passes.
+   admin until step 9 passes (on a single-tenant Manager also an SSH session to it: the template
+   attach rewrites its configuration).
 8. External authentication: {tool_ref("catsdwan_set_external_authentication")} protocol='radius',
    order=['local', 'radius'], servers=[{{address: "{ise}", secret: <the step 3 secret, typed by the
-   user>, vpn: {vpn}}}], fallback=true. Show the preview (before/after, local_fallback true, the
-   warnings) and the lockout rules above; apply only after approval (it needs MCP_ENABLE_DANGEROUS).
-   The confirm logs in afresh as the API user and puts the old order back if that fails.
+   user>, vpn: {vpn}}}], fallback=true. The tool picks the path from the Manager's tenancy:
+   single-tenant -> the Manager's system AAA (the preview's `path`, `why` and `diff_vs_running` show
+   only the aaa auth-order / auth-fallback lines and the new radius block changing, delivered as CLI
+   device template mcp-manager-system-aaa attached to the Manager, which leaves CLI mode); a
+   multi-tenant provider -> /admin/radius + /admin/aaa. Show the preview (before/after, local first,
+   the diff, the warnings) and the lockout rules above; apply only after approval (it needs
+   MCP_ENABLE_DANGEROUS). The confirm tests the API user's login first (nothing is sent if it fails),
+   applies, follows the attach, tests the login again and puts the old configuration back if that
+   fails.
 9. Right after: {tool_ref("catsdwan_test_login")} with the local admin again (must still pass, auth
-   source local). If it fails, at once {tool_ref("catsdwan_set_external_authentication")}
-   protocol='radius', order=['local'] (preview, approval) from this server's session and stop.
+   source local), and the step 1 read (the new order and the radius server, secret masked). If the
+   login fails, at once run the preview's `undo` (preview, approval) from this server's session and
+   stop.
 10. The AD login: {tool_ref("catsdwan_test_login")} with username="{user}" (its password from
     CATSDWAN_TEST_LOGIN_PASSWORDS; if it isn't there the tool names the setting: stop and ask the
     operator): it must pass with roles [{role}],

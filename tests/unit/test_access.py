@@ -28,7 +28,15 @@ TACACS_SET = {  # hand-built: TACACS+ configured, order tacacs then local
 AAA_SET = {"data": {"authOrder": ["tacacs", "local"], "authFallback": True, "accounting": False}}
 
 
+# A multi-tenant provider's /client/server (hand-built from the recorded single-tenant one): the /admin/*
+# Remote AAA path. The single-tenant system-AAA path is in test_manageraaa.py.
+PROVIDER = {
+    "data": {**fixture("client_server")["data"], "tenancyMode": "MultiTenant", "userMode": "provider"}
+}
+
+
 def mock_aaa(api: respx.MockRouter, aaa: Any = None, tacacs: Any = None) -> None:
+    api.get("/dataservice/client/server").respond(json=PROVIDER)
     api.get("/dataservice/admin/aaa").respond(json=aaa or fixture("admin_aaa"))
     api.get("/dataservice/admin/radius").respond(json=fixture("admin_radius"))
     api.get("/dataservice/admin/tacacs").respond(json=tacacs or fixture("admin_tacacs"))
