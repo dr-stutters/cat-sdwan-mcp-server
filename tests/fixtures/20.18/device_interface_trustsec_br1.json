@@ -1,0 +1,28 @@
+{
+ "header": {
+  "viewKeys": {
+   "uniqueKey": [
+    "vdevice-dataKey"
+   ],
+   "preferenceKey": "grid-CEdgeTrustsec"
+  },
+  "columns": [
+   {
+    "property": "if-name"
+   },
+   {
+    "property": "mode"
+   },
+   {
+    "property": "sgt-propagate"
+   },
+   {
+    "property": "peer-sgt"
+   },
+   {
+    "property": "trusted"
+   }
+  ]
+ },
+ "data": []
+}

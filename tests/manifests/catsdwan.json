@@ -117,6 +117,30 @@
         "cml"
       ]
     },
+    "catsdwan_sgt_path": {
+      "arguments": [
+        "source",
+        "destination",
+        "vpn"
+      ],
+      "references": [
+        "catsdwan_find_host",
+        "ise_find_session",
+        "catsdwan_trustsec",
+        "ise_list_sgts",
+        "ise_list_sxp_bindings",
+        "ise_list_ip_sgt_mappings",
+        "catsdwan_trustsec_path",
+        "ise_get_egress_matrix",
+        "catsdwan_explain_path"
+      ],
+      "rendered": true,
+      "tier": "read",
+      "uses": [
+        "catsdwan",
+        "ise"
+      ]
+    },
     "catsdwan_site_down": {
       "arguments": [
         "site",
@@ -525,6 +549,10 @@
     "catsdwan_trustsec": {
       "tier": "read",
       "title": "SD-WAN edge TrustSec state"
+    },
+    "catsdwan_trustsec_path": {
+      "tier": "read",
+      "title": "SGT path across the SD-WAN overlay"
     },
     "catsdwan_tunnel_health": {
       "tier": "read",

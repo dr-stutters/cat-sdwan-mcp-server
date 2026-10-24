@@ -1,0 +1,96 @@
+{
+ "data": [
+  {
+   "vdevice-name": "10.0.0.1",
+   "vdevice-host-name": "hub1",
+   "ifname": "GigabitEthernet1",
+   "vpn-id": "0",
+   "ip-address": "10.60.1.13",
+   "ipv4-subnet-mask": "255.255.255.0",
+   "if-admin-status": "if-state-up",
+   "if-oper-status": "if-oper-state-ready",
+   "interface-type": "iana-iftype-ethernet-csmacd",
+   "description": "mpls transport"
+  },
+  {
+   "vdevice-name": "10.0.0.1",
+   "vdevice-host-name": "hub1",
+   "ifname": "GigabitEthernet2",
+   "vpn-id": "0",
+   "ip-address": "10.60.2.13",
+   "ipv4-subnet-mask": "255.255.255.0",
+   "if-admin-status": "if-state-up",
+   "if-oper-status": "if-oper-state-ready",
+   "interface-type": "iana-iftype-ethernet-csmacd",
+   "description": "inet transport"
+  },
+  {
+   "vdevice-name": "10.0.0.1",
+   "vdevice-host-name": "hub1",
+   "ifname": "GigabitEthernet3",
+   "vpn-id": "10",
+   "ip-address": "10.61.100.1",
+   "ipv4-subnet-mask": "255.255.255.0",
+   "if-admin-status": "if-state-up",
+   "if-oper-status": "if-oper-state-ready",
+   "interface-type": "iana-iftype-ethernet-csmacd",
+   "description": "LAN (VPN 10) to host-hub1"
+  },
+  {
+   "vdevice-name": "10.0.0.1",
+   "vdevice-host-name": "hub1",
+   "ifname": "GigabitEthernet4",
+   "vpn-id": "512",
+   "ip-address": "192.0.2.13",
+   "ipv4-subnet-mask": "255.255.255.0",
+   "if-admin-status": "if-state-up",
+   "if-oper-status": "if-oper-state-ready",
+   "interface-type": "iana-iftype-ethernet-csmacd",
+   "description": "management (VPN 512)"
+  },
+  {
+   "vdevice-name": "10.0.0.1",
+   "vdevice-host-name": "hub1",
+   "ifname": "Loopback65528",
+   "vpn-id": "65528",
+   "ip-address": "192.168.1.1",
+   "ipv4-subnet-mask": "255.255.255.0",
+   "if-admin-status": "if-state-up",
+   "if-oper-status": "if-oper-state-ready",
+   "interface-type": "iana-iftype-ethernet-csmacd"
+  },
+  {
+   "vdevice-name": "10.0.0.1",
+   "vdevice-host-name": "hub1",
+   "ifname": "Sdwan-system-intf",
+   "vpn-id": "0",
+   "ip-address": "10.0.0.1",
+   "ipv4-subnet-mask": "255.255.255.0",
+   "if-admin-status": "if-state-up",
+   "if-oper-status": "if-oper-state-ready",
+   "interface-type": "iana-iftype-ethernet-csmacd"
+  },
+  {
+   "vdevice-name": "10.0.0.1",
+   "vdevice-host-name": "hub1",
+   "ifname": "Tunnel1",
+   "vpn-id": "0",
+   "ip-address": "10.60.1.13",
+   "ipv4-subnet-mask": "255.255.255.0",
+   "if-admin-status": "if-state-up",
+   "if-oper-status": "if-oper-state-ready",
+   "interface-type": "iana-iftype-tunnel"
+  },
+  {
+   "vdevice-name": "10.0.0.1",
+   "vdevice-host-name": "hub1",
+   "ifname": "Tunnel2",
+   "vpn-id": "0",
+   "ip-address": "10.60.2.13",
+   "ipv4-subnet-mask": "255.255.255.0",
+   "if-admin-status": "if-state-up",
+   "if-oper-status": "if-oper-state-ready",
+   "interface-type": "iana-iftype-tunnel"
+  }
+ ]
+}

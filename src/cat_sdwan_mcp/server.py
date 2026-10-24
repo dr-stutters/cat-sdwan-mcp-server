@@ -34,6 +34,7 @@ from cat_sdwan_mcp.tools import (
     policy,
     prompts,
     security,
+    sgtpath,
     snapshot,
     triage,
     troubleshooting,
@@ -98,6 +99,8 @@ catsdwan_top_applications(site) (needs application visibility (DPI) on the edges
 Change checks: catsdwan_snapshot(site) before a change (a blob to keep in the conversation), then
 catsdwan_compare_snapshot(before) after it names what changed by severity (control, BFD, OMP, app-route SLA,
 alarms, devices); the suite prompt suite_change_check runs the same on every connected server.
+SGTs across the overlay: catsdwan_trustsec_path(source_edge, destination_edge, source_ip, destination_ip)
+(inline tagging per tunnel, SXP, the destination edge's SGACL); the prompt catsdwan_sgt_path adds ISE.
 Prompts: catsdwan_branch_health(site) (a verdict per transport), catsdwan_onboard_branch(site) (NetBox ->
 onboard -> boot -> deploy -> prove), catsdwan_why_is_app_slow(host, app) (ISE, app-route SLA, FMC, CML).
 Branch triage: catsdwan_wifi_lan_or_wan(host), catsdwan_network_or_ise(site), catsdwan_site_down(site),
@@ -152,6 +155,7 @@ def create_server(
             pathinsight.register,
             security.register,
             trustsec.register,
+            sgtpath.register,
             manager.register,
             access.register,
             upgrade.register,
