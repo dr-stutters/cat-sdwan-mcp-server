@@ -29,6 +29,7 @@ SAMPLES = {
         "hostname": "br2",
         "lab": "mcp-cat-sdwan",
     },
+    "catsdwan_sgt_path": {"source": "10.61.200.10", "destination": "10.61.100.10", "vpn": "10"},
     "catsdwan_why_is_app_slow": {
         "host": "10.61.200.10",
         "app": "ssh to 10.61.100.10",
@@ -88,6 +89,7 @@ async def test_prompts_declare_their_servers() -> None:
         "catsdwan_branch_health": ["catsdwan", "cml", "netbox"],
         "catsdwan_onboard_branch": ["catsdwan", "netbox", "cml"],
         "catsdwan_why_is_app_slow": ["catsdwan", "ise", "fmc", "cml", "netbox"],
+        "catsdwan_sgt_path": ["catsdwan", "ise"],
         "suite_change_check": ["catsdwan", "ise", "catc", "fmc"],
         "catsdwan_wifi_lan_or_wan": ["catsdwan", "catc", "ise", "cml"],
         "catsdwan_network_or_ise": ["catsdwan", "ise"],
@@ -164,3 +166,25 @@ async def test_why_is_app_slow_renders() -> None:
     ):
         assert f"`{ref}`" in text
     assert "10.61.200.10" in text and "ssh to 10.61.100.10" in text and "ONE sentence" in text
+
+
+async def test_sgt_path_walks_edge_overlay_and_ise() -> None:
+    text = await text_of("catsdwan_sgt_path", SAMPLES["catsdwan_sgt_path"])
+    order = [
+        "catsdwan_find_host",
+        "ise_find_session",
+        "ise_list_sgts",
+        "catsdwan_trustsec_path",
+        "ise_get_egress_matrix",
+    ]
+    positions = [text.index(f"`{ref}`") for ref in order]
+    assert positions == sorted(positions)
+    assert 'host="10.61.200.10", vpn="10"' in text and 'destination_ip="10.61.100.10"' in text
+    for verdict in ("enforced as ISE intends", "tag lost on <tunnel>", "no policy at <edge>"):
+        assert verdict in text
+    assert "Read-only" in text
+
+
+async def test_sgt_path_without_vpn() -> None:
+    text = await text_of("catsdwan_sgt_path", {"source": "alice", "destination": "10.61.100.10"})
+    assert 'host="alice")' not in text and 'host="alice"' in text and "vpn=" not in text
