@@ -370,6 +370,10 @@
       "tier": "write",
       "title": "Delete SD-WAN policy group"
     },
+    "catsdwan_delete_security_profile": {
+      "tier": "write",
+      "title": "Delete an SD-WAN security profile"
+    },
     "catsdwan_deploy_config_group": {
       "tier": "write",
       "title": "Deploy SD-WAN configuration group"
@@ -558,6 +562,10 @@
       "tier": "read",
       "title": "SD-WAN edge security status"
     },
+    "catsdwan_set_amp_profile": {
+      "tier": "write",
+      "title": "Set an SD-WAN AMP (file) profile"
+    },
     "catsdwan_set_device_variables": {
       "tier": "write",
       "title": "Set SD-WAN device variables"
@@ -578,6 +586,14 @@
       "tier": "dangerous",
       "title": "Set SD-WAN edge firewall policy"
     },
+    "catsdwan_set_inspection_profile": {
+      "tier": "write",
+      "title": "Set an SD-WAN advanced inspection profile"
+    },
+    "catsdwan_set_ips_profile": {
+      "tier": "write",
+      "title": "Set an SD-WAN IPS profile"
+    },
     "catsdwan_set_ise_integration": {
       "tier": "dangerous",
       "title": "Set the SD-WAN Manager's ISE and pxGrid integration"
@@ -585,6 +601,14 @@
     "catsdwan_set_security_object": {
       "tier": "dangerous",
       "title": "Set SD-WAN security object"
+    },
+    "catsdwan_set_security_policy": {
+      "tier": "write",
+      "title": "Set an SD-WAN embedded security policy (UTD)"
+    },
+    "catsdwan_set_url_filtering_profile": {
+      "tier": "write",
+      "title": "Set an SD-WAN URL-filtering profile"
     },
     "catsdwan_site_health": {
       "tier": "read",
@@ -653,6 +677,14 @@
     "catsdwan_upgrade_software": {
       "tier": "dangerous",
       "title": "Upgrade SD-WAN software"
+    },
+    "catsdwan_upload_utd_image": {
+      "tier": "write",
+      "title": "Upload a UTD engine image to the SD-WAN Manager"
+    },
+    "catsdwan_utd_status": {
+      "tier": "read",
+      "title": "SD-WAN UTD engine status"
     }
   },
   "version": "0.5.0"

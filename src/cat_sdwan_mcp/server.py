@@ -38,12 +38,14 @@ from cat_sdwan_mcp.tools import (
     policygroups,
     prompts,
     security,
+    securityprofiles,
     sgtpath,
     snapshot,
     triage,
     troubleshooting,
     trustsec,
     upgrade,
+    utd,
 )
 
 INSTRUCTIONS = """
@@ -105,6 +107,11 @@ catsdwan_compare_snapshot(before) after it names what changed by severity (contr
 alarms, devices); the suite prompt suite_change_check runs the same on every connected server.
 SGTs across the overlay: catsdwan_trustsec_path(source_edge, destination_edge, source_ip, destination_ip)
 (inline tagging per tunnel, SXP, the destination edge's SGACL); the prompt catsdwan_sgt_path adds ISE.
+Edge security (UTD: IPS, URL filtering, AMP): catsdwan_upload_utd_image(file in CATSDWAN_IMAGE_DIR) ->
+catsdwan_set_ips_profile / catsdwan_set_url_filtering_profile / catsdwan_set_amp_profile ->
+catsdwan_set_inspection_profile -> catsdwan_set_security_policy (stores only) -> the policy group
+(catsdwan_create_policy_group / catsdwan_associate_policy_group -> catsdwan_deploy_policy_group installs UTD)
+-> catsdwan_utd_status (UTD on a C8000V needs 8 GB RAM); undo: catsdwan_delete_security_profile.
 Identity: catsdwan_integrations (ISE, pxGrid, partners) and catsdwan_trustsec(device) read it;
 catsdwan_set_ise_integration(ise_host) connects ISE and pxGrid (dangerous) -> ise_approve_pxgrid_client on
 ISE -> run it again to sync the controllers; action='disconnect' undoes it.
@@ -166,6 +173,8 @@ def create_server(
             findhost.register,
             pathinsight.register,
             security.register,
+            utd.register,
+            securityprofiles.register,
             trustsec.register,
             sgtpath.register,
             iseintegration.register,

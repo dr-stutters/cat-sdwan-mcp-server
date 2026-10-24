@@ -1,0 +1,133 @@
+{
+  "header": {
+    "viewKeys": {
+      "uniqueKey": [
+        "vdevice-dataKey"
+      ],
+      "preferenceKey": "grid-CEdgeAppHostingDetails"
+    },
+    "fields": [
+      {
+        "property": "vdevice-name",
+        "dataType": "string"
+      },
+      {
+        "property": "vdevice-host-name",
+        "dataType": "string"
+      },
+      {
+        "property": "name",
+        "dataType": "string"
+      },
+      {
+        "property": "state",
+        "dataType": "string"
+      },
+      {
+        "property": "activated-profile-name",
+        "dataType": "string"
+      },
+      {
+        "property": "guest-interface",
+        "dataType": "string"
+      },
+      {
+        "property": "package-info-name",
+        "dataType": "string"
+      },
+      {
+        "property": "package-info-path",
+        "dataType": "string"
+      },
+      {
+        "property": "application-name",
+        "dataType": "string"
+      },
+      {
+        "property": "application-installed-version",
+        "dataType": "string"
+      },
+      {
+        "property": "application-description",
+        "dataType": "string"
+      },
+      {
+        "property": "application-type",
+        "dataType": "string"
+      },
+      {
+        "property": "application-owner",
+        "dataType": "string"
+      },
+      {
+        "property": "signing-key-type",
+        "dataType": "string"
+      },
+      {
+        "property": "signing-method",
+        "dataType": "string"
+      },
+      {
+        "property": "licensing-name",
+        "dataType": "string"
+      },
+      {
+        "property": "licensing-version",
+        "dataType": "string"
+      },
+      {
+        "property": "processes-name",
+        "dataType": "string"
+      },
+      {
+        "property": "processes-status",
+        "dataType": "string"
+      },
+      {
+        "property": "processes-pid",
+        "dataType": "string"
+      },
+      {
+        "property": "processes-uptime",
+        "dataType": "string"
+      },
+      {
+        "property": "processes-memory",
+        "dataType": "string"
+      },
+      {
+        "property": "resource-reservation-disk",
+        "dataType": "string"
+      },
+      {
+        "property": "resource-reservation-memory",
+        "dataType": "string"
+      },
+      {
+        "property": "resource-reservation-cpu",
+        "dataType": "string"
+      },
+      {
+        "property": "resource-admission-state",
+        "dataType": "string"
+      },
+      {
+        "property": "resource-admission-disk-space",
+        "dataType": "string"
+      },
+      {
+        "property": "resource-admission-memory",
+        "dataType": "string"
+      },
+      {
+        "property": "resource-admission-cpu",
+        "dataType": "string"
+      },
+      {
+        "property": "resource-admission-vcpus",
+        "dataType": "string"
+      }
+    ]
+  },
+  "data": []
+}

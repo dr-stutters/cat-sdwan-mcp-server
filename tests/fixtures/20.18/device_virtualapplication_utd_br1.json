@@ -1,0 +1,55 @@
+{
+  "header": {
+    "viewKeys": {
+      "uniqueKey": [
+        "vdevice-dataKey"
+      ],
+      "preferenceKey": "grid-CEdgeUtdAppsList"
+    },
+    "columns": [
+      {
+        "property": "version",
+        "dataType": "string"
+      },
+      {
+        "property": "active",
+        "dataType": "string"
+      },
+      {
+        "property": "previous",
+        "dataType": "string"
+      },
+      {
+        "property": "timestamp",
+        "dataType": "string"
+      }
+    ],
+    "fields": [
+      {
+        "property": "vdevice-name",
+        "dataType": "string"
+      },
+      {
+        "property": "vdevice-host-name",
+        "dataType": "string"
+      },
+      {
+        "property": "version",
+        "dataType": "string"
+      },
+      {
+        "property": "active",
+        "dataType": "string"
+      },
+      {
+        "property": "previous",
+        "dataType": "string"
+      },
+      {
+        "property": "timestamp",
+        "dataType": "string"
+      }
+    ]
+  },
+  "data": []
+}
