@@ -6,6 +6,26 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-10-24
+
+### Added
+- W44 (#69): `catsdwan_find_host`: locate a host by IP or MAC (edge, site, VPN, interface, connected subnet and the
+  OMP route advertising it), from the edges' ARP and MAC tables.
+- W46 (#70): `catsdwan_snapshot` / `catsdwan_compare_snapshot` on the core snapshot contract (devices, control
+  connections, BFD, OMP peers, app-route SLA, active alarms; client-held blob, nothing stored), and the core suite
+  prompt `suite_change_check`. `tests/manifests/catsdwan.json` is committed for peers' prompt checks.
+
+### Fixed
+- `catsdwan_sync_root_cert` ends when the force-sync leaves the Manager's running tasks: its status never lists
+  devices nor a summary on 20.18 (live, #30).
+- `catsdwan_path_insight` filters on tcp/udp only (the Manager refuses ICMP and protocol numbers other than 6/17)
+  and, with no flows, names the Data Stream address and what to check (#33).
+- `catsdwan_ping` count is limited to 1–30, the Manager's range (DEVICE0009).
+- `catsdwan_api_call` sends DELETE bodies (policy-group dissociation needs one, #35).
+
+### Changed
+- Core v0.14.4 -> v0.15.0 (suite prompt pack, snapshot contract).
+
 ## [0.3.1] - 2026-10-24
 
 ### Fixed
