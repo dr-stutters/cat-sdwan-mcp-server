@@ -6,6 +6,36 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+## [0.6.0] - 2026-10-24
+
+### Added
+- W47 (#73): `catsdwan_get_firewall_policy`, `catsdwan_set_security_object` and `catsdwan_set_firewall_policy`:
+  zone-based and identity firewall in policy groups (preview-first, dangerous).
+- W48 (#74): `catsdwan_utd_status`, `catsdwan_upload_utd_image` (from `CATSDWAN_IMAGE_DIR`),
+  `catsdwan_set_ips_profile`, `catsdwan_set_url_filtering_profile`, `catsdwan_set_amp_profile`,
+  `catsdwan_set_inspection_profile`, `catsdwan_set_security_policy` and `catsdwan_delete_security_profile`: the UTD
+  engine and edge IPS, URL filtering and AMP on 20.18 policy groups.
+- W49 (#75): `catsdwan_ssl_proxy_ca`, `catsdwan_set_ssl_proxy_ca` (Manager as intermediate CA, CSR signed by the
+  enterprise CA, the key never leaves the Manager), `catsdwan_set_ssl_decryption` and
+  `catsdwan_set_ssl_decryption_profile`.
+- W50 (#76): `catsdwan_service_chains`, `catsdwan_set_service_chain`, `catsdwan_set_service_steering` and the prompt
+  `catsdwan_trace_through_firewall` (service insertion of an FTD).
+- #94: `catsdwan_create_policy_group`, `catsdwan_associate_policy_group` and `catsdwan_delete_policy_group`
+  (policy-group lifecycle, preview-first; delete dissociates first on request).
+
+### Changed
+- W40 (#66, #100): `catsdwan_set_external_authentication` sets RADIUS for a single-tenant Manager's own logins in
+  its system AAA (CLI template `mcp-manager-system-aaa` on the Manager, login tested before and after) instead of
+  the provider-only `/admin/radius`, and sends the GUI's RADIUS body on a multi-tenant provider. Viptela
+  `secret-key` lines are masked in configuration output.
+- W41 (#67): `catsdwan_set_ise_integration` sends the Manager GUI's exact ISE body, takes ISE by IP (names are
+  resolved and said) and blocks a non-alphanumeric ISE login; it takes a separate `pxgrid_root_cert`, keeps stored
+  root certificates on an update, warns (not blocks) on a root certificate expiring within 30 days, and names the
+  suspects on `TestConnectivity failed`.
+- #100: Manager 4xx errors quote the Manager's own error body (or say it gave none), 404/429 included, with
+  secrets masked.
+- CI runs on the self-hosted runners (#110).
+
 ## [0.5.0] - 2026-10-24
 
 ### Added
