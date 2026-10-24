@@ -41,6 +41,7 @@ from cat_sdwan_mcp.tools import (
     securityprofiles,
     sgtpath,
     snapshot,
+    sslproxy,
     triage,
     troubleshooting,
     trustsec,
@@ -112,6 +113,11 @@ catsdwan_set_ips_profile / catsdwan_set_url_filtering_profile / catsdwan_set_amp
 catsdwan_set_inspection_profile -> catsdwan_set_security_policy (stores only) -> the policy group
 (catsdwan_create_policy_group / catsdwan_associate_policy_group -> catsdwan_deploy_policy_group installs UTD)
 -> catsdwan_utd_status (UTD on a C8000V needs 8 GB RAM); undo: catsdwan_delete_security_profile.
+TLS/SSL proxy: catsdwan_ssl_proxy_ca -> catsdwan_set_ssl_proxy_ca(root_certificate) (CSR generated on the
+Manager, key never leaves it) -> win_sign_csr(template='SubCA') ->
+catsdwan_set_ssl_proxy_ca(signed_certificate) -> catsdwan_set_ssl_decryption +
+catsdwan_set_ssl_decryption_profile (decrypt / never-decrypt categories) ->
+catsdwan_set_inspection_profile(tls_action='decrypt') -> catsdwan_set_security_policy(ssl_decryption).
 Identity: catsdwan_integrations (ISE, pxGrid, partners) and catsdwan_trustsec(device) read it;
 catsdwan_set_ise_integration(ise_host) connects ISE and pxGrid (dangerous) -> ise_approve_pxgrid_client on
 ISE -> run it again to sync the controllers; action='disconnect' undoes it.
@@ -175,6 +181,7 @@ def create_server(
             security.register,
             utd.register,
             securityprofiles.register,
+            sslproxy.register,
             trustsec.register,
             sgtpath.register,
             iseintegration.register,
