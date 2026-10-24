@@ -68,7 +68,9 @@ async def _checked(ctx: Context, method: str, path: str) -> tuple[str, str, list
 async def _send(ctx: Context, method: str, full: str, params: dict[str, Any] | None, body: Any) -> Any:
     store = get_specs(ctx)
     client = next(iter(store.sources.values())).client(store.app)
-    json_body = body if method in ("POST", "PUT") else None
+    # DELETE carries a body too: DELETE /v1/{config,policy}-group/{id}/device/associate {devices: [...]}
+    # answers 400 without one (live 2026-10-24, the only way to dissociate a policy group's devices).
+    json_body = body if method in ("POST", "PUT", "DELETE") else None
     return await client.request(method, full, params=params, json=json_body)
 
 

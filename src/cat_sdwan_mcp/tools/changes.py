@@ -161,20 +161,44 @@ async def _pending_blockers(app: SdwanApp, rows: list[dict[str, Any]]) -> tuple[
     return [f"{h} has an action still running ({a}): wait for it to finish" for h, a in busy.items()], []
 
 
-async def _wait_action(app: SdwanApp, ctx: Context, pid: str, what: str) -> dict[str, Any]:
-    body = await poll_until(
-        lambda: app.api.get(path(ACTION_STATUS_PATH, id=pid)),
-        done=action_done,
-        describe=action_progress,
+async def _wait_action(
+    app: SdwanApp, ctx: Context, pid: str, what: str, rowless: bool = False
+) -> dict[str, Any]:
+    if not rowless:
+        body = await poll_until(
+            lambda: app.api.get(path(ACTION_STATUS_PATH, id=pid)),
+            done=action_done,
+            describe=action_progress,
+            timeout=app.settings.mcp_task_timeout,
+            interval=POLL_INTERVAL,
+            ctx=ctx,
+            what=what,
+        )
+        return action_outcome(body, pid)
+
+    # An action that may never list device rows (the root certificate force-sync): read the running tasks
+    # with each status, and call it done when it lists no rows and has left them.
+    async def read() -> tuple[Any, list[str]]:
+        body, tasks = await asyncio.gather(
+            app.api.get(path(ACTION_STATUS_PATH, id=pid)), app.api.get(RUNNING_TASKS_PATH)
+        )
+        return body, running_process_ids(tasks)
+
+    body, _ = await poll_until(
+        read,
+        done=lambda r: action_done(r[0], r[1], pid),
+        describe=lambda r: action_progress(r[0]) + (", still in the running tasks" if pid in r[1] else ""),
         timeout=app.settings.mcp_task_timeout,
         interval=POLL_INTERVAL,
         ctx=ctx,
         what=what,
     )
-    return action_outcome(body, pid)
+    return action_outcome(body, pid, rowless_done=True)
 
 
-async def _started(app: SdwanApp, ctx: Context, answer: Any, wait: bool, what: str) -> dict[str, Any]:
+async def _started(
+    app: SdwanApp, ctx: Context, answer: Any, wait: bool, what: str, rowless: bool = False
+) -> dict[str, Any]:
     pid = process_id(answer)
     if pid is None:
         return {"answer": answer, "note": "the Manager returned no action id, so the outcome isn't tracked"}
@@ -183,7 +207,7 @@ async def _started(app: SdwanApp, ctx: Context, answer: Any, wait: bool, what: s
             "process_id": pid,
             "check_with": f"catsdwan_api_call('/dataservice/device/action/status/{pid}')",
         }
-    return await _wait_action(app, ctx, pid, what)
+    return await _wait_action(app, ctx, pid, what, rowless)
 
 
 async def _running(app: SdwanApp, chassis: str) -> tuple[str | None, str | None]:

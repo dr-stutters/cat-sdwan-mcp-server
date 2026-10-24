@@ -156,6 +156,23 @@ def test_action_outcome_success_partial_and_validation() -> None:
     assert not ch.action_done({"data": [], "summary": {"status": "in_progress"}})
 
 
+def test_rowless_force_sync_status() -> None:
+    # live 20.18.3 (2026-10-24): the root certificate force-sync's status is {header, data: []} from the
+    # first read on, with no summary; only the running-tasks list says whether it is still going
+    body = fixture("device_action_status_rootcert_sync")
+    assert ch.rowless(body) and not ch.action_done(body)
+    assert not ch.action_done(body, [PID], PID)
+    assert ch.action_done(body, [], PID) and ch.action_done(body, ["other"], PID)
+    assert ch.action_outcome(body, PID)["outcome"] == "failed"
+    out = ch.action_outcome(body, PID, rowless_done=True)
+    assert out["outcome"] == "done" and out["devices"] == []
+    # the documented shapes keep their meaning when the caller opts in
+    running = {"data": [{"host-name": "br1", "status": "In progress", "statusId": "in_progress"}]}
+    assert not ch.rowless(running) and not ch.action_done(running, [], PID)
+    assert not ch.rowless({"data": [], "summary": {"status": "in_progress"}})
+    assert not ch.action_done({"data": [], "summary": {"status": "in_progress"}}, [], PID)
+
+
 def test_preview_text_and_template_matching() -> None:
     assert ch.preview_text("hostname x\n") == "hostname x\n"
     assert ch.preview_text({"existingConfig": "a\nb", "newConfig": "c\nd"}) == "c\nd"

@@ -95,6 +95,36 @@ def prefix(value: str | None) -> str | None:
         raise ValueError(f"{value!r} is not an IP address or prefix") from e
 
 
+# The trace start's protocol filter takes the IP protocol number as a string, and only TCP and UDP: "6" and
+# "17" start a trace, "1" and "ICMP" answer 'Validation Error: Invalid Protocol(1)' / '(ICMP)' (live 20.18.3,
+# 2026-10-24). ICMP is traced by leaving the protocol out and filtering on the addresses.
+PROTOCOLS = {"tcp": "6", "6": "6", "udp": "17", "17": "17"}
+
+
+def protocol_number(value: str | None) -> str | None:
+    """'tcp' / '6' -> '6', 'udp' / '17' -> '17', None -> None; anything else is refused."""
+    if value is None or not str(value).strip():
+        return None
+    want = str(value).strip().lower()
+    if want in PROTOCOLS:
+        return PROTOCOLS[want]
+    if want in ("icmp", "1"):
+        raise ValueError(
+            "The Manager's path insight protocol filter takes TCP (6) or UDP (17) only ('Invalid "
+            "Protocol(1)' for ICMP): leave protocol out and filter on source/destination to trace ICMP"
+        )
+    raise ValueError(f"protocol {value!r}: path insight filters on tcp (6) or udp (17) only")
+
+
+def datastream_target(body: Any) -> str | None:
+    """'systemIp in VPN 0' from the Data Stream setting: where the edges upload their flow records."""
+    for r in _as_list(body.get("data")) if isinstance(body, dict) else []:
+        if isinstance(r, dict) and r.get("enable") in (True, "true"):
+            host = r.get("serverHostName") or r.get("ipType") or "?"
+            return f"{host} in VPN {r.get('vpn', '?')}"
+    return None
+
+
 def short_version(v: Any) -> str | None:
     """'17.18.02.0.4112' -> '17.18'."""
     parts = str(v or "").split(".")

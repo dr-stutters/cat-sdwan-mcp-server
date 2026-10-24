@@ -169,15 +169,16 @@ async def test_path_insight_preview_then_trace_and_stop(api: respx.MockRouter) -
         ]
     )
     stop = api.post(STOP).respond(json=STOP_OK)
-    args = {"site": "200", "vpn": [10], "destination": "10.61.201.10", "protocol": "1", "wait_seconds": 30}
+    args = {"site": "200", "vpn": [10], "destination": "10.61.201.10", "protocol": "tcp", "wait_seconds": 30}
     async with Client(writes()) as c:
         prev = await run(c, "catsdwan_path_insight", args)
         assert prev["status"] == "preview" and not start.called
         assert [e["host"] for e in prev["preview"]["edges"]] == ["br1"] and prev["blast_radius"] == 1
-        assert prev["preview"]["filter"] == {"vpn": [10], "destination": "10.61.201.10/32", "protocol": "1"}
+        assert prev["preview"]["filter"] == {"vpn": [10], "destination": "10.61.201.10/32", "protocol": "6"}
         done = await run(c, "catsdwan_path_insight", {**args, "confirm": prev["confirm"]})
     body = json.loads(start.calls[0].request.content)
     assert body["source-site"] == "200" and body["device-list"][0]["deviceId"] == "10.0.0.2"
+    assert body["protocol"] == "6"
     res = done["result"]
     assert res["trace_id"] == "48" and res["stopped"] == "stopping" and stop.called
     assert res["summary"]["flows"] == 5
@@ -209,6 +210,38 @@ async def test_path_insight_no_flows_and_keep_running(api: respx.MockRouter) -> 
         prev = await run(c, "catsdwan_path_insight", args)
         done = await run(c, "catsdwan_path_insight", {**args, "confirm": prev["confirm"]})
     assert not stop.called and "trace_id=48" in done["result"]["note"]
+    # live 2026-10-24: 0 flows although host-br1 pinged through br1; edges upload to the Data Stream address
+    assert "systemIp in VPN 0" in done["result"]["check"]
+
+
+def test_protocol_filter_numbers() -> None:
+    # live 20.18.3: "6" and "17" start a trace; "1" and "ICMP" answer 'Invalid Protocol(...)'
+    assert [pi.protocol_number(p) for p in ("tcp", "6", "UDP", " 17 ", None, "")] == [
+        "6",
+        "6",
+        "17",
+        "17",
+        None,
+        None,
+    ]
+    for bad in ("1", "icmp", "ICMP"):
+        with pytest.raises(ValueError, match="TCP \\(6\\) or UDP \\(17\\) only"):
+            pi.protocol_number(bad)
+    with pytest.raises(ValueError, match="tcp \\(6\\) or udp \\(17\\) only"):
+        pi.protocol_number("47")
+    assert pi.datastream_target(DATASTREAM_ON) == "systemIp in VPN 0"
+    assert pi.datastream_target({"data": [{}]}) is None
+
+
+async def test_path_insight_refuses_icmp_protocol(api: respx.MockRouter) -> None:
+    mock_inventory(api)
+    api.get(pi.TRACE_HISTORY_PATH).respond(json={"data": []})
+    api.get(pi.DATASTREAM_PATH).respond(json=DATASTREAM_ON)
+    start = api.post(pi.TRACE_START_PATH).respond(json=START_OK)
+    async with Client(writes()) as c:
+        with pytest.raises(ToolError, match="leave protocol out"):
+            await c.call_tool("catsdwan_path_insight", {"site": "200", "vpn": [10], "protocol": "1"})
+    assert not start.called
 
 
 async def test_path_insight_blocks_and_refuses(api: respx.MockRouter) -> None:

@@ -246,19 +246,33 @@ def validation_failed(body: Any) -> str | None:
     return None
 
 
-def action_done(body: Any) -> bool:
+def action_done(body: Any, running: list[str] | None = None, process_id: str | None = None) -> bool:
+    """Whether an action has finished. `running` (the ids from /device/action/status/tasks) opts in to
+    row-less actions: a status with no device rows and no summary is done once `process_id` has left the
+    running tasks."""
     if validation_failed(body):
         return True
     summary = body.get("summary") if isinstance(body, dict) else None
     rows = action_rows(body)
     if rows and all(_state(r) != "running" for r in rows):
         return True
-    # Some actions (the root certificate force-sync) list no device rows at all: the summary is all there is.
-    return _summary_done(summary)
+    # Some actions list no device rows at all: then a summary is all there is ...
+    if _summary_done(summary):
+        return True
+    # ... or not even that: the root certificate force-sync answers {header, data: []} from the first read
+    # to the last (live 20.18.3, 2026-10-24); only the running-tasks list says it is still going.
+    return running is not None and rowless(body) and process_id not in running
 
 
 def _summary_done(summary: Any) -> bool:
     return isinstance(summary, dict) and str(summary.get("status", "")).lower() == "done"
+
+
+def rowless(body: Any) -> bool:
+    """An action status with no device rows, no summary and no validation: the force-sync shape."""
+    if not isinstance(body, dict) or action_rows(body):
+        return False
+    return not body.get("summary") and not body.get("validation")
 
 
 def _reason(row: dict[str, Any]) -> str | None:
@@ -280,8 +294,10 @@ def action_progress(body: Any) -> str:
     )
 
 
-def action_outcome(body: Any, process_id: str) -> dict[str, Any]:
-    """Per device: success or failure with the failing device's reason; overall success | partial | failed."""
+def action_outcome(body: Any, process_id: str, *, rowless_done: bool = False) -> dict[str, Any]:
+    """Per device: success or failure with the failing device's reason; overall success | partial | failed,
+    or done for an action without device rows (a done summary, or `rowless_done`: it left the running
+    tasks)."""
     devices = []
     for r in action_rows(body):
         state = _state(r)
@@ -301,7 +317,14 @@ def action_outcome(body: Any, process_id: str) -> dict[str, Any]:
         outcome = "failed"
     elif failed and ok:
         outcome = "partial"
-    elif not devices and not bad and _summary_done(body.get("summary") if isinstance(body, dict) else None):
+    elif (
+        not devices
+        and not bad
+        and (
+            _summary_done(body.get("summary") if isinstance(body, dict) else None)
+            or (rowless_done and rowless(body))
+        )
+    ):
         outcome = "done"
     elif failed or not devices:
         outcome = "failed"

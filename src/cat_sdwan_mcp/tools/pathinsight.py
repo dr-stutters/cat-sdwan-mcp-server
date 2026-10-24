@@ -38,10 +38,12 @@ from cat_sdwan_mcp.pathinsight import (
     TRACE_START_PATH,
     TRACE_STOP_PATH,
     datastream_enabled,
+    datastream_target,
     flow_row,
     flow_summary,
     flows_of,
     prefix,
+    protocol_number,
     short_version,
     sort_flows,
     start_body,
@@ -162,7 +164,11 @@ def register(reg: ToolRegistrar) -> None:
             Field(description="Application name(s), comma-separated (needs DPI/NBAR on the edges)"),
         ] = None,
         protocol: Annotated[
-            str | None, Field(description="IP protocol number, e.g. 1 (ICMP), 6 (TCP)")
+            str | None,
+            Field(
+                description="tcp (6) or udp (17), the only protocols the Manager filters on; for ICMP leave "
+                "it out and filter on source/destination"
+            ),
         ] = None,
         dscp: Annotated[int | None, Field(ge=0, le=63, description="DSCP of the flows, e.g. 46")] = None,
         duration_minutes: Annotated[
@@ -207,8 +213,11 @@ def register(reg: ToolRegistrar) -> None:
             for r in chosen
             if not is_reachable(r)
         ]
+        stream_to = None
         try:
-            if not datastream_enabled(await app.api.get(DATASTREAM_PATH)):
+            stream = await app.api.get(DATASTREAM_PATH)
+            stream_to = datastream_target(stream)
+            if not datastream_enabled(stream):
                 blockers.append(
                     "Data Stream is off on the Manager (Administration > Settings > Data Stream): no path "
                     "insight trace starts until it is enabled"
@@ -222,6 +231,7 @@ def register(reg: ToolRegistrar) -> None:
         ]
         try:
             src, dst = prefix(source), prefix(destination)
+            proto = protocol_number(protocol)
         except ValueError as e:
             raise InvalidRequest(str(e)) from e
         trace_name = name or f"mcp_{site_id}_{time.strftime('%Y%m%d%H%M%S', time.gmtime())}"
@@ -234,7 +244,7 @@ def register(reg: ToolRegistrar) -> None:
             source=src,
             destination=dst,
             app=app_name,
-            protocol=protocol,
+            protocol=proto,
             dscp=dscp,
             name=trace_name,
         )
@@ -262,7 +272,7 @@ def register(reg: ToolRegistrar) -> None:
                         "source": src,
                         "destination": dst,
                         "app": app_name,
-                        "protocol": protocol,
+                        "protocol": proto,
                         "dscp": dscp,
                     }.items()
                     if v not in (None, [])
@@ -331,6 +341,15 @@ def register(reg: ToolRegistrar) -> None:
                     f"no finished flows within {wait_seconds} s: generate matching traffic during the trace, "
                     f"or read it later with catsdwan_list_path_traces(trace_id={tid})"
                 )
+                if stream_to:
+                    # Live 2026-10-24: 30 pings during a trace, then 7 minutes idle, still read 0 flows (so
+                    # not flow aging) while the edge reported the trace done: the flow records never reached
+                    # the Manager. The edges upload them to the Data Stream address.
+                    out["check"] = (
+                        f"the edges upload flow records to the Data Stream address ({stream_to}); if they "
+                        "can't reach it no flow ever appears: set Administration > Settings > Data Stream to "
+                        "an address of the Manager the edges reach (its VPN 0 transport address)"
+                    )
             return out
 
         return await preview_or_apply(

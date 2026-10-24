@@ -10,6 +10,7 @@ import datetime as dt
 import json
 from typing import Any
 
+import httpx
 import pytest
 import respx
 from cryptography import x509
@@ -19,6 +20,7 @@ from cryptography.x509.oid import NameOID
 from fastmcp import Client
 
 from cat_sdwan_mcp import certificates as cert
+from cat_sdwan_mcp.changes import RUNNING_TASKS_PATH
 from cat_sdwan_mcp.tools import changes as change_tools
 
 from .conftest import fixture, make_server
@@ -368,12 +370,32 @@ async def test_sync_root_cert_preview_then_confirm(api: respx.MockRouter) -> Non
     mock_certs(api)
     sync = api.post(cert.FORCE_SYNC_ROOT_PATH).respond(json={"id": "sync-1"})
     api.get(f"{STATUS}/sync-1").respond(json=status_body(("vedge", "br1", "success")))
+    api.get(RUNNING_TASKS_PATH).respond(json={"runningTasks": []})
     async with Client(writes()) as c:
         prev = await run(c, "catsdwan_sync_root_cert", {})
         assert prev["status"] == "preview" and not sync.called
         assert len(prev["preview"]["root_chain"]) == 11 and prev["blast_radius"] == prev["preview"]["devices"]
         done = await run(c, "catsdwan_sync_root_cert", {"confirm": prev["confirm"]})
     assert done["result"]["sync"]["outcome"] == "success"
+
+
+async def test_sync_root_cert_rowless_status_ends_when_it_leaves_running_tasks(api: respx.MockRouter) -> None:
+    # live 2026-10-24: the status never lists device rows nor a summary; the old wait ran for 600 s
+    mock_certs(api)
+    api.post(cert.FORCE_SYNC_ROOT_PATH).respond(json={"id": "sync-2"})
+    status = api.get(f"{STATUS}/sync-2").respond(json=fixture("device_action_status_rootcert_sync"))
+    tasks = api.get(RUNNING_TASKS_PATH).mock(
+        side_effect=[
+            httpx.Response(200, json={"runningTasks": [{"processId": "sync-2"}]}),
+            httpx.Response(200, json={"runningTasks": []}),
+        ]
+    )
+    async with Client(writes()) as c:
+        prev = await run(c, "catsdwan_sync_root_cert", {})
+        done = await run(c, "catsdwan_sync_root_cert", {"confirm": prev["confirm"]})
+    sync = done["result"]["sync"]
+    assert sync["outcome"] == "done" and sync["devices"] == [] and "audit" in sync["note"]
+    assert status.call_count == 2 and tasks.call_count == 2
 
 
 async def test_certificate_writes_need_writes() -> None:
