@@ -21,6 +21,7 @@ from cat_sdwan_mcp.iseintegration import (
     pxgrid_state,
     server_body,
     stored,
+    username_problem,
 )
 
 from .conftest import fixture, make_server
@@ -32,8 +33,8 @@ PX_PW = "pxgrid-client-s3cret"
 CREDS = "/dataservice/ise/credentials"
 PXGRID = "/dataservice/ise/credentials/pxgrid"
 SET = {  # hand-built IseServer: ISE configured, SGTs only
-    "iseServerIP": ISE, "userName": "ers-admin", "password": "$CRYPT$abcdefghijkl", "vpn": "0",
-    "destinationVpn": "0", "vpnIpSubnet": "", "sgt": "true", "userAndUserGroup": "false",
+    "iseServerIP": ISE, "userName": "ersadmin", "password": "$CRYPT$abcdefghijkl", "vpn": "0",
+    "destinationVpn": "", "vpnIpSubnet": "", "sgt": "true", "userAndUserGroup": "false",
 }  # fmt: skip
 PX_PENDING = {"nodeName": "vmanage-manager", "pxGridUserName": "vmanage-manager", "pxGridPassword": "x",
               "pxGridServerIp": ISE, "status": "PENDING"}  # fmt: skip
@@ -43,7 +44,7 @@ def server(**kw: Any) -> Any:
     base = {
         "mcp_enable_writes": True,
         "mcp_enable_dangerous": True,
-        "ise_username": "ers-admin",
+        "ise_username": "ersadmin",
         "ise_password": ISE_PW,
     }
     return make_server(**{**base, **kw})
@@ -103,7 +104,7 @@ async def test_connect_confirm_creates_and_activates_then_waits(api: respx.MockR
         prev = await tool(c, {"ise_host": ISE})
         done = (await tool(c, {"ise_host": ISE, "confirm": prev["confirm"]}))["result"]
     sent = json.loads(post.calls[0].request.content)
-    assert sent["iseServerIP"] == ISE and sent["password"] == ISE_PW and sent["userName"] == "ers-admin"
+    assert sent["iseServerIP"] == ISE and sent["password"] == ISE_PW and sent["userName"] == "ersadmin"
     assert sent["sgt"] == "true" and sent["userAndUserGroup"] == "false" and sent["vpn"] == "0"
     assert json.loads(create.calls[0].request.content) == {"nodeName": "vmanage-manager"}
     body = json.loads(activate.calls[0].request.content)
@@ -263,33 +264,103 @@ async def test_connect_with_root_cert_sends_it(api: respx.MockRouter) -> None:
     assert sync.called  # without pxGrid the ISE settings go to the controllers at once
 
 
-# --- Wave 8 W41 fixes: FQDN, pxgrid_root_cert, cert kept on PUT, <30-day warning, TestConnectivity hints
-# The GUI capture of the ISE integration has not happened yet (no Manager session in the owner's browser), so
-# the bodies stay the 20.18.3 schema's; the REST0002 answer is the one recorded in the Wave 7 live run.
+# --- Wave 8 W41 fixes: the GUI's body, IP only, alphanumeric user, pxgrid_root_cert, cert kept on PUT,
+# <30-day warning, TestConnectivity hints. The GUI's request was captured on 20.18.3.1 (Wave 8 gui-capture,
+# notes/w8-fixtures/gui-capture/20-ise-credentials-ip.json, addresses and secrets replaced); the REST0002
+# answer is the Manager's own from that capture.
 
 ISE_FQDN = "ise.example.com"
 TEST_CONNECTIVITY = {
-    "error": {"message": "Server error", "details": "TestConnectivity failed", "code": "REST0002"}
+    "error": {"message": "Server error", "code": "REST0002", "details": "Test Connectivity failed"}
 }
+# The GUI's POST /dataservice/ise/credentials (Add Connection, SGT subscription, VPN 512), password masked.
+GUI_BODY = {
+    "iseServerIP": ISE, "userName": "ersadmin", "password": "********", "vpn": "512",
+    "userAndUserGroup": "false", "activeDirectoryDomain": "", "joinPoint": "", "sgt": "true",
+    "vpnIpSubnet": "", "destinationVpn": "", "iseRootCert": "", "iseCertName": "", "pxGridRootCert": "",
+    "pxGridCertName": "",
+}  # fmt: skip
 
 
-async def test_fqdn_host_is_sent_as_given(api: respx.MockRouter) -> None:
+async def test_post_is_the_guis_body(api: respx.MockRouter) -> None:
+    mock_state(api)
+    post = api.post(CREDS).respond(json=True)
+    api.post("/dataservice/ise/credentials/vsmart/sync").respond(json={"id": "s"})
+    args = {"ise_host": ISE, "vpn": 512, "pxgrid": False}
+    async with Client(server(ise_username="ersadmin")) as c:
+        prev = await tool(c, args)
+        assert prev["preview"]["after"]["ise"] == GUI_BODY
+        await tool(c, {**args, "confirm": prev["confirm"]})
+    raw = post.calls[0].request.content
+    sent = json.loads(raw)
+    assert list(sent) == list(GUI_BODY)  # every field, in the GUI's order
+    assert {**sent, "password": "********"} == GUI_BODY and sent["password"] == ISE_PW
+    assert all(isinstance(v, str) for v in sent.values())
+
+
+def test_server_body_fills_every_field() -> None:
+    pem = _self_signed("Lab Root CA", 365)
+    body = server_body(
+        ise_host=ISE, username="u", password="p", vpn=0, subscribe_sgt=False, subscribe_users=True,
+        ad_domain="corp.example", join_point="corp", root_cert=pem, pxgrid_root_cert=None,
+    )  # fmt: skip
+    assert list(body) == list(GUI_BODY) and all(isinstance(v, str) for v in body.values())
+    assert body["userAndUserGroup"] == "true" and body["sgt"] == "false"
+    assert body["activeDirectoryDomain"] == "corp.example" and body["joinPoint"] == "corp"
+    assert body["iseRootCert"] == pem and body["pxGridRootCert"] == pem
+    assert body["iseCertName"] and body["pxGridCertName"]
+    assert body["destinationVpn"] == "" and body["vpnIpSubnet"] == ""
+
+
+async def test_non_alphanumeric_user_blocks(api: respx.MockRouter) -> None:
+    mock_state(api)
+    async with Client(server(ise_username="mcp-ers-admin")) as c:
+        prev = await tool(c, {"ise_host": ISE})
+    assert prev["status"] == "blocked"
+    [b] = [b for b in prev["blockers"] if "CATSDWAN_ISE_USERNAME" in b]
+    assert "/^[a-zA-Z0-9]+$/" in b and "'mcp-ers-admin'" in b and "alphanumeric ERS admin" in b
+
+
+async def test_host_name_is_resolved_and_said(api: respx.MockRouter, monkeypatch: Any) -> None:
+    import cat_sdwan_mcp.tools.iseintegration as tool_mod
+
+    async def fake(host: str) -> str | None:
+        return ISE if host == ISE_FQDN else None
+
+    monkeypatch.setattr(tool_mod, "resolve_ip", fake)
     mock_state(api)
     post = api.post(CREDS).respond(json=True)
     api.post("/dataservice/ise/credentials/vsmart/sync").respond(json={"id": "s"})
     args = {"ise_host": ISE_FQDN, "pxgrid": False}
     async with Client(server()) as c:
         prev = await tool(c, args)
-        assert not any("named by IP" in w for w in prev["preview"].get("warnings", []))
+        p = prev["preview"]
+        assert p["ise_host_resolved"] == {"name": ISE_FQDN, "ip": ISE}
+        assert any(f"resolved to {ISE}" in w and "IP only" in w for w in p["warnings"])
+        assert p["requests"][0] == f"POST {CREDS} (ISE {ISE}, VPN 0)"
         await tool(c, {**args, "confirm": prev["confirm"]})
-    assert json.loads(post.calls[0].request.content)["iseServerIP"] == ISE_FQDN
+    assert json.loads(post.calls[0].request.content)["iseServerIP"] == ISE
 
 
-async def test_ip_host_warns_about_the_fqdn(api: respx.MockRouter) -> None:
+async def test_unresolvable_host_name_is_refused(api: respx.MockRouter, monkeypatch: Any) -> None:
+    import cat_sdwan_mcp.tools.iseintegration as tool_mod
+
+    async def fake(host: str) -> str | None:
+        return None
+
+    monkeypatch.setattr(tool_mod, "resolve_ip", fake)
+    mock_state(api)
+    async with Client(server()) as c:
+        res = await c.call_tool("catsdwan_set_ise_integration", {"ise_host": ISE_FQDN}, raise_on_error=False)
+    text = res.content[0].text  # type: ignore[union-attr]
+    assert res.is_error and "by IP address only" in text and "Use valid IP Address" in text
+
+
+async def test_ip_host_draws_no_name_warning(api: respx.MockRouter) -> None:
     mock_state(api)
     async with Client(server()) as c:
         prev = await tool(c, {"ise_host": ISE})
-    assert any("named by IP" in w for w in prev["preview"]["warnings"])
+    assert not any("resolved" in w or "named by IP" in w for w in prev["preview"].get("warnings", []))
 
 
 async def test_bad_host_is_refused(api: respx.MockRouter) -> None:
@@ -307,7 +378,7 @@ async def test_separate_pxgrid_root_cert(api: respx.MockRouter) -> None:
     api.post("/dataservice/ise/credentials/vsmart/sync").respond(json={"id": "s"})
     admin = _self_signed("ise.example.com", 700)  # ISE's default self-signed admin certificate
     px = _self_signed("Lab Root CA", 3000)
-    args = {"ise_host": ISE_FQDN, "ise_root_cert": admin, "pxgrid_root_cert": px, "pxgrid": False}
+    args = {"ise_host": ISE, "ise_root_cert": admin, "pxgrid_root_cert": px, "pxgrid": False}
     async with Client(server()) as c:
         prev = await tool(c, args)
         p = prev["preview"]
@@ -367,16 +438,18 @@ async def test_test_connectivity_failure_names_the_suspects(api: respx.MockRoute
             raise_on_error=False,
         )
     text = res.content[0].text  # type: ignore[union-attr]
-    assert res.is_error and "REST0002: Server error: TestConnectivity failed" in text
-    assert "Nothing was stored" in text and "ise_host=<the FQDN" in text and "ERS Admin" in text
+    assert res.is_error and "REST0002: Server error: Test Connectivity failed" in text
+    assert "Nothing was stored" in text and "ERS Admin" in text and "FQDN" not in text
     assert ISE_PW not in text and not create.called
 
 
 def test_host_helpers() -> None:
     assert is_host("198.51.100.35") and is_host("2001:db8::35") and is_host("ise.example.com")
     assert not is_host("198.51.100") and not is_host("ise host") and not is_host("-bad.example.com")
-    assert not any("FQDN" in h for h in connectivity_hints(512, "ise.example.com"))
-    assert "VPN 512" in connectivity_hints(512, "198.51.100.35")[0]
-    wanted = {"iseRootCert": "given"}
+    assert not any("FQDN" in h for h in connectivity_hints(512, "198.51.100.35"))
+    assert "VPN 512" in connectivity_hints(512, "198.51.100.35")[-1]
+    wanted = {"iseRootCert": "given", "iseCertName": "a.pem", "pxGridRootCert": "", "pxGridCertName": ""}
     assert keep_stored_certs(wanted, {"iseRootCert": "old", "pxGridRootCert": "px"}) == ["pxGridRootCert"]
-    assert wanted == {"iseRootCert": "given", "pxGridRootCert": "px"}
+    assert wanted["iseRootCert"] == "given" and wanted["pxGridRootCert"] == "px"
+    assert wanted["pxGridCertName"] == "pxgrid-root-ca.pem"
+    assert username_problem("mcpw8capture") is None and username_problem("ers_admin")

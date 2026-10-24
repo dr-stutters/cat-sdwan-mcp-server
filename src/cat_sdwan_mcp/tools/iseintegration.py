@@ -37,8 +37,10 @@ from cat_sdwan_mcp.iseintegration import (
     masked,
     node_name_of,
     pxgrid_state,
+    resolve_ip,
     server_body,
     stored,
+    username_problem,
 )
 from cat_sdwan_mcp.tools.changes import dangerous_blockers, dangerous_tool
 
@@ -69,8 +71,8 @@ def register(reg: ToolRegistrar) -> None:
         ise_host: Annotated[
             str | None,
             Field(
-                description="connect: ISE (the PAN with ERS and pxGrid): its FQDN as ISE's admin certificate "
-                "names it (the Manager must resolve it), or its IP address"
+                description="connect: ISE's IP address (the PAN with ERS and pxGrid; the Manager takes ISE "
+                "by IP only). A host name is resolved by this MCP server's DNS and the preview says so"
             ),
         ] = None,
         vpn: Annotated[
@@ -126,9 +128,11 @@ def register(reg: ToolRegistrar) -> None:
         subscriptions (SGTs, users and groups), then the pxGrid client: created and activated on ISE, where it
         waits as pending for ise_approve_pxgrid_client (or approve_on_manager=true), then the settings sent to
         the controllers. Run it again after the approval: the preview plans only what is still missing (the
-        controller sync). Name ISE by the FQDN its admin certificate carries where the Manager resolves it
-        (an IP draws a warning: 'TestConnectivity failed' errors list the suspects); give pxgrid_root_cert
-        when pxGrid's chain differs from the admin one; an update keeps the stored root certificates. The
+        controller sync). The body is the GUI's own (every field, strings, "" when empty); ISE is named by
+        IP (a host name is resolved here and said; the 20.18 GUI refuses names) and the ISE login must be
+        letters and digits only (the GUI's rule; the preview blocks otherwise). 'Test Connectivity failed'
+        errors list the suspects. Give pxgrid_root_cert when pxGrid's chain differs from the admin one; an
+        update keeps the stored root certificates. The
         preview shows the ISE host, VPN, subscriptions, the root-certificate checks, the
         pxGrid client name ISE will list, every request in order, and what the controllers and edges receive
         (identity lists for identity-based policy). action='disconnect' removes both on the Manager and the
@@ -187,9 +191,24 @@ def register(reg: ToolRegistrar) -> None:
                 register_secret(secret)
             host = (ise_host or "").strip() or str(creds.get("iseServerIP") or "")
             if not host:
-                raise InvalidRequest("ise_host is required to connect (ISE's FQDN or IP address).")
+                raise InvalidRequest("ise_host is required to connect (ISE's IP address).")
             if not is_host(host):
                 raise InvalidRequest(f"ise_host {host!r} is neither an IP address nor a host name.")
+            if not is_ip(host):
+                ip = await resolve_ip(host)
+                if not ip:
+                    raise InvalidRequest(
+                        f"ise_host {host!r}: the Manager takes ISE by IP address only (the 20.18 GUI refuses "
+                        "a name: 'Use valid IP Address') and this server could not resolve the name: give "
+                        "ISE's IP address."
+                    )
+                warnings.append(
+                    f"ise_host {host!r} resolved to {ip} by this MCP server's DNS: the Manager takes ISE by "
+                    "IP only (the 20.18 GUI refuses a name), so the body carries "
+                    f"{ip}; check it is ISE's PAN"
+                )
+                details["ise_host_resolved"] = {"name": host, "ip": ip}
+                host = ip
             if subscribe_users and not (ad_domain and join_point):
                 raise InvalidRequest(
                     "subscribe_users needs ad_domain and join_point (ise_get_ad_join_point)."
@@ -220,6 +239,8 @@ def register(reg: ToolRegistrar) -> None:
                         "the stored record shows no root certificate and none is given: if the Manager holds "
                         "one, a PUT without it may clear it (give ise_root_cert again to be sure)"
                     )
+            if write and user and (problem := username_problem(user)):
+                blockers.append(problem)
             if write and not (user and secret):
                 blockers.append(
                     "no ISE login configured on this server: set CATSDWAN_ISE_USERNAME and "
@@ -286,11 +307,6 @@ def register(reg: ToolRegistrar) -> None:
                 details[key] = cert
             if ise_root_cert and not pxgrid_root_cert:
                 details["pxgrid_certificate_check"] = "same as ise_root_cert"
-            if is_ip(host):
-                warnings.append(
-                    f"ISE is named by IP ({host}): if the Manager answers 'TestConnectivity failed', try the "
-                    "FQDN ISE's admin certificate names (the Manager must resolve it)"
-                )
             details["after"] = {
                 "ise": masked(wanted),
                 "pxgrid": {"node": node, "state": state_after} if pxgrid else "not requested",
@@ -330,7 +346,7 @@ def register(reg: ToolRegistrar) -> None:
                 "undo": undo,
             },
             side_effects=side_effects,
-            fingerprint=[str(masked(creds)), state, node_name_of(px)],
+            fingerprint=[str(masked(creds)), state, node_name_of(px), str((wanted or {}).get("iseServerIP"))],
             blockers=blockers,
             blast_radius=1,
         )
