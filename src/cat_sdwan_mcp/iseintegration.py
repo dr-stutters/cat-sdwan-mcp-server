@@ -269,7 +269,8 @@ async def resolve_ip(host: str) -> str | None:
         return None
     addrs = [str(i[4][0]) for i in infos if i and i[4]]
     v4 = [a for a in addrs if ":" not in a]
-    return (v4 or addrs or [None])[0]
+    picked = v4 or addrs
+    return picked[0] if picked else None
 
 
 def connectivity_hints(vpn: int, host: str) -> list[str]:
