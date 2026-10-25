@@ -18,7 +18,7 @@ from fastmcp import Client
 from cat_sdwan_mcp import edgefirewall as fw
 from cat_sdwan_mcp import features as ft
 
-from .conftest import fixture, make_server
+from .conftest import fixture, make_server, mock_service_vpns
 
 FP = "/dataservice/v1/feature-profile/sdwan"
 PGS = "/dataservice/v1/policy-group"
@@ -59,7 +59,9 @@ def mock_manager(
     ngfw: list[dict[str, Any]] | None = None,
     policy: list[dict[str, Any]] | None = None,
     members: list[str] | None = None,
+    converted: bool = True,
 ) -> None:
+    mock_service_vpns(api, converted=converted, more=(20,))
     profiles = [OBJ_PROFILE, *([SEC_PROFILE] if with_security else [])]
     group = {"id": PGID, "name": "mcp-w8-pg", "description": "", "profiles": profiles, "lastUpdatedOn": 5}
     api.get(PGS).respond(json=[group])

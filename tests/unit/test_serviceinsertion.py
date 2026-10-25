@@ -199,6 +199,7 @@ def mock_lab(
     if omp_fw:  # hand-built: the FW service hub1 would advertise
         omp["data"].append({**omp["data"][0], "service": "FW", "label": "1005", "path-id": "70"})
     api.get(si.OMP_SERVICES_PATH).respond(json=omp)
+    api.get("/dataservice/segment").respond(json=fixture("segment"))
     mock_inventory(api)
 
 
@@ -618,3 +619,54 @@ async def test_trace_through_firewall_prompt() -> None:
     for verdict in ("allowed by <rule> on <FTD>", "blocked by <rule> on <FTD>", "not chained"):
         assert verdict in text
     assert "Read-only" in text
+
+
+# --- #118: target VPNs are the LAN VPN parcel names ----------------------------------------------------
+
+
+async def test_set_service_steering_targets_the_lan_vpn_parcel_name(api: respx.MockRouter) -> None:
+    mock_lab(api, services=[FW_SERVICE])
+    api.get(f"{FP}/application-priority/traffic-policy/schema").respond(json=TP_SCHEMA)
+    post_tp = api.post(f"{FP}/application-priority/{AP}/traffic-policy").respond(json={"parcelId": TP})
+    async with Client(make_server(mcp_enable_writes=True, mcp_enable_dangerous=True)) as c:
+        pre = (await c.call_tool("catsdwan_set_service_steering", STEER_ARGS)).structured_content
+    d = details(pre)
+    assert d["vpns"][0]["vpn"] == 10 and d["vpns"][0]["parcel_names"] == ["vpn10"]
+    assert d["after"]["vpns"] == ["vpn10"]
+    await confirmed("catsdwan_set_service_steering", STEER_ARGS)
+    sent = json.loads(post_tp.calls.last.request.content)["data"]
+    assert sent["target"]["vpn"] == g(["vpn10"])  # the controller matches this, not "10"
+    assert sent["sequences"][0]["actions"][0]["set"][0]["service"]["vpn"] == g(10)
+    # The parcel's VPN name (data.name, here "corp") and the parcel name itself resolve the same way.
+    for ref in ("corp", "vpn10"):
+        async with Client(make_server(mcp_enable_writes=True, mcp_enable_dangerous=True)) as c:
+            pre = (
+                await c.call_tool("catsdwan_set_service_steering", {**STEER_ARGS, "vpns": [ref]})
+            ).structured_content
+        assert not pre.get("blockers") and details(pre)["after"]["vpns"] == ["vpn10"]
+
+
+async def test_set_service_steering_blocks_a_cli_only_vpn(api: respx.MockRouter) -> None:
+    mock_lab(api, service_profile=False)
+    async with Client(make_server(mcp_enable_writes=True, mcp_enable_dangerous=True)) as c:
+        pre = (await c.call_tool("catsdwan_set_service_steering", STEER_ARGS)).structured_content
+    text = " | ".join(pre["blockers"])
+    assert "VPN 10 has no LAN VPN parcel in configuration group mcp-test (br1)" in text
+    assert "convert VPN 10 to a LAN VPN parcel" in text
+    assert "body" not in details(pre)
+
+
+async def test_service_chains_maps_parcel_name_targets_to_the_vpn(api: respx.MockRouter) -> None:
+    mock_lab(api, services=[FW_SERVICE])
+    tp = si.traffic_policy_body("mcp-w8-chain", "", [10], "service", "accept", [STEERING_RULE],
+                                {"dc-prefixes": DPL}, ["vpn10"])  # fmt: skip
+    api.get(f"{FP}/application-priority/{AP}").respond(
+        json={"associatedProfileParcels": [{"parcelId": TP, "parcelType": "traffic-policy",
+                                            "payload": {"name": "mcp-w8-chain"}}]}
+    )  # fmt: skip
+    api.get(f"{FP}/application-priority/{AP}/traffic-policy/{TP}").respond(
+        json={"parcelId": TP, "payload": tp}
+    )
+    out = await call("catsdwan_service_chains", {"vpn": 10})
+    assert out["steering"][0]["vpns"] == ["vpn10"] and out["steering"][0]["vpn_ids"] == [10]
+    assert (await call("catsdwan_service_chains", {"vpn": 20}))["steering"] == []

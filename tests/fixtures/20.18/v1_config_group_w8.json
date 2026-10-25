@@ -1,0 +1,100 @@
+[
+ {
+  "id": "00000000-0000-4000-8000-00000000f111",
+  "name": "mcp-w8-hub",
+  "description": "L65 hub role (hub1)",
+  "solution": "sdwan",
+  "profiles": [
+   {
+    "id": "00000000-0000-4000-8000-00000000f110",
+    "name": "mcp-w8-service",
+    "solution": "sdwan",
+    "type": "service",
+    "description": null,
+    "profileParcelCount": 2,
+    "origin": null
+   },
+   {
+    "id": "00000000-0000-4000-8000-00000000f112",
+    "name": "mcp-w8-hub-cli",
+    "solution": "sdwan",
+    "type": "cli",
+    "description": null,
+    "profileParcelCount": 1,
+    "origin": null
+   },
+   {
+    "id": "00000000-0000-4000-8000-00000000f113",
+    "name": "mcp-test-transport",
+    "solution": "sdwan",
+    "type": "transport",
+    "description": null,
+    "profileParcelCount": 1,
+    "origin": null
+   },
+   {
+    "id": "00000000-0000-4000-8000-00000000f114",
+    "name": "mcp-test-system",
+    "solution": "sdwan",
+    "type": "system",
+    "description": null,
+    "profileParcelCount": 5,
+    "origin": null
+   }
+  ],
+  "version": 7,
+  "devices": [],
+  "numberOfDevices": 1,
+  "numberOfDevicesUpToDate": 1,
+  "origin": "user"
+ },
+ {
+  "id": "00000000-0000-4000-8000-000000000124",
+  "name": "mcp-test",
+  "description": "seed_lab.py (hub1, br1)",
+  "solution": "sdwan",
+  "profiles": [
+   {
+    "id": "00000000-0000-4000-8000-00000000f110",
+    "name": "mcp-w8-service",
+    "solution": "sdwan",
+    "type": "service",
+    "description": null,
+    "profileParcelCount": 2,
+    "origin": null
+   },
+   {
+    "id": "00000000-0000-4000-8000-00000000f113",
+    "name": "mcp-test-transport",
+    "solution": "sdwan",
+    "type": "transport",
+    "description": null,
+    "profileParcelCount": 1,
+    "origin": null
+   },
+   {
+    "id": "00000000-0000-4000-8000-00000000f114",
+    "name": "mcp-test-system",
+    "solution": "sdwan",
+    "type": "system",
+    "description": null,
+    "profileParcelCount": 5,
+    "origin": null
+   },
+   {
+    "id": "00000000-0000-4000-8000-000000001038",
+    "name": "mcp-test-cli",
+    "solution": "sdwan",
+    "type": "cli",
+    "description": null,
+    "profileParcelCount": 1,
+    "origin": null
+   }
+  ],
+  "version": 23,
+  "devices": [],
+  "numberOfDevices": 2,
+  "numberOfDevicesUpToDate": 2,
+  "origin": "user"
+ }
+]

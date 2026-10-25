@@ -68,3 +68,40 @@ def router() -> Iterator[respx.MockRouter]:
     """An empty router: the test mocks the Manager itself."""
     with respx.mock(base_url=BASE, assert_all_called=False) as r:
         yield r
+
+
+W8_SERVICE = "00000000-0000-4000-8000-00000000f110"
+W8_HUB_GROUP = "00000000-0000-4000-8000-00000000f111"
+W8_TEST_GROUP = "00000000-0000-4000-8000-000000000124"
+
+
+def mock_service_vpns(
+    router: respx.MockRouter, *, converted: bool = True, segments: bool = True, more: tuple[int, ...] = ()
+) -> None:
+    """#118: the configuration groups after the W8 live run (recorded 2026-10-25, ids replaced): mcp-test
+    (br1) and mcp-w8-hub (hub1) share service profile mcp-w8-service, whose LAN VPN parcel mcp-w8-vpn10 is
+    VPN 10 (converted=False: no LAN VPN parcel, VPN 10 only in the CLI profiles as before the conversion);
+    the one segment Discovered_VPN_10. `more`: hand-built parcel copies for other VPNs (mcp-w8-vpn<n>)."""
+    rows = {r["id"]: r for r in fixture("v1_config_group_associate")["devices"]}
+    router.get("/dataservice/v1/config-group").respond(json=fixture("v1_config_group_w8"))
+    router.get(f"/dataservice/v1/config-group/{W8_TEST_GROUP}/device/associate").respond(
+        json={"devices": [rows["REDACTED-16"]]}
+    )
+    router.get(f"/dataservice/v1/config-group/{W8_HUB_GROUP}/device/associate").respond(
+        json={"devices": [rows["REDACTED-17"]]}
+    )
+    lan = fixture("v1_feature_profile_service_lan_vpn_list")
+    for n in more:
+        extra = json.loads(json.dumps(lan["data"][0]))
+        extra["parcelId"] = f"00000000-0000-4000-8000-0000000{n:05d}"
+        extra["payload"]["name"] = f"mcp-w8-vpn{n}"
+        extra["payload"]["data"]["vpnId"]["value"] = n
+        extra["payload"]["data"]["name"]["value"] = f"vpn{n}"
+        lan["data"].append(extra)
+    router.get(f"/dataservice/v1/feature-profile/sdwan/service/{W8_SERVICE}/lan/vpn").respond(
+        json=lan if converted else {"header": {}, "data": []}
+    )
+    if segments:
+        router.get("/dataservice/segment").respond(json=fixture("segment"))
+    else:
+        router.get("/dataservice/segment").respond(404, json={"error": {"message": "nf"}})

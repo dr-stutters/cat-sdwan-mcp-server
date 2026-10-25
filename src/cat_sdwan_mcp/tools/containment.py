@@ -97,6 +97,7 @@ from cat_sdwan_mcp.features import POLICY_DEPLOY_PATH
 from cat_sdwan_mcp.findhost import ARP_PATH, TRANSPORT_VPNS, match_arp
 from cat_sdwan_mcp.inventory import Inventory, load_inventory, resolve
 from cat_sdwan_mcp.policygroups import created_id, group_profiles
+from cat_sdwan_mcp.servicevpns import vpn_context, zone_vpn_problems
 from cat_sdwan_mcp.sgtpath import INTERFACE_TRUSTSEC_PATH
 from cat_sdwan_mcp.tools.changes import (
     _pending_blockers,
@@ -115,6 +116,7 @@ from cat_sdwan_mcp.tools.edgefirewall import (
     reach,
 )
 from cat_sdwan_mcp.tools.policygroups import all_memberships, group_devices
+from cat_sdwan_mcp.tools.policyvpns import zone_vpns
 from cat_sdwan_mcp.trustsec import EDGE_PATHS, ISE_SGT_PATH, environment, rows_of, unsupported
 
 PG_VARIABLES_PATH = "/dataservice/v1/policy-group/{id}/device/variables"
@@ -515,6 +517,19 @@ def register(reg: ToolRegistrar) -> None:
             )
         if fwl["po"] is None:
             blockers.append(f"policy group {gname} has no policy-object profile for the baseline's objects")
+        # #118: the baseline rides on the NGFW's zone pairs; their VPNs must be LAN VPN parcels in each edge's
+        # configuration group, or the controller refuses the deploy that would put the baseline in effect.
+        if not remove:
+            pair_zones = {z for r in fwl["policies"] for _, s, d in zone_pairs_of(r["data"]) for z in (s, d)}
+            if used := zone_vpns(fwl["zones"], pair_zones):
+                try:
+                    vctx = await vpn_context(
+                        app, [str(d.get("chassis")) for d in await group_devices(app, gid)]
+                    )
+                    blockers += zone_vpn_problems(used, vctx)
+                    warnings += list(vctx.get("warnings") or [])
+                except UpstreamError as e:
+                    warnings.append(f"zone VPNs not checked against the configuration groups: {str(e)[:150]}")
 
         # Objects: the Quarantine SGT list and the slot prefix list (created when missing, never others').
         sgt_obj = by_name(fwl["sgt_lists"], QUARANTINE_OBJECT)

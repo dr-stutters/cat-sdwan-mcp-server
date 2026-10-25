@@ -1,0 +1,39 @@
+{
+ "header": {
+  "generatedOn": 1792906718643,
+  "columns": [
+   {
+    "title": "view.template.clientViewSegment.segmentName",
+    "property": "segmentName",
+    "hideable": false,
+    "dataType": "string"
+   },
+   {
+    "title": "view.template.clientViewSegment.segmentId",
+    "property": "segmentId",
+    "dataType": "string"
+   },
+   {
+    "title": "view.template.clientViewSegment.referenceCount",
+    "property": "referenceCount",
+    "hideable": false,
+    "dataType": "number"
+   },
+   {
+    "title": "common.solution.initCap",
+    "property": "solution",
+    "hideable": true,
+    "dataType": "string"
+   }
+  ]
+ },
+ "data": [
+  {
+   "segmentName": "Discovered_VPN_10",
+   "segmentId": "10",
+   "solution": "sdwan",
+   "id": "00000000-0000-4000-8000-00000000f119",
+   "referenceCount": 0
+  }
+ ]
+}
