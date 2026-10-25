@@ -6,6 +6,20 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+## [0.6.2] - 2026-10-25
+
+### Fixed
+- #118: policy-group VPNs are written as the devices' LAN VPN parcel names (the 20.18 controller rejects VPN ids:
+  "configure the VPN's ... in your configuration-groups"); steering takes VPN ids, parcel names or segment names;
+  `catsdwan_deploy_policy_group`, the firewall policy and the containment baseline precheck the controller's VPN rule
+  and block with the fix; a controller-side deploy failure is reported as failed.
+- #119: W50 service insertion works on 20.18: `service firewall` CLI lines, CLI-profile firewall services seen by
+  `catsdwan_service_chains`, and a traffic-policy steering body the Manager accepts (one-key match entries, service VPN set).
+- #120: `catsdwan_test_login` reports RADIUS users as external; `catsdwan_set_external_authentication`'s undo is no longer
+  blocked; the W40 prompt matches ISE on Device IP Address; `catsdwan_set_feature_parcel` rejects unknown optionTypes and
+  gives an appliable undo for CLI deletions; `catsdwan_set_ise_integration`'s preview no longer shows stored certificates
+  as empty.
+
 ## [0.6.1] - 2026-10-24
 
 ### Added
