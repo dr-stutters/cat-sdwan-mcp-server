@@ -25,6 +25,7 @@ from cat_sdwan_mcp.iseintegration import (
     PXGRID_ACTIVATE_PATH,
     PXGRID_APPROVE_PATH,
     PXGRID_CREATE_PATH,
+    PXGRID_DESCRIPTION,
     PXGRID_PATH,
     SYNC_PATH,
     cert_check,
@@ -398,7 +399,7 @@ def register(reg: ToolRegistrar) -> None:
                     {
                         "pxGridUserName": px_user,
                         "pxGridPassword": px_pass or "",
-                        "description": "Catalyst SD-WAN Manager (catsdwan_set_ise_integration)",
+                        "description": PXGRID_DESCRIPTION,
                     },
                 )
                 now = str(first_value(activated, "accountState") or "PENDING").lower()
