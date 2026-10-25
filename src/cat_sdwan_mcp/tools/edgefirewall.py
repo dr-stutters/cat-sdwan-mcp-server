@@ -58,6 +58,7 @@ from cat_sdwan_mcp.edgefirewall import (
 )
 from cat_sdwan_mcp.features import POLICY_GROUP_PATH
 from cat_sdwan_mcp.policygroups import created_id, group_profiles, update_body
+from cat_sdwan_mcp.serviceinsertion import vpn_problem
 from cat_sdwan_mcp.servicevpns import resolve_vpns, vpn_context, zone_value_ids, zone_vpn_problems
 from cat_sdwan_mcp.tools.changes import dangerous_blockers, dangerous_tool
 from cat_sdwan_mcp.tools.configuration import _groups
@@ -323,7 +324,9 @@ def register(reg: ToolRegistrar) -> None:
                     vals, notes = zone_value_ids(vals, vctx)
                     warnings += notes
                     for v in vals:
-                        if v.strip().isdigit():
+                        # VPN 0 / 512 are transport / management (WAN-side parcels): never a LAN VPN parcel,
+                        # and the deploy precheck skips them too.
+                        if v.strip().isdigit() and vpn_problem(int(v.strip())) is None:
                             warnings += [
                                 f"{b}; the policy groups using this zone are blocked at deploy until then"
                                 for b in resolve_vpns([v.strip()], vctx)["blockers"]

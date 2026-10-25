@@ -267,6 +267,9 @@ async def test_zone_object_takes_a_parcel_name(api: respx.MockRouter) -> None:
     warn = await preview("catsdwan_set_security_object", {"kind": "zone", "name": "lan", "values": ["30"]})
     assert any("VPN 30 has no LAN VPN parcel in any configuration group" in w
                for w in warn["preview"]["warnings"])  # fmt: skip
+    # A transport zone (VPN 0) is no LAN VPN parcel and is not checked at deploy: no such warning.
+    wan = await preview("catsdwan_set_security_object", {"kind": "zone", "name": "lan", "values": ["0"]})
+    assert not any("blocked at deploy" in w for w in wan["preview"].get("warnings") or [])
 
 
 async def test_firewall_policy_blocks_a_zone_vpn_without_parcel(api: respx.MockRouter) -> None:
