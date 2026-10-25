@@ -58,9 +58,11 @@ from cat_sdwan_mcp.edgefirewall import (
 )
 from cat_sdwan_mcp.features import POLICY_GROUP_PATH
 from cat_sdwan_mcp.policygroups import created_id, group_profiles, update_body
+from cat_sdwan_mcp.servicevpns import resolve_vpns, vpn_context, zone_value_ids, zone_vpn_problems
 from cat_sdwan_mcp.tools.changes import dangerous_blockers, dangerous_tool
 from cat_sdwan_mcp.tools.configuration import _groups
 from cat_sdwan_mcp.tools.policygroups import group_devices, policy_profiles
+from cat_sdwan_mcp.tools.policyvpns import zone_vpns
 from cat_sdwan_mcp.trustsec import ISE_CREDENTIALS_PATH, ISE_SGT_PATH, configured
 
 # A policy-object list type per rule kind (apps are the Manager's app lists).
@@ -268,7 +270,8 @@ def register(reg: ToolRegistrar) -> None:
         values: Annotated[
             list[str] | None,
             Field(
-                description="zone: VPN numbers ('10') or interfaces ('GigabitEthernet3'), not both; "
+                description="zone: VPN numbers ('10') or LAN VPN parcel names ('mcp-w8-vpn10', stored as the "
+                "VPN number) or interfaces ('GigabitEthernet3'), not both; "
                 "identity: 'user:alice' or 'group:<domain>/Users/Sales'; sgt: 'Employees:4' or a tag or "
                 "ISE SGT name; prefix: '192.0.2.0/24'. Replaces the object's values"
             ),
@@ -307,7 +310,25 @@ def register(reg: ToolRegistrar) -> None:
                     sgts = sgt_table(await app.api.get(ISE_SGT_PATH))
                 except UpstreamError as e:
                     warnings.append(f"ISE SGTs not read (names need ':<tag>'): {str(e)[:150]}")
-            entries, problems = object_entries(kind, values or [], sgts)
+            vals = list(values or [])
+            if kind == "zone":
+                # #118: a zone entry is a VPN number; names of LAN VPN parcels / segments become it, and a VPN
+                # no configuration group has as a LAN VPN parcel is flagged (the controller refuses it).
+                try:
+                    vctx = await vpn_context(app, None)
+                except UpstreamError as e:
+                    vctx = {}
+                    warnings.append(f"LAN VPN parcels not read (VPN names not resolved): {str(e)[:150]}")
+                if vctx:
+                    vals, notes = zone_value_ids(vals, vctx)
+                    warnings += notes
+                    for v in vals:
+                        if v.strip().isdigit():
+                            warnings += [
+                                f"{b}; the policy groups using this zone are blocked at deploy until then"
+                                for b in resolve_vpns([v.strip()], vctx)["blockers"]
+                            ]
+            entries, problems = object_entries(kind, vals, sgts)
             blockers += [f"{name}: {p}" for p in problems]
             body = object_body(name.strip(), description, entries)
             schema, why = await _schema(
@@ -506,6 +527,7 @@ def register(reg: ToolRegistrar) -> None:
         # Names -> ids for zones and every list the rules use.
         refs: dict[str, dict[str, str]] = {k: {} for k in LIST_TYPES}
         id_names: dict[str, str] = {}
+        zone_rows: list[dict[str, Any]] = []
         unresolved = False
         if po:
             want: dict[str, set[str]] = {k: set() for k in LIST_TYPES}
@@ -527,6 +549,7 @@ def register(reg: ToolRegistrar) -> None:
                 if isinstance(rows, BaseException):
                     raise rows
                 if k == "zone":
+                    zone_rows = rows
                     id_names.update({r["id"]: str(r.get("name")) for r in rows})
                 for n in sorted(want[k]):
                     hit = by_name(rows, n)
@@ -560,6 +583,18 @@ def register(reg: ToolRegistrar) -> None:
                     ]
             if not pairs_in:
                 blockers.append("give at least one zone pair: an NGFW policy filters nothing without one")
+            # #118: each VPN of a paired zone must be a LAN VPN parcel in every device's configuration group.
+            used = zone_vpns(
+                zone_rows, {refs["zone"][n] for pair in pairs_in for n in pair if n in refs["zone"]}
+            )
+            if used:
+                try:
+                    members = [str(d.get("chassis")) for d in await group_devices(app, str(found.get("id")))]
+                    vctx = await vpn_context(app, members)
+                    blockers += zone_vpn_problems(used, vctx)
+                    warnings += list(vctx.get("warnings") or [])
+                except UpstreamError as e:
+                    warnings.append(f"zone VPNs not checked against the configuration groups: {str(e)[:150]}")
             if len(set(pairs_in)) != len(pairs_in):
                 blockers.append("a zone pair is given twice")
             if (

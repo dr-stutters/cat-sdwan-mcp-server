@@ -67,11 +67,12 @@ from cat_sdwan_mcp.serviceinsertion import (
     vpn_problem,
     with_service,
 )
+from cat_sdwan_mcp.servicevpns import resolve_vpns, vpn_context, vpn_ids_by_name
 from cat_sdwan_mcp.tools.changes import dangerous_blockers, dangerous_tool
 from cat_sdwan_mcp.tools.configuration import _groups
 from cat_sdwan_mcp.tools.edgefirewall import _group_detail, list_objects, reach
 from cat_sdwan_mcp.tools.features import _reach
-from cat_sdwan_mcp.tools.policygroups import policy_profiles
+from cat_sdwan_mcp.tools.policygroups import group_devices, policy_profiles
 
 ServiceType = Literal["FW", "IDS", "IDP", "netsvc1", "netsvc2", "netsvc3", "netsvc4", "appqoe"]
 TIER_REASON = "a traffic-steering policy (W50): deployed, it sends live traffic through a firewall"
@@ -245,6 +246,13 @@ async def steering_inventory(app: SdwanApp, vpn: int | None) -> tuple[list[dict[
     details = list(await asyncio.gather(*(_group_detail(app, gr) for gr in groups)))
     out: list[dict[str, Any]] = []
     warnings: list[str] = []
+    # 20.18 targets name LAN VPN parcels (#118): map them back to VPN ids for the filter and the view.
+    ids_by_name: dict[str, int] = {}
+    if any(p["type"] == "application-priority" for gr in details for p in group_profiles(gr)):
+        try:
+            ids_by_name = vpn_ids_by_name(await vpn_context(app, None))
+        except UpstreamError as e:
+            warnings.append(f"LAN VPN parcels not read (target names not mapped to VPN ids): {str(e)[:150]}")
     for gr in details:
         profs = group_profiles(gr)
         names = await _data_prefix_names(app, profs)
@@ -258,7 +266,14 @@ async def steering_inventory(app: SdwanApp, vpn: int | None) -> tuple[list[dict[
                 continue
             for tp in pols:
                 tgt = target_of(tp["data"])
-                if vpn is not None and tgt["vpns"] and str(vpn) not in tgt["vpns"]:
+                tgt["vpn_ids"] = sorted(
+                    {
+                        i
+                        for v in tgt["vpns"]
+                        if (i := ids_by_name.get(v, int(v) if v.isdigit() else None)) is not None
+                    }
+                )
+                if vpn is not None and tgt["vpn_ids"] and vpn not in tgt["vpn_ids"]:
                     continue
                 rows = steering_rows(tp["data"], names)
                 if rows:
@@ -560,7 +575,12 @@ def register(reg: ToolRegistrar) -> None:
         group: Annotated[str, Field(description="Policy group name or id (catsdwan_list_policy_groups)")],
         name: Annotated[str, Field(description="Traffic policy name (created, or replaced when it exists)")],
         vpns: Annotated[
-            list[int] | None, Field(description="Service VPNs the policy applies to, e.g. [10]")
+            list[int | str] | None,
+            Field(
+                description="Service VPNs the policy applies to: VPN ids ([10]) or LAN VPN parcel names "
+                "(['mcp-w8-vpn10']); each is written as the LAN VPN parcel name of the devices' "
+                "configuration groups, which is what the 20.18 controller matches"
+            ),
         ] = None,
         rules: Annotated[
             list[SteeringRule] | None,
@@ -592,11 +612,14 @@ def register(reg: ToolRegistrar) -> None:
         /v1/policy-group/{id}). Preview-first: the sequences in plain words, before and after, every list
         name resolved, a warning when no edge is given that service in the VPN (unrestricted traffic then
         routes around it, restricted traffic is dropped), the body checked against the Manager's schema when
-        it gives one, the policy groups and devices reached. Stores only: deploy with
-        catsdwan_deploy_policy_group (one edge first). Dangerous."""
+        it gives one, the policy groups and devices reached. The target VPNs are resolved to the LAN VPN
+        parcel names of the group's devices' configuration groups (the controller refuses a VPN id, a
+        segment name or a CLI-only VPN at deploy); blocked, with the fix, when a device's group has no LAN
+        VPN parcel for a VPN. Stores only: deploy with catsdwan_deploy_policy_group (one edge first).
+        Dangerous."""
         app: SdwanApp = get_client(ctx)
         rule_rows = [r.model_dump() for r in rules or []]
-        vpn_list = list(dict.fromkeys(vpns or []))
+        vpn_refs = list(dict.fromkeys(str(v).strip() for v in vpns or [] if str(v).strip()))
         groups = await _groups(app, POLICY_GROUPS_PATH)
         found = resolve_group(groups, group, "policy group")
         detail = await _group_detail(app, found)
@@ -604,6 +627,24 @@ def register(reg: ToolRegistrar) -> None:
         profs = group_profiles(detail)
         blockers = dangerous_blockers(ctx, app, [TIER_REASON])
         warnings: list[str] = []
+
+        # #118: target VPNs -> the LAN VPN parcel names of the devices' configuration groups.
+        resolved: dict[str, Any] = {"names": [], "ids": [], "rows": [], "blockers": [], "warnings": []}
+        if vpn_refs and not remove:
+            try:
+                members: list[str] | None = [
+                    str(d.get("chassis")) for d in await group_devices(app, str(found.get("id")))
+                ]
+            except UpstreamError as e:
+                members = None
+                warnings.append(
+                    f"policy group devices not read (VPNs checked against every group): {str(e)[:150]}"
+                )
+            resolved = resolve_vpns(vpn_refs, await vpn_context(app, members))
+            blockers += resolved["blockers"]
+            warnings += resolved["warnings"]
+        vpn_list: list[int] = resolved["ids"]
+        targets: list[str] = resolved["names"]
 
         # The application-priority profile: the group's, a named one, or a new one.
         in_group = [p for p in profs if p["type"] == "application-priority"]
@@ -660,9 +701,8 @@ def register(reg: ToolRegistrar) -> None:
 
         body: dict[str, Any] | None = None
         if not remove:
-            if not vpn_list:
+            if not vpn_refs:
                 blockers.append("give the service VPNs the policy applies to (`vpns`)")
-            blockers += [p for v in vpn_list if (p := vpn_problem(v))]
             if not rule_rows:
                 blockers.append("give at least one rule: a steering policy without one steers nothing")
             seen: set[str] = set()
@@ -678,7 +718,7 @@ def register(reg: ToolRegistrar) -> None:
                     blockers.append(f"rule {r['name']}: {p}")
                 if (
                     r.get("service_vpn") is None
-                    and len(vpn_list) > 1
+                    and len(vpn_list or vpn_refs) > 1
                     and not (r.get("chain") and r.get("local"))
                 ):
                     blockers.append(
@@ -692,9 +732,9 @@ def register(reg: ToolRegistrar) -> None:
                     warnings.append(f"rule {r['name']} matches on no prefix: every flow of the VPN takes it")
             if direction not in DIRECTIONS:
                 blockers.append(f"direction {direction!r}")
-            if not [b for b in blockers if "not read" in b] and all(n in refs for n in wanted):
+            if targets and not [b for b in blockers if "not read" in b] and all(n in refs for n in wanted):
                 body = traffic_policy_body(
-                    name.strip(), description, vpn_list, direction, "accept", rule_rows, refs
+                    name.strip(), description, vpn_list, direction, "accept", rule_rows, refs, targets
                 )
                 try:
                     schema = request_schema(
@@ -759,6 +799,7 @@ def register(reg: ToolRegistrar) -> None:
                 "tier": "dangerous",
                 "group": gname,
                 "profile": (ap or {}).get("name") or f"{new_profile} (new)",
+                **({"vpns": resolved["rows"]} if resolved["rows"] else {}),
                 "before": before,
                 "after": after,
                 "requests": requests,
@@ -778,6 +819,7 @@ def register(reg: ToolRegistrar) -> None:
                 "group": [found.get("lastUpdatedOn"), found.get("version")],
                 "policy": existing["raw"].get("lastUpdatedOn") if existing else None,
                 "refs": refs,
+                "targets": targets,
             },
             blockers=blockers,
             blast_radius=len(devices),
@@ -817,7 +859,7 @@ def register(reg: ToolRegistrar) -> None:
             args={
                 "group": group,
                 "name": name,
-                "vpns": vpn_list,
+                "vpns": vpn_refs,
                 "rules": rule_rows,
                 "direction": direction,
                 "profile": profile,

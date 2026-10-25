@@ -310,14 +310,20 @@ def traffic_policy_body(
     default_action: str,
     rules: list[dict[str, Any]],
     refs: dict[str, str],
+    targets: list[str] | None = None,
 ) -> dict[str, Any]:
+    """`targets`: the LAN VPN parcel names the controller matches (#118; servicevpns.resolve_vpns); the VPN
+    ids are only the fallback when none is given. A service's own `vpn` stays the VPN id."""
     default_vpn = vpns[0] if len(vpns) == 1 else None
     return {
         "name": name,
         "description": description,
         "data": {
             "dataDefaultAction": g(default_action),
-            "target": {"vpn": g([str(v) for v in vpns]), "direction": g(direction)},
+            "target": {
+                "vpn": g(list(targets) if targets else [str(v) for v in vpns]),
+                "direction": g(direction),
+            },
             "sequences": [steering_sequence(i, r, refs, default_vpn) for i, r in enumerate(rules, start=1)],
         },
     }

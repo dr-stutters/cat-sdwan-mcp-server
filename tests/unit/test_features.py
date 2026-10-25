@@ -20,7 +20,7 @@ from cat_sdwan_mcp._core.spec import build_index
 from cat_sdwan_mcp.spec import match_operation
 from cat_sdwan_mcp.tools import changes as change_tools
 
-from .conftest import fixture, make_server
+from .conftest import fixture, make_server, mock_service_vpns
 from .test_inventory import mock_inventory
 
 GID = "00000000-0000-4000-8000-000000000124"
@@ -421,6 +421,8 @@ async def test_associate_add_remove_and_blockers(api: respx.MockRouter) -> None:
 def mock_policy(api: respx.MockRouter) -> respx.Route:
     rec = {**group(PGID, "mcp-policy"), "profiles": []}
     api.get("/dataservice/v1/policy-group").respond(json=[rec])
+    api.get(PG).respond(json=rec)
+    mock_service_vpns(api)
     api.get(f"{PG}/device/associate").respond(json=fixture("v1_config_group_associate"))
     api.get(f"{STATUS}/tasks").respond(json={"runningTasks": []})
     api.get(f"/dataservice/template/config/running/{BR1}").respond(json={"config": "hostname br1\n"})

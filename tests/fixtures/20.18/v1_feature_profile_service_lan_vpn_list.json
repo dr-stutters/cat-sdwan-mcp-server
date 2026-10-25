@@ -1,0 +1,44 @@
+{
+ "header": {
+  "generatedOn": 1792906718125
+ },
+ "data": [
+  {
+   "parcelId": "00000000-0000-4000-8000-00000000f118",
+   "parcelType": "lan/vpn",
+   "createdBy": "admin",
+   "origin": "user",
+   "lastUpdatedBy": "admin",
+   "createdOn": 1792880254523,
+   "lastUpdatedOn": 1792880937468,
+   "payload": {
+    "name": "mcp-w8-vpn10",
+    "description": "Service VPN 10 (LAN, DC, service chain)",
+    "data": {
+     "name": {
+      "optionType": "global",
+      "value": "Discovered_VPN_10"
+     },
+     "vpnId": {
+      "optionType": "global",
+      "value": 10
+     },
+     "ompAdvertiseIp4": [
+      {
+       "ompProtocol": {
+        "optionType": "global",
+        "value": "connected"
+       }
+      },
+      {
+       "ompProtocol": {
+        "optionType": "global",
+        "value": "static"
+       }
+      }
+     ]
+    }
+   }
+  }
+ ]
+}

@@ -45,6 +45,7 @@ from cat_sdwan_mcp.features import (
     PARCEL_PATH,
     POLICY_ASSOCIATE_PATH,
     POLICY_DEPLOY_PATH,
+    POLICY_GROUP_PATH,
     POLICY_PREVIEW_PATH,
     PROFILE_LIST_PATH,
     SCHEMA_PATH,
@@ -72,6 +73,7 @@ from cat_sdwan_mcp.features import (
 )
 from cat_sdwan_mcp.features import cli_replace as replace_cli
 from cat_sdwan_mcp.inventory import load_inventory
+from cat_sdwan_mcp.servicevpns import vpn_context
 from cat_sdwan_mcp.tools.changes import (
     _device_view,
     _pending_blockers,
@@ -234,6 +236,24 @@ async def _reach(
             }
         )
     return out, warnings
+
+
+def controller_outcome(result: dict[str, Any], chassis: list[str]) -> dict[str, Any]:
+    """A policy-group deploy whose edges succeeded but whose controller row failed did not apply the policy
+    (#118): report it as failed with the controller's reason, not partial."""
+    if not isinstance(result, dict) or result.get("outcome") != "partial":
+        return result
+    devs = [d for d in result.get("devices") or [] if isinstance(d, dict)]
+    failed = [d for d in devs if d.get("status") == "failure"]
+    if not failed or any(str(d.get("chassis")) in chassis for d in failed):
+        return result
+    return {
+        **result,
+        "outcome": "failed",
+        "controller_failure": [d.get("reason") or d.get("detail") for d in failed],
+        "note": "the edges took the configuration but the controller refused the policy group, so it is not "
+        "in effect; fix the reason and deploy again",
+    }
 
 
 def _names(rows: list[dict[str, Any]]) -> list[str]:
@@ -700,8 +720,12 @@ def register(reg: ToolRegistrar) -> None:
         own preview (POST /v1/policy-group/{id}/device/{deviceId}/preview) and its diff against the running
         configuration, secrets masked. Blocked for a device not associated with the group, on a device
         template, unreachable or with an action still running. Confirm deploys (POST .../device/deploy) and
-        follows the action status per device. One device is write tier; several, a hub or a protected-site
-        device need MCP_ENABLE_DANGEROUS."""
+        follows the action status per device. The controller step is prechecked too (#118): every traffic
+        policy target must be a LAN VPN parcel name, and every VPN of a zone the security policy binds a LAN
+        VPN parcel, in each device's configuration group; otherwise the controller refuses the group after
+        the edges took it ("Please configure the VPN's ..."), so the preview is blocked with the fix. A
+        controller failure is reported as failed, not partial. One device is write tier; several, a hub or a
+        protected-site device need MCP_ENABLE_DANGEROUS."""
         app: SdwanApp = get_client(ctx)
         found = resolve_group(await _groups(app, POLICY_GROUPS_PATH), group, "policy group")
         gid, gname = str(found.get("id")), str(found.get("name"))
@@ -733,6 +757,19 @@ def register(reg: ToolRegistrar) -> None:
         blockers += dangerous_blockers(
             ctx, app, reasons := tier_reasons(rows, app.settings.hub_devices, app.settings.protected_sites)
         )
+        # The controller's half (#118): VPN references must name the devices' LAN VPN parcels.
+        from cat_sdwan_mcp.tools.policyvpns import group_vpn_problems
+
+        controller: dict[str, Any] = {}
+        try:
+            detail = await app.api.get(path(POLICY_GROUP_PATH, id=gid))
+            detail = detail if isinstance(detail, dict) and detail.get("profiles") is not None else found
+            vctx = await vpn_context(app, [str(r["chassis"]) for r in rows])
+            vpn_block, controller, vpn_warn = await group_vpn_problems(app, detail, vctx)
+            blockers += vpn_block
+            warnings += vpn_warn + list(vctx.get("warnings") or [])
+        except UpstreamError as e:
+            warnings.append(f"controller precheck (policy VPNs) not run: {str(e)[:200]}")
 
         async def one(r: dict[str, Any]) -> tuple[dict[str, Any], str | None]:
             c = str(r["chassis"])
@@ -766,6 +803,11 @@ def register(reg: ToolRegistrar) -> None:
                 **({"tier_reasons": reasons} if reasons else {}),
                 "devices": [v for v, _ in got],
                 "request": f"POST {POLICY_DEPLOY_PATH} {{devices: [{{id: <chassis>}}]}}",
+                "controller_step": {
+                    "what": "after the edges, the Manager generates the group's policy for the controller; "
+                    "it refuses VPN references that are not the devices' LAN VPN parcels",
+                    **controller,
+                },
                 "rollback": "The Manager has no undo: change the policy group's profiles back and deploy "
                 "again.",
                 **({"warnings": warnings} if warnings else {}),
@@ -785,7 +827,9 @@ def register(reg: ToolRegistrar) -> None:
             answer = await app.api.post(
                 path(POLICY_DEPLOY_PATH, id=gid), {"devices": [{"id": c} for c in chassis]}
             )
-            return await _started(app, ctx, answer, wait, f"deploy of policy group {gname}")
+            return controller_outcome(
+                await _started(app, ctx, answer, wait, f"deploy of policy group {gname}"), chassis
+            )
 
         return await preview_or_apply(
             ctx,
