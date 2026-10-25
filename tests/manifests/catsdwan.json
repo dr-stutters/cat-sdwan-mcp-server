@@ -118,6 +118,8 @@
         "catsdwan_containment_status",
         "catsdwan_set_containment_baseline",
         "catsdwan_deploy_policy_group",
+        "catsdwan_set_containment_acl",
+        "catsdwan_deploy_config_group",
         "ise_find_session",
         "ise_endpoint_360",
         "ise_list_anc_policies",
@@ -644,6 +646,10 @@
     "catsdwan_set_amp_profile": {
       "tier": "write",
       "title": "Set an SD-WAN AMP (file) profile"
+    },
+    "catsdwan_set_containment_acl": {
+      "tier": "dangerous",
+      "title": "Set the SD-WAN containment ACL"
     },
     "catsdwan_set_containment_baseline": {
       "tier": "dangerous",

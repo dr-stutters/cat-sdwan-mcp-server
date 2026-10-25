@@ -2,23 +2,36 @@
 tools/containment.py.
 
 1. Main path: ISE quarantine SGT. A standing baseline on the edges (set once, previewed, deployed in a change
-   window): sequences mcp-quarantine-* at the top of the group's NGFW policies (W47) drop traffic from and to
-   the Quarantine SGT, apart from the remediation prefixes. Containing a host is then an ISE ANC action
+   window): sequences mcp-quarantine-* at the top of the policy group's NGFW policies (W47) drop traffic from
+   and to the Quarantine SGT, apart from the remediation prefixes. Containing a host is then an ISE ANC action
    (ise_apply_anc; the ANC policy's authorization result assigns the Quarantine SGT; CoA), with no Manager
    change per incident. It works only where the edge knows the host's SGT: TrustSec propagation (inline
    tagging from the access switch, SXP from ISE, or pxGrid) and the edge's environment data (W42).
-2. Fallback: a host with no ISE session. The same baseline carries an edge slot: sequences mcp-contain-slots-*
-   matching the prefix list mcp-contain-slots, whose entries are per-device variables {{mcp_contain_1}} ..
-   {{mcp_contain_4}} (the recorded security-data-ip-prefix schema takes a variable per entry). Every device
-   holds inert documentation addresses there (192.0.2.241-244/32). Containing a host writes ONE device's
-   variable (the edge where the host sits) and deploys that device only: no parcel of the group changes, no
-   other device's variables change, so no other edge's intended config changes. The containment record is a
-   prefix-list object named mcp-contain-<ip> (referenced by no rule, so it renders on no device) whose
-   description holds the edge, slot, expiry and reason; release puts the inert value back, deletes exactly
-   that record and deploys the edge again.
+2. Fallback: a host with no ISE session, contained by a per-edge CLI ACL (owner decision 2026-10-25, after
+   20.18 refused device variables in a policy-object prefix list: PPARC0012, #126). The configuration group's
+   CLI add-on holds a standing extended ACL `mcp-contain` (IOS XE 17.18 syntax), applied inbound on the
+   service-side (VPN 10) interfaces where the edge's LAN traffic enters:
 
-Nothing here touches a sequence it did not create: every write strips only its own names (exact names, listed
-below), puts its own block at the top and renumbers the rest in their order.
+       ip access-list extended mcp-contain
+        10 permit ip any host 198.51.100.53          <- remediation, before the slots
+        110 remark {{mcp_contain_1_note}}
+        111 deny ip host {{mcp_contain_1}} any        <- slot 1 (.. 4)
+        ...
+        1000 permit ip any any
+       interface GigabitEthernet3
+        ip access-group mcp-contain in
+       exit
+
+   Every device holds neutral slot values (the documentation addresses 192.0.2.241-244 and the note
+   "mcp-contain slot free"), as br1's FTD leg in mcp-test has real values and br2 a neutral one. Containing a
+   host writes ONE device's slot (address + note: the time-boxed record, expiry and reason) and deploys that
+   device only: no parcel changes and no other device's variables change, so no other edge's intended config
+   changes. Release puts the neutral values back. Explicit sequence numbers keep a re-rendered entry in its
+   place (an entry without one is appended after `permit ip any any` and would match nothing).
+
+Nothing here touches a sequence or CLI line it did not create: the NGFW writes strip only their own sequence
+names; the ACL block is found by its exact shape (the ACL stanza and the `interface X / ip access-group
+mcp-contain in / exit` triples) and replaced or removed as a whole.
 """
 
 from __future__ import annotations
@@ -33,31 +46,30 @@ from cat_sdwan_mcp.client import _as_list
 from cat_sdwan_mcp.edgefirewall import LOG_ACTION, g, leaf_value, match_entries
 
 QUARANTINE_OBJECT = "mcp-quarantine-sgt"  # SGT list (security-scalablegrouptag): the Quarantine SGT
-SLOT_OBJECT = "mcp-contain-slots"  # prefix list (security-data-ip-prefix) of per-device variables
-RECORD_PREFIX = "mcp-contain-"
+ACL_NAME = "mcp-contain"
 SLOTS = 4
 SLOT_VARS = [f"mcp_contain_{i}" for i in range(1, SLOTS + 1)]
-# Inert per-device values: TEST-NET-1 (RFC 5737) /32s, never a real host; distinct so the list has no
+NOTE_VARS = {v: f"{v}_note" for v in SLOT_VARS}
+# Neutral per-device values: TEST-NET-1 (RFC 5737) addresses, never a real host; distinct so the ACL has no
 # duplicate entries.
-INERT = {v: f"192.0.2.{240 + i}/32" for i, v in enumerate(SLOT_VARS, start=1)}
+INERT = {v: f"192.0.2.{240 + i}" for i, v in enumerate(SLOT_VARS, start=1)}
+NOTE_FREE = "mcp-contain slot free"
+NOTE_PREFIX = "mcp-contain until "
+REMARK_CHARS = 100  # IOS XE ACL remark limit
 MAX_REMEDIATION = 16
+MAX_INTERFACES = 8
 MAX_HOURS = 168
-REASON_CHARS = 120
+REMEDIATION_SEQ = 10  # 10..25
+SLOT_SEQ = 100  # slot i: remark 100+10i, deny 101+10i
+PERMIT_SEQ = 1000
 
-# The baseline's sequences, in the order they sit at the top of an NGFW policy.
-SLOT_RULES = (
-    "mcp-contain-slots-allow-out",
-    "mcp-contain-slots-allow-in",
-    "mcp-contain-slots-out",
-    "mcp-contain-slots-in",
-)
 QUARANTINE_RULES = (
     "mcp-quarantine-allow-out",
     "mcp-quarantine-allow-in",
     "mcp-quarantine-out",
     "mcp-quarantine-in",
 )
-BASELINE_RULES = SLOT_RULES + QUARANTINE_RULES
+BASELINE_RULES = QUARANTINE_RULES
 
 
 def host_ip(value: str) -> str:
@@ -68,30 +80,12 @@ def host_ip(value: str) -> str:
     except ValueError:
         raise ValueError(f"{value!r} is not an IP address") from None
     if not isinstance(addr, ipaddress.IPv4Address):
-        raise ValueError(f"{value!r} is IPv6: the edge firewall rules match IPv4 only")
+        raise ValueError(f"{value!r} is IPv6: the edge ACL matches IPv4 only")
     if addr.is_unspecified or addr.is_multicast or addr.is_loopback:
         raise ValueError(f"{value!r} is not a host address")
     if addr in ipaddress.IPv4Network("192.0.2.240/29"):
-        raise ValueError(f"{value!r} is one of the inert slot addresses (192.0.2.241-244)")
+        raise ValueError(f"{value!r} is one of the neutral slot addresses (192.0.2.241-244)")
     return str(addr)
-
-
-def slug(ip: str) -> str:
-    return ip.replace(".", "-")
-
-
-def record_name(ip: str) -> str:
-    """mcp-contain-<ip with dashes> (at most 27 characters: the object name limit is 32)."""
-    return f"{RECORD_PREFIX}{slug(ip)}"
-
-
-_RECORD = re.compile(rf"{re.escape(RECORD_PREFIX)}(\d{{1,3}}(?:-\d{{1,3}}){{3}})")
-
-
-def record_ip(name: Any) -> str | None:
-    """The host a record object names (mcp-contain-10-61-100-10 -> 10.61.100.10), else None."""
-    m = _RECORD.fullmatch(str(name or ""))
-    return m.group(1).replace("-", ".") if m else None
 
 
 # Reserved TrustSec tags (Cisco TrustSec / ISE): 0 Unknown (every untagged packet: on an edge without TrustSec
@@ -118,7 +112,7 @@ def quarantine_tag_problems(entries: list[dict[str, Any]]) -> list[str]:
 
 def moved_devices(before: dict[str, dict[str, Any]], after: dict[str, list[dict[str, Any]]]) -> list[str]:
     """Chassis whose variables ({name: value} before) differ in `after` (a device-variables read): the
-    safety stop after a policy-group variables PUT that must leave these devices alone."""
+    safety stop after a configuration-group variables PUT that must leave these devices alone."""
     return [
         c
         for c, vals in before.items()
@@ -143,58 +137,32 @@ def remediation_problems(values: list[str]) -> list[str]:
     return out
 
 
-# --- the baseline's sequences --------------------------------------------------------------------
+# --- the quarantine baseline's sequences (policy group NGFW) -------------------------------------
 
 
-def baseline_rules(*, slots: bool, quarantine: bool, remediation: list[str]) -> list[dict[str, Any]]:
-    """The baseline rules in order (W47 FirewallRule fields, objects by name): for the edge slot and the
-    Quarantine SGT each, pass to and from the remediation prefixes first, then drop from and to, logged."""
+def baseline_rules(*, remediation: list[str]) -> list[dict[str, Any]]:
+    """The quarantine rules in order (W47 FirewallRule fields, objects by name): pass to and from the
+    remediation prefixes first, then drop from and to the Quarantine SGT, logged."""
     rules: list[dict[str, Any]] = []
-    if slots:
-        if remediation:
-            rules += [
-                {
-                    "name": SLOT_RULES[0],
-                    "action": "pass",
-                    "source_objects": [SLOT_OBJECT],
-                    "destination_prefixes": list(remediation),
-                },
-                {
-                    "name": SLOT_RULES[1],
-                    "action": "pass",
-                    "source_prefixes": list(remediation),
-                    "destination_objects": [SLOT_OBJECT],
-                },
-            ]
+    if remediation:
         rules += [
-            {"name": SLOT_RULES[2], "action": "drop", "source_objects": [SLOT_OBJECT], "log": True},
-            {"name": SLOT_RULES[3], "action": "drop", "destination_objects": [SLOT_OBJECT], "log": True},
-        ]
-    if quarantine:
-        if remediation:
-            rules += [
-                {
-                    "name": QUARANTINE_RULES[0],
-                    "action": "pass",
-                    "source_sgts": [QUARANTINE_OBJECT],
-                    "destination_prefixes": list(remediation),
-                },
-                {
-                    "name": QUARANTINE_RULES[1],
-                    "action": "pass",
-                    "source_prefixes": list(remediation),
-                    "destination_sgts": [QUARANTINE_OBJECT],
-                },
-            ]
-        rules += [
-            {"name": QUARANTINE_RULES[2], "action": "drop", "source_sgts": [QUARANTINE_OBJECT], "log": True},
             {
-                "name": QUARANTINE_RULES[3],
-                "action": "drop",
+                "name": QUARANTINE_RULES[0],
+                "action": "pass",
+                "source_sgts": [QUARANTINE_OBJECT],
+                "destination_prefixes": list(remediation),
+            },
+            {
+                "name": QUARANTINE_RULES[1],
+                "action": "pass",
+                "source_prefixes": list(remediation),
                 "destination_sgts": [QUARANTINE_OBJECT],
-                "log": True,
             },
         ]
+    rules += [
+        {"name": QUARANTINE_RULES[2], "action": "drop", "source_sgts": [QUARANTINE_OBJECT], "log": True},
+        {"name": QUARANTINE_RULES[3], "action": "drop", "destination_sgts": [QUARANTINE_OBJECT], "log": True},
+    ]
     return rules
 
 
@@ -264,23 +232,155 @@ def without_baseline(
 
 
 def baseline_state(data: dict[str, Any]) -> dict[str, bool]:
-    """Which parts of the baseline an NGFW policy holds: the edge slot's drops and the quarantine drops."""
+    """Whether an NGFW policy holds the quarantine drops (enabled)."""
     names = {seq_name(s) for s in sequences_of(data) if leaf_value(s.get("disableSequence")) is not True}
+    return {"quarantine": {QUARANTINE_RULES[2], QUARANTINE_RULES[3]} <= names}
+
+
+# --- the per-edge CLI ACL (configuration group CLI add-on) ---------------------------------------
+
+_IFNAME = re.compile(r"[A-Za-z][A-Za-z-]*\d+(?:[/.:]\d+)*")
+_VAR = re.compile(r"\{\{([A-Za-z][A-Za-z0-9_]*)\}\}")
+_ACL_HEAD = f"ip access-list extended {ACL_NAME}"
+_APPLY = f" ip access-group {ACL_NAME} in"
+
+
+def _wildcard(prefix: str) -> str:
+    net = ipaddress.IPv4Network(prefix)
+    if net.prefixlen == 32:
+        return f"host {net.network_address}"
+    return f"{net.network_address} {net.hostmask}"
+
+
+def acl_block(remediation: list[str], interfaces: list[str]) -> str:
+    """The CLI add-on lines of the containment ACL and where it is applied (no trailing newline)."""
+    lines = [_ACL_HEAD]
+    lines += [f" {REMEDIATION_SEQ + i} permit ip any {_wildcard(p)}" for i, p in enumerate(remediation)]
+    for i, v in enumerate(SLOT_VARS, start=1):
+        lines.append(f" {SLOT_SEQ + 10 * i} remark {{{{{NOTE_VARS[v]}}}}}")
+        lines.append(f" {SLOT_SEQ + 10 * i + 1} deny ip host {{{{{v}}}}} any")
+    lines.append(f" {PERMIT_SEQ} permit ip any any")
+    lines.append("!")
+    for name in interfaces:
+        lines += [f"interface {name}", _APPLY, "exit"]
+    return "\n".join(lines)
+
+
+def _split_block(text: str) -> tuple[list[str], list[str], list[str]]:
+    """(the lines without the block, the ACL stanza's lines, the interfaces the block applies it on)."""
+    lines = text.splitlines()
+    kept: list[str] = []
+    acl: list[str] = []
+    interfaces: list[str] = []
+    i = 0
+    while i < len(lines):
+        ln = lines[i]
+        if ln.rstrip() == _ACL_HEAD:
+            acl.append(ln.rstrip())
+            i += 1
+            while i < len(lines) and lines[i].startswith(" "):
+                acl.append(lines[i].rstrip())
+                i += 1
+            if i < len(lines) and lines[i].strip() == "!":
+                i += 1
+            continue
+        if (
+            ln.startswith("interface ")
+            and i + 2 < len(lines)
+            and lines[i + 1].rstrip() == _APPLY
+            and lines[i + 2].strip() == "exit"
+        ):
+            interfaces.append(ln[len("interface ") :].strip())
+            i += 3
+            continue
+        kept.append(ln)
+        i += 1
+    while kept and not kept[-1].strip():
+        kept.pop()
+    return kept, acl, interfaces
+
+
+def acl_state(text: str) -> dict[str, Any] | None:
+    """The containment ACL a CLI add-on holds: {interfaces, remediation, slots (variables), intact}, or None.
+    `intact` is False when the ACL is not exactly what acl_block writes (edited by hand)."""
+    _, acl, interfaces = _split_block(text)
+    if not acl:
+        return None
+    remediation = []
+    for ln in acl[1:]:
+        m = re.fullmatch(r" (\d+) permit ip any (host (\S+)|(\S+) (\S+))", ln)
+        if m and REMEDIATION_SEQ <= int(m.group(1)) < SLOT_SEQ:
+            if m.group(3):
+                remediation.append(f"{m.group(3)}/32")
+            else:
+                mask = ipaddress.IPv4Address(int(ipaddress.IPv4Address(m.group(5))) ^ 0xFFFFFFFF)
+                remediation.append(str(ipaddress.IPv4Network(f"{m.group(4)}/{mask}", strict=False)))
+    expected = acl_block(remediation, interfaces).splitlines()
+    got = [*acl, "!"] + [ln for name in interfaces for ln in (f"interface {name}", _APPLY, "exit")]
     return {
-        "edge_slots": {SLOT_RULES[2], SLOT_RULES[3]} <= names,
-        "quarantine": {QUARANTINE_RULES[2], QUARANTINE_RULES[3]} <= names,
+        "interfaces": interfaces,
+        "remediation": remediation,
+        "slots": [v for v in SLOT_VARS if f"host {{{{{v}}}}} any" in "\n".join(acl)],
+        "intact": got == expected and bool(interfaces),
     }
 
 
-def slot_entries() -> list[dict[str, Any]]:
-    """The mcp-contain-slots prefix list's entries: one per-device variable each."""
-    return [{"ipPrefix": {"optionType": "variable", "value": "{{" + v + "}}"}} for v in SLOT_VARS]
+def with_acl(text: str, block: str) -> str:
+    """The CLI text with the containment block (re)placed at its end; everything else kept in order."""
+    kept, _, _ = _split_block(text)
+    return "\n".join([*kept, block]) + ("\n" if text.endswith("\n") else "")
 
 
-def is_slot_object(data: dict[str, Any]) -> bool:
-    """Whether a prefix-list object holds exactly the slot variables (so it is ours)."""
-    got = [leaf_value(e.get("ipPrefix")) for e in _as_list(data.get("entries")) if isinstance(e, dict)]
-    return got == ["{{" + v + "}}" for v in SLOT_VARS]
+def without_acl(text: str) -> str:
+    kept, _, _ = _split_block(text)
+    return "\n".join(kept) + ("\n" if text.endswith("\n") and kept else "")
+
+
+def interface_problems(interfaces: list[str], text: str) -> list[str]:
+    """Why the ACL can't be applied on these interfaces: a bad name, a variable the CLI does not have yet
+    (devices would have no value), or an interface whose stanza already applies another inbound ACL."""
+    out = []
+    if len(interfaces) > MAX_INTERFACES:
+        out.append(f"at most {MAX_INTERFACES} interfaces ({len(interfaces)} given)")
+    if len(set(interfaces)) != len(interfaces):
+        out.append("an interface is given twice")
+    kept, _, _ = _split_block(text)
+    body = "\n".join(kept)
+    for name in interfaces:
+        var = _VAR.fullmatch(name)
+        if var:
+            if name not in body:
+                out.append(
+                    f"interface {name}: the CLI add-on has no variable {var.group(1)} yet, so devices have "
+                    "no "
+                    "value for it; give an interface name or a variable the CLI already uses (e.g. {{fw_if}})"
+                )
+            continue
+        if not _IFNAME.fullmatch(name):
+            out.append(f"{name!r} is not an interface name (e.g. GigabitEthernet3) or a {{{{variable}}}}")
+            continue
+        current = None
+        for ln in kept:
+            if ln.startswith("interface "):
+                current = ln[len("interface ") :].strip()
+            elif not ln.startswith(" "):
+                current = None
+            elif current == name and re.fullmatch(r" ip access-group \S+ in", ln.rstrip()):
+                out.append(
+                    f"{name} already applies an inbound ACL in the CLI ({ln.strip()}): one per direction"
+                )
+    return out
+
+
+def resolve_interfaces(interfaces: list[str], variables: list[dict[str, Any]]) -> list[str]:
+    """The interface names on one device: {{variables}} replaced by the device's values."""
+    by_name = {str(v.get("name")): v.get("value") for v in variables}
+
+    def one(name: str) -> str:
+        m = _VAR.fullmatch(name)
+        return str(by_name.get(m.group(1)) or name) if m else name
+
+    return [one(n) for n in interfaces]
 
 
 # --- per-device slots ----------------------------------------------------------------------------
@@ -292,16 +392,22 @@ def slot_values(variables: list[dict[str, Any]]) -> dict[str, Any]:
     return {s: by_name[s].get("value") for s in SLOT_VARS if s in by_name}
 
 
+def note_values(variables: list[dict[str, Any]]) -> dict[str, Any]:
+    """{slot variable: its note's value} for the slots a device has."""
+    by_name = {str(v.get("name")): v.get("value") for v in variables}
+    return {s: by_name.get(NOTE_VARS[s]) for s in SLOT_VARS if s in by_name}
+
+
 def host_of(value: Any) -> str | None:
-    """The contained host in a slot value ('10.61.100.10/32'), None when inert or empty."""
-    text = str(value or "").strip()
+    """The contained host in a slot value ('10.61.100.10'), None when neutral or empty."""
+    text = str(value or "").strip().removesuffix("/32")
     if not text or text in INERT.values():
         return None
-    return text.removesuffix("/32")
+    return text
 
 
 def pick_slot(values: dict[str, Any], ip: str) -> tuple[str | None, bool]:
-    """(the slot for this host, whether it already holds it): its own slot, else the first inert/empty."""
+    """(the slot for this host, whether it already holds it): its own slot, else the first neutral/empty."""
     for s, v in values.items():
         if host_of(v) == ip:
             return s, True
@@ -316,7 +422,16 @@ def contained_at(values: dict[str, Any]) -> dict[str, str]:
     return {s: h for s, v in values.items() if (h := host_of(v))}
 
 
-# --- containment records -------------------------------------------------------------------------
+def neutral(slots: list[str] | None = None) -> dict[str, str]:
+    """The neutral values of these slots (default all): address and note."""
+    out: dict[str, str] = {}
+    for s in slots if slots is not None else SLOT_VARS:
+        out[s] = INERT[s]
+        out[NOTE_VARS[s]] = NOTE_FREE
+    return out
+
+
+# --- the record (each slot's note) ---------------------------------------------------------------
 
 
 def expiry(hours: int, now: datetime | None = None) -> str:
@@ -324,30 +439,21 @@ def expiry(hours: int, now: datetime | None = None) -> str:
     return t.strftime("%Y-%m-%dT%H:%MZ")
 
 
-def record_description(
-    *, edge: str, chassis: str, group: str, slot: str, vpn: str | None, expires: str, reason: str
-) -> str:
-    clean = " ".join(reason.replace(";", ",").split())[:REASON_CHARS]
-    return (
-        f"mcp-contain; edge={edge}; chassis={chassis}; group={group}; slot={slot}; vpn={vpn or '?'}; "
-        f"expires={expires}; reason={clean}"
-    )
+def note(expires: str, reason: str) -> str:
+    """The slot's record, rendered as the ACL remark: 'mcp-contain until <expiry> <reason>' (IOS XE remarks
+    hold 100 characters; the reason is cut to fit and keeps only plain characters)."""
+    clean = " ".join(re.sub(r"[^A-Za-z0-9 ._,:/#()=+-]", " ", reason).split())
+    head = f"{NOTE_PREFIX}{expires} "
+    return (head + clean)[:REMARK_CHARS].rstrip()
 
 
-def parse_record(description: Any) -> dict[str, str]:
-    """The fields of a record's description (reason last: it is everything after 'reason=')."""
-    text = str(description or "")
-    if not text.startswith("mcp-contain;"):
+def parse_note(value: Any) -> dict[str, str]:
+    """{expires, reason} from a slot's note; {} for a free slot or another text."""
+    text = str(value or "")
+    if not text.startswith(NOTE_PREFIX):
         return {}
-    head, _, reason = text.partition("; reason=")
-    out: dict[str, str] = {}
-    for part in head.split(";")[1:]:
-        k, _, v = part.strip().partition("=")
-        if k:
-            out[k] = v
-    if reason:
-        out["reason"] = reason
-    return out
+    expires, _, reason = text[len(NOTE_PREFIX) :].partition(" ")
+    return {"expires": expires, "reason": reason}
 
 
 def is_expired(expires: str | None, now: datetime | None = None) -> bool | None:
@@ -358,28 +464,6 @@ def is_expired(expires: str | None, now: datetime | None = None) -> bool | None:
     except ValueError:
         return None
     return (now or datetime.now(UTC)) >= t
-
-
-# --- zones ---------------------------------------------------------------------------------------
-
-
-def zone_holds(data: dict[str, Any], vpn: str | None, interface: str | None) -> bool:
-    """Whether a security-zone object holds the host's VPN or the interface it sits on."""
-    for e in _as_list(data.get("entries")):
-        if not isinstance(e, dict):
-            continue
-        z_vpn = leaf_value(e.get("vpn"))
-        z_if = leaf_value(e.get("interface"))
-        if vpn is not None and z_vpn is not None and str(z_vpn) == str(vpn):
-            return True
-        if interface and z_if and str(z_if).lower() == interface.lower():
-            return True
-    return False
-
-
-def host_zones(zones: list[dict[str, Any]], vpn: str | None, interface: str | None) -> dict[str, str]:
-    """{zone id: name} of the security zones holding the host."""
-    return {z["id"]: str(z.get("name")) for z in zones if zone_holds(z["data"], vpn, interface)}
 
 
 def payload_of(raw: dict[str, Any]) -> dict[str, Any]:

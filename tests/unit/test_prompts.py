@@ -252,6 +252,7 @@ async def test_contain_host_takes_ise_first_then_the_edge_fallback() -> None:
         "catsdwan_find_host",
         "catsdwan_containment_status",
         "catsdwan_set_containment_baseline",
+        "catsdwan_set_containment_acl",
         "ise_find_session",
         "ise_endpoint_360",
         "ise_list_anc_policies",
