@@ -194,6 +194,36 @@ def test_ngfw_body_and_words() -> None:
     ]
 
 
+def test_log_action_is_the_20_18_shape() -> None:
+    # #126: 0.6.2 sent parameter {optionType: default}; its own check against the Manager's NGFW schema
+    # refused it ("actions[0].parameter value is required / 'default' is not one of ['global']"). The shape is
+    # Cisco's example in the Manager's 20.18.3 OpenAPI document.
+    example = fixture("spec_example_ngfirewall_parcel")["payload"]["data"]["sequences"][0]["actions"]
+    log = next(a for a in example if a["type"]["value"] == "log")
+    assert log == fw.LOG_ACTION
+    # The parameter rule the live check applied (reconstructed from its two messages).
+    action_schema = {
+        "type": "object",
+        "required": ["type", "parameter"],
+        "properties": {
+            "parameter": {
+                "type": "object",
+                "required": ["optionType", "value"],
+                "properties": {
+                    "optionType": {"type": "string", "enum": ["global"]},
+                    "value": {"type": "string"},
+                },
+            }
+        },
+    }
+    assert fw.schema_problems(action_schema, fw.LOG_ACTION) == []
+    old = {"type": fw.LOG_ACTION["type"], "parameter": {"optionType": "default"}}
+    assert fw.schema_problems(action_schema, old) == [
+        "parameter: value is required",
+        "parameter.optionType: 'default' is not one of ['global']",
+    ]
+
+
 def test_assembly_merge_keeps_other_policies() -> None:
     other = fw.assembly_item("other", [("a", "b")])
     data = {"assembly": [other], "settings": {"auditTrail": fw.g("on")}}

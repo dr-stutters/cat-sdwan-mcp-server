@@ -1,0 +1,98 @@
+{
+  "_source": "Cisco's example in the Manager's own OpenAPI document (20.18.3, components.examples.getSingleSdwanEmbeddedSecurityUnifiedNgfirewallExample); ids are Cisco's sample UUIDs",
+  "parcelId": "09fc54fe-ff36-4640-ae57-c9e71a103902",
+  "parcelType": "unified/ngfirewall",
+  "createdBy": "admin",
+  "lastUpdatedBy": "admin",
+  "createdOn": 1701866357838,
+  "lastUpdatedOn": 1701866357838,
+  "payload": {
+    "data": {
+      "defaultActionType": {
+        "optionType": "global",
+        "value": "drop"
+      },
+      "sequences": [
+        {
+          "isRuleSet": {
+            "optionType": "global",
+            "value": false
+          },
+          "sequenceId": {
+            "optionType": "global",
+            "value": "1"
+          },
+          "sequenceName": {
+            "optionType": "global",
+            "value": "my rule"
+          },
+          "baseAction": {
+            "optionType": "global",
+            "value": "drop"
+          },
+          "sequenceIpType": {
+            "optionType": "global",
+            "value": "ipv4"
+          },
+          "sequenceType": {
+            "optionType": "global",
+            "value": "ngfirewall"
+          },
+          "actions": [
+            {
+              "type": {
+                "optionType": "global",
+                "value": "log"
+              },
+              "parameter": {
+                "optionType": "global",
+                "value": ""
+              }
+            },
+            {
+              "type": {
+                "optionType": "global",
+                "value": "advancedInspectionProfile"
+              },
+              "parameter": {
+                "refId": {
+                  "optionType": "global",
+                  "value": "5588da7f-a06b-40be-9fda-15cd8f7def13"
+                }
+              }
+            }
+          ],
+          "match": {
+            "entries": [
+              {
+                "sourceDataPrefixList": {
+                  "refId": {
+                    "optionType": "global",
+                    "value": [
+                      "31cc53c4-b2e4-41dd-a2c4-c609e8cf432c",
+                      "41ce53f4-b2e4-42cc-a2c4-b309a7cf442c"
+                    ]
+                  }
+                }
+              },
+              {
+                "destinationIp": {
+                  "optionType": "global",
+                  "value": [
+                    "10.0.0.35/32"
+                  ]
+                }
+              },
+              {
+                "destinationGeoLocation": {
+                  "optionType": "variable",
+                  "value": "{{testVarName}}"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

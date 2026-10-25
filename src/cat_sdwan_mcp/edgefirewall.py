@@ -49,7 +49,13 @@ OBJECT_TYPES = {
     "prefix": "security-data-ip-prefix",
 }
 ACTIONS = ("drop", "pass", "inspect")
-LOG_ACTION = {"type": {"optionType": "global", "value": "log"}, "parameter": {"optionType": "default"}}
+# #126: the 20.18 Manager's NGFW schema wants the log action's parameter as a global with a value (live:
+# "actions[0].parameter value is required / 'default' is not one of ['global']"); Cisco's example in the
+# Manager's OpenAPI document sends it empty (fixture spec_example_ngfirewall_parcel).
+LOG_ACTION = {
+    "type": {"optionType": "global", "value": "log"},
+    "parameter": {"optionType": "global", "value": ""},
+}
 RESERVED_ZONES = ("untrusted", "self", "default", "service")
 _VPN = re.compile(r"^\d{1,5}$")
 
