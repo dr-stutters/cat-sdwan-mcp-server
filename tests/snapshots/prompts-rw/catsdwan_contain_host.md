@@ -15,12 +15,15 @@ name the devices it reaches, and wait for the user's approval before confirming.
 
 1. Locate it: `catsdwan_find_host` with host="10.61.100.10": its edge, site, VPN, interface and MAC.
    Several edges or none: stop and ask.
-2. The standing baseline (once per policy group, NOT per incident): `catsdwan_containment_status`
-   with group=<the edge's policy group>, trustsec=true. Needed: the edge's NGFW policy on the host's VPN holds
-   the mcp-quarantine-* rules (main path) and the mcp-contain-slots-* rules (fallback), deployed. Missing:
-   `catsdwan_set_containment_baseline` (quarantine_sgt=<ISE's Quarantine SGT name:tag>,
-   remediation=[remediation server, DNS]) is a change for EVERY edge of the group: say so, and only with the
-   user's go-ahead for a change window, then `catsdwan_deploy_policy_group` to the group's edges.
+2. The standing pieces (once, NOT per incident): `catsdwan_containment_status` with
+   group=<the edge's group>, trustsec=true. Main path: the edge's NGFW policy on the host's VPN holds the
+   mcp-quarantine-* rules, deployed; missing: `catsdwan_set_containment_baseline`
+   (quarantine_sgt=<ISE's Quarantine SGT name:tag>, remediation=[remediation server, DNS]), then
+   `catsdwan_deploy_policy_group`. Fallback: `edge_acl` shows the containment ACL in the edge's
+   configuration group, applied on the interface the host sits on; missing:
+   `catsdwan_set_containment_acl` (interfaces=[the LAN interfaces], remediation=[...]), then
+   `catsdwan_deploy_config_group` one edge at a time. Either is a change for
+   EVERY edge of the group: say so, and only with the user's go-ahead for a change window.
    The main path needs TrustSec on the edge (W42's enforcement part): `trustsec.<edge>.ready` true
    (environment data from ISE, and the edge learns the SGT by an IP-to-SGT binding, SXP or inline tagging).
    Not ready: the quarantine rule matches nothing there; say so plainly and use the fallback (step 5).
@@ -44,15 +47,16 @@ name the devices it reaches, and wait for the user's approval before confirming.
    Release: `ise_clear_anc` with the MAC (preview, approve; CoA), then check the SGT is back.
 5. Fallback, no ISE session (or no TrustSec on the edge): `catsdwan_contain_at_edge` with
    ip="10.61.100.10", reason="INC-1 beaconing", hours=24, edge=<the edge from step 1>. Show from the
-   preview: the ONE device, the slot variable from -> to, the record and its expiry, and `proof.other_devices`
-   (every other edge of the group unchanged). Approve, confirm, then verify:
-   `catsdwan_get_device_config` with device=<edge>, diff=true (the object-group holds
-   10.61.100.10/32), `catsdwan_security_status` (drops for mcp-contain-slots-out/-in), and the result's
-   `audit` entries (`catsdwan_audit_log` with changes_only=true when they are not there yet).
+   preview: the ONE device, the slot variable from -> to, the note (record) with its expiry, the ACL entry
+   and the interfaces it is applied on, and `proof.other_devices` (every other edge of the group unchanged).
+   Approve, confirm, then verify: `catsdwan_get_device_config` with device=<edge>, diff=true
+   (ACL mcp-contain holds `deny ip host 10.61.100.10 any`), traffic from the host fails (`catsdwan_ping`
+   from the edge to a peer host still works), and the result's `audit` entries
+   (`catsdwan_audit_log` with changes_only=true when they are not there yet).
    Release: `catsdwan_release_at_edge` with ip="10.61.100.10" (preview, approve). It does NOT expire by
    itself: tell the user the expiry and that `catsdwan_containment_status` lists expired hosts.
 
 Report, ONE line first: contained by ISE (Quarantine SGT seen on <edge>, drops counted) / contained at <edge>
 until <expiry> (fallback, why) / NOT contained (what is missing: ISE ANC policy, TrustSec on the edge, the
-baseline). Then the evidence per step, how to release, and what the user still has to do (for example:
-TrustSec on the edges, an ANC policy on ISE).
+baseline or the containment ACL). Then the evidence per step, how to release, and what the user still has
+to do (for example: TrustSec on the edges, an ANC policy on ISE, the containment ACL).

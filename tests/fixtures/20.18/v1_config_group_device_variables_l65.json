@@ -1,0 +1,141 @@
+{
+ "family": "sdwan",
+ "groups": [
+  {
+   "name": "mcp-test",
+   "group-variables": []
+  }
+ ],
+ "devices": [
+  {
+   "device-id": "REDACTED-16",
+   "variables": [
+    {
+     "name": "system_ip",
+     "value": "10.0.0.2"
+    },
+    {
+     "name": "host_name",
+     "value": "br1"
+    },
+    {
+     "name": "site_id",
+     "value": 200
+    },
+    {
+     "name": "ipv6_strict_control",
+     "value": false
+    },
+    {
+     "name": "pseudo_commit_timer",
+     "value": 300
+    },
+    {
+     "name": "mpls_ip",
+     "value": "10.60.1.14"
+    },
+    {
+     "name": "inet_ip",
+     "value": "10.60.2.14"
+    },
+    {
+     "name": "lan_ip",
+     "value": "10.61.200.1"
+    },
+    {
+     "name": "mgmt_ip",
+     "value": "192.0.2.14"
+    },
+    {
+     "name": "banner_motd",
+     "value": "br1 - deployed by cat-sdwan-mcp W8 (2026-10-23)"
+    },
+    {
+     "name": "fw_if",
+     "value": "GigabitEthernet5"
+    },
+    {
+     "name": "fw_if_desc",
+     "value": "VPN 10 to br1-ftd outside (branch LAN 10.61.220.0/24 behind it)"
+    },
+    {
+     "name": "fw_if_state",
+     "value": "no shutdown"
+    },
+    {
+     "name": "fw_ip_mask",
+     "value": "10.61.210.1 255.255.255.0"
+    },
+    {
+     "name": "fw_route",
+     "value": "10.61.220.0 255.255.255.0 10.61.210.2"
+    }
+   ]
+  },
+  {
+   "device-id": "REDACTED-22",
+   "variables": [
+    {
+     "name": "system_ip",
+     "value": "10.0.0.3"
+    },
+    {
+     "name": "host_name",
+     "value": "br2"
+    },
+    {
+     "name": "site_id",
+     "value": 201
+    },
+    {
+     "name": "ipv6_strict_control",
+     "value": false
+    },
+    {
+     "name": "pseudo_commit_timer",
+     "value": 300
+    },
+    {
+     "name": "mpls_ip",
+     "value": "10.60.1.15"
+    },
+    {
+     "name": "inet_ip",
+     "value": "10.60.2.15"
+    },
+    {
+     "name": "lan_ip",
+     "value": "10.61.201.1"
+    },
+    {
+     "name": "mgmt_ip",
+     "value": "192.0.2.15"
+    },
+    {
+     "name": "banner_motd",
+     "value": "br2 managed by config group mcp-test (W21)"
+    },
+    {
+     "name": "fw_if",
+     "value": "Loopback210"
+    },
+    {
+     "name": "fw_if_desc",
+     "value": "unused - br2 has no branch firewall (neutral L65 value, shut)"
+    },
+    {
+     "name": "fw_if_state",
+     "value": "shutdown"
+    },
+    {
+     "name": "fw_ip_mask",
+     "value": "192.0.2.1 255.255.255.255"
+    },
+    {
+     "name": "fw_route",
+     "value": "192.0.2.0 255.255.255.0 Loopback210 192.0.2.2"
+    }
+   ]
+  }
+ ]
+}

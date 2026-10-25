@@ -127,11 +127,12 @@ service FW; dangerous) -> deploy; the prompt catsdwan_trace_through_firewall(sou
 fmc_packet_tracer on the hub or branch FTD.
 Contain a host (prompt catsdwan_contain_host; dangerous): once per policy group, the standing baseline
 catsdwan_set_containment_baseline(group, quarantine_sgt, remediation) (mcp-quarantine-* rules on the
-Quarantine SGT + per-device edge slots; deploy it in a change window). Main path: ISE ise_apply_anc assigns
-the Quarantine SGT, no Manager change per incident (needs TrustSec on the edges:
-catsdwan_containment_status(trustsec=true)). No ISE session: catsdwan_contain_at_edge(ip, reason, hours)
-writes one slot variable of the host's edge and deploys that edge only (record mcp-contain-<ip> with the
-expiry) -> catsdwan_release_at_edge(ip).
+Quarantine SGT; deploy it in a change window). Main path: ISE ise_apply_anc assigns the Quarantine SGT, no
+Manager change per incident (needs TrustSec on the edges: catsdwan_containment_status(trustsec=true)). No ISE
+session: once per configuration group catsdwan_set_containment_acl(group, interfaces) (CLI add-on ACL
+mcp-contain with per-device slots, neutral everywhere; deploy in a change window), then per incident
+catsdwan_contain_at_edge(ip, reason, hours) writes one slot of the host's edge (deny + a note with the expiry)
+and deploys that edge only -> catsdwan_release_at_edge(ip).
 Identity: catsdwan_integrations (ISE, pxGrid, partners) and catsdwan_trustsec(device) read it;
 catsdwan_set_ise_integration(ise_host) connects ISE and pxGrid (dangerous) -> ise_approve_pxgrid_client on
 ISE -> run it again to sync the controllers; action='disconnect' undoes it.

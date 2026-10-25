@@ -287,10 +287,14 @@ async def test_firewall_policy_blocks_a_zone_vpn_without_parcel(api: respx.MockR
 
 
 async def test_baseline_blocks_a_zone_vpn_without_parcel(api: respx.MockRouter) -> None:
-    from .test_containment import mock_all
+    from .test_containment import mock_pg, mock_trustsec
 
-    mock_all(api)
+    mock_pg(api)
+    mock_trustsec(api)
     # Re-register the configuration groups' service VPNs as before the conversion (the later route wins).
     mock_service_vpns(api, converted=False)
-    out = await preview("catsdwan_set_containment_baseline", {"group": "mcp-w8-pg", "edge_slots": True})
+    out = await preview(
+        "catsdwan_set_containment_baseline",
+        {"group": "mcp-w8-pg", "quarantine_sgt": "Quarantined_Systems:255"},
+    )
     assert any(b.startswith("zone lan: VPN 10 has no LAN VPN parcel") for b in out["blockers"])
