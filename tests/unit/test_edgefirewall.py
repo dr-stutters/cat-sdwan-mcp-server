@@ -80,7 +80,9 @@ def mock_manager(
     }
     for t in ft.LISTABLE_TYPES:
         api.get(f"{FP}/{t}").respond(json=lists.get(t, []))
-    api.get(f"{PO}/security-zone").respond(json=listed(zone(ZIN, "lan", "10"), zone(ZOUT, "guest", "20")))
+    api.get(f"{PO}/security-zone").respond(
+        json=listed(zone(ZIN, "lan", "mcp-w8-vpn10"), zone(ZOUT, "guest", "mcp-w8-vpn20"))
+    )
     api.get(f"{PO}/security-identity").respond(
         json=listed(parcel(IDL, "security-identity", "alice-only", {"entries": [{"user": fw.g("alice")}]}))
     )
@@ -192,6 +194,36 @@ def test_ngfw_body_and_words() -> None:
     ]
 
 
+def test_log_action_is_the_20_18_shape() -> None:
+    # #126: 0.6.2 sent parameter {optionType: default}; its own check against the Manager's NGFW schema
+    # refused it ("actions[0].parameter value is required / 'default' is not one of ['global']"). The shape is
+    # Cisco's example in the Manager's 20.18.3 OpenAPI document.
+    example = fixture("spec_example_ngfirewall_parcel")["payload"]["data"]["sequences"][0]["actions"]
+    log = next(a for a in example if a["type"]["value"] == "log")
+    assert log == fw.LOG_ACTION
+    # The parameter rule the live check applied (reconstructed from its two messages).
+    action_schema = {
+        "type": "object",
+        "required": ["type", "parameter"],
+        "properties": {
+            "parameter": {
+                "type": "object",
+                "required": ["optionType", "value"],
+                "properties": {
+                    "optionType": {"type": "string", "enum": ["global"]},
+                    "value": {"type": "string"},
+                },
+            }
+        },
+    }
+    assert fw.schema_problems(action_schema, fw.LOG_ACTION) == []
+    old = {"type": fw.LOG_ACTION["type"], "parameter": {"optionType": "default"}}
+    assert fw.schema_problems(action_schema, old) == [
+        "parameter: value is required",
+        "parameter.optionType: 'default' is not one of ['global']",
+    ]
+
+
 def test_assembly_merge_keeps_other_policies() -> None:
     other = fw.assembly_item("other", [("a", "b")])
     data = {"assembly": [other], "settings": {"auditTrail": fw.g("on")}}
@@ -227,11 +259,17 @@ async def test_object_replace_and_remove(api: respx.MockRouter) -> None:
     )
     put = api.put(f"{PO}/security-zone/{ZIN}").respond(200)
     out = await preview(
-        "catsdwan_set_security_object", {"kind": "zone", "name": "lan", "values": ["10", "11"]}
+        "catsdwan_set_security_object", {"kind": "zone", "name": "lan", "values": ["10", "20"]}
     )
-    assert out["preview"]["before"] == ["10"] and out["preview"]["after"] == ["10", "11"]
-    await confirmed("catsdwan_set_security_object", {"kind": "zone", "name": "lan", "values": ["10", "11"]})
+    # #126: VPN ids are stored as the LAN VPN parcel names the controller looks up.
+    assert out["preview"]["before"] == ["mcp-w8-vpn10"]
+    assert out["preview"]["after"] == ["mcp-w8-vpn10", "mcp-w8-vpn20"]
+    await confirmed("catsdwan_set_security_object", {"kind": "zone", "name": "lan", "values": ["10", "20"]})
     assert put.called
+    assert json.loads(put.calls.last.request.content)["data"]["entries"] == [
+        {"vpn": fw.g("mcp-w8-vpn10")},
+        {"vpn": fw.g("mcp-w8-vpn20")},
+    ]
     delete = api.delete(f"{PO}/security-zone/{ZOUT}").respond(200)
     done = await confirmed("catsdwan_set_security_object", {"kind": "zone", "name": "guest", "remove": True})
     assert delete.called and done["result"]["deleted"] == "guest"
@@ -376,7 +414,7 @@ async def test_get_firewall_policy_in_words(api: respx.MockRouter) -> None:
     fwp = out["firewall_policies"][0]
     assert fwp["rules"] == ["1 allow-alice: identity alice-only -> inspect", "default -> drop"]
     assert fwp["zone_pairs"] == ["lan -> guest"]
-    assert out["objects"]["zone"] == {"lan": ["10"], "guest": ["20"]}
+    assert out["objects"]["zone"] == {"lan": ["mcp-w8-vpn10"], "guest": ["mcp-w8-vpn20"]}
     assert out["objects"]["identity"] == {"alice-only": ["user:alice"]}
 
 

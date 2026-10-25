@@ -9,8 +9,12 @@ configuration-groups for the currently associated and deployed devices, before u
 A VPN configured only in a CLI add-on profile (`vrf definition 10`) is refused the same way: it has no LAN
 VPN parcel. The 20.18 GUI's traffic-policy VPN(s) picker offers exactly the LAN VPN parcel names (and
 segment names). Cisco's API example for the parcel also shows a name: target.vpn ["test_vpn"].
-Security zones are different: their `vpn` entry is a VPN number (Cisco's catalystwan SDK model:
-"0-65530 single number"); the controller still needs a LAN VPN parcel with that vpnId in each device's group.
+Security zones are matched the same way (live, 20.18.3.1, 2026-10-25, w8-live; cat-sdwan #126): a zone entry
+`vpn: "10"` makes the policy-group deploy fail with HTTP 500 GNGRP0013 "Vpn Id for vpn name 10 not found.
+Please make sure vpn names have been defined in Config Group and Deployed"; `vpn: "mcp-w8-vpn10"` (the LAN VPN
+parcel name) deploys and renders `zone security mcp-w8-lan / vpn 10` on the edge. (Cisco's catalystwan SDK
+model says "0-65530 single number"; the 20.18 controller does not take one.) VPN 0 and 512 have no LAN VPN
+parcel and stay numbers (unproven on the controller).
 
 Shapes (recorded 20.18.3.1, read only, 2026-10-25): GET /v1/config-group -> [{id, name, profiles: [{id, name,
 type: service|cli|transport|system, ...}], ...}]; GET /v1/feature-profile/sdwan/service/{id}/lan/vpn ->
@@ -186,9 +190,14 @@ def resolve_vpns(refs: list[Any], ctx: dict[str, Any]) -> dict[str, Any]:
     return {"names": names, "ids": ids, "rows": rows, "blockers": blockers, "warnings": warnings}
 
 
-def target_problems(values: list[str], ctx: dict[str, Any]) -> list[str]:
-    """Why a stored traffic policy's target VPN values fail the controller's match, per device group: each
-    group must hold a LAN VPN parcel with that exact name."""
+def target_problems(
+    values: list[str],
+    ctx: dict[str, Any],
+    what: str = "target VPN",
+    fixer: str = "catsdwan_set_service_steering",
+) -> list[str]:
+    """Why stored VPN values (a traffic policy's targets, a zone's VPNs) fail the controller's match, per
+    device group: each group must hold a LAN VPN parcel with that exact name."""
     index: dict[str, list[dict[str, Any]]] = ctx.get("index") or {}
     scope, strict, _ = _scope(ctx)
     if not strict:
@@ -214,14 +223,14 @@ def target_problems(values: list[str], ctx: dict[str, Any]) -> list[str]:
             on = f" ({', '.join(hosts)})" if hosts else ""
             if mine:
                 out.append(
-                    f"target VPN {val!r} is not a LAN VPN parcel name in configuration group {gname}{on}: "
+                    f"{what} {val!r} is not a LAN VPN parcel name in configuration group {gname}{on}: "
                     f"the controller matches parcel names; use {', '.join(repr(m) for m in mine)} "
-                    "(catsdwan_set_service_steering resolves a VPN id to it)"
+                    f"({fixer} resolves a VPN id to it)"
                 )
             elif vid is not None:
                 out.append(_missing(vid, gname, hosts))
             else:
-                out.append(f"target VPN {val!r} matches no LAN VPN parcel in configuration group {gname}{on}")
+                out.append(f"{what} {val!r} matches no LAN VPN parcel in configuration group {gname}{on}")
     return out
 
 
@@ -239,62 +248,83 @@ def vpn_ids_by_name(ctx: dict[str, Any]) -> dict[str, int]:
     return out
 
 
-def zone_vpn_problems(zone_vpns: dict[str, list[int]], ctx: dict[str, Any]) -> list[str]:
-    """{zone name: [VPN ids]} -> blockers for a service VPN with no LAN VPN parcel in a device's group (VPN 0
-    and 512 are not checked)."""
-    index: dict[str, list[dict[str, Any]]] = ctx.get("index") or {}
-    scope, strict, _ = _scope(ctx)
-    if not strict:
-        return []
+def zone_vpn_problems(zone_vpns: dict[str, list[str]], ctx: dict[str, Any]) -> list[str]:
+    """{zone name: [stored VPN values]} -> blockers, per device group: each service VPN of a zone must be the
+    name of a LAN VPN parcel in that group (#126: the controller refuses a VPN number with GNGRP0013). VPN 0
+    and 512 are not checked (transport / management: WAN-side parcels, never LAN VPN parcels)."""
     out = []
-    for zone, vids in zone_vpns.items():
-        for vid in vids:
-            if vpn_problem(vid) is not None:
-                continue  # transport / management VPNs are WAN-side parcels, not LAN VPN parcels
-            for gname, hosts in scope.items():
-                if not any(v.get("vpn") == vid for v in index.get(gname, [])):
-                    out.append(f"zone {zone}: {_missing(vid, gname, hosts)}")
+    for zone, values in zone_vpns.items():
+        for val in values:
+            vid = _vid(val)
+            if vid is not None and vpn_problem(vid) is not None:
+                continue
+            out += [
+                f"zone {zone}: {p}"
+                for p in target_problems([val], ctx, "VPN", "catsdwan_set_security_object(kind='zone')")
+            ]
     return out
 
 
-def zone_vpn_ids(data: dict[str, Any]) -> list[int]:
-    """The VPN numbers a security-zone object holds."""
+def zone_vpn_values(data: dict[str, Any]) -> list[str]:
+    """The VPN values a security-zone object holds, as stored (LAN VPN parcel names; VPN 0 / 512 numbers)."""
     out = []
     for e in _as_list(data.get("entries")):
         if isinstance(e, dict) and isinstance(e.get("vpn"), dict):
-            v = _vid(e["vpn"].get("value"))
-            if v is not None:
-                out.append(v)
+            v = e["vpn"].get("value")
+            if v is not None and str(v).strip():
+                out.append(str(v).strip())
     return out
 
 
-def zone_value_ids(values: list[str], ctx: dict[str, Any]) -> tuple[list[str], list[str]]:
-    """Zone values with LAN VPN parcel names / segment names turned into VPN ids (a zone entry is a VPN
-    number); interface names and ids are kept. (values, notes)."""
+def _known_name(val: str, ctx: dict[str, Any]) -> bool:
+    low = val.lower()
     every = [v for vs in (ctx.get("index") or {}).values() for v in vs]
-    segments = ctx.get("segments") or []
-    out, notes = [], []
+    return any(
+        low in (str(v.get("name") or "").lower(), str(v.get("vpn_name") or "").lower()) for v in every
+    ) or any(s["name"].lower() == low for s in ctx.get("segments") or [])
+
+
+def zone_values(values: list[str], ctx: dict[str, Any]) -> dict[str, Any]:
+    """A zone's values -> what its entries hold (#126): VPN ids, LAN VPN parcel names, the parcel's VPN name
+    and segment names become the LAN VPN parcel name(s) (servicevpns.resolve_vpns); VPN 0 / 512 stay
+    numbers; anything else is an interface. {values, vpn_names: the values that are VPN entries, rows,
+    blockers, warnings}."""
+    out: list[str] = []
+    vpn_names: list[str] = []
+    rows: list[dict[str, Any]] = []
+    blockers: list[str] = []
+    warnings: list[str] = []
     for raw in values:
         val = str(raw).strip()
-        low = val.lower()
-        hit = next(
-            (
-                v
-                for v in every
-                if low in (str(v.get("name") or "").lower(), str(v.get("vpn_name") or "").lower())
-            ),
-            None,
-        )
-        vid = hit["vpn"] if hit and hit.get("vpn") is not None else None
-        if vid is None:
-            seg = next((s for s in segments if s["name"].lower() == low), None)
-            vid = _vid(seg["vpn"]) if seg else None
-        if vid is not None and _vid(val) is None:
-            notes.append(f"{val!r} -> VPN {vid} (a zone holds VPN numbers)")
-            out.append(str(vid))
-        else:
+        if not val:
+            continue
+        vid = _vid(val)
+        if vid is not None and vpn_problem(vid) is not None:
+            warnings.append(
+                f"VPN {vid} is a transport / management VPN with no LAN VPN parcel: kept as the number "
+                "(unproven on the 20.18 controller, which looks service VPNs up by parcel name)"
+            )
             out.append(val)
-    return out, notes
+            vpn_names.append(val)
+            continue
+        if vid is None and not _known_name(val, ctx):
+            out.append(val)  # an interface name (the Manager's schema checks its pattern)
+            continue
+        r = resolve_vpns([val], ctx)
+        blockers += r["blockers"]
+        warnings += [w for w in r["warnings"] if w not in warnings]
+        rows += r["rows"]
+        if len(r["names"]) > 1:
+            warnings.append(
+                f"configuration groups name VPN {r['ids'][0]} differently ({', '.join(r['names'])}): the "
+                "zone holds every name; the controller resolves each name per device (check the deploy "
+                "preview)"
+            )
+        for n in r["names"]:
+            if n not in out:
+                out.append(n)
+                vpn_names.append(n)
+    return {"values": out, "vpn_names": vpn_names, "rows": rows, "blockers": blockers, "warnings": warnings}
 
 
 # --- reads -----------------------------------------------------------------------------------------

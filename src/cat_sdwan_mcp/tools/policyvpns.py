@@ -10,15 +10,16 @@ from cat_sdwan_mcp.configuration import path
 from cat_sdwan_mcp.edgefirewall import SEC_POLICY_LIST_PATH, parcels, zone_pairs_of
 from cat_sdwan_mcp.policygroups import group_profiles
 from cat_sdwan_mcp.serviceinsertion import target_of
-from cat_sdwan_mcp.servicevpns import target_problems, zone_vpn_ids, zone_vpn_problems
+from cat_sdwan_mcp.servicevpns import target_problems, zone_vpn_problems, zone_vpn_values
 
 
-def zone_vpns(zone_rows: list[dict[str, Any]], zone_ids: set[str]) -> dict[str, list[int]]:
-    """{zone name: [VPN ids]} for the zones in `zone_ids` (rows from the policy-object security-zone list)."""
-    out: dict[str, list[int]] = {}
+def zone_vpns(zone_rows: list[dict[str, Any]], zone_ids: set[str]) -> dict[str, list[str]]:
+    """{zone name: [stored VPN values]} for the zones in `zone_ids` (rows from the policy-object security-zone
+    list)."""
+    out: dict[str, list[str]] = {}
     for z in zone_rows:
-        if z["id"] in zone_ids and (vids := zone_vpn_ids(z["data"])):
-            out[str(z.get("name"))] = vids
+        if z["id"] in zone_ids and (vals := zone_vpn_values(z["data"])):
+            out[str(z.get("name"))] = vals
     return out
 
 
@@ -26,8 +27,8 @@ async def group_vpn_problems(
     app: SdwanApp, detail: dict[str, Any], vctx: dict[str, Any], *, targets: bool = True
 ) -> tuple[list[str], dict[str, Any], list[str]]:
     """(blockers, what was checked, read warnings) for a policy group's stored content: every traffic policy
-    target must be a LAN VPN parcel name in each device's configuration group, every VPN of a zone the
-    security policy binds must have a LAN VPN parcel there."""
+    target and every service VPN of a zone the security policy binds must be a LAN VPN parcel name in each
+    device's configuration group (#118, #126)."""
     from cat_sdwan_mcp.tools.edgefirewall import list_objects
     from cat_sdwan_mcp.tools.serviceinsertion import traffic_policies
 

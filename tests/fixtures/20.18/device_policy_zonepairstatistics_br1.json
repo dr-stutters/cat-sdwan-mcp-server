@@ -1,0 +1,87 @@
+{
+  "header": {
+    "generatedOn": 1792912060000,
+    "viewKeys": {
+      "uniqueKey": [
+        "vdevice-dataKey"
+      ],
+      "preferenceKey": "grid-CEdgePolicyZonePairStatistics"
+    },
+    "columns": [],
+    "fields": []
+  },
+  "data": [
+    {
+      "max-active-conn": "0",
+      "class-action": "Drop",
+      "vdevice-name": "10.0.0.2",
+      "src-zone-name": "mcp-w8-lan",
+      "pkts-counter": "9",
+      "max-halfopen-conn": "0",
+      "vdevice-host-name": "br1",
+      "zonepair-name": "ZP_mcp-w8-lan_mcp-w8_-1525056179",
+      "class-name": "mcp-w8-br1-fw-seq-drop-bob-1901124413-cm_",
+      "attempted-conn": "0",
+      "match-type-id": "11",
+      "match-type": "class-map",
+      "current-active-conn": "0",
+      "current-halfopen-conn": "0",
+      "vdevice-dataKey": "10.0.0.2-ZP_mcp-w8-lan_mcp-w8_-1525056179-mcp-w8-br1-fw-seq-drop-bob-1901124413-cm_",
+      "time-since-last-session-create": "0",
+      "current-terminating-conn": "0",
+      "policy-name": "mcp-w8-br1-fw",
+      "match-name": "match-any mcp-w8-br1-fw-sdrop-bob-1901124413-l4-cm_",
+      "lastupdated": 1792912060000,
+      "max-terminating-conn": "0",
+      "dst-zone-name": "mcp-w8-lan",
+      "bytes-counter": "882"
+    },
+    {
+      "max-active-conn": "0",
+      "class-action": "Drop",
+      "vdevice-name": "10.0.0.2",
+      "src-zone-name": "mcp-w8-lan",
+      "pkts-counter": "9",
+      "max-halfopen-conn": "0",
+      "vdevice-host-name": "br1",
+      "zonepair-name": "ZP_mcp-w8-lan_mcp-w8_-1525056179",
+      "class-name": "mcp-w8-br1-fw-seq-drop-bob-1901124413-cm_",
+      "attempted-conn": "0",
+      "match-type-id": "3",
+      "match-type": "access-group name",
+      "current-active-conn": "0",
+      "current-halfopen-conn": "0",
+      "vdevice-dataKey": "10.0.0.2-ZP_mcp-w8-lan_mcp-w8_-1525056179-mcp-w8-br1-fw-seq-drop-bob-1901124413-cm_",
+      "time-since-last-session-create": "0",
+      "current-terminating-conn": "0",
+      "policy-name": "mcp-w8-br1-fw",
+      "match-name": "mcp-w8-br1-fw-seq-drop-bob-1901124413-acl_",
+      "lastupdated": 1792912060000,
+      "max-terminating-conn": "0",
+      "dst-zone-name": "mcp-w8-lan",
+      "bytes-counter": "882"
+    },
+    {
+      "max-active-conn": "0",
+      "class-action": "Pass",
+      "vdevice-name": "10.0.0.2",
+      "src-zone-name": "mcp-w8-lan",
+      "pkts-counter": "52",
+      "max-halfopen-conn": "0",
+      "vdevice-host-name": "br1",
+      "class-name": "class-default",
+      "zonepair-name": "ZP_mcp-w8-lan_mcp-w8_-1525056179",
+      "attempted-conn": "0",
+      "current-active-conn": "0",
+      "current-halfopen-conn": "0",
+      "vdevice-dataKey": "10.0.0.2-ZP_mcp-w8-lan_mcp-w8_-1525056179-class-default",
+      "time-since-last-session-create": "0",
+      "current-terminating-conn": "0",
+      "policy-name": "mcp-w8-br1-fw",
+      "lastupdated": 1792912060000,
+      "max-terminating-conn": "0",
+      "dst-zone-name": "mcp-w8-lan",
+      "bytes-counter": "5720"
+    }
+  ]
+}

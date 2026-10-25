@@ -59,7 +59,7 @@ from cat_sdwan_mcp.edgefirewall import (
 from cat_sdwan_mcp.features import POLICY_GROUP_PATH
 from cat_sdwan_mcp.policygroups import created_id, group_profiles, update_body
 from cat_sdwan_mcp.serviceinsertion import vpn_problem
-from cat_sdwan_mcp.servicevpns import resolve_vpns, vpn_context, zone_value_ids, zone_vpn_problems
+from cat_sdwan_mcp.servicevpns import vpn_context, zone_values, zone_vpn_problems
 from cat_sdwan_mcp.tools.changes import dangerous_blockers, dangerous_tool
 from cat_sdwan_mcp.tools.configuration import _groups
 from cat_sdwan_mcp.tools.policygroups import group_devices, policy_profiles
@@ -271,8 +271,8 @@ def register(reg: ToolRegistrar) -> None:
         values: Annotated[
             list[str] | None,
             Field(
-                description="zone: VPN numbers ('10') or LAN VPN parcel names ('mcp-w8-vpn10', stored as the "
-                "VPN number) or interfaces ('GigabitEthernet3'), not both; "
+                description="zone: VPNs ('10' or the LAN VPN parcel name 'mcp-w8-vpn10'; stored as the "
+                "parcel name, which the controller needs) or interfaces ('GigabitEthernet3'), not both; "
                 "identity: 'user:alice' or 'group:<domain>/Users/Sales'; sgt: 'Employees:4' or a tag or "
                 "ISE SGT name; prefix: '192.0.2.0/24'. Replaces the object's values"
             ),
@@ -312,26 +312,29 @@ def register(reg: ToolRegistrar) -> None:
                 except UpstreamError as e:
                     warnings.append(f"ISE SGTs not read (names need ':<tag>'): {str(e)[:150]}")
             vals = list(values or [])
+            vpn_names: list[str] = []
             if kind == "zone":
-                # #118: a zone entry is a VPN number; names of LAN VPN parcels / segments become it, and a VPN
-                # no configuration group has as a LAN VPN parcel is flagged (the controller refuses it).
+                # #126: the 20.18 controller looks a zone's VPN up by LAN VPN parcel name (a number fails the
+                # deploy with GNGRP0013), so VPN ids / VPN names / segment names become the parcel name(s).
                 try:
                     vctx = await vpn_context(app, None)
                 except UpstreamError as e:
                     vctx = {}
                     warnings.append(f"LAN VPN parcels not read (VPN names not resolved): {str(e)[:150]}")
                 if vctx:
-                    vals, notes = zone_value_ids(vals, vctx)
-                    warnings += notes
-                    for v in vals:
-                        # VPN 0 / 512 are transport / management (WAN-side parcels): never a LAN VPN parcel,
-                        # and the deploy precheck skips them too.
-                        if v.strip().isdigit() and vpn_problem(int(v.strip())) is None:
-                            warnings += [
-                                f"{b}; the policy groups using this zone are blocked at deploy until then"
-                                for b in resolve_vpns([v.strip()], vctx)["blockers"]
-                            ]
-            entries, problems = object_entries(kind, vals, sgts)
+                    zv = zone_values(vals, vctx)
+                    vals, vpn_names = zv["values"], zv["vpn_names"]
+                    blockers += [f"{name}: {b}" for b in zv["blockers"]]
+                    warnings += zv["warnings"]
+                else:
+                    blockers += [
+                        f"{name}: VPN {v.strip()} can't be turned into its LAN VPN parcel name (the "
+                        "controller refuses a VPN number in a zone): give the parcel name, or retry once the "
+                        "configuration groups can be read"
+                        for v in vals
+                        if v.strip().isdigit() and vpn_problem(int(v.strip())) is None
+                    ]
+            entries, problems = object_entries(kind, vals, sgts, vpn_names)
             blockers += [f"{name}: {p}" for p in problems]
             body = object_body(name.strip(), description, entries)
             schema, why = await _schema(
