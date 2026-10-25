@@ -6,6 +6,23 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+## [0.6.3] - 2026-10-25
+
+### Changed
+- W45 fallback (#72, #126, owner: "Per-edge CLI ACL"): new `catsdwan_set_containment_acl` stores a standing `mcp-contain`
+  ACL with per-device slots in a configuration group's CLI add-on; `catsdwan_contain_at_edge` /
+  `catsdwan_release_at_edge` write and restore one edge's slot variables and deploy that edge only;
+  `catsdwan_set_containment_baseline` keeps only the ISE quarantine SGT rules (the prefix-list slots that 20.18 refuses
+  with PPARC0012 are gone).
+
+### Fixed
+- #126: `catsdwan_set_security_object` stores zone VPNs as LAN VPN parcel names (the 20.18 controller refuses VPN
+  numbers, GNGRP0013), and the deploy, firewall and baseline prechecks flag stored numbers;
+  `catsdwan_set_firewall_policy` log=true passes the Manager's schema; `catsdwan_security_status` gives one row per
+  zone-pair class and dropped_by_policy from the data-plane counter.
+- #67: `catsdwan_set_ise_integration`: the pxGrid activate description no longer has parentheses, which ISE's XSS
+  filter refused (ISEERRORR0014).
+
 ## [0.6.2] - 2026-10-25
 
 ### Fixed
