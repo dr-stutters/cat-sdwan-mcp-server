@@ -522,6 +522,22 @@ async def test_acl_in_place_says_so(api: respx.MockRouter) -> None:
     assert not r["cli_put"].called and not r["vars_put"].called
 
 
+async def test_acl_in_place_fills_a_device_without_values(api: respx.MockRouter) -> None:
+    """A device that joined the group after the ACL (or a fill that did not finish) lists the slot
+    variables with no value: running the tool again fills them, and only them."""
+    body = l65_variables(**{BR2: dict.fromkeys(ct.neutral())})
+    r = mock_cfg(api, var_body=body)
+    args = {"group": "mcp-test", "interfaces": IFS, "remediation": REM}
+    out = await preview("catsdwan_set_containment_acl", args)
+    assert "fill the neutral slot values of br2" in out["action"] and out["blast_radius"] == 1
+    assert out["preview"]["unset_values"] == ["br2"] and not out["preview"]["cli_changes"]
+    done = await confirmed("catsdwan_set_containment_acl", args)
+    assert not r["cli_put"].called
+    values = put_values(r["vars_put"])
+    assert sorted(values) == [BR2] and values[BR2]["mcp_contain_4_note"] == ct.NOTE_FREE
+    assert done["result"]["neutral_filled"] == {"mcp-test": ["br2"]}
+
+
 async def test_acl_blockers(api: respx.MockRouter) -> None:
     mock_cfg(api, text=cli_text(acl=False))
     out = await preview(
@@ -661,6 +677,9 @@ async def test_contain_at_edge_blockers(api: respx.MockRouter) -> None:
     api.get(VARS).respond(json=l65_variables(**{BR2: {"mcp_contain_3": HOST}}))
     elsewhere = await preview("catsdwan_contain_at_edge", {"ip": HOST, "reason": "x"})
     assert any("already contained at br2" in b for b in elsewhere["blockers"])
+    api.get(VARS).respond(json=l65_variables(**{BR1: {"mcp_contain_3": None, "mcp_contain_3_note": None}}))
+    unset = await preview("catsdwan_contain_at_edge", {"ip": HOST, "reason": "x"})
+    assert any("mcp_contain_3, mcp_contain_3_note" in b and "fills them" in b for b in unset["blockers"])
     api.get(VARS).respond(json=l65_variables())
     only_gi5 = ct.with_acl(cli_text(acl=False), ct.acl_block([], ["{{fw_if}}"]))
     api.get(CLI_URL).respond(json=cli_parcel(only_gi5))

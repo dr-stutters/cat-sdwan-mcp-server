@@ -577,6 +577,12 @@ def _by_name(variables: list[dict[str, Any]]) -> dict[str, Any]:
     return {str(v.get("name")): v.get("value") for v in variables}
 
 
+def _unset_neutral(variables: list[dict[str, Any]]) -> dict[str, str]:
+    """The neutral values of the slot and note variables a device lists but has no value for."""
+    have = _by_name(variables)
+    return {k: v for k, v in neutral().items() if k in have and have[k] in (None, "")}
+
+
 def _slot_rows(variables: list[dict[str, Any]]) -> dict[str, dict[str, Any]]:
     """{host: {slot, expires?, reason?, expired}} of the hosts one device's slots hold."""
     notes = note_values(variables)
@@ -931,6 +937,15 @@ def register(reg: ToolRegistrar) -> None:
             for ch, variables in vals.items():
                 if rows := _slot_rows(variables):
                     held[str(_host(chassis_rows.get(ch)) or ch)] = sorted(rows)
+        # Devices listing slot variables with no value (joined the group later, or a fill that did not
+        # finish): a deploy to them fails until they hold the neutral values, so an ACL in place still fills.
+        unset_devices = sorted(
+            str(_host(chassis_rows.get(ch)) or ch)
+            for vals in slots.values()
+            for ch, variables in vals.items()
+            if _unset_neutral(variables)
+        )
+        fill_only = not remove and not changed and addon is not None and bool(unset_devices)
         if held and remove:
             blockers.append(
                 f"slots hold contained hosts ({held}) and this takes the ACL out: release them first "
@@ -955,6 +970,11 @@ def register(reg: ToolRegistrar) -> None:
                 f"{', '.join(str(g.get('name')) for g in users)}: all of them get the ACL"
             )
         requests = []
+        if fill_only:
+            requests.append(
+                f"PUT {VARIABLES_PATH} (unset mcp_contain_* variables of {', '.join(unset_devices)} get "
+                "their neutral values, checked after each write)"
+            )
         if changed and addon:
             requests.append(f"PUT {CLI_PARCEL_SHAPE} ({addon['name']})")
             if not remove:
@@ -964,7 +984,10 @@ def register(reg: ToolRegistrar) -> None:
                     "their neutral values, checked after each write)"
                 )
         plan = Plan(
-            f"The containment ACL is in place in {gname}: nothing to change"
+            f"The containment ACL is in place in {gname}: fill the neutral slot values of "
+            f"{', '.join(unset_devices)}"
+            if fill_only
+            else f"The containment ACL is in place in {gname}: nothing to change"
             if not changed and not remove
             else f"No containment ACL in {gname}: nothing to remove"
             if not changed
@@ -981,6 +1004,7 @@ def register(reg: ToolRegistrar) -> None:
                 **({"acl": acl_block(fix, ifs).splitlines()} if not remove else {}),
                 "cli_changes": cli_diff(text, new_text) if changed else [],
                 "neutral_values": neutral() if not remove else {},
+                **({"unset_values": unset_devices} if unset_devices and not remove else {}),
                 "reaches": reached,
                 "requests": requests,
                 "not_yet_proven": UNPROVEN,
@@ -1006,18 +1030,20 @@ def register(reg: ToolRegistrar) -> None:
                 "parcel": [addon["updated"], text_hash(text)] if addon else None,
                 "group": [found.get("lastUpdatedOn"), found.get("version")],
                 "held": held,
+                "unset": unset_devices,
             },
             blockers=blockers,
-            blast_radius=len(devices) if changed else 0,
+            blast_radius=len(devices) if changed else len(unset_devices) if fill_only else 0,
         )
 
         async def apply() -> Any:
             out: dict[str, Any] = {"group": gname}
-            if not changed or addon is None:
+            if not (changed or fill_only) or addon is None:
                 return {**out, "stored": "nothing (in place)"}
-            await cli_put(app, addon, new_text)
-            out["stored"] = f"CLI add-on {addon['name']}"
-            out["cli_changes"] = cli_diff(text, new_text)
+            if changed:
+                await cli_put(app, addon, new_text)
+                out["stored"] = f"CLI add-on {addon['name']}"
+                out["cli_changes"] = cli_diff(text, new_text)
             if not remove:
                 filled: dict[str, list[str]] = {}
                 missing: list[str] = []
@@ -1029,8 +1055,7 @@ def register(reg: ToolRegistrar) -> None:
                     cur = await cg_variables(app, gid, chs)
                     todo: dict[str, list[dict[str, Any]]] = {}
                     for ch, variables in cur.items():
-                        have = _by_name(variables)
-                        unset = {k: v for k, v in neutral().items() if k in have and have[k] in (None, "")}
+                        unset = _unset_neutral(variables)
                         if not slot_values(variables):
                             missing.append(str(_host(chassis_rows.get(ch)) or ch))
                         if unset:
@@ -1210,6 +1235,14 @@ def register(reg: ToolRegistrar) -> None:
                 blockers.append(
                     f"all {SLOTS} slots of {host_name} hold hosts ({contained_at(values)}): release one "
                     "(catsdwan_release_at_edge) or contain this host through ISE"
+                )
+            unset = sorted(k for k in _unset_neutral(current) if not slot or k not in (slot, NOTE_VARS[slot]))
+            if acl and acl["slots"] and unset:
+                blockers.append(
+                    f"{host_name} has slot variables with no value in {gname} ({', '.join(unset)}): a deploy "
+                    "to it fails until they hold the neutral values: "
+                    f"catsdwan_set_containment_acl(group='{gname}', interfaces={acl['interfaces']!r}) "
+                    "fills them"
                 )
             if slot:
                 merged, _, unknown = merge_variables(current, {slot: addr, NOTE_VARS[slot]: note_text})
