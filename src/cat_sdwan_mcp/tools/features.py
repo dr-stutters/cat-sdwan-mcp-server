@@ -818,6 +818,7 @@ def register(reg: ToolRegistrar) -> None:
             fingerprint={
                 "group": [found.get("lastUpdatedOn"), found.get("version")],
                 "devices": dict(zip(chassis, (h for _, h in got), strict=True)),
+                "controller": controller,
             },
             blockers=blockers,
             blast_radius=len(rows),

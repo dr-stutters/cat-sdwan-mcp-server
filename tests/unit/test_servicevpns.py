@@ -132,6 +132,7 @@ def test_zones_hold_vpn_numbers() -> None:
     assert vals == ["10", "10", "20", "GigabitEthernet3"] and len(notes) == 2
     assert sv.zone_vpn_ids({"entries": [{"vpn": si.g("10")}, {"interface": si.g("Gi3")}]}) == [10]
     assert sv.zone_vpn_problems({"lan": [10]}, ctx()) == []
+    assert sv.zone_vpn_problems({"outside": [0], "mgmt": [512]}, ctx(converted=False)) == []
     (p,) = sv.zone_vpn_problems({"lan": [10]}, ctx(converted=False))
     assert p.startswith("zone lan: VPN 10 has no LAN VPN parcel in configuration group mcp-test")
 

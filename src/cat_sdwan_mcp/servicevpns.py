@@ -102,8 +102,9 @@ def _scope(ctx: dict[str, Any]) -> tuple[dict[str, list[str]], bool, list[str]]:
         return scope, True, []
     every: dict[str, list[str]] = {g: [] for g in ctx.get("index") or {}}
     warn = (
-        ["no device of the policy group is in a configuration group the Manager listed: VPNs resolved "
-         "against every configuration group; the controller checks each device's own group at deploy"]
+        ["no device of the policy group is associated with a configuration group yet (or the policy group "
+         "has no device): VPNs resolved against every configuration group; the controller checks each "
+         "device's own group at deploy"]
         if ctx.get("devices_given")
         else []
     )  # fmt: skip
@@ -239,7 +240,8 @@ def vpn_ids_by_name(ctx: dict[str, Any]) -> dict[str, int]:
 
 
 def zone_vpn_problems(zone_vpns: dict[str, list[int]], ctx: dict[str, Any]) -> list[str]:
-    """{zone name: [VPN ids]} -> blockers for a VPN with no LAN VPN parcel in a device's group."""
+    """{zone name: [VPN ids]} -> blockers for a service VPN with no LAN VPN parcel in a device's group (VPN 0
+    and 512 are not checked)."""
     index: dict[str, list[dict[str, Any]]] = ctx.get("index") or {}
     scope, strict, _ = _scope(ctx)
     if not strict:
@@ -247,6 +249,8 @@ def zone_vpn_problems(zone_vpns: dict[str, list[int]], ctx: dict[str, Any]) -> l
     out = []
     for zone, vids in zone_vpns.items():
         for vid in vids:
+            if vpn_problem(vid) is not None:
+                continue  # transport / management VPNs are WAN-side parcels, not LAN VPN parcels
             for gname, hosts in scope.items():
                 if not any(v.get("vpn") == vid for v in index.get(gname, [])):
                     out.append(f"zone {zone}: {_missing(vid, gname, hosts)}")
