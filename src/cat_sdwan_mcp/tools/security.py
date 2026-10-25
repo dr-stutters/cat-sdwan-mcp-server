@@ -27,6 +27,7 @@ from cat_sdwan_mcp.security import (
     LEGACY_POLICIES_PATH,
     STATUS_PATHS,
     aggregate,
+    drop_check,
     engine_row,
     nonzero_drops,
     policy_names,
@@ -34,7 +35,7 @@ from cat_sdwan_mcp.security import (
     sig_row,
     ssl_proxy_row,
     utd_version,
-    zone_pair_row,
+    zone_pair_rows,
 )
 
 Kind = Literal["ips", "url", "connection", "dns"]
@@ -90,11 +91,13 @@ def register(reg: ToolRegistrar) -> None:
         """Is the edge's own security stack inspecting or blocking traffic? Read live from one edge: the UTD
         container (Snort engine status, memory, the UTD image supported and recommended, IPS signature
         package and updates, URL-filtering cloud connection), the zone-based firewall (zone pairs with policy,
-        class, action, packets and sessions; the drop counters that are not zero), the SSL proxy and the
-        Secure Internet Gateway tunnels (Umbrella, Zscaler), plus the Manager's security policies. `features`
-        says which are running and `verdict` says it in one line; when there is no security policy at all, it
-        says so plainly (nothing on the edge filters traffic: look at the WAN or the firewall behind it).
-        Reads only: the edge firewall is written with catsdwan_set_firewall_policy (W47), the FTD in FMC."""
+        class, action, packets and sessions, one row per class; the data plane's drop counters that are not
+        zero, and dropped_by_policy, the policy drops counted when read, which the per-class counters can
+        trail by a minute), the SSL proxy and the Secure Internet Gateway tunnels (Umbrella, Zscaler), plus
+        the Manager's security policies. `features` says which are running and `verdict` says it in one line;
+        when there is no security policy at all, it says so plainly (nothing on the edge filters traffic: look
+        at the WAN or the firewall behind it). Reads only: the edge firewall is written with
+        catsdwan_set_firewall_policy (W47), the FTD in FMC."""
         app: SdwanApp = get_client(ctx)
         row, _ = await find_device(app, device)
         ip = require_reachable(row, "catsdwan_list_devices shows each device's reachability.")
@@ -115,7 +118,7 @@ def register(reg: ToolRegistrar) -> None:
             else:
                 tables[k] = records(res)
         engines = [engine_row(r) for r in tables["utd_engine"]]
-        zone_pairs = [zone_pair_row(r) for r in tables["zone_pairs"]]
+        zone_pairs = zone_pair_rows(tables["zone_pairs"])
         drops = nonzero_drops(tables["zbfw_drops"])
         sig = [sig_row(r) for r in tables["sig_tunnels"] + tables["umbrella_tunnels"]]
         ssl = [ssl_proxy_row(r) for r in tables["ssl_proxy"]]
@@ -148,6 +151,8 @@ def register(reg: ToolRegistrar) -> None:
             firewall["active_sessions"] = len(tables["zone_pair_sessions"])
         if drops:
             firewall["drops"] = drops
+        if zone_pairs or drops:
+            firewall.update(drop_check(zone_pairs, drops))
         if firewall:
             out["zone_based_firewall"] = firewall
         if ssl:

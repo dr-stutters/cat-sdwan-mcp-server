@@ -126,6 +126,42 @@ def zone_pair_row(r: dict[str, Any]) -> dict[str, Any]:
     return {k: v for k, v in out.items() if v not in (None, "")}
 
 
+def zone_pair_rows(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """One row per zone pair and class. 20.18 answers zonepairstatistics with a row per *match* of a class
+    (recorded on br1, 2026-10-25: the drop class twice, 'class-map' and 'access-group name', with the same
+    class counters), so summing raw rows counts a class's packets once per match."""
+    out: dict[tuple[Any, Any], dict[str, Any]] = {}
+    for r in rows:
+        key = (r.get("zonepair-name"), r.get("class-name"))
+        row = out.get(key)
+        if row is None:
+            row = out[key] = zone_pair_row(r)
+        if r.get("match-name") and r["match-name"] not in row.setdefault("matches", []):
+            row["matches"].append(r["match-name"])
+    return [{k: v for k, v in r.items() if v != []} for r in out.values()]
+
+
+# The data plane's own drop counters for a firewall policy verdict (zbfwdropstatistics; on the edge `show
+# platform hardware qfp active feature firewall drop all`: 'Policy drop:classify result' and its ICMP twin).
+POLICY_DROPS = ("policy-action-drop", "policy-icmp-action-drop")
+
+
+def drop_check(pairs: list[dict[str, Any]], drops: dict[str, int]) -> dict[str, Any]:
+    """The packets the firewall policy dropped, from the data plane's counter (current on every read), next to
+    the drop classes' packet counters, and a note when the class counters are behind (#126: right after a
+    drop, the zone-pair class counters read 0 while the data plane had counted the packets)."""
+    policy = sum(drops.get(k, 0) for k in POLICY_DROPS)
+    classes = sum(int(p.get("packets") or 0) for p in pairs if str(p.get("action") or "").lower() == "drop")
+    out: dict[str, Any] = {"dropped_by_policy": policy, "drop_class_packets": classes}
+    if policy > classes:
+        out["note"] = (
+            f"the data plane counted {policy} policy drop(s), the drop classes {classes}: the zone-pair "
+            "class counters are refreshed later on the edge. dropped_by_policy is current; read again in a "
+            "minute for the per-class split"
+        )
+    return out
+
+
 def sig_row(r: dict[str, Any]) -> dict[str, Any]:
     out = {
         "tunnel": r.get("tunnel-name") or r.get("tunnel-if-name"),

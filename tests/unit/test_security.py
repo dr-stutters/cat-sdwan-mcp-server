@@ -4,7 +4,8 @@ Recorded on 20.18.3.1 (the lab has no security policy): UTD engine status and IP
 UTD version status (image supported, recommended version), the zone-based firewall statistics (one empty
 record) and drop counters (every counter "0"), an empty security-policy list. The bodies with data (a running
 UTD engine, zone pairs, a SIG tunnel, IPS, URL and connection records) are hand-built from the field names the
-same Manager lists in each response header, and marked so.
+same Manager lists in each response header, and marked so. #126: br1's zone-pair statistics with the W47 drop
+rule active (2026-10-25, columns trimmed) are recorded (device_policy_zonepairstatistics_br1).
 """
 
 import json
@@ -15,7 +16,15 @@ import pytest
 import respx
 from fastmcp.exceptions import ToolError
 
-from cat_sdwan_mcp.security import EMBEDDED_PROFILES_PATH, STATUS_PATHS, aggregate, nonzero_drops, records
+from cat_sdwan_mcp.security import (
+    EMBEDDED_PROFILES_PATH,
+    STATUS_PATHS,
+    aggregate,
+    drop_check,
+    nonzero_drops,
+    records,
+    zone_pair_rows,
+)
 
 from .conftest import fixture
 from .test_inventory import call, mock_inventory
@@ -127,6 +136,40 @@ async def test_security_status_running_stack_with_attention(api: respx.MockRoute
     verdict = out["verdict"]
     assert verdict.startswith("br1 runs utd, zone based firewall, sig tunnels; attention:")
     assert "policy-action-drop 17" in verdict and "SIG tunnel ipsec1 is Down" in verdict
+
+
+async def test_security_status_w47_drop_rule_on_the_recorded_shape(api: respx.MockRouter) -> None:
+    # #126, recorded on br1 (20.18.3.1, 2026-10-25) with the W47 rule dropping bob's ICMP: 9 policy drops in
+    # zbfwdropstatistics (= the edge's 'Policy drop:classify result'), the drop class listed once per match.
+    mock_inventory(api)
+    drops = fixture("device_policy_zbfwdropstatistics_br1")
+    drops["data"][0]["policy-action-drop"] = "9"
+    mock_status(api, zone_pairs=fixture("device_policy_zonepairstatistics_br1"), zbfw_drops=drops)
+    fw = (await call("catsdwan_security_status", {"device": BR1}))["zone_based_firewall"]
+    drop, default = fw["zone_pairs"]
+    assert drop["class"].startswith("mcp-w8-br1-fw-seq-drop-bob") and drop["action"] == "Drop"
+    assert drop["packets"] == 9 and len(drop["matches"]) == 2
+    assert default["class"] == "class-default" and default["packets"] == 52 and "matches" not in default
+    assert fw["dropped_by_policy"] == 9 and fw["drop_class_packets"] == 9 and "note" not in fw
+
+
+def test_drop_check_flags_class_counters_behind_the_data_plane() -> None:
+    # The live finding: right after bob's pings the drop class read 0 while the data plane had counted them.
+    rows = fixture("device_policy_zonepairstatistics_br1")["data"]
+    for r in rows:
+        if r["class-action"] == "Drop":
+            r["pkts-counter"] = "0"
+    pairs = zone_pair_rows(records(rows))
+    out = drop_check(pairs, {"policy-action-drop": 4})
+    assert out["dropped_by_policy"] == 4 and out["drop_class_packets"] == 0
+    assert "refreshed later" in out["note"]
+    # Summing the raw per-match rows would have counted the class twice.
+    assert drop_check(
+        zone_pair_rows(records(fixture("device_policy_zonepairstatistics_br1")["data"])), {}
+    ) == {
+        "dropped_by_policy": 0,
+        "drop_class_packets": 9,
+    }
 
 
 async def test_security_status_policy_not_on_this_edge_and_failed_section(api: respx.MockRouter) -> None:
