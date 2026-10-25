@@ -20,7 +20,7 @@ from cat_sdwan_mcp.serviceinsertion import vpn_parcels
 from cat_sdwan_mcp.tools.features import controller_outcome
 
 from .conftest import fixture, make_server, make_settings, mock_service_vpns
-from .test_edgefirewall import PGID, PGS, PO, ZIN, mock_manager
+from .test_edgefirewall import PGID, PGS, PO, ZIN, ZOUT, listed, mock_manager, zone
 from .test_inventory import mock_inventory
 
 BR1, HUB1 = "REDACTED-16", "REDACTED-17"
@@ -127,14 +127,41 @@ def test_stored_targets_are_checked_like_the_controller() -> None:
     assert "convert VPN 10" in p
 
 
-def test_zones_hold_vpn_numbers() -> None:
-    vals, notes = sv.zone_value_ids(["mcp-w8-vpn10", "Discovered_VPN_10", "20", "GigabitEthernet3"], ctx())
-    assert vals == ["10", "10", "20", "GigabitEthernet3"] and len(notes) == 2
-    assert sv.zone_vpn_ids({"entries": [{"vpn": si.g("10")}, {"interface": si.g("Gi3")}]}) == [10]
-    assert sv.zone_vpn_problems({"lan": [10]}, ctx()) == []
-    assert sv.zone_vpn_problems({"outside": [0], "mgmt": [512]}, ctx(converted=False)) == []
-    (p,) = sv.zone_vpn_problems({"lan": [10]}, ctx(converted=False))
-    assert p.startswith("zone lan: VPN 10 has no LAN VPN parcel in configuration group mcp-test")
+def test_zones_hold_lan_vpn_parcel_names() -> None:
+    # #126 (live, 20.18.3.1): a zone entry "10" fails the deploy (GNGRP0013 "Vpn Id for vpn name 10 not
+    # found"); "mcp-w8-vpn10" deploys and renders 'vpn 10'. Every name for VPN 10 becomes the parcel name.
+    for given in (["10"], ["mcp-w8-vpn10"], ["Discovered_VPN_10"], ["10", "mcp-w8-vpn10"]):
+        z = sv.zone_values(given, ctx())
+        assert z["values"] == ["mcp-w8-vpn10"] and z["vpn_names"] == ["mcp-w8-vpn10"], given
+        assert not z["blockers"]
+    assert any("does not match" in w for w in sv.zone_values(["Discovered_VPN_10"], ctx())["warnings"])
+    iface = sv.zone_values(["GigabitEthernet3"], ctx())
+    assert iface["values"] == ["GigabitEthernet3"] and iface["vpn_names"] == []
+    wan = sv.zone_values(["0"], ctx())
+    assert wan["values"] == ["0"] and wan["vpn_names"] == ["0"] and "transport" in wan["warnings"][0]
+    (b,) = sv.zone_values(["30"], ctx(scope={}))["blockers"]
+    assert "VPN 30 has no LAN VPN parcel in any configuration group" in b
+    (b,) = sv.zone_values(["10"], ctx(converted=False))["blockers"]
+    assert "VPN 10 has no LAN VPN parcel in configuration group mcp-test (br1)" in b
+    two = ctx(scope={"mcp-test": ["br1"], "mcp-w8-hub": ["hub1"]})
+    two["index"]["mcp-w8-hub"] = [{"vpn": 10, "name": "hub-vpn10", "profile": "hub-svc", "vpn_name": None}]
+    z = sv.zone_values(["10"], two)
+    assert z["values"] == ["mcp-w8-vpn10", "hub-vpn10"] and any("differently" in w for w in z["warnings"])
+
+
+def test_stored_zone_vpns_are_checked_like_the_controller() -> None:
+    data = {"entries": [{"vpn": si.g("mcp-w8-vpn10")}, {"interface": si.g("Gi3")}]}
+    assert sv.zone_vpn_values(data) == ["mcp-w8-vpn10"]
+    assert sv.zone_vpn_problems({"lan": ["mcp-w8-vpn10"]}, ctx()) == []
+    # The live failure: the 0.6.2 tool stored "10".
+    (p,) = sv.zone_vpn_problems({"lan": ["10"]}, ctx())
+    assert p.startswith("zone lan: VPN '10' is not a LAN VPN parcel name in configuration group mcp-test")
+    assert "use 'mcp-w8-vpn10'" in p and "catsdwan_set_security_object(kind='zone')" in p
+    assert sv.zone_vpn_problems({"outside": ["0"], "mgmt": ["512"]}, ctx(converted=False)) == []
+    (p,) = sv.zone_vpn_problems({"lan": ["mcp-w8-vpn10"]}, ctx(converted=False))
+    assert "matches no LAN VPN parcel in configuration group mcp-test" in p
+    (p,) = sv.zone_vpn_problems({"lan": ["10"]}, ctx(converted=False))
+    assert "convert VPN 10" in p
 
 
 def test_vpn_ids_by_name() -> None:
@@ -253,23 +280,48 @@ async def test_deploy_without_vpn_references_has_no_vpn_blocker(api: respx.MockR
     assert not out.get("blockers")
 
 
-async def test_zone_object_takes_a_parcel_name(api: respx.MockRouter) -> None:
+async def test_zone_object_stores_the_parcel_name(api: respx.MockRouter) -> None:
     mock_manager(api)
     put = api.put(f"{PO}/security-zone/{ZIN}").respond(200)
-    args = {"kind": "zone", "name": "lan", "values": ["mcp-w8-vpn10"]}
+    args = {"kind": "zone", "name": "lan", "values": ["10"]}
     out = await preview("catsdwan_set_security_object", args)
-    assert out["preview"]["after"] == ["10"] and not out.get("blockers")
-    assert any("'mcp-w8-vpn10' -> VPN 10" in w for w in out["preview"]["warnings"])
+    assert out["preview"]["after"] == ["mcp-w8-vpn10"] and not out.get("blockers")
     async with Client(make_server(mcp_enable_writes=True, mcp_enable_dangerous=True)) as c:
         first = (await c.call_tool("catsdwan_set_security_object", args)).structured_content
         await c.call_tool("catsdwan_set_security_object", {**args, "confirm": first["confirm"]})
-    assert json.loads(put.calls.last.request.content)["data"]["entries"] == [{"vpn": si.g("10")}]
-    warn = await preview("catsdwan_set_security_object", {"kind": "zone", "name": "lan", "values": ["30"]})
-    assert any("VPN 30 has no LAN VPN parcel in any configuration group" in w
-               for w in warn["preview"]["warnings"])  # fmt: skip
-    # A transport zone (VPN 0) is no LAN VPN parcel and is not checked at deploy: no such warning.
+    # The body the live run wrote by hand (catsdwan_api_call) and the controller accepted.
+    assert json.loads(put.calls.last.request.content)["data"]["entries"] == [{"vpn": si.g("mcp-w8-vpn10")}]
+    blocked = await preview("catsdwan_set_security_object", {"kind": "zone", "name": "lan", "values": ["30"]})
+    assert any("VPN 30 has no LAN VPN parcel in any configuration group" in b for b in blocked["blockers"])
+    # A transport zone (VPN 0) has no LAN VPN parcel: kept as the number, with a note, not blocked.
     wan = await preview("catsdwan_set_security_object", {"kind": "zone", "name": "lan", "values": ["0"]})
-    assert not any("blocked at deploy" in w for w in wan["preview"].get("warnings") or [])
+    assert wan["status"] == "preview" and wan["preview"]["after"] == ["0"]
+    assert any("transport" in w for w in wan["preview"]["warnings"])
+
+
+async def test_zone_object_without_config_groups_blocks_a_vpn_number(api: respx.MockRouter) -> None:
+    mock_manager(api)
+    api.get("/dataservice/v1/config-group").respond(500, json={"error": {"message": "down"}})
+    out = await preview("catsdwan_set_security_object", {"kind": "zone", "name": "lan", "values": ["10"]})
+    assert any("can't be turned into its LAN VPN parcel name" in b for b in out["blockers"])
+
+
+async def test_firewall_policy_blocks_a_zone_holding_a_vpn_number(api: respx.MockRouter) -> None:
+    mock_manager(api, members=[BR1])
+    api.get(f"{PO}/security-zone").respond(
+        json=listed(zone(ZIN, "lan", "10"), zone(ZOUT, "guest", "mcp-w8-vpn20"))
+    )
+    args = {
+        "group": "mcp-w8-pg",
+        "name": "br-fw",
+        "rules": [{"name": "deny", "action": "drop"}],
+        "zone_pairs": [{"source": "lan", "destination": "guest"}],
+    }
+    out = await preview("catsdwan_set_firewall_policy", args)
+    (b,) = out["blockers"]
+    assert b.startswith(
+        "zone lan: VPN '10' is not a LAN VPN parcel name in configuration group mcp-test (br1)"
+    )
 
 
 async def test_firewall_policy_blocks_a_zone_vpn_without_parcel(api: respx.MockRouter) -> None:
@@ -282,8 +334,8 @@ async def test_firewall_policy_blocks_a_zone_vpn_without_parcel(api: respx.MockR
     }
     out = await preview("catsdwan_set_firewall_policy", args)
     text = " | ".join(out["blockers"])
-    assert "zone lan: VPN 10 has no LAN VPN parcel in configuration group mcp-test (br1)" in text
-    assert "zone guest: VPN 20" in text
+    assert "zone lan: VPN 'mcp-w8-vpn10' matches no LAN VPN parcel in configuration group mcp-test" in text
+    assert "zone guest: VPN 'mcp-w8-vpn20'" in text
 
 
 async def test_baseline_blocks_a_zone_vpn_without_parcel(api: respx.MockRouter) -> None:
@@ -297,4 +349,6 @@ async def test_baseline_blocks_a_zone_vpn_without_parcel(api: respx.MockRouter) 
         "catsdwan_set_containment_baseline",
         {"group": "mcp-w8-pg", "quarantine_sgt": "Quarantined_Systems:255"},
     )
-    assert any(b.startswith("zone lan: VPN 10 has no LAN VPN parcel") for b in out["blockers"])
+    assert any(
+        b.startswith("zone lan: VPN 'mcp-w8-vpn10' matches no LAN VPN parcel") for b in out["blockers"]
+    )

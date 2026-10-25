@@ -100,10 +100,14 @@ def by_name(rows: list[dict[str, Any]], name: str) -> dict[str, Any] | None:
 
 
 def object_entries(
-    kind: str, values: list[str], sgt_names: dict[str, str] | None = None
+    kind: str,
+    values: list[str],
+    sgt_names: dict[str, str] | None = None,
+    vpn_names: list[str] | None = None,
 ) -> tuple[list[dict[str, Any]], list[str]]:
     """(the parcel's data.entries, problems) for a kind and its values:
-    zone: VPN numbers or interface names (not both); identity: 'user:<name>' or 'group:<name>' (a bare value
+    zone: VPNs (the values in `vpn_names`, LAN VPN parcel names from servicevpns.zone_values, or a bare VPN
+    number) or interface names (not both); identity: 'user:<name>' or 'group:<name>' (a bare value
     is a user); sgt: '<name>:<tag>', a tag number or an ISE SGT name; prefix: IPv4 prefixes."""
     problems: list[str] = []
     entries: list[dict[str, Any]] = []
@@ -113,11 +117,13 @@ def object_entries(
     if len(set(clean)) != len(clean):
         problems.append("a value is given twice")
     if kind == "zone":
-        vpns = [v for v in clean if _VPN.match(v)]
+        named = set(vpn_names or [])
+        is_vpn = {v: bool(_VPN.match(v)) or v in named for v in clean}
+        vpns = [v for v in clean if is_vpn[v]]
         if vpns and len(vpns) != len(clean):
             problems.append("a zone holds VPNs or interfaces, not both")
         for v in clean:
-            entries.append({"vpn": g(v)} if _VPN.match(v) else {"interface": g(v)})
+            entries.append({"vpn": g(v)} if is_vpn[v] else {"interface": g(v)})
     elif kind == "identity":
         for v in clean:
             head, _, rest = v.partition(":")
