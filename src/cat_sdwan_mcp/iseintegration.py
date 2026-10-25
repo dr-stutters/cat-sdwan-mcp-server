@@ -114,6 +114,10 @@ GUI_FIELDS = (
 CERT_NAMES = {"iseCertName": "ise-root-ca.pem", "pxGridCertName": "pxgrid-root-ca.pem"}
 # The 20.18 GUI's user-name rule for the ISE login (Add Connection: 'Enter valid user name').
 USERNAME_RE = re.compile(r"^[a-zA-Z0-9]+$")
+# The pxGrid client's description in POST /ise/pxgrid/activate. Plain words only: the Manager relays it
+# to ISE's pxGrid AccountActivate, whose XSS filter refuses parentheses with HTTP 400 (20.18.3.1 log:
+# 'FastPathXssVerification: XSS script match found', then ISEERRORR0014). Live 2026-10-25: this one activated.
+PXGRID_DESCRIPTION = "Catalyst SD-WAN Manager"
 
 
 def server_body(

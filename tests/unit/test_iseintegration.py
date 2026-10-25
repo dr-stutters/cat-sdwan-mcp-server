@@ -7,6 +7,7 @@ marked so; the confirm path is exercised against mocks only (the live run is the
 """
 
 import json
+import re
 from typing import Any
 
 import respx
@@ -109,6 +110,9 @@ async def test_connect_confirm_creates_and_activates_then_waits(api: respx.MockR
     assert json.loads(create.calls[0].request.content) == {"nodeName": "vmanage-manager"}
     body = json.loads(activate.calls[0].request.content)
     assert body["pxGridUserName"] == "vmanage-manager" and body["pxGridPassword"] == PX_PW
+    # ISE refused "(...)" in the description (XSS filter, ISEERRORR0014, live 2026-10-25).
+    assert body["description"] == "Catalyst SD-WAN Manager"
+    assert re.fullmatch(r"[A-Za-z0-9 -]+", body["description"])
     assert not sync.called
     assert done["outcome"] == "waiting for approval" and done["pxgrid_state"] == "pending"
     assert "ise_approve_pxgrid_client(name='vmanage-manager')" in done["next"]
