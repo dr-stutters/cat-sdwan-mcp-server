@@ -13,7 +13,7 @@ from cat_sdwan_mcp._core import ResponseFormat, ToolRegistrar, UpstreamError, ge
 from cat_sdwan_mcp._core.formatting import mask_secrets
 from cat_sdwan_mcp.client import SdwanApp, _as_list
 from cat_sdwan_mcp.fabric import device_rows, find_device, require_reachable
-from cat_sdwan_mcp.iseintegration import node_name_of, pxgrid_state, stored
+from cat_sdwan_mcp.iseintegration import node_name_of, pxgrid_push, pxgrid_raw, pxgrid_state, stored
 from cat_sdwan_mcp.trustsec import (
     DNAC_DEVICES_PATH,
     DNAC_SITES_PATH,
@@ -199,10 +199,32 @@ def register(reg: ToolRegistrar) -> None:
                 pxgrid_creds.get("data", pxgrid_creds) if isinstance(pxgrid_creds, dict) else pxgrid_creds
             )
             pxgrid["credentials"] = mask_secrets(px_rec)
-            px_state = pxgrid_state(stored(px_rec))
+            px = stored(px_rec)
+            px_state = pxgrid_state(px)
             pxgrid["state"] = px_state
-            if px_state == "pending":
-                node = node_name_of(stored(px_rec))
+            raw = pxgrid_raw(px)
+            if raw and raw.lower() != px_state:
+                pxgrid["status"] = raw
+            push = pxgrid_push(px)
+            if push:
+                pxgrid["controller_push"] = push
+            node = node_name_of(px)
+            if px_state == "activated":
+                pxgrid["meaning"] = (
+                    f"the pxGrid client{' ' + node if node else ''} is activated but the Manager's own "
+                    "approve step has not run, so the controllers have no pxGrid settings: "
+                    "catsdwan_set_ise_integration again plans the approve and the controller sync"
+                )
+            elif push == "failed":
+                pxgrid["meaning"] = (
+                    f"the last sync of the ISE and pxGrid settings to the controllers failed ({raw!r}): "
+                    "catsdwan_set_ise_integration again sends them again"
+                )
+            elif px_state == "unknown":
+                pxgrid["meaning"] = (
+                    f"the Manager reports pxGrid as {raw!r}, a state this server does not know"
+                )
+            elif px_state == "pending":
                 pxgrid["meaning"] = (
                     f"the pxGrid client{' ' + node if node else ''} waits for approval on ISE: "
                     "ise_approve_pxgrid_client, then catsdwan_set_ise_integration again to sync the "
