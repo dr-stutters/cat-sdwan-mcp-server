@@ -467,11 +467,154 @@ async def test_validate_an_unjoined_slot_is_write_tier(api: respx.MockRouter) ->
     assert same["status"] == "blocked" and "invalid already" in same["blockers"][0]
 
 
+# --- catsdwan_remove_device ----------------------------------------------------------------------
+
+BR1 = "REDACTED-16"
+BFD = "/dataservice/device/bfd/sessions"
+CONTROL = "/dataservice/device/control/connections"
+
+
+def mock_live(api: respx.MockRouter) -> None:
+    api.get(CONTROL).respond(json=fixture("device_control_connections_hub1"))
+    api.get(BFD).respond(json=fixture("device_bfd_sessions_hub1"))
+
+
+def mock_removal(api: respx.MockRouter) -> dict[str, respx.Route]:
+    return {
+        "dissociate": api.delete(f"{GROUP}/device/associate").respond(json={}),
+        "save": api.post(SAVE).respond(json={"id": "save-1"}),
+        "push": api.post(PUSH).respond(json={"id": PUSH_ID}),
+        "status": api.get(f"{STATUS}/{PUSH_ID}").respond(json=status_body(("vbond", "x", "success"))),
+        "decommission": api.put(f"/dataservice/system/device/decommission/{BR1}").respond(
+            json={"id": "dec-1"}
+        ),
+        "delete": api.delete(f"/dataservice/system/device/{BR1}").respond(json={"status": "success"}),
+    }
+
+
+async def test_remove_is_dangerous_and_listed_with_writes_only(api: respx.MockRouter) -> None:
+    mock_inventory(api)
+    mock_group(api)
+    mock_live(api)
+    async with Client(writes()) as c:
+        names = {t.name for t in await c.list_tools()}
+        prev = await run(c, "catsdwan_remove_device", {"chassis": "br1"})
+    assert "catsdwan_remove_device" in names
+    assert prev["status"] == "blocked" and "MCP_ENABLE_DANGEROUS" in prev["blockers"][0]
+    assert "br1 at site 200" in prev["blockers"][0]
+
+
+async def test_remove_preview_names_group_sessions_and_the_way_back(api: respx.MockRouter) -> None:
+    mock_inventory(api)
+    mock_group(api)
+    mock_live(api)
+    routes = mock_removal(api)
+    async with Client(writes(mcp_enable_dangerous=True)) as c:
+        prev = await run(c, "catsdwan_remove_device", {"chassis": "br1"})
+    assert prev["status"] == "preview"
+    p = prev["preview"]
+    assert p["tier"] == "dangerous" and p["site"] == "200"
+    assert p["association"] == {"mode": "configuration group", "configuration_group": "mcp-test"}
+    assert [s["step"] for s in p["steps"]] == ["dissociate", "invalidate", "decommission", "delete"]
+    assert p["steps"][-1]["action"] == f"DELETE /dataservice/system/device/{BR1}"
+    stops = p["stops"]
+    assert len(stops["control_connections"]) == 3 and len(stops["bfd_sessions"]) == 8
+    assert "3 control connection(s) and 8 BFD session(s)" in stops["summary"]
+    assert "serial file" in p["comes_back"] and "Smart Account" in p["comes_back"]
+    assert not any(r.called for r in routes.values())
+
+
+async def test_remove_confirm_runs_the_steps_in_order(api: respx.MockRouter) -> None:
+    mock_inventory(api)
+    mock_group(api)
+    mock_live(api)
+    routes = mock_removal(api)
+    async with Client(writes(mcp_enable_dangerous=True)) as c:
+        prev = await run(c, "catsdwan_remove_device", {"chassis": BR1})
+        done = await run(c, "catsdwan_remove_device", {"chassis": BR1, "confirm": prev["confirm"]})
+    result = done["result"]
+    assert result["outcome"] == "done"
+    assert [s["step"] for s in result["steps"]] == ["dissociate", "invalidate", "decommission", "delete"]
+    assert json.loads(routes["dissociate"].calls[0].request.content) == {"devices": [{"id": BR1}]}
+    assert json.loads(routes["save"].calls[0].request.content)[0]["validity"] == "invalid"
+    assert routes["decommission"].called and routes["delete"].called
+    order = [c.request.method + " " + c.request.url.path for c in api.calls]
+    writes_seen = [o for o in order if o.split()[1].startswith("/dataservice") and not o.startswith("GET")]
+    assert writes_seen == [
+        f"DELETE {GROUP}/device/associate",
+        f"POST {SAVE}",
+        f"POST {PUSH}",
+        f"PUT /dataservice/system/device/decommission/{BR1}",
+        f"DELETE /dataservice/system/device/{BR1}",
+    ]
+
+
+async def test_remove_stops_at_the_failing_step(api: respx.MockRouter) -> None:
+    mock_inventory(api)
+    mock_group(api)
+    mock_live(api)
+    routes = mock_removal(api)
+    routes["decommission"].respond(400, json={"error": {"message": "Device is not decommissionable"}})
+    async with Client(writes(mcp_enable_dangerous=True)) as c:
+        prev = await run(c, "catsdwan_remove_device", {"chassis": BR1})
+        done = await run(c, "catsdwan_remove_device", {"chassis": BR1, "confirm": prev["confirm"]})
+    result = done["result"]
+    assert result["outcome"] == "stopped" and result["failed_step"] == "decommission"
+    assert result["not_run"] == ["delete"] and not routes["delete"].called
+
+
+async def test_remove_a_hub_names_it(api: respx.MockRouter) -> None:
+    mock_inventory(api)
+    mock_group(api)
+    mock_live(api)
+    async with Client(writes(mcp_enable_dangerous=True, hub_devices="hub1", protected_sites="100")) as c:
+        prev = await run(c, "catsdwan_remove_device", {"chassis": "hub1"})
+    reasons = " ".join(prev["preview"]["tier_reasons"])
+    assert "hub1 is" in reasons and "hub" in reasons and "100" in reasons
+
+
+async def test_remove_an_unjoined_slot_skips_decommission_and_live_reads(api: respx.MockRouter) -> None:
+    api.get("/dataservice/device").respond(json=device_body())
+    api.get(VEDGES).respond(json=slot_edit(validity="invalid"))
+    delete = api.delete(f"/dataservice/system/device/{SLOT}").respond(json={"status": "success"})
+    async with Client(writes(mcp_enable_dangerous=True)) as c:
+        prev = await run(c, "catsdwan_remove_device", {"chassis": SLOT})
+        p = prev["preview"]
+        assert [s["step"] for s in p["steps"]] == ["invalidate", "delete"]
+        assert p["steps"][0]["status"] == "done already" and "has not joined" in p["stops"]["summary"]
+        assert SLOT_TOKEN not in json.dumps(prev)
+        done = await run(c, "catsdwan_remove_device", {"chassis": SLOT, "confirm": prev["confirm"]})
+    assert done["result"]["outcome"] == "done" and delete.called
+    assert not any(c.request.url.path in (BFD, CONTROL) for c in api.calls)
+
+
+async def test_remove_a_template_edge_detaches_it_first(api: respx.MockRouter) -> None:
+    mock_inventory(api, br2={"configOperationMode": "vmanage", "managed-by": "Template branch-tpl"})
+    mock_live(api)
+    detach = api.post("/dataservice/template/config/device/mode/cli").respond(json={"id": "cli-1"})
+    api.get(f"{STATUS}/cli-1").respond(json=status_body(("br2", BR2, "success")))
+    api.post(SAVE).respond(json={"id": "save-1"})
+    api.post(PUSH).respond(json={"id": PUSH_ID})
+    api.get(f"{STATUS}/{PUSH_ID}").respond(json=status_body(("vbond", "x", "success")))
+    api.put(f"/dataservice/system/device/decommission/{BR2}").respond(json={})
+    api.delete(f"/dataservice/system/device/{BR2}").respond(json={"status": "success"})
+    async with Client(writes(mcp_enable_dangerous=True)) as c:
+        prev = await run(c, "catsdwan_remove_device", {"chassis": "br2"})
+        assert prev["preview"]["association"] == {"mode": "template", "device_template": "branch-tpl"}
+        assert prev["preview"]["steps"][0]["step"] == "detach template"
+        done = await run(c, "catsdwan_remove_device", {"chassis": "br2", "confirm": prev["confirm"]})
+    assert json.loads(detach.calls[0].request.content) == {
+        "deviceType": "vedge",
+        "devices": [{"deviceId": BR2, "deviceIP": "10.0.0.3"}],
+    }
+    assert done["result"]["outcome"] == "done"
+
+
 async def test_onboarding_tools_need_writes() -> None:
     async with Client(make_server()) as c:
         names = {t.name for t in await c.list_tools()}
     assert {"catsdwan_list_wan_edges", "catsdwan_bootstrap_config"} <= names
-    assert not names & {"catsdwan_onboard_edge", "catsdwan_set_edge_validity"}
+    assert not names & {"catsdwan_onboard_edge", "catsdwan_set_edge_validity", "catsdwan_remove_device"}
 
 
 @pytest.mark.parametrize(
@@ -483,6 +626,10 @@ async def test_onboarding_tools_need_writes() -> None:
         ("POST", ob.SAVE_VALIDITY_PATH),
         ("POST", ob.PUSH_VEDGES_PATH),
         ("POST", "/dataservice/v1/config-group/{id}/device/associate"),
+        ("DELETE", "/dataservice/v1/config-group/{id}/device/associate"),
+        ("PUT", ob.DECOMMISSION_PATH),
+        ("DELETE", ob.DELETE_DEVICE_PATH),
+        ("POST", ob.CLI_MODE_PATH),
     ],
 )
 def test_onboarding_paths_are_in_the_spec(method: str, template: str) -> None:

@@ -19303,6 +19303,136 @@
     },
     "x-roles-required": "Device Monitoring-read,Device Monitoring-write"
    }
+  },
+  "/system/device/{uuid}": {
+   "delete": {
+    "tags": [
+     "Configuration - Device Inventory"
+    ],
+    "summary": "Delete vEdges",
+    "description": "Delete vEdges",
+    "operationId": "deleteDevice_ConfigurationDeviceInventory_2106",
+    "responses": {
+     "200": {
+      "description": "Success"
+     },
+     "400": {
+      "description": "Bad Request"
+     },
+     "403": {
+      "description": "Forbidden"
+     },
+     "500": {
+      "description": "Internal Server Error"
+     }
+    },
+    "parameters": [
+     {
+      "name": "uuid",
+      "in": "path",
+      "description": "Device uuid",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ]
+   }
+  },
+  "/system/device/decommission/{uuid}": {
+   "put": {
+    "tags": [
+     "Configuration - Device Inventory"
+    ],
+    "summary": "Decomission vEdge device",
+    "description": "Decomission vEdge device",
+    "operationId": "decommissionVedgeCloud",
+    "responses": {
+     "200": {
+      "description": "Success"
+     },
+     "400": {
+      "description": "Bad Request"
+     },
+     "403": {
+      "description": "Forbidden"
+     },
+     "500": {
+      "description": "Internal Server Error"
+     }
+    },
+    "parameters": [
+     {
+      "name": "uuid",
+      "in": "path",
+      "description": "Device uuid",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     }
+    ]
+   }
+  },
+  "/template/config/device/mode/cli": {
+   "post": {
+    "tags": [
+     "Configuration - Template Configuration"
+    ],
+    "summary": "Given a JSON list of devices not managed by any third member partners, push to devices from a CLI template",
+    "description": "Given a JSON list of devices not managed by any third member partners, push to devices from a CLI template",
+    "operationId": "updateDeviceToCLIMode",
+    "responses": {
+     "200": {
+      "description": "Success",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "object"
+        },
+        "examples": {
+         "Example": {
+          "value": {
+           "id": "device_config_mode_cli-01242017T020647984"
+          }
+         }
+        }
+       }
+      }
+     },
+     "400": {
+      "description": "Bad Request"
+     },
+     "403": {
+      "description": "Forbidden"
+     },
+     "500": {
+      "description": "Internal Server Error"
+     }
+    },
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "type": "object"
+       },
+       "examples": {
+        "Example": {
+         "value": {
+          "deviceType": "vedge",
+          "devices": [
+           {
+            "deviceId": "932f70dd-5815-4712-b9ed-3d34a238f2ca",
+            "deviceIP": "192.0.2.21"
+           }
+          ]
+         }
+        }
+       }
+      }
+     }
+    }
+   }
   }
  },
  "components": {

@@ -619,6 +619,10 @@
       "tier": "dangerous",
       "title": "Release a host contained at its SD-WAN edge"
     },
+    "catsdwan_remove_device": {
+      "tier": "dangerous",
+      "title": "Remove SD-WAN WAN edge"
+    },
     "catsdwan_renew_controller_certificate": {
       "tier": "write",
       "title": "Renew an SD-WAN controller certificate"

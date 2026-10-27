@@ -1,5 +1,5 @@
 """W9 edge onboarding: catsdwan_list_wan_edges, catsdwan_bootstrap_config, catsdwan_onboard_edge,
-catsdwan_set_edge_validity.
+catsdwan_set_edge_validity; W53 decommission: catsdwan_remove_device.
 
 The one-time token (the serialNumber of a software edge that has not joined, the otp of its bootstrap) is a
 secret: masked in every result, except catsdwan_bootstrap_config(reveal_otp=true), which hands it to the
@@ -8,7 +8,8 @@ reach a log line or an error message either.
 
 Tiers: the list and the bootstrap are reads. catsdwan_onboard_edge and catsdwan_set_edge_validity are write
 tier; an onboarding of a hub or a protected-site edge, and a validity change to invalid (or staging on a
-joined edge), are dangerous: blocked unless MCP_ENABLE_DANGEROUS (as the W8 deploys).
+joined edge), are dangerous: blocked unless MCP_ENABLE_DANGEROUS (as the W8 deploys). catsdwan_remove_device
+(take it off its configuration, invalidate, decommission, delete from the WAN edge list) is always dangerous.
 """
 
 # No `from __future__ import annotations`: FastMCP inspects signatures at runtime.
@@ -23,6 +24,7 @@ from pydantic import Field
 from cat_sdwan_mcp._core import (
     Confirm,
     InvalidRequest,
+    NotFound,
     Plan,
     ResponseFormat,
     ToolRegistrar,
@@ -57,10 +59,16 @@ from cat_sdwan_mcp.configuration import (
     path,
     resolve_group,
 )
+from cat_sdwan_mcp.control import CONNECTIONS_PATH
+from cat_sdwan_mcp.dataplane import BFD_SESSIONS_PATH
 from cat_sdwan_mcp.inventory import config_mode
 from cat_sdwan_mcp.onboarding import (
     BOOTSTRAP_PATH,
+    CLI_MODE_PATH,
+    COMES_BACK,
     CONFIG_TYPES,
+    DECOMMISSION_PATH,
+    DELETE_DEVICE_PATH,
     FAILED_CERT_STATES,
     FILEUPLOAD_PATH,
     GROUP_KEYS,
@@ -71,10 +79,13 @@ from cat_sdwan_mcp.onboarding import (
     TEMPLATE_KEYS,
     WAYS_IN,
     activate_command,
+    bfd_peers,
     boot_routes,
     bootstrap_text,
     chassis_of,
     check_system_ip,
+    cli_mode_body,
+    control_peers,
     decode_bootstrap,
     edge_or_not_found,
     edge_row,
@@ -90,7 +101,7 @@ from cat_sdwan_mcp.onboarding import (
     validity_payload,
     vinit_params,
 )
-from cat_sdwan_mcp.tools.changes import _started, dangerous_blockers
+from cat_sdwan_mcp.tools.changes import _started, dangerous_blockers, dangerous_tool
 from cat_sdwan_mcp.tools.configuration import _associated, _groups
 
 EDGE_COLUMNS = [
@@ -164,6 +175,17 @@ def _failed(result: Any) -> str | None:
         if result.get("outcome") in ("failed", "partial"):
             return str(result.get("summary") or result.get("validation") or "the action failed")
     return None
+
+
+async def _live_rows(
+    app: SdwanApp, base: str, system_ip: str, what: str
+) -> tuple[list[dict[str, Any]], str | None]:
+    """An edge's real-time rows (control connections or BFD sessions), or a warning when unread."""
+    try:
+        body = await app.get_data(base, {"deviceId": system_ip})
+    except UpstreamError as e:
+        return [], f"{what} not read: {str(e)[:200]}"
+    return [r for r in _as_list(body) if isinstance(r, dict)], None
 
 
 def _read_serial_file(name: str) -> tuple[str, bytes]:
@@ -827,6 +849,212 @@ def register(reg: ToolRegistrar) -> None:
             ctx,
             tool="catsdwan_set_edge_validity",
             args={"chassis": chassis, "validity": validity, "wait": wait},
+            confirm=confirm,
+            plan=plan,
+            apply=apply,
+        )
+
+    @dangerous_tool(reg, title="Remove SD-WAN WAN edge", task=True)
+    async def catsdwan_remove_device(
+        ctx: Context,
+        chassis: Chassis,
+        wait: Annotated[
+            bool, Field(description="Wait for each Manager action to finish (default true)")
+        ] = True,
+        confirm: Confirm = None,
+    ) -> dict[str, Any]:
+        """Decommission a WAN edge: take it out of the Manager's WAN edge list for good
+        (catsdwan_set_edge_validity only invalidates it). In order: (1) take it off its configuration:
+        dissociate it from its configuration group (DELETE /v1/config-group/{id}/device/associate), or detach
+        its device template (POST /template/config/device/mode/cli, an action); (2) set validity invalid and
+        send the list to the controllers; (3) decommission a software edge that has joined (PUT
+        /system/device/decommission/{uuid}: its certificate goes); (4) DELETE /system/device/{uuid}.
+        Preview-first: the edge, its configuration group or template, the control connections and BFD
+        sessions that stop (read live), a hub or protected site by name, and how the slot comes back (only a
+        new serial-file upload or a Smart Account sync). Always dangerous (MCP_ENABLE_DANGEROUS). Confirm
+        stops at the first failing step with its reason. There is no undo."""
+        app: SdwanApp = get_client(ctx)
+        v = edge_or_not_found(await _wan_edges(app), chassis)
+        c = chassis_of(v)
+        uuid = str(v.get("uuid") or c)
+        joined = is_joined(v)
+        host = v.get("host-name")
+        ip = v.get("system-ip")
+        blockers: list[str] = []
+        warnings: list[str] = []
+        steps: list[dict[str, Any]] = []
+        mode, mode_name = config_mode(v)
+        association: dict[str, Any] = {"mode": mode or "none"}
+        group_ctx: dict[str, Any] = {}
+        if mode == "configuration group" and mode_name:
+            try:
+                found = resolve_group(await _groups(app, CONFIG_GROUPS_PATH), mode_name)
+            except (UpstreamError, NotFound) as e:
+                found = None
+                blockers.append(f"configuration group {mode_name} not read: {str(e)[:200]}")
+            if found is not None:
+                gid = str(found.get("id"))
+                group_ctx = {"id": gid, "name": str(found.get("name"))}
+                association["configuration_group"] = group_ctx["name"]
+                steps.append(
+                    {
+                        "step": "dissociate",
+                        "action": f"DELETE {path(ASSOCIATE_PATH, id=gid)} {{devices: [{{id: {c}}}]}}",
+                        "group": group_ctx["name"],
+                        "note": "nothing is pushed: the edge keeps its running configuration",
+                    }
+                )
+        elif mode == "template":
+            association["device_template"] = mode_name
+            if not ip:
+                blockers.append(
+                    f"{c} is on device template {mode_name or '?'} but has no system IP to detach it with; "
+                    "detach it in the Manager first"
+                )
+            steps.append(
+                {
+                    "step": "detach template",
+                    "action": f"POST {CLI_MODE_PATH} (to CLI mode; an action, followed)",
+                    "template": mode_name,
+                    "note": "the edge keeps its running configuration, now in CLI mode",
+                }
+            )
+        old = str(v.get("validity") or "")
+        if old == "invalid":
+            steps.append({"step": "invalidate", "status": "done already", "validity": "invalid"})
+        else:
+            steps.append(
+                {
+                    "step": "invalidate",
+                    "action": f"{old or '?'} -> invalid: POST {SAVE_VALIDITY_PATH}, then POST "
+                    f"{PUSH_VEDGES_PATH}?action=push (send to controllers)",
+                }
+            )
+        decommission = joined and v.get("hardwareVedge") is False
+        if decommission:
+            steps.append(
+                {
+                    "step": "decommission",
+                    "action": f"PUT {path(DECOMMISSION_PATH, id=uuid)}",
+                    "note": "a software edge: its certificate is removed from the Manager",
+                }
+            )
+        steps.append({"step": "delete", "action": f"DELETE {path(DELETE_DEVICE_PATH, id=uuid)}"})
+        stops: dict[str, Any] = {}
+        if joined and ip:
+            (ctrl, w1), (bfd, w2) = await asyncio.gather(
+                _live_rows(app, CONNECTIONS_PATH, str(ip), "control connections"),
+                _live_rows(app, BFD_SESSIONS_PATH, str(ip), "BFD sessions"),
+            )
+            warnings += [w for w in (w1, w2) if w]
+            stops = {
+                "control_connections": control_peers(ctrl),
+                "bfd_sessions": bfd_peers(bfd),
+                "summary": f"{len(ctrl)} control connection(s) and {len(bfd)} BFD session(s) of "
+                f"{_site_note(v)} stop; the far ends lose their tunnels to it",
+            }
+        else:
+            stops = {"summary": f"{c} has not joined: no control connections or tunnels stop"}
+        reasons = [f"removes {_site_note(v)} from the Manager's WAN edge list (no undo)"]
+        reasons += tier_reasons([protected_row(v)], app.settings.hub_devices, app.settings.protected_sites)
+        blockers += dangerous_blockers(ctx, app, reasons)
+        plan = Plan(
+            f"Remove {c} ({host or 'not joined'}) from the Manager: "
+            + ", ".join(s["step"] for s in steps if s.get("status") != "done already"),
+            details={
+                "edge": edge_row(v),
+                "site": v.get("site-id") or v.get("configuredSiteId"),
+                "association": association,
+                "tier": "dangerous",
+                "tier_reasons": reasons,
+                "stops": stops,
+                "steps": steps,
+                "comes_back": COMES_BACK,
+                "undo": "none: " + COMES_BACK,
+                **({"warnings": warnings} if warnings else {}),
+            },
+            side_effects=[
+                VALIDITY_EFFECT["invalid"],
+                "The chassis leaves the WAN edge list: monitoring, statistics and configuration for it stop.",
+                COMES_BACK,
+            ],
+            fingerprint={
+                "edge": {
+                    k: v.get(k)
+                    for k in (
+                        "validity",
+                        "vedgeCertificateState",
+                        "system-ip",
+                        "managed-by",
+                        "configOperationMode",
+                    )
+                }
+            },
+            blockers=blockers,
+            blast_radius=1,
+        )
+
+        async def apply() -> Any:
+            done: list[dict[str, Any]] = []
+            todo = [s["step"] for s in steps if s.get("status") != "done already"]
+
+            def stop(step: str, reason: str) -> dict[str, Any]:
+                rest = todo[todo.index(step) + 1 :] if step in todo else []
+                return {
+                    "outcome": "stopped",
+                    "failed_step": step,
+                    "reason": reason,
+                    "steps": done,
+                    "not_run": rest,
+                }
+
+            if group_ctx:
+                try:
+                    await app.api.delete(
+                        path(ASSOCIATE_PATH, id=group_ctx["id"]), json={"devices": [{"id": c}]}
+                    )
+                except UpstreamError as e:
+                    return stop("dissociate", str(e)[:300])
+                done.append({"step": "dissociate", "status": "done", "group": group_ctx["name"]})
+            elif mode == "template":
+                try:
+                    started = await app.api.post(CLI_MODE_PATH, cli_mode_body(v))
+                    res = await _started(app, ctx, started, wait, f"detach of {c} from its template")
+                except UpstreamError as e:
+                    return stop("detach template", str(e)[:300])
+                if bad := _failed(res):
+                    return stop("detach template", bad)
+                done.append({"step": "detach template", "status": "done", **res})
+            if old != "invalid":
+                try:
+                    res = await _push_validity(app, ctx, v, "invalid", wait)
+                except UpstreamError as e:
+                    return stop("invalidate", str(e)[:300])
+                if bad := _failed(res):
+                    return stop("invalidate", bad)
+                done.append({"step": "invalidate", "status": "done", **res})
+            if decommission:
+                try:
+                    answer = await app.api.put(path(DECOMMISSION_PATH, id=uuid), None)
+                except UpstreamError as e:
+                    return stop("decommission", str(e)[:300])
+                done.append({"step": "decommission", "status": "done", "answer": answer or "ok"})
+            try:
+                answer = await app.api.delete(path(DELETE_DEVICE_PATH, id=uuid))
+            except UpstreamError as e:
+                return stop("delete", str(e)[:300])
+            done.append({"step": "delete", "status": "done", "answer": answer or "ok"})
+            return {
+                "outcome": "done",
+                "steps": done,
+                "check": f"catsdwan_list_wan_edges: {c} is no longer listed",
+                "comes_back": COMES_BACK,
+            }
+
+        return await preview_or_apply(
+            ctx,
+            tool="catsdwan_remove_device",
+            args={"chassis": chassis, "wait": wait},
             confirm=confirm,
             plan=plan,
             apply=apply,

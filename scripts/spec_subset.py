@@ -68,6 +68,9 @@ PATHS = [
     "/system/device/bootstrap/device/{uuid}",
     "/system/device/fileupload",
     "/system/device/smartaccount/sync",
+    "/system/device/{uuid}",
+    "/system/device/decommission/{uuid}",
+    "/template/config/device/mode/cli",
     # W11 policy
     "/template/policy/vsmart",
     "/template/policy/vsmart/definition/{policyId}",
