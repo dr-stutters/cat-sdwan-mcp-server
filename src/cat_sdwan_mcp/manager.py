@@ -14,6 +14,15 @@ one) besides {backupType, taskName}; without them it answers 400 'InValid number
 is refused, and on a Manager whose cluster list says isIPConfigured false even a valid address ends in 400
 EXPORT_FAILED 'Failed to export scheduled backup data'. So the addresses come from the cluster list and a
 Manager without a cluster IP is blocked in the preview.
+
+With a cluster IP set, 20.18.3.1 still refused that four-field body with EXPORT_FAILED: its server log shows a
+NullPointerException in BackupApiServiceImpl.exportBackup right after validation (#132). The Manager reads
+LocalBackupInfo fields the body left out: with `destination` (LOCAL, /backup, size, TTL, replicas, vmVersion)
+the error turns into 'Value in JsonObjects name/value pair cannot be null', and with `localBackupInfoId`,
+`taskId` (fresh UUIDs), `createTime` (epoch ms) and `backupState` SCHEDULED it answered 200
+{taskId, backupInfoId (the id sent), status: in_progress} and the backup reached ALL_SUCCESS. That run also
+named the `scheduleId` of an active backup schedule (POST /schedule/create, backupDest LOCAL); whether one is
+needed is not known, so the tool names one when /schedule/list has it and otherwise tries without.
 """
 
 from __future__ import annotations
@@ -38,6 +47,16 @@ BACKUP_LIST_PATH = "/dataservice/backup/list"
 BACKUP_EXPORT_PATH = "/dataservice/backup/export"
 BACKUP_INFO_PATH = "/dataservice/backup/backupinfo/{id}"
 SCHEDULE_LIST_PATH = "/dataservice/schedule/list"
+SCHEDULE_CREATE_PATH = "/dataservice/schedule/create"
+# LocalDestination for an on-demand backup on the Manager's own disk (the values the proven 20.18.3 run sent;
+# an active schedule's own destination is used instead when there is one).
+BACKUP_DESTINATION: dict[str, Any] = {
+    "backupDest": "LOCAL",
+    "backupDir": "/backup",
+    "backupStorageInGB": 5,
+    "backupTTLInDays": 1,
+    "numOfReplica": 1,
+}
 
 BACKUP_DONE = {"ALL_SUCCESS"}
 BACKUP_FAILED = {
@@ -124,14 +143,25 @@ def backup_addresses(nodes: list[dict[str, Any]]) -> tuple[str | None, list[str]
     return src, ips
 
 
-def export_error(message: str) -> str | None:
-    """A readable reason for a refused POST /backup/export (the Manager's codes recorded on 20.18.3.1)."""
+def export_error(message: str, *, cluster_ip: bool | None = None, schedule: str | None = None) -> str | None:
+    """A readable reason for a refused POST /backup/export (the Manager's codes recorded on 20.18.3.1),
+    quoting the Manager's own text. `cluster_ip` is what the preview saw in the cluster list; `schedule` the
+    active backup schedule's id the request named (None: there was none)."""
     if "EXPORT_FAILED" in message or "Failed to export" in message:
-        return (
-            "the Manager refused the backup (EXPORT_FAILED: 'Failed to export scheduled backup data'). On "
-            "20.18.3 this is what a Manager without a cluster IP answers: set one in Administration > "
-            "Cluster Management (catsdwan_manager_health shows cluster_ip_configured), then try again"
-        )
+        said = f"the Manager refused the backup before creating a backup record: {message[:400]}"
+        if cluster_ip is False:
+            return (
+                f"{said}. The Manager has no cluster IP configured: set one in Administration > Cluster "
+                "Management (catsdwan_manager_health shows cluster_ip_configured), then try again"
+            )
+        if schedule is None:
+            return (
+                f"{said}. No active backup schedule was found (GET {SCHEDULE_LIST_PATH}), and the one backup "
+                "proven on 20.18.3 named one: create a local schedule (Administration > Backup, or "
+                f"POST {SCHEDULE_CREATE_PATH} with destination.backupDest LOCAL), then try again. "
+                "Otherwise the reason is in the Manager's vmanage-server.log (catsdwan_admin_tech)"
+            )
+        return f"{said}. The full reason is in the Manager's vmanage-server.log (catsdwan_admin_tech)"
     if "InValid number of IP" in message or "Invalid input for srcIpAddress" in message:
         return (
             "the Manager refused the backup's addresses (srcIpAddress / followerIpAddressList must be the "
@@ -258,6 +288,34 @@ def backup_state(row: dict[str, Any]) -> str:
 def schedule_rows(body: Any) -> list[dict[str, Any]]:
     rows = body.get("scheduleList", body.get("data")) if isinstance(body, dict) else body
     return [r for r in _as_list(rows) if isinstance(r, dict)]
+
+
+def active_schedule(rows: list[dict[str, Any]]) -> dict[str, Any] | None:
+    """The first backup schedule /schedule/list says is ACTIVE (a deleted one answers CANCELLED)."""
+    return next(
+        (r for r in rows if str(r.get("status") or "").upper() == "ACTIVE" and r.get("scheduleId")),
+        None,
+    )
+
+
+def vm_version(release: str) -> str | None:
+    """LocalDestination.vmVersion: the Manager's major.minor ('20.18' from '20.18.3.1'); the first of several
+    releases (a cluster mid-upgrade) and None when unknown."""
+    m = re.match(r"\s*(\d+)\.(\d+)", release or "")
+    return f"{m.group(1)}.{m.group(2)}" if m else None
+
+
+def backup_destination(schedule: dict[str, Any] | None, version: str | None) -> dict[str, Any]:
+    """The request's LocalDestination: the active schedule's (it is already LOCAL on this Manager) or the
+    defaults, with vmVersion set to the Manager's release."""
+    sched_dest = schedule.get("destination") if schedule else None
+    dest = (
+        dict(sched_dest) if isinstance(sched_dest, dict) and sched_dest.get("backupDest") == "LOCAL" else {}
+    )
+    dest = {**BACKUP_DESTINATION, **dest}
+    if version:
+        dest["vmVersion"] = version
+    return dest
 
 
 def export_id(body: Any) -> str | None:
