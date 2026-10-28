@@ -31,6 +31,11 @@ SAMPLES = {
         "keep_enabled": "false",
     },
     "catsdwan_branch_health": {"site": "200", "lab": "mcp-cat-sdwan"},
+    "catsdwan_renew_with_enterprise_ca": {
+        "controllers": "validator, controller",
+        "ca_template": "SDWANController",
+        "expiring_days": "60",
+    },
     "catsdwan_onboard_branch": {
         "site": "201",
         "chassis": "C8K-00000000-0000-4000-8000-000000000001",
@@ -119,6 +124,7 @@ async def test_prompts_declare_their_servers() -> None:
         "catsdwan_network_or_ise": ["catsdwan", "ise"],
         "catsdwan_site_down": ["catsdwan", "catc", "ise", "cml"],
         "catsdwan_brownout_drill": ["catsdwan", "cml"],
+        "catsdwan_renew_with_enterprise_ca": ["catsdwan", "win"],
     }
 
 
@@ -278,3 +284,55 @@ async def test_contain_host_takes_ise_first_then_the_edge_fallback() -> None:
 async def test_contain_host_hidden_without_dangerous() -> None:
     async with Client(make_server(mcp_enable_writes=True)) as c:  # type: ignore[arg-type]
         assert "catsdwan_contain_host" not in {p.name for p in await c.list_prompts()}
+
+
+async def test_renew_with_enterprise_ca_one_controller_at_a_time() -> None:
+    text = await text_of("catsdwan_renew_with_enterprise_ca", SAMPLES["catsdwan_renew_with_enterprise_ca"])
+    order = [
+        "catsdwan_certificates",
+        "catsdwan_list_controllers",
+        "catsdwan_snapshot",
+        "catsdwan_create_backup",
+        "win_get_ca_certificate",
+        "catsdwan_sync_root_cert",
+        "win_list_ca_templates",
+        "catsdwan_renew_controller_certificate",
+        "win_sign_csr",
+    ]
+    positions = [text.index(f"`{ref}`") for ref in order]
+    assert positions == sorted(positions)
+    # Per controller: CSR -> sign -> install -> verify, before the next one; the comparison at the end.
+    loop = text[text.index("5. CSR") :]
+    steps = ["5. CSR", "`win_sign_csr`", "signed_certificate=<the signed PEM>", "7. Verify", "8. After"]
+    assert [loop.index(s) for s in steps] == sorted(loop.index(s) for s in steps)
+    verify = loop[loop.index("7. Verify") : loop.index("8. After")]
+    assert "`catsdwan_control_connections`" in verify and "serial is NOT" in verify
+    assert "renew no other controller" in verify
+    assert "`catsdwan_compare_snapshot`" in loop[loop.index("8. After") :]
+    assert "PREVIEW-FIRST" in text and "Never" in text and "never two controllers at once" in text
+    assert "validators first, then controllers, then the Manager last" in text
+    assert "validator, controller" in text and 'template="SDWANController"' in text
+    assert "expiring_days=60" in text and "MCP_ENABLE_DANGEROUS" in text
+
+
+async def test_renew_with_enterprise_ca_defaults_pick_due_and_template() -> None:
+    text = await text_of("catsdwan_renew_with_enterprise_ca", {})
+    assert "every controller in the due list" in text and "template=<the template from step 4>" in text
+    assert "server and client authentication" in text and "expiring_days=60" in text
+
+
+async def test_renew_with_enterprise_ca_refuses_bad_arguments() -> None:
+    for args in ({"expiring_days": "soon"}, {"controllers": 'validator"; drop'}):
+        try:
+            await text_of("catsdwan_renew_with_enterprise_ca", args)
+        except Exception as e:  # noqa: BLE001
+            assert "expiring_days" in str(e) or "quotes" in str(e)
+        else:
+            raise AssertionError(f"{args} must be refused")
+
+
+async def test_renew_with_enterprise_ca_hidden_without_dangerous() -> None:
+    async with Client(make_server(mcp_enable_writes=True)) as c:  # type: ignore[arg-type]
+        assert "catsdwan_renew_with_enterprise_ca" not in {p.name for p in await c.list_prompts()}
+    async with Client(make_server()) as c:
+        assert "catsdwan_renew_with_enterprise_ca" not in {p.name for p in await c.list_prompts()}
