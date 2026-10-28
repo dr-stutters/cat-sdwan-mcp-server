@@ -142,6 +142,44 @@
         "ise"
       ]
     },
+    "catsdwan_hub_failover_drill": {
+      "arguments": [
+        "hub",
+        "lab",
+        "method",
+        "vpns",
+        "sites",
+        "dc_services"
+      ],
+      "references": [
+        "cml_set_link_state",
+        "cml_set_node_state",
+        "catsdwan_snapshot",
+        "catsdwan_list_devices",
+        "catsdwan_omp_routes",
+        "catsdwan_list_tlocs",
+        "catsdwan_explain_path",
+        "catsdwan_list_sla_classes",
+        "catsdwan_app_route_stats",
+        "catsdwan_ping",
+        "cml_get_lab_topology",
+        "catsdwan_bfd_sessions",
+        "catsdwan_control_connections",
+        "cml_check_reachability",
+        "ise_deployment_health",
+        "fmc_get_ha_status",
+        "catsdwan_compare_snapshot",
+        "catsdwan_list_alarms"
+      ],
+      "rendered": true,
+      "tier": "read",
+      "uses": [
+        "catsdwan",
+        "cml",
+        "ise",
+        "fmc"
+      ]
+    },
     "catsdwan_network_or_ise": {
       "arguments": [
         "site",

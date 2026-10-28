@@ -31,6 +31,14 @@ SAMPLES = {
         "keep_enabled": "false",
     },
     "catsdwan_branch_health": {"site": "200", "lab": "mcp-cat-sdwan"},
+    "catsdwan_hub_failover_drill": {
+        "hub": "hub1",
+        "lab": "mcp-cat-sdwan",
+        "method": "links",
+        "vpns": "10",
+        "sites": "200,201",
+        "dc_services": "ISE 192.0.2.20, DHCP 192.0.2.30, FTD 192.0.2.40",
+    },
     "catsdwan_renew_with_enterprise_ca": {
         "controllers": "validator, controller",
         "ca_template": "SDWANController",
@@ -130,6 +138,7 @@ async def test_prompts_declare_their_servers() -> None:
         "catsdwan_network_or_ise": ["catsdwan", "ise"],
         "catsdwan_site_down": ["catsdwan", "catc", "ise", "cml"],
         "catsdwan_brownout_drill": ["catsdwan", "cml"],
+        "catsdwan_hub_failover_drill": ["catsdwan", "cml", "ise", "fmc"],
         "catsdwan_renew_with_enterprise_ca": ["catsdwan", "win"],
         "catsdwan_why_is_voice_bad": ["catsdwan", "catc", "ise", "cml"],
     }
