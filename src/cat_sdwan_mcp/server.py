@@ -23,6 +23,7 @@ from cat_sdwan_mcp.tools import (
     dataplane,
     devicestate,
     devops,
+    drills,
     edgefirewall,
     events,
     features,
@@ -143,6 +144,8 @@ Prompts: catsdwan_branch_health(site) (a verdict per transport), catsdwan_onboar
 onboard -> boot -> deploy -> prove), catsdwan_why_is_app_slow(host, app) (ISE, app-route SLA, FMC, CML).
 Branch triage: catsdwan_wifi_lan_or_wan(host), catsdwan_network_or_ise(site), catsdwan_site_down(site),
 catsdwan_brownout_drill(site) (CML scenarios per transport, preview-first).
+Hub failover drill: catsdwan_hub_failover_drill(hub, lab) (hub down in CML or by hand -> paths per VPN, SLA,
+DC services -> restore -> compare_snapshot).
 Anything without a tool: catsdwan_search_spec('bfd') -> catsdwan_get_definition(path) -> catsdwan_api_call
 (paths as /dataservice/..., checked against the Manager's own OpenAPI document; GET and the statistics, alarm,
 event and audit query POSTs are reads, other writes are preview-first, /device/action/* is dangerous).
@@ -189,6 +192,7 @@ def create_server(
             health.register,
             prompts.register,
             triage.register,
+            drills.register,
             certificates.register,
             troubleshooting.register,
             devicestate.register,

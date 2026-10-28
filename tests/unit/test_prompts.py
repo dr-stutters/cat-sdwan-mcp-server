@@ -31,6 +31,14 @@ SAMPLES = {
         "keep_enabled": "false",
     },
     "catsdwan_branch_health": {"site": "200", "lab": "mcp-cat-sdwan"},
+    "catsdwan_hub_failover_drill": {
+        "hub": "hub1",
+        "lab": "mcp-cat-sdwan",
+        "method": "links",
+        "vpns": "10",
+        "sites": "200,201",
+        "dc_services": "ISE 192.0.2.20, DHCP 192.0.2.30, FTD 192.0.2.40",
+    },
     "catsdwan_onboard_branch": {
         "site": "201",
         "chassis": "C8K-00000000-0000-4000-8000-000000000001",
@@ -119,6 +127,7 @@ async def test_prompts_declare_their_servers() -> None:
         "catsdwan_network_or_ise": ["catsdwan", "ise"],
         "catsdwan_site_down": ["catsdwan", "catc", "ise", "cml"],
         "catsdwan_brownout_drill": ["catsdwan", "cml"],
+        "catsdwan_hub_failover_drill": ["catsdwan", "cml", "ise", "fmc"],
     }
 
 
