@@ -7,6 +7,8 @@ jobs:
     with: {bundle-core: true, runner: self-hosted}
     secrets: inherit
   image:     # ghcr.io/dr-stutters/cat-sdwan-mcp-server, amd64 + arm64, cosign keyless, SBOM attestation
+    # GitHub-hosted (the default runner; the repository is public, so it costs no minutes). On the
+    # self-hosted runner the Trivy step failed every release since v0.6.0 ("unable to export the image"):
+    # that Docker daemon cannot export the pulled multi-arch image for Trivy to read.
     needs: release
     uses: dr-stutters/stutters-mcp-core/.github/workflows/publish-image.yml@main
-    with: {runner: self-hosted}
