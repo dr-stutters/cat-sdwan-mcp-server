@@ -38,7 +38,9 @@ stop, and report what failed.
       - `catsdwan_list_tlocs` with edge=<each hub>: TLOC preference and weight (the
         primary hub should be preferred);
       - `catsdwan_explain_path` with source_site=<branch site>, destination=<the DC
-        prefix> and vpn=<VPN>: the policy's path (hub-and-spoke, TLOC lists, app-route).
+        prefix>, vpn=<VPN> and dscp=0 (the default class), then again with dscp=46 (voice, EF) for
+        the SLA classes that carry voice: the policy's path per class (hub-and-spoke, TLOC lists,
+        app-route). The tool needs the traffic: always pass a dscp (or an app).
    f. SLA per class: `catsdwan_list_sla_classes` (classes and the policies that use
       them), then `catsdwan_app_route_stats` with device=<branch edge>,
       remote=<each hub system IP>, source='realtime' and sla_class=<each class>: loss, latency,
@@ -63,7 +65,8 @@ stop, and report what failed.
 4. Paths during, per branch and VPN, as in 1e: `catsdwan_omp_routes` (the installed
    route now uses the other hub's TLOCs; the failed hub's routes may stay in the table under OMP
    graceful restart, up to 12 h by default, but must not be installed), `catsdwan_list_tlocs`
-   for the other hub, and `catsdwan_explain_path`. Note how long after T0 each branch
+   for the other hub, and `catsdwan_explain_path` with the same source_site,
+   destination, vpn and dscp=0, then dscp=46 (as in 1e). Note how long after T0 each branch
    moved.
 
 5. SLA during: `catsdwan_app_route_stats` as in 1f with remote=<the other hub>:
