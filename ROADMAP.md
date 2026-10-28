@@ -162,7 +162,7 @@ Suite plan: four waves of cross-architecture scenarios led by Catalyst SD-WAN, f
 | [W58](https://github.com/dr-stutters/cat-sdwan-mcp-server/issues/78) | **Enterprise CA renewal end to end: prompt `catsdwan_renew_with_enterprise_ca`** | 8 | Next | M | — |
 | [W43](https://github.com/dr-stutters/cat-sdwan-mcp-server/issues/79) | **SD-Access handoff reads and prompt `catsdwan_sda_handoff_check`** | 9 | Next | M | [C45](https://github.com/dr-stutters/stutters-mcp-core/issues/106) |
 | [W52](https://github.com/dr-stutters/cat-sdwan-mcp-server/issues/80) | **Migration: template → config group, `catsdwan_migrate_from_catc`, `catsdwan_compare_ftd_sdwan`** | 9 | Next | L | [C56](https://github.com/dr-stutters/stutters-mcp-core/issues/107) |
-| [W53](https://github.com/dr-stutters/cat-sdwan-mcp-server/issues/81) | **`catsdwan_remove_device` (invalidate + delete, dangerous) for C52** | 9 | Next | S | — |
+| [W53](https://github.com/dr-stutters/cat-sdwan-mcp-server/issues/81) | **`catsdwan_remove_device` (invalidate + delete, dangerous) for C52** (shipped in v0.7.0; live proof pending) | 9 | Next | S | — |
 | [W54](https://github.com/dr-stutters/cat-sdwan-mcp-server/issues/82) | **Prompt `catsdwan_hub_failover_drill`** | 9 | Next | M | [C58](https://github.com/dr-stutters/stutters-mcp-core/issues/109) |
 | [W56](https://github.com/dr-stutters/cat-sdwan-mcp-server/issues/83) | **Prompt `catsdwan_why_is_voice_bad`** | 9 | Next | M | [C61](https://github.com/dr-stutters/stutters-mcp-core/issues/110) |
 | [W59](https://github.com/dr-stutters/cat-sdwan-mcp-server/issues/84) | **Branch DHCP relay to Windows and the onboarding Windows leg** | 9 | Next | M | [C57](https://github.com/dr-stutters/stutters-mcp-core/issues/108) |
