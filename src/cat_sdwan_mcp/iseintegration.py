@@ -176,17 +176,55 @@ def differences(current: dict[str, Any], wanted: dict[str, Any]) -> dict[str, di
     return out
 
 
+def pxgrid_raw(rec: dict[str, Any]) -> str:
+    """The Manager's own pxGrid status text, `status` first, then `accountState` ("" when neither)."""
+    return str(rec.get("status") or rec.get("accountState") or "").strip()
+
+
+# The controller-push states the 20.18.3.1 Manager writes into the pxGrid record's `status` once the
+# Manager approved its client and POST /ise/credentials/vsmart/sync ran (live 2026-10-25, #131):
+# 'vSmart push is pending' -> 'vSmart push is successful' (or '... failed').
+_PUSH_PREFIX = "vsmart push"
+
+
+def pxgrid_push(rec: dict[str, Any]) -> str | None:
+    """pending / successful / failed / unknown for a 'vSmart push is ...' status; None for any other."""
+    raw = pxgrid_raw(rec).lower()
+    if not raw.startswith(_PUSH_PREFIX):
+        return None
+    if "fail" in raw or "error" in raw:
+        return "failed"
+    if "success" in raw:
+        return "successful"
+    if "pending" in raw or "progress" in raw:
+        return "pending"
+    return "unknown"
+
+
 def pxgrid_state(rec: dict[str, Any]) -> str:
-    """none / pending / enabled / disabled / <raw> from the pxGrid account record."""
+    """The pxGrid account's state from its record, `status` read before `accountState`:
+
+    - none: no record; created: a record with no status yet (create ran, activate did not)
+    - activated: POST /ise/pxgrid/activate ran; the Manager's own PUT /ise/pxgrid/approve is still due
+    - pending: waits for approval on ISE (activate answered PENDING)
+    - enabled: approved (ENABLED), or any 'vSmart push is ...' status (pxgrid_push says how the controller
+      sync went)
+    - disabled: the client is disabled on ISE
+    - unknown: a status this server does not know (pxgrid_raw has the text)
+    """
     if not rec:
         return "none"
-    raw = str(rec.get("status") or rec.get("accountState") or "").strip().lower()
+    raw = pxgrid_raw(rec).lower()
     if not raw:
         return "created"
-    for s in ("pending", "enabled", "disabled"):
+    if raw.startswith(_PUSH_PREFIX):
+        return "enabled" if pxgrid_push(rec) != "unknown" else "unknown"
+    if raw == "activated":
+        return "activated"
+    for s in ("disabled", "enabled", "pending"):
         if s in raw:
             return s
-    return raw
+    return "unknown"
 
 
 def node_name_of(rec: dict[str, Any]) -> str | None:

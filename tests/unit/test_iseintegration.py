@@ -19,6 +19,8 @@ from cat_sdwan_mcp.iseintegration import (
     differences,
     is_host,
     keep_stored_certs,
+    pxgrid_push,
+    pxgrid_raw,
     pxgrid_state,
     server_body,
     stored,
@@ -475,3 +477,161 @@ async def test_pxgrid_only_rerun_shows_the_stored_record(api: respx.MockRouter) 
     assert p["after"]["ise"]["pxGridRootCert"]["common_name"] == "Lab Root CA"
     assert p["after"]["ise"]["password"] == "********"
     assert p["after"]["pxgrid"]["state"] == "pending"
+
+
+# #131: the pxGrid record's `status` on 20.18.3.1 (live 2026-10-25): 'activated' after POST
+# /ise/pxgrid/activate, 'vSmart push is pending' after PUT /ise/pxgrid/approve + the controller sync
+# started, 'vSmart push is successful' once the sync task succeeded. 'vSmart push is failed' is the
+# failure wording the issue names (not yet seen live).
+SYNC = "/dataservice/ise/credentials/vsmart/sync"
+APPROVE = "/dataservice/ise/pxgrid/approve"
+SYNC_STEP = f"POST {SYNC} (send ISE and pxGrid settings to controller)"
+
+
+def px_with(status: str) -> dict[str, Any]:
+    return {**PX_PENDING, "status": status}
+
+
+def test_pxgrid_state_maps_every_status_from_the_issue() -> None:
+    assert pxgrid_state(px_with("activated")) == "activated"
+    assert pxgrid_push(px_with("activated")) is None
+    assert pxgrid_state(px_with("vSmart push is pending")) == "enabled"
+    assert pxgrid_push(px_with("vSmart push is pending")) == "pending"
+    assert pxgrid_state(px_with("vSmart push is successful")) == "enabled"
+    assert pxgrid_push(px_with("vSmart push is successful")) == "successful"
+    assert pxgrid_state(px_with("vSmart push is failed")) == "enabled"
+    assert pxgrid_push(px_with("vSmart push is failed")) == "failed"
+    assert pxgrid_state(px_with("PENDING")) == "pending" and pxgrid_state(px_with("ENABLED")) == "enabled"
+    assert pxgrid_state(px_with("DISABLED")) == "disabled"
+    assert pxgrid_state(px_with("deactivated")) == "unknown"
+    assert pxgrid_state(px_with("vSmart push is sideways")) == "unknown"
+    # status is read before accountState
+    assert pxgrid_state({"nodeName": "x", "status": "activated", "accountState": "PENDING"}) == "activated"
+    assert pxgrid_state({"nodeName": "x", "accountState": "ENABLED"}) == "enabled"
+    assert pxgrid_raw({"accountState": " ENABLED "}) == "ENABLED"
+
+
+async def test_activated_rerun_without_manager_approval_plans_approve_and_sync(api: respx.MockRouter) -> None:
+    # The failure in #131: ISE lists the client enabled, the Manager says 'activated', and
+    # approve_on_manager=false planned nothing, so the controllers never got 'identity pxgrid'.
+    mock_state(api, creds={"data": SET}, px=px_with("activated"))
+    approve = api.put(APPROVE).respond(json=True)
+    sync = api.post(SYNC).respond(json={"id": "sync-131"})
+    args = {"ise_host": ISE, "approve_on_manager": False}
+    async with Client(server()) as c:
+        prev = await tool(c, args)
+        assert prev["status"] == "preview", prev.get("blockers")
+        p = prev["preview"]
+        assert p["before"]["pxgrid"]["state"] == "activated"
+        assert p["requests"] == [
+            f"PUT {APPROVE} (the Manager's own approve step for 'vmanage-manager': its pxGrid record says "
+            "'activated')",
+            SYNC_STEP,
+        ]
+        assert p["after"]["pxgrid"]["state"] == "enabled"
+        assert not approve.called and not sync.called
+        done = (await tool(c, {**args, "confirm": prev["confirm"]}))["result"]
+    assert approve.called and sync.called
+    assert done["outcome"] == "done" and done["pxgrid_state"] == "enabled" and done["sync_task"] == "sync-131"
+
+
+async def test_activated_with_manager_approval_plans_one_approve(api: respx.MockRouter) -> None:
+    mock_state(api, creds={"data": SET}, px=px_with("activated"))
+    async with Client(server()) as c:
+        prev = await tool(c, {"ise_host": ISE, "approve_on_manager": True})
+    reqs = prev["preview"]["requests"]
+    assert sum(r.startswith(f"PUT {APPROVE}") for r in reqs) == 1 and reqs[-1] == SYNC_STEP
+
+
+async def test_push_pending_plans_no_second_sync(api: respx.MockRouter) -> None:
+    mock_state(api, creds={"data": SET}, px=px_with("vSmart push is pending"))
+    sync = api.post(SYNC).respond(json={"id": "s"})
+    async with Client(server()) as c:
+        prev = await tool(c, {"ise_host": ISE})
+    assert prev["status"] == "blocked" and not sync.called
+    assert any("controller sync is still running" in b for b in prev["blockers"])
+    assert any("vSmart push is pending" in b for b in prev["blockers"])
+
+
+async def test_push_successful_is_enabled_and_resyncs(api: respx.MockRouter) -> None:
+    mock_state(api, creds={"data": SET}, px=px_with("vSmart push is successful"))
+    async with Client(server()) as c:
+        prev = await tool(c, {"ise_host": ISE})
+    p = prev["preview"]
+    assert prev["status"] == "preview", prev.get("blockers")
+    assert p["before"]["pxgrid"] == {
+        "state": "enabled",
+        "status": "vSmart push is successful",
+        "controller_push": "successful",
+        "node": "vmanage-manager",
+    }
+    assert p["requests"] == [SYNC_STEP]
+    assert not any(r.startswith(f"PUT {APPROVE}") for r in p["requests"])
+
+
+async def test_push_failed_plans_a_resync_and_shows_the_failure(api: respx.MockRouter) -> None:
+    mock_state(api, creds={"data": SET}, px=px_with("vSmart push is failed"))
+    sync = api.post(SYNC).respond(json={"id": "resync"})
+    async with Client(server()) as c:
+        prev = await tool(c, {"ise_host": ISE})
+        p = prev["preview"]
+        assert prev["status"] == "preview", prev.get("blockers")
+        assert p["requests"] == [SYNC_STEP]
+        assert p["controller_push"] == {"status": "vSmart push is failed", "result": "failed"}
+        assert any("last controller sync failed" in w and "again" in w for w in p["warnings"])
+        done = (await tool(c, {"ise_host": ISE, "confirm": prev["confirm"]}))["result"]
+    assert sync.called and done["sync_task"] == "resync"
+
+
+async def test_push_failed_without_sync_says_no_resync(api: respx.MockRouter) -> None:
+    mock_state(api, creds={"data": SET}, px=px_with("vSmart push is failed"))
+    async with Client(server()) as c:
+        prev = await tool(c, {"ise_host": ISE, "sync_controllers": False})
+    assert prev["status"] == "blocked"
+    assert any("no re-sync is planned" in w for w in prev["preview"]["warnings"])
+
+
+async def test_unknown_pxgrid_status_blocks_with_the_raw_text(api: respx.MockRouter) -> None:
+    mock_state(api, creds={"data": SET}, px=px_with("Quarantined by admin"))
+    sync = api.post(SYNC).respond(json={"id": "s"})
+    async with Client(server()) as c:
+        prev = await tool(c, {"ise_host": ISE})
+    assert prev["status"] == "blocked" and not sync.called
+    assert any("'Quarantined by admin'" in b and "does not know" in b for b in prev["blockers"])
+    assert prev["preview"]["requests"] == []
+
+
+async def test_fresh_activate_answering_activated_stops_without_unplanned_approve(
+    api: respx.MockRouter,
+) -> None:
+    mock_state(api)
+    api.post(CREDS).respond(json=True)
+    api.post("/dataservice/ise/pxgrid/create").respond(
+        json={"nodeName": "vmanage-manager", "userName": "vmanage-manager", "password": PX_PW}
+    )
+    api.post("/dataservice/ise/pxgrid/activate").respond(json={"accountState": "activated"})
+    approve = api.put(APPROVE).respond(json=True)
+    sync = api.post(SYNC).respond(json={"id": "s"})
+    async with Client(server()) as c:
+        prev = await tool(c, {"ise_host": ISE})
+        done = (await tool(c, {"ise_host": ISE, "confirm": prev["confirm"]}))["result"]
+    assert not approve.called and not sync.called
+    assert done["outcome"] == "waiting for the Manager's approve step"
+    assert "plans PUT /dataservice/ise/pxgrid/approve" in done["next"]
+
+
+async def test_integrations_names_the_push_and_activated_states(api: respx.MockRouter) -> None:
+    api.get(CREDS).respond(json={"data": SET})
+    route = api.get(PXGRID)
+    route.respond(json={"data": px_with("vSmart push is failed")})
+    api.get("/dataservice/partner").respond(json=fixture("partner"))
+    api.get("/dataservice/partner/dnac/sda/vpn").respond(json=fixture("partner_dnac_sda_vpn"))
+    api.get("/dataservice/ise/connect").respond(json={"VersionInfo": {"currentServerVersion": "3.5"}})
+    api.get("/dataservice/template/policy/ise/identity/sgt").respond(json={"data": []})
+    out = await call("catsdwan_integrations", {})
+    assert out["pxgrid"]["state"] == "enabled" and out["pxgrid"]["controller_push"] == "failed"
+    assert out["pxgrid"]["status"] == "vSmart push is failed"
+    assert "failed" in out["pxgrid"]["meaning"]
+    route.respond(json={"data": px_with("activated")})
+    out = await call("catsdwan_integrations", {})
+    assert out["pxgrid"]["state"] == "activated" and "approve step" in out["pxgrid"]["meaning"]

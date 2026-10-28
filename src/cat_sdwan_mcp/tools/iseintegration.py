@@ -37,6 +37,8 @@ from cat_sdwan_mcp.iseintegration import (
     keep_stored_certs,
     masked,
     node_name_of,
+    pxgrid_push,
+    pxgrid_raw,
     pxgrid_state,
     resolve_ip,
     server_body,
@@ -129,7 +131,9 @@ def register(reg: ToolRegistrar) -> None:
         subscriptions (SGTs, users and groups), then the pxGrid client: created and activated on ISE, where it
         waits as pending for ise_approve_pxgrid_client (or approve_on_manager=true), then the settings sent to
         the controllers. Run it again after the approval: the preview plans only what is still missing (the
-        controller sync). The body is the GUI's own (every field, strings, "" when empty); ISE is named by
+        controller sync; at 'activated' also the Manager's own approve step; a failed 'vSmart push' is
+        sent again; an unknown pxGrid status blocks with its text). The body is the GUI's own (every
+        field, strings, "" when empty); ISE is named by
         IP (a host name is resolved here and said; the 20.18 GUI refuses names) and the ISE login must be
         letters and digits only (the GUI's rule; the preview blocks otherwise). 'Test Connectivity failed'
         errors list the suspects. Give pxgrid_root_cert when pxGrid's chain differs from the admin one; an
@@ -149,6 +153,8 @@ def register(reg: ToolRegistrar) -> None:
         )
         edges = [r for r in inv.rows if r.get("role") == "edge"]
         state = pxgrid_state(px)
+        push = pxgrid_push(px)
+        raw_status = pxgrid_raw(px)
         node = (pxgrid_node_name or "").strip() or node_name_of(px) or _node_default(inv.rows)
         reasons = [
             "identity-based policy and the SGT and user lists on every edge depend on the ISE connection"
@@ -160,6 +166,10 @@ def register(reg: ToolRegistrar) -> None:
         side_effects: list[str] = []
         details: dict[str, Any] = {}
         px_before: dict[str, Any] = {"state": state}
+        if raw_status and raw_status.lower() != state:
+            px_before["status"] = raw_status
+        if push:
+            px_before["controller_push"] = push
         if node_name_of(px):
             px_before["node"] = node_name_of(px)
         if px_err:
@@ -167,6 +177,7 @@ def register(reg: ToolRegistrar) -> None:
         before = {"ise": masked(creds) if creds else "not configured", "pxgrid": px_before}
         wanted: dict[str, Any] | None = None
         write: str | None = None
+        approve_planned = False
 
         if action == "disconnect":
             if not creds and state == "none":
@@ -261,17 +272,50 @@ def register(reg: ToolRegistrar) -> None:
                     state_after = "pending"
                 else:
                     state_after = state
-                if state_after == "pending" and approve_on_manager:
+                if state_after == "activated":
+                    # 20.18.3.1 (#131): after activate the record says 'activated' and the controllers get
+                    # nothing until the Manager's own approve step runs, even when ISE already lists the
+                    # client enabled; so it is planned whatever approve_on_manager says.
+                    steps.append(
+                        f"PUT {PXGRID_APPROVE_PATH} (the Manager's own approve step for {node!r}: its "
+                        "pxGrid record says 'activated')"
+                    )
+                    state_after = "enabled"
+                    approve_planned = True
+                elif state_after == "pending" and approve_on_manager:
                     steps.append(
                         f"PUT {PXGRID_APPROVE_PATH} (the Manager approves {node!r} with the ISE login)"
                     )
                     state_after = "enabled"
+                    approve_planned = True
+                if state == "unknown":
+                    blockers.append(
+                        f"the Manager reports the pxGrid client {node!r} as {raw_status!r}, a state this "
+                        "tool does not know, so it plans nothing for pxGrid: check catsdwan_integrations and "
+                        "ise_list_pxgrid_clients, or disconnect and connect again"
+                    )
+                if push == "failed":
+                    warnings.append(
+                        f"the last controller sync failed (the Manager says {raw_status!r})"
+                        + (
+                            ": this plan sends the settings to the controllers again"
+                            if sync_controllers and controllers
+                            else ": no re-sync is planned (sync_controllers=false or no controllers)"
+                        )
+                    )
+                    details["controller_push"] = {"status": raw_status, "result": "failed"}
+                elif push == "pending":
+                    warnings.append(
+                        f"a controller sync is still running (the Manager says {raw_status!r}): no second "
+                        "sync is planned; check catsdwan_integrations until it says successful or failed"
+                    )
+                    details["controller_push"] = {"status": raw_status, "result": "pending"}
                 if state == "disabled":
                     blockers.append(
                         f"the pxGrid client {node!r} is disabled on ISE: enable it there, or disconnect and "
                         "connect again"
                     )
-                if state_after == "enabled" and sync_controllers and controllers:
+                if state_after == "enabled" and sync_controllers and controllers and push != "pending":
                     steps.append(
                         f"POST {SYNC_PATH} (send ISE and pxGrid settings to {', '.join(controllers)})"
                     )
@@ -283,7 +327,14 @@ def register(reg: ToolRegistrar) -> None:
                     )
             elif sync_controllers and write and controllers:
                 steps.append(f"POST {SYNC_PATH} (send the ISE settings to {', '.join(controllers)})")
-            if not steps and pxgrid and state == "pending":
+            if not steps and pxgrid and state == "unknown":
+                pass  # blocked above with the raw status
+            elif not steps and pxgrid and push == "pending":
+                blockers.append(
+                    "nothing to change yet: the controller sync is still running (the Manager says "
+                    f"{raw_status!r}); run this tool again once catsdwan_integrations shows it finished"
+                )
+            elif not steps and pxgrid and state == "pending":
                 blockers.append(
                     f"nothing to change yet: the pxGrid client {node!r} is pending on ISE. Approve it with "
                     f"ise_approve_pxgrid_client(name={node!r}) (or approve_on_manager=true), then run this "
@@ -350,7 +401,13 @@ def register(reg: ToolRegistrar) -> None:
                 "undo": undo,
             },
             side_effects=side_effects,
-            fingerprint=[str(masked(creds)), state, node_name_of(px), str((wanted or {}).get("iseServerIP"))],
+            fingerprint=[
+                str(masked(creds)),
+                state,
+                raw_status,
+                node_name_of(px),
+                str((wanted or {}).get("iseServerIP")),
+            ],
             blockers=blockers,
             blast_radius=1,
         )
@@ -404,16 +461,29 @@ def register(reg: ToolRegistrar) -> None:
                 )
                 now = str(first_value(activated, "accountState") or "PENDING").lower()
                 done.append(f"pxGrid client activated: {now}")
-            if pxgrid and "pending" in now and approve_on_manager:
+            # Only an approve the preview showed: a fresh activate answering 'activated' without one planned
+            # stops below and says to run the tool again (its preview then plans the approve).
+            if pxgrid and approve_planned and ("pending" in now or now == "activated"):
                 await app.api.put(PXGRID_APPROVE_PATH, None)
                 now = "enabled"
                 done.append("pxGrid client approved by the Manager")
-            if sync_controllers and controllers and ("enabled" in now or (not pxgrid and write)):
+            if (
+                sync_controllers
+                and controllers
+                and ("enabled" in now or (not pxgrid and write))
+                and push != "pending"
+            ):
                 task = await app.api.post(SYNC_PATH, None)
                 out["sync_task"] = first_value(task, "id")
                 done.append(f"settings sent to {', '.join(controllers)}")
             out["pxgrid_state"] = now if pxgrid else "not requested"
-            if pxgrid and "pending" in now:
+            if pxgrid and now == "activated":
+                out["outcome"] = "waiting for the Manager's approve step"
+                out["next"] = (
+                    "catsdwan_set_ise_integration again (same arguments): its preview plans PUT "
+                    f"{PXGRID_APPROVE_PATH} and the controller sync"
+                )
+            elif pxgrid and "pending" in now:
                 out["outcome"] = "waiting for approval"
                 out["next"] = (
                     f"ise_approve_pxgrid_client(name={node!r}), then catsdwan_set_ise_integration again "
