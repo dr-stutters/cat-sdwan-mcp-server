@@ -18,10 +18,15 @@ Request bodies are the ones the Manager's own web UI sends (read from its 20.18.
   NA | Unknown, message: text or [text], timestamp}]}.
 - GET /troubleshooting/control/{uuid} (recorded): per WAN colour the expected and actual control
   connections and each peer's local and remote status; 400 TBST1007 for a device without a system IP.
-- POST /device/tools/admintech {deviceIP, device-type, exclude-cores, exclude-tech, exclude-logs}; GET
+- POST /device/tools/admintech {deviceIP, exclude-cores, exclude-tech, exclude-logs, tech-filter: [],
+  custom-commands: []}, the same body for every role (#123, live on 20.18.3.1: the spec example's
+  `device-type: "vmanage"` makes the Manager refuse its own admin-tech with 400 DEVICE0007 "Invalid admintech
+  payload"; without it the Manager answers {size: 0, fileName} and the row goes inprogress -> done). GET
   /device/tools/admintechs (recorded: {data: []}; spec: creationTime, deviceIP, fileName, requestTokenId,
-  size, state, tac_state), /admintechs/inprogress ({data: [{inProgressCount}]}, recorded) and
-  /admintech/download/{fileName}.
+  size, state, tac_state), /admintechs/inprogress ({data: [{inProgressCount}]}, recorded),
+  /admintech/download/{fileName} (a binary stream: it answers 406 to the client's default
+  `Accept: application/json` and streams the archive with `Accept: application/octet-stream`) and
+  DELETE /admintech/{requestTokenId} (removes the archive).
 """
 
 from __future__ import annotations
@@ -43,6 +48,9 @@ ADMINTECH_PATH = "/dataservice/device/tools/admintech"
 ADMINTECHS_PATH = "/dataservice/device/tools/admintechs"
 ADMINTECH_PROGRESS_PATH = "/dataservice/device/tools/admintechs/inprogress"
 ADMINTECH_DOWNLOAD_PATH = "/dataservice/device/tools/admintech/download/{file}"
+ADMINTECH_DELETE_PATH = "/dataservice/device/tools/admintech/{request_id}"
+ADMINTECH_DOWNLOAD_ACCEPT = "application/octet-stream"  # the default application/json answers 406
+ADMINTECH_PAYLOAD_ERROR = "DEVICE0007"  # 400 "Invalid admintech payload, parameters incorrect"
 
 PROTOCOLS = {"icmp": "1", "tcp": "6", "udp": "17"}
 TOOL_TIMEOUT = 180.0  # seconds; the Manager's UI allows 600 for these, a 5-probe ping takes a few
@@ -360,10 +368,46 @@ def admintech_rows(body: Any, device_ip: str | None = None) -> list[dict[str, An
             "state": r.get("state"),
             "request_id": r.get("requestTokenId"),
             "download": path(ADMINTECH_DOWNLOAD_PATH, file=name.rsplit("/", 1)[-1]) if name else None,
+            "delete": (
+                f"DELETE {path(ADMINTECH_DELETE_PATH, request_id=r['requestTokenId'])}"
+                if r.get("requestTokenId")
+                else None
+            ),
         }
         out.append({k: v for k, v in row.items() if v not in (None, "")})
     out.sort(key=lambda r: str(r.get("created") or ""), reverse=True)
     return out
+
+
+def admintech_body(ip: str, *, exclude_cores: bool, exclude_logs: bool, exclude_tech: bool) -> dict[str, Any]:
+    """The admin-tech request, the same for every role (the Manager, a controller, an edge): no
+    `device-type`, which 20.18 refuses for the Manager (#123). The two empty lists are what the UI sends."""
+    return {
+        "deviceIP": ip,
+        "exclude-cores": exclude_cores,
+        "exclude-logs": exclude_logs,
+        "exclude-tech": exclude_tech,
+        "tech-filter": [],
+        "custom-commands": [],
+    }
+
+
+def admintech_retry_body(body: dict[str, Any], role: str | None) -> tuple[dict[str, Any], str] | None:
+    """The one other body worth trying after a 400 DEVICE0007, and why; None when there is none. A body that
+    carries `device-type` is retried without it (20.18 refuses the key); the Manager's own body without it is
+    retried with the spec example's `device-type: "vmanage"`, in case another release wants it."""
+    if "device-type" in body:
+        return (
+            {k: v for k, v in body.items() if k != "device-type"},
+            "retried once without device-type",
+        )
+    if role == "manager":
+        return {**body, "device-type": "vmanage"}, "retried once with device-type 'vmanage'"
+    return None
+
+
+def is_admintech_payload_error(err: Exception) -> bool:
+    return getattr(err, "status_code", None) == 400 and ADMINTECH_PAYLOAD_ERROR in str(err)
 
 
 def in_progress(body: Any) -> int:
