@@ -27,7 +27,7 @@ from cat_sdwan_mcp._core import (
     object_result,
     preview_or_apply,
 )
-from cat_sdwan_mcp.changes import device_brief, preview_text, text_hash, tier_reasons
+from cat_sdwan_mcp.changes import device_brief, preview_text, text_hash
 from cat_sdwan_mcp.client import SdwanApp, _as_list
 from cat_sdwan_mcp.configuration import (
     ASSOCIATE_PATH,
@@ -72,6 +72,7 @@ from cat_sdwan_mcp.features import (
     to_leaf,
 )
 from cat_sdwan_mcp.features import cli_replace as replace_cli
+from cat_sdwan_mcp.hubs import change_tier
 from cat_sdwan_mcp.inventory import load_inventory
 from cat_sdwan_mcp.servicevpns import vpn_context
 from cat_sdwan_mcp.tools.changes import (
@@ -725,7 +726,8 @@ def register(reg: ToolRegistrar) -> None:
         VPN parcel, in each device's configuration group; otherwise the controller refuses the group after
         the edges took it ("Please configure the VPN's ..."), so the preview is blocked with the fix. A
         controller failure is reported as failed, not partial. One device is write tier; several, a hub or a
-        protected-site device need MCP_ENABLE_DANGEROUS."""
+        protected-site device need MCP_ENABLE_DANGEROUS (hubs: CATSDWAN_HUB_DEVICES, else found from
+        hub-and-spoke topologies and BFD; `hub_status` in the preview)."""
         app: SdwanApp = get_client(ctx)
         found = resolve_group(await _groups(app, POLICY_GROUPS_PATH), group, "policy group")
         gid, gname = str(found.get("id")), str(found.get("name"))
@@ -754,9 +756,9 @@ def register(reg: ToolRegistrar) -> None:
         busy, busy_warn = await _pending_blockers(app, rows)
         blockers += busy
         warnings += busy_warn
-        blockers += dangerous_blockers(
-            ctx, app, reasons := tier_reasons(rows, app.settings.hub_devices, app.settings.protected_sites)
-        )
+        reasons, hubs = await change_tier(app, inv, rows)
+        warnings += hubs.warnings
+        blockers += dangerous_blockers(ctx, app, reasons)
         # The controller's half (#118): VPN references must name the devices' LAN VPN parcels.
         from cat_sdwan_mcp.tools.policyvpns import group_vpn_problems
 
@@ -801,6 +803,7 @@ def register(reg: ToolRegistrar) -> None:
                 "group": gname,
                 "tier": "dangerous" if reasons else "write",
                 **({"tier_reasons": reasons} if reasons else {}),
+                **({"hub_status": hubs.status} if hubs.status else {}),
                 "devices": [v for v, _ in got],
                 "request": f"POST {POLICY_DEPLOY_PATH} {{devices: [{{id: <chassis>}}]}}",
                 "controller_step": {

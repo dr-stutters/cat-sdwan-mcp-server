@@ -51,7 +51,6 @@ from cat_sdwan_mcp.changes import (
     shown_changes,
     template_columns,
     text_hash,
-    tier_reasons,
     variable_keys,
 )
 from cat_sdwan_mcp.client import SdwanApp, _as_list
@@ -67,6 +66,7 @@ from cat_sdwan_mcp.configuration import (
     path,
     resolve_group,
 )
+from cat_sdwan_mcp.hubs import change_tier
 from cat_sdwan_mcp.inventory import Inventory, load_inventory, resolve
 from cat_sdwan_mcp.tools.configuration import _associated, _groups
 
@@ -345,7 +345,9 @@ def register(reg: ToolRegistrar) -> None:
         device not in the group, on a device template, unreachable, or with an action still running, and for
         a group without feature profiles. Confirm deploys, then follows the Manager's action status until
         every device reports success or failure (with the failing device's reason). One device is write tier;
-        several devices, a hub or a protected-site device need MCP_ENABLE_DANGEROUS."""
+        several devices, a hub or a protected-site device need MCP_ENABLE_DANGEROUS (hubs:
+        CATSDWAN_HUB_DEVICES, else found from hub-and-spoke topologies and BFD; `hub_status` in the
+        preview)."""
         app: SdwanApp = get_client(ctx)
         found = resolve_group(await _groups(app, CONFIG_GROUPS_PATH), group)
         gid, gname = str(found.get("id")), str(found.get("name"))
@@ -377,9 +379,9 @@ def register(reg: ToolRegistrar) -> None:
         busy, busy_warn = await _pending_blockers(app, rows)
         blockers += busy
         warnings += busy_warn
-        blockers += dangerous_blockers(
-            ctx, app, reasons := tier_reasons(rows, app.settings.hub_devices, app.settings.protected_sites)
-        )
+        reasons, hubs = await change_tier(app, inv, rows)
+        warnings += hubs.warnings
+        blockers += dangerous_blockers(ctx, app, reasons)
         chassis = [str(r["chassis"]) for r in rows]
         variables: dict[str, list[dict[str, Any]]] = {}
         try:
@@ -444,6 +446,7 @@ def register(reg: ToolRegistrar) -> None:
                 "group": gname,
                 "tier": "dangerous" if reasons else "write",
                 **({"tier_reasons": reasons} if reasons else {}),
+                **({"hub_status": hubs.status} if hubs.status else {}),
                 "devices": [v for v, _ in got],
                 "request": f"POST {DEPLOY_PATH} {{devices: [{{id: <chassis>}}]}}",
                 "rollback": DEPLOY_ROLLBACK,
@@ -504,7 +507,8 @@ def register(reg: ToolRegistrar) -> None:
         action still running. Confirm attaches (attachcli for CLI templates, attachfeature for feature
         templates) and follows the action status to success or failure per device. A CLI-mode device leaves
         CLI mode: the Manager owns its configuration from then on. One device is write tier; several devices,
-        a hub or a protected-site device need MCP_ENABLE_DANGEROUS."""
+        a hub or a protected-site device need MCP_ENABLE_DANGEROUS (hubs: CATSDWAN_HUB_DEVICES, else
+        found from hub-and-spoke topologies and BFD; `hub_status` in the preview)."""
         app: SdwanApp = get_client(ctx)
         body = await app.api.get(DEVICE_TEMPLATES_PATH, {"feature": "all"})
         raw = [
@@ -535,9 +539,9 @@ def register(reg: ToolRegistrar) -> None:
         busy, busy_warn = await _pending_blockers(app, rows)
         blockers += busy
         warnings += busy_warn
-        blockers += dangerous_blockers(
-            ctx, app, reasons := tier_reasons(rows, app.settings.hub_devices, app.settings.protected_sites)
-        )
+        reasons, hubs = await change_tier(app, inv, rows)
+        warnings += hubs.warnings
+        blockers += dangerous_blockers(ctx, app, reasons)
         unknown_refs = [k for k in (device_variables or {}) if k not in by_ref]
         if unknown_refs:
             raise InvalidRequest(
@@ -628,6 +632,7 @@ def register(reg: ToolRegistrar) -> None:
                 },
                 "tier": "dangerous" if reasons else "write",
                 **({"tier_reasons": reasons} if reasons else {}),
+                **({"hub_status": hubs.status} if hubs.status else {}),
                 "devices": device_views,
                 "request": f"POST {attach_path}",
                 "rollback": "The Manager has no undo: attach again with the previous values, or detach the "

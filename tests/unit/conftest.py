@@ -15,6 +15,8 @@ from cat_sdwan_mcp.config import Settings
 from cat_sdwan_mcp.server import create_server
 
 BASE = "https://catsdwan.test"
+HUB_SPOKE_PATH = "/dataservice/template/policy/definition/hubandspoke"
+BULK_BFD_PATH = "/dataservice/data/device/state/BFDSessions"
 FIXTURES = Path(__file__).parent.parent / "fixtures"
 
 
@@ -54,6 +56,9 @@ def mock_manager(router: respx.MockRouter, *, jwt: bool = True) -> None:
     router.post("/logout").respond(200)
     router.get("/dataservice/device").respond(json=fixture("device"))
     router.get("/dataservice/system/device/controllers").respond(json=fixture("system_device_controllers"))
+    # the change tools' hub evidence (#102): no hub-and-spoke topology, no BFD sessions recorded
+    router.get(HUB_SPOKE_PATH).respond(json={"data": []})
+    router.get(BULK_BFD_PATH).respond(json={"data": []})
 
 
 @pytest.fixture

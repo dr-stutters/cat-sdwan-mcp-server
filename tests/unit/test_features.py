@@ -542,3 +542,36 @@ async def test_set_refuses_a_raw_option_type(api: respx.MockRouter) -> None:
         },
     )
     assert out["status"] == "blocked" and "is not one of global" in out["blockers"][0]
+
+
+async def test_policy_deploy_to_a_bfd_hub_is_dangerous(api: respx.MockRouter) -> None:
+    # #102: no CATSDWAN_HUB_DEVICES; hub1 holds BFD sessions to both branch sites, each branch only to the hub
+    mock_inventory(api)
+    mock_policy(api)
+    api.post(f"{PG}/device/{HUB1}/preview").respond(json={"config": "hostname hub1\n"})
+    api.get(f"/dataservice/template/config/running/{HUB1}").respond(json={"config": "hostname hub1\n"})
+
+    def bfd(local: str, remote: str, site: int, colour: str) -> dict[str, Any]:
+        return {"vdevice-name": local, "system-ip": remote, "site-id": site, "color": colour, "state": "up"}
+
+    rows = [
+        bfd("10.0.0.1", "10.0.0.2", 200, "mpls"),
+        bfd("10.0.0.1", "10.0.0.2", 200, "biz-internet"),
+        bfd("10.0.0.1", "10.0.0.3", 201, "mpls"),
+        bfd("10.0.0.1", "10.0.0.3", 201, "biz-internet"),
+        bfd("10.0.0.2", "10.0.0.1", 100, "mpls"),
+        bfd("10.0.0.3", "10.0.0.1", 100, "mpls"),
+    ]
+    api.get("/dataservice/data/device/state/BFDSessions").respond(json={"data": rows})
+    args = {"group": "mcp-policy", "devices": ["hub1"]}
+    out = await write("catsdwan_deploy_policy_group", args)
+    assert out["status"] == "blocked"
+    assert any("hub1 is a hub by heuristic" in b and "MCP_ENABLE_DANGEROUS" in b for b in out["blockers"])
+    out = await write("catsdwan_deploy_policy_group", args, mcp_enable_dangerous=True)
+    assert out["preview"]["tier"] == "dangerous"
+    assert out["preview"]["hub_status"]["hub1"].startswith(
+        "hub by heuristic (BFD sessions to all 2 other sites"
+    )
+    br1 = await write("catsdwan_deploy_policy_group", {"group": "mcp-policy", "devices": ["br1"]})
+    assert br1["preview"]["tier"] == "write"
+    assert br1["preview"]["hub_status"] == {"br1": "not a hub: BFD sessions to 1 of 2 other sites"}

@@ -141,7 +141,12 @@ single-use token; the identical call with `confirm=<token>` applies it after che
 changed (the fingerprint: the preview CLI per device and the group's or template's last change). A deploy or
 attach to **one** device is write tier (`MCP_ENABLE_WRITES`); to **several** devices, or to a hub
 (`CATSDWAN_HUB_DEVICES`) or a device at a protected site (`CATSDWAN_PROTECTED_SITES`), it is dangerous: the
-preview is blocked unless `MCP_ENABLE_DANGEROUS` is on (and, with per-user roles, the caller is admin). Every
+preview is blocked unless `MCP_ENABLE_DANGEROUS` is on (and, with per-user roles, the caller is admin).
+`CATSDWAN_HUB_DEVICES` is authoritative; when it is unset, a deploy or attach (config group, policy group, device
+template) finds hubs from the Manager's own evidence and tiers them dangerous: an edge at a hub site of a
+hub-and-spoke topology, else an edge whose BFD sessions reach every other site while the branches' don't (a full
+mesh has no hub). The preview's `hub_status` says why ("hub by heuristic (...); set CATSDWAN_HUB_DEVICES"), or
+"unknown" with a warning when the evidence can't be read. Every
 deploy reports `blast_radius` = its devices, so `MCP_MAX_BLAST_RADIUS` caps it. The Manager has no undo: the
 variables preview lists the old values, and a deploy's preview diff shows the running configuration it replaces.
 
@@ -221,7 +226,7 @@ signed serial file (`catsdwan_onboard_edge(serial_file=...)`) or a Smart Account
 | `CATSDWAN_INSTANCES` | | Several Managers in one server (`CATSDWAN_<NAME>_URL`, ...; `_TENANT` is never inherited): every tool gets `instance` |
 | `MCP_TRANSPORT` | `stdio` | `stdio` or `http` |
 | `MCP_AUTH_TOKENS` / `MCP_AUTH_TOKENS_FILE` | | `name:sha256:<hex>` entries; **required** for HTTP |
-| `CATSDWAN_HUB_DEVICES` | | Hubs (host names, system IPs or chassis, comma-separated): a deploy or attach touching one is dangerous tier |
+| `CATSDWAN_HUB_DEVICES` | | Hubs (host names, system IPs or chassis, comma-separated): a deploy or attach touching one is dangerous tier. Unset: hubs are found from hub-and-spoke topologies and BFD (fail-safe, the preview says so) |
 | `CATSDWAN_PROTECTED_SITES` | | Site ids or names (comma-separated): a deploy or attach touching a device there is dangerous tier |
 | `CATSDWAN_ISE_USERNAME`, `CATSDWAN_ISE_PASSWORD` (`_FILE`, `_REF`) | | The ISE ERS admin login `catsdwan_set_ise_integration` gives the Manager (never a tool argument) |
 | `CATSDWAN_IMAGE_DIR` | | Directory on the server host `catsdwan_upload_utd_image` reads UTD images from (only the file name is a tool argument); unset: uploads are off |
