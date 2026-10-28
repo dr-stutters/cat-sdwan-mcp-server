@@ -20,6 +20,8 @@ from cat_sdwan_mcp.iseintegration import (
     is_host,
     keep_stored_certs,
     node_name_of,
+    pxgrid_create_hint,
+    pxgrid_node_problem,
     pxgrid_push,
     pxgrid_raw,
     pxgrid_state,
@@ -27,6 +29,7 @@ from cat_sdwan_mcp.iseintegration import (
     stored,
     username_problem,
 )
+from cat_sdwan_mcp.tools.iseintegration import _node_default
 
 from .conftest import fixture, make_server
 from .test_inventory import call, mock_inventory
@@ -76,12 +79,12 @@ async def test_connect_preview_plans_every_step(api: respx.MockRouter) -> None:
     assert p["before"] == {"ise": "not configured", "pxgrid": {"state": "none"}}
     assert p["requests"] == [
         f"POST {CREDS} (ISE {ISE}, VPN 0)",
-        "POST /dataservice/ise/pxgrid/create {nodeName: 'vmanage-manager'} (the client account on ISE)",
-        "POST /dataservice/ise/pxgrid/activate (ISE lists 'vmanage-manager' as pending)",
+        "POST /dataservice/ise/pxgrid/create {nodeName: 'vmanagemanager'} (the client account on ISE)",
+        "POST /dataservice/ise/pxgrid/activate (ISE lists 'vmanagemanager' as pending)",
     ]
     assert p["after"]["ise"]["password"] == "********" and p["after"]["ise"]["sgt"] == "true"
-    assert p["after"]["pxgrid"] == {"node": "vmanage-manager", "state": "pending"}
-    assert "ise_approve_pxgrid_client(name='vmanage-manager')" in p["then"]
+    assert p["after"]["pxgrid"] == {"node": "vmanagemanager", "state": "pending"}
+    assert "ise_approve_pxgrid_client(name='vmanagemanager')" in p["then"]
     assert p["certificate_check"]["given"] is False
     assert p["undo"] == "catsdwan_set_ise_integration(action='disconnect')"
     assert ISE_PW not in json.dumps(prev)
@@ -100,7 +103,7 @@ async def test_connect_confirm_creates_and_activates_then_waits(api: respx.MockR
     mock_state(api)
     post = api.post(CREDS).respond(json=True)
     create = api.post("/dataservice/ise/pxgrid/create").respond(
-        json={"nodeName": "vmanage-manager", "userName": "vmanage-manager", "password": PX_PW}
+        json={"nodeName": "vmanagemanager", "userName": "vmanagemanager", "password": PX_PW}
     )
     activate = api.post("/dataservice/ise/pxgrid/activate").respond(json={"accountState": "PENDING"})
     sync = api.post("/dataservice/ise/credentials/vsmart/sync").respond(json={"id": "t1"})
@@ -110,15 +113,15 @@ async def test_connect_confirm_creates_and_activates_then_waits(api: respx.MockR
     sent = json.loads(post.calls[0].request.content)
     assert sent["iseServerIP"] == ISE and sent["password"] == ISE_PW and sent["userName"] == "ersadmin"
     assert sent["sgt"] == "true" and sent["userAndUserGroup"] == "false" and sent["vpn"] == "0"
-    assert json.loads(create.calls[0].request.content) == {"nodeName": "vmanage-manager"}
+    assert json.loads(create.calls[0].request.content) == {"nodeName": "vmanagemanager"}
     body = json.loads(activate.calls[0].request.content)
-    assert body["pxGridUserName"] == "vmanage-manager" and body["pxGridPassword"] == PX_PW
+    assert body["pxGridUserName"] == "vmanagemanager" and body["pxGridPassword"] == PX_PW
     # ISE refused "(...)" in the description (XSS filter, ISEERRORR0014, live 2026-10-25).
     assert body["description"] == "Catalyst SD-WAN Manager"
     assert re.fullmatch(r"[A-Za-z0-9 -]+", body["description"])
     assert not sync.called
     assert done["outcome"] == "waiting for approval" and done["pxgrid_state"] == "pending"
-    assert "ise_approve_pxgrid_client(name='vmanage-manager')" in done["next"]
+    assert "ise_approve_pxgrid_client(name='vmanagemanager')" in done["next"]
     assert PX_PW not in json.dumps(done) and ISE_PW not in json.dumps(done)
 
 
@@ -610,7 +613,7 @@ async def test_fresh_activate_answering_activated_stops_without_unplanned_approv
     mock_state(api)
     api.post(CREDS).respond(json=True)
     api.post("/dataservice/ise/pxgrid/create").respond(
-        json={"nodeName": "vmanage-manager", "userName": "vmanage-manager", "password": PX_PW}
+        json={"nodeName": "vmanagemanager", "userName": "vmanagemanager", "password": PX_PW}
     )
     api.post("/dataservice/ise/pxgrid/activate").respond(json={"accountState": "activated"})
     approve = api.put(APPROVE).respond(json=True)
@@ -758,3 +761,61 @@ async def test_integrations_explains_approved(api: respx.MockRouter) -> None:
     out = await call("catsdwan_integrations", {})
     assert out["pxgrid"]["state"] == "enabled" and out["pxgrid"]["status"] == "Approved"
     assert "approved" in out["pxgrid"]["meaning"] and CLIENT in out["pxgrid"]["meaning"]
+
+
+# #149: ISE refuses a pxGrid client name with anything but letters and digits (ISEERRORR0013, live #67/#131).
+async def test_default_node_name_is_alphanumeric(api: respx.MockRouter) -> None:
+    mock_state(api)
+    async with Client(server()) as c:
+        prev = await tool(c, {"ise_host": ISE})
+    assert prev["status"] == "preview", prev.get("blockers")
+    assert prev["preview"]["after"]["pxgrid"]["node"] == "vmanagemanager"
+    assert (
+        _node_default([{"role": "manager", "host": "sdwan-mgr_01.example.com"}])
+        == "vmanagesdwanmgr01examplecom"
+    )
+    assert _node_default([]) == "vmanage"
+
+
+async def test_hyphenated_node_name_blocks(api: respx.MockRouter) -> None:
+    mock_state(api)
+    create = api.post("/dataservice/ise/pxgrid/create").respond(json={})
+    async with Client(server()) as c:
+        prev = await tool(c, {"ise_host": ISE, "pxgrid_node_name": "vmanage-manager"})
+    assert prev["status"] == "blocked" and not create.called
+    [b] = [b for b in prev["blockers"] if "pxgrid_node_name" in b]
+    assert "'vmanage-manager'" in b and "should only be alphanumeric" in b and "ISEERRORR0013" in b
+    assert "pxgrid_node_name='vmanagemanager'" in b
+    assert pxgrid_node_problem("vmanagemanager") is None
+
+
+async def test_stored_pending_client_is_not_blocked_by_its_name(api: respx.MockRouter) -> None:
+    # No create planned: the name ISE already holds is not re-checked.
+    mock_state(api, creds={"data": SET}, px={"data": PX_PENDING})
+    async with Client(server()) as c:
+        prev = await tool(c, {"ise_host": ISE, "approve_on_manager": True})
+    assert not any("pxgrid_node_name" in b for b in prev.get("blockers", []))
+
+
+ISE_R0013 = {  # synthetic: the Manager's 400 for a refused pxGrid create (code from the #67 run)
+    "error": {"message": "Failed to create pxGrid account", "code": "ISEERRORR0013", "details": "ISE error"}
+}
+
+
+async def test_iseerrorr0013_on_create_says_the_name_must_be_alphanumeric(api: respx.MockRouter) -> None:
+    mock_state(api)
+    api.post(CREDS).respond(json=True)
+    api.post("/dataservice/ise/pxgrid/create").respond(400, json=ISE_R0013)
+    activate = api.post("/dataservice/ise/pxgrid/activate").respond(json={})
+    async with Client(server()) as c:
+        prev = await tool(c, {"ise_host": ISE})
+        res = await c.call_tool(
+            "catsdwan_set_ise_integration",
+            {"ise_host": ISE, "confirm": prev["confirm"]},
+            raise_on_error=False,
+        )
+    text = res.content[0].text  # type: ignore[union-attr]
+    assert res.is_error and "ISEERRORR0013" in text
+    assert "pxGrid client name must be alphanumeric" in text and "'vmanagemanager'" in text
+    assert not activate.called and ISE_PW not in text
+    assert pxgrid_create_hint("400 REST0002 Server error", "x") is None
