@@ -27,19 +27,22 @@ from cat_sdwan_mcp.configuration import (
 )
 from cat_sdwan_mcp.control import OMP_TLOCS_PATH, tloc_row
 from cat_sdwan_mcp.fabric import device_rows, host_map, reachable
-from cat_sdwan_mcp.features import POLICY_ASSOCIATE_PATH
+from cat_sdwan_mcp.features import PARCEL_PATH, POLICY_ASSOCIATE_PATH, parcel_view
 from cat_sdwan_mcp.inventory import Inventory, load_inventory, matches_site
 from cat_sdwan_mcp.policy import VSMART_PATH, is_active, rows
 from cat_sdwan_mcp.sitexport import (
+    CLI_ADDON_NOTE,
     KIND,
     SPEC_VERSION,
     TWIN_NOTES,
     Secrets,
     colours,
     group_variables,
+    missing_from,
     parse_intended,
     policy_view,
     refs_for_masked,
+    render_cli,
     scrub,
     service_vpns,
     spec_mode,
@@ -51,6 +54,8 @@ from cat_sdwan_mcp.tools.configuration import _groups, _read_profiles
 from cat_sdwan_mcp.tools.policy import _centralised_parts, _definitions, _lists
 
 MAX_GROUPS = 25  # policy groups whose devices are read to find the site's
+# A CLI add-on parcel as the export carries it: {profile, parcel, cli (masked, {{variables}} kept)}.
+Addon = dict[str, str]
 
 
 def _site_edges(inv: Inventory, site: str) -> list[dict[str, Any]]:
@@ -78,12 +83,13 @@ async def _config_group_part(
     groups: list[dict[str, Any]],
     secrets: Secrets,
     warnings: list[str],
-) -> dict[str, Any]:
-    """The group with its profiles (secret values as refs), and each device's variables set in place."""
+) -> tuple[dict[str, Any], list[Addon]]:
+    """The group with its profiles (secret values as refs) and the CLI add-on parcels' text, and each
+    device's variables set in place."""
     found = next((g for g in groups if str(g.get("name")) == name), None)
     if found is None:
         warnings.append(f"configuration group {name!r} is not in GET {CONFIG_GROUPS_PATH}")
-        return {"name": name}
+        return {"name": name}, []
     gid = str(found.get("id"))
     detail = await app.api.get(path(CONFIG_GROUP_PATH, id=gid))
     record = detail if isinstance(detail, dict) and detail.get("id") else found
@@ -93,6 +99,7 @@ async def _config_group_part(
     }
     profiles = [p for p in _as_list(record.get("profiles")) if isinstance(p, dict)]
     read = await _read_profiles(app, profiles) if profiles else []
+    addons = await _cli_addons(app, name, read, warnings)
     out["feature_profiles"] = [
         refs_for_masked(p, f"config-group/{name}/{p.get('name')}", f"configuration group {name}", secrets)
         for p in read
@@ -109,6 +116,51 @@ async def _config_group_part(
             if (v := values.get(str(d.get("chassis")))) is not None:
                 host = str(d.get("host") or d.get("chassis"))
                 d["variables"] = variables_with_refs(v, host, f"variables of {host}", secrets)
+    return out, addons
+
+
+async def _cli_addons(
+    app: SdwanApp, group: str, profiles: list[dict[str, Any]], warnings: list[str]
+) -> list[Addon]:
+    """Each CLI profile parcel's text (#166): the profile read leaves the parcel's data out on 20.18, so
+    each parcel is read on its own. The masked text goes on the parcel (`cli`) in place."""
+    todo = [
+        (p, parcel)
+        for p in profiles
+        if p.get("type") == "cli" and p.get("id")
+        for parcel in _as_list(p.get("parcels"))
+        if isinstance(parcel, dict) and parcel.get("id") and parcel.get("type")
+    ]
+
+    async def one(p: dict[str, Any], parcel: dict[str, Any]) -> Any:
+        return await app.api.get(
+            path(
+                PARCEL_PATH,
+                type="cli",
+                profile=str(p["id"]),
+                parcel_type=str(parcel["type"]),
+                parcel=str(parcel["id"]),
+            )
+        )
+
+    got = await asyncio.gather(*(one(p, x) for p, x in todo), return_exceptions=True)
+    out: list[Addon] = []
+    for (p, parcel), res in zip(todo, got, strict=True):
+        where = f"configuration group {group}: CLI parcel {p.get('name')}/{parcel.get('name')}"
+        values: dict[str, Any] = parcel["values"] if isinstance(parcel.get("values"), dict) else {}
+        raw = values.pop("config", None)  # never the profile read's unmasked text
+        if not values:
+            parcel.pop("values", None)
+        if isinstance(res, UpstreamError):
+            warnings.append(f"{where}: not read: {str(res)[:200]}")
+            res = {"payload": {"data": {"config": raw}}} if isinstance(raw, str) else None
+        elif isinstance(res, BaseException):
+            raise res
+        cli = parcel_view(res).get("cli") if res is not None else None
+        if not isinstance(cli, str) or not cli.strip():
+            continue
+        parcel["cli"] = cli
+        out.append({"profile": str(p.get("name")), "parcel": str(parcel.get("name")), "cli": cli})
     return out
 
 
@@ -146,7 +198,11 @@ async def _template_part(
 
 
 async def _intended(
-    app: SdwanApp, devices: list[dict[str, Any]], include_config: bool, warnings: list[str]
+    app: SdwanApp,
+    devices: list[dict[str, Any]],
+    include_config: bool,
+    warnings: list[str],
+    addons: dict[str, list[Addon]],
 ) -> None:
     async def one(d: dict[str, Any]) -> Any:
         return await app.api.get(path(INTENDED_PATH, id=str(d["chassis"])))
@@ -159,13 +215,27 @@ async def _intended(
             continue
         if isinstance(res, BaseException):
             raise res
+        mine = addons.get(str(d.get("config_group")), [])
+        rendered = [render_cli(a["cli"], d.get("variables") or {}) for a in mine]
         text = res.get("config") if isinstance(res, dict) else res
         if not isinstance(text, str) or not text.strip():
             warnings.append(f"{d.get('host')}: the Manager holds no intended configuration")
+            if rendered:
+                d.update(parse_intended("", *rendered))
             continue
-        d.update(parse_intended(text))
+        d.update(parse_intended(text, *rendered))
         if include_config:
             d["intended_config"] = mask_config(text)[0]
+        masked = mask_config(text)[0]
+        missing = [m for r in rendered for m in missing_from(r, masked)]
+        if missing:
+            d["cli_addon_not_in_intended"] = len(missing)
+            names = ", ".join(sorted({a["profile"] for a in mine}))
+            warnings.append(
+                f"{d.get('host')}: {len(missing)} line(s) of the CLI add-on ({names}) are not in the "
+                f"Manager's intended configuration (e.g. {'; '.join(missing[:3])}); transports and service "
+                "VPNs include them, and config_groups[].feature_profiles[].parcels[].cli holds the text"
+            )
 
 
 async def _policy_groups(app: SdwanApp, chassis: set[str], warnings: list[str]) -> list[dict[str, Any]]:
@@ -260,7 +330,8 @@ def register(reg: ToolRegistrar) -> None:
         model, version, configuration mode), the configuration group with its feature profiles or the device
         template, each edge's variables, the policy groups and the parts of the activated centralised policy
         that touch the site, each edge's transports (tunnel interface, colour, restrict, encapsulation,
-        address) and service VPNs from its intended configuration, and the TLOCs the controllers hold.
+        address) and service VPNs from its intended configuration plus the group's CLI add-on (whose text is
+        exported on the CLI profile's parcels, {{variables}} kept), and the TLOCs the controllers hold.
         Secret values are never exported: each becomes {"secret_ref": ...}, listed under `secrets`.
         Certificates, the serial file and one-time tokens are left out. Changes nothing."""
         app: SdwanApp = get_client(ctx)
@@ -282,11 +353,13 @@ def register(reg: ToolRegistrar) -> None:
         templates_used = sorted({str(d["device_template"]) for d in devices if d.get("device_template")})
         config_groups: list[dict[str, Any]] = []
         device_templates: list[dict[str, Any]] = []
+        addons: dict[str, list[Addon]] = {}
         if groups_used:
             all_groups = await _groups(app, CONFIG_GROUPS_PATH)
             for name in groups_used:
                 mine = [d for d in devices if d.get("config_group") == name]
-                config_groups.append(await _config_group_part(app, name, mine, all_groups, secrets, warnings))
+                part, addons[name] = await _config_group_part(app, name, mine, all_groups, secrets, warnings)
+                config_groups.append(part)
         if templates_used:
             body = await app.api.get(DEVICE_TEMPLATES_PATH, {"feature": "all"})
             templates = [t for t in rows(body)]
@@ -300,7 +373,7 @@ def register(reg: ToolRegistrar) -> None:
             )
 
         chassis = {str(d["chassis"]) for d in devices if d.get("chassis")}
-        await _intended(app, devices, include_config, warnings)
+        await _intended(app, devices, include_config, warnings, addons)
         policy_groups = await _policy_groups(app, chassis, warnings)
         centralised = await _centralised(app, site_id, warnings)
         if live_tlocs:
@@ -321,7 +394,7 @@ def register(reg: ToolRegistrar) -> None:
             "colours": colours(devices),
             "service_vpns": service_vpns(devices),
             "secrets": secrets.listed(),
-            "twin_notes": TWIN_NOTES,
+            "twin_notes": [*TWIN_NOTES, CLI_ADDON_NOTE] if any(addons.values()) else TWIN_NOTES,
         }
         if warnings:
             spec["warnings"] = warnings

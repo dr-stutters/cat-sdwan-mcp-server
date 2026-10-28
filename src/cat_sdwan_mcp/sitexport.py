@@ -33,7 +33,7 @@ from typing import Any
 
 from cat_sdwan_mcp._core.formatting import MASK, is_secret_key
 from cat_sdwan_mcp.client import _as_list
-from cat_sdwan_mcp.configuration import _normalise
+from cat_sdwan_mcp.configuration import _normalise, blocks
 from cat_sdwan_mcp.policy import _refs, assembly_view, in_site_list
 
 KIND = "cat-sdwan-twin-site"
@@ -162,13 +162,14 @@ def _address(line: str) -> str | None:
     return None
 
 
-def parse_intended(text: str) -> dict[str, Any]:
-    """{transports: [{interface, colour, restrict, encap, address}], service_vpns: [{vpn, interfaces:
-    [{interface, address}]}]} from a device's intended configuration (the Manager's rendering, any mode)."""
-    lines = _normalise(text)
-    tunnels: dict[str, dict[str, Any]] = {}
-    interfaces: dict[str, dict[str, Any]] = {}
-    vrfs: list[str] = []
+def _parse_part(
+    lines: list[str],
+    tunnels: dict[str, dict[str, Any]],
+    interfaces: dict[str, dict[str, Any]],
+    vrfs: list[str],
+    *,
+    addon: bool,
+) -> None:
     in_sdwan = False
     sdwan_if: str | None = None
     current_if: str | None = None
@@ -180,8 +181,8 @@ def parse_intended(text: str) -> dict[str, Any]:
             if s.startswith("interface "):
                 current_if = s.split(None, 1)[1]
                 interfaces.setdefault(current_if, {})
-            elif s.startswith("vrf definition "):
-                vrfs.append(s.split(None, 2)[2])
+            elif s.startswith("vrf definition ") and (vrf := s.split(None, 2)[2]) not in vrfs:
+                vrfs.append(vrf)
             continue
         if in_sdwan:
             if indent == 1:
@@ -195,16 +196,34 @@ def parse_intended(text: str) -> dict[str, Any]:
                     t["colour"] = words[1]
                     if "restrict" in words[2:]:
                         t["restrict"] = True
-                elif words[0] == "encapsulation" and len(words) > 1:
+                elif words[0] == "encapsulation" and len(words) > 1 and words[1] not in t.get("encap", []):
                     t.setdefault("encap", []).append(words[1])
             continue
         if current_if is not None:
             if addr := _address(s):
-                interfaces[current_if].setdefault("addresses", []).append(addr)
+                have = interfaces[current_if].setdefault("addresses", [])
+                if addr in have:
+                    continue
+                if addon and "secondary" not in s.split():
+                    have.insert(0, addr)
+                else:
+                    have.append(addr)
             elif s.startswith("vrf forwarding "):
                 interfaces[current_if]["vrf"] = s.split(None, 2)[2]
             elif s.startswith("description "):
                 interfaces[current_if]["description"] = s.split(None, 1)[1]
+
+
+def parse_intended(text: str, *addons: str) -> dict[str, Any]:
+    """{transports: [{interface, colour, restrict, encap, address}], service_vpns: [{vpn, interfaces:
+    [{interface, address}]}]} from a device's intended configuration (the Manager's rendering, any mode)
+    plus any rendered CLI add-on texts (#166). An add-on is applied after the rest on the device, so its
+    primary `ip address`, `vrf forwarding` and `description` win over the intended text's."""
+    tunnels: dict[str, dict[str, Any]] = {}
+    interfaces: dict[str, dict[str, Any]] = {}
+    vrfs: list[str] = []
+    for n, part in enumerate((text, *addons)):
+        _parse_part(_normalise(part), tunnels, interfaces, vrfs, addon=n > 0)
     transports = []
     for name, t in tunnels.items():
         if not t.get("tunnel") and "colour" not in t:
@@ -236,6 +255,45 @@ def parse_intended(text: str) -> dict[str, Any]:
         ]
         vpns.append({"vpn": int(vrf), "interfaces": members})
     return {"transports": transports, "service_vpns": sorted(vpns, key=lambda v: v["vpn"])}
+
+
+# --- CLI add-on profile (#166) -------------------------------------------------------------------
+
+_VARIABLE = re.compile(r"\{\{\s*([\w.-]+)\s*\}\}")
+
+
+def render_cli(text: str, variables: dict[str, Any]) -> str:
+    """The add-on CLI with each {{variable}} that has a plain value in `variables` filled in; a secret
+    (a ref) or a variable with no value stays as {{name}}."""
+
+    def one(m: re.Match[str]) -> str:
+        v = variables.get(m.group(1))
+        if isinstance(v, bool):
+            return "true" if v else "false"
+        if isinstance(v, str | int | float) and v != "":
+            return str(v)
+        return m.group(0)
+
+    return _VARIABLE.sub(one, text)
+
+
+def _pairs(text: str) -> list[tuple[str, str | None]]:
+    out: list[tuple[str, str | None]] = []
+    for key, children in blocks(text).items():
+        out.append((key, None))
+        out += [(key, c.strip()) for c in children]
+    return out
+
+
+def missing_from(addon: str, intended: str) -> list[str]:
+    """The rendered add-on's lines ('block' or 'block / line') that are not in the intended configuration;
+    lines still holding a {{variable}} are left out (their value is unknown here)."""
+    have = set(_pairs(intended))
+    return [
+        key if line is None else f"{key} / {line}"
+        for key, line in _pairs(addon)
+        if "{{" not in key and "{{" not in (line or "") and (key, line) not in have
+    ]
 
 
 def tloc_view(t: dict[str, Any]) -> dict[str, Any]:
@@ -322,3 +380,10 @@ TWIN_NOTES = [
     "Not exported: certificates, the serial file, one-time tokens and secret values (each secret is a "
     "secret_ref under `secrets`: the twin supplies its own).",
 ]
+
+CLI_ADDON_NOTE = (
+    "CLI add-on: the group's CLI profile is under config_groups[].feature_profiles[].parcels[].cli "
+    "({{variables}} as they are, filled from each device's variables). The Manager's intended configuration "
+    "can leave its lines out (devices[].cli_addon_not_in_intended counts them); the twin applies the add-on "
+    "after the rest."
+)

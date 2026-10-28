@@ -41,6 +41,7 @@ removed or changing meaning bumps the version.
 | `variables` | `{name: value}`: configuration-group variables in their native types (`site_id` an integer), or the template's input keyed as the Manager keys it (`//system/host-name`, `{{name}}`). A secret is `{"secret_ref": "<host>/<name>"}`; a variable with no value is null |
 | `transports` | `[{interface, colour, restrict?, encap, address?}]`: each `sdwan / interface` with a tunnel interface in the intended configuration; `encap` is `ipsec`, `gre` or `gre, ipsec`; `address` is the interface's first `ip address` as a prefix |
 | `service_vpns` | `[{vpn: int, interfaces: [{interface, address?, description?}]}]`: each numbered `vrf definition` (Mgmt-intf and the platform's 65528-65530 left out) and the interfaces forwarding in it |
+| `cli_addon_not_in_intended` | How many lines of the group's CLI add-on (rendered with the device's variables) the Manager's intended configuration lacks; absent when none. `transports` and `service_vpns` are parsed from the intended configuration **plus** the rendered add-on, which the device applies last (its primary `ip address`, `vrf forwarding` and `description` win) |
 | `tlocs` | With `live_tlocs` (default): the TLOCs a controller holds for the edge, one per TLOC: `colour`, `encap`, `public`, `private` (`address:port`), `preference`, `weight`, `encryption`, `bfd_status` |
 | `intended_config` | With `include_config`: the intended configuration text, secrets masked as `********` |
 
@@ -51,6 +52,13 @@ removed or changing meaning bumps the version.
 variables shown as `{{name}}`, defaults left out, `subparcels`), except that a secret value is a ref
 (`config-group/<group>/<profile>/<path>`, list indexes as path segments: `user/0/password`). On 20.18 the profile
 read can leave out a parcel's data; the parcel is still listed by type and name.
+
+A CLI add-on profile (`type` `cli`) has each parcel read on its own (`GET /v1/feature-profile/sdwan/cli/{profile}/
+config/{parcel}`) and its text under `parcels[].cli`: secrets masked as `********`, `{{variables}}` kept as they
+are (a `{{variable}}` after `secret` or `community` is a name, not a value, and stays). The Manager's intended
+configuration can leave the add-on's lines out (seen on 20.18.3.1); the export then warns, names a few of the
+missing lines, and adds a twin note: the twin applies the add-on after the rest, its variables filled from the
+device's `variables`.
 
 ## `centralised_policy`
 

@@ -7,6 +7,7 @@ variables and intended configurations are built here with documentation addresse
 198.51.100.0/24, 203.0.113.0/24); the TLOCs are device_omp_tlocs_received_hub1 with br1's rows added.
 """
 
+import copy
 import json
 from typing import Any
 
@@ -28,6 +29,11 @@ BR2 = "REDACTED-22"
 PG = "00000000-0000-4000-8000-00000000a001"
 TPL = "00000000-0000-4000-8000-00000000b001"
 SECRET = "Sup3rS3cret!"
+CLI_PROFILE = "00000000-0000-4000-8000-000000001038"
+CLI_PARCEL = "00000000-0000-4000-8000-000000001039"
+CLI_PARCEL_PATH = f"/dataservice/v1/feature-profile/sdwan/cli/{CLI_PROFILE}/config/{CLI_PARCEL}"
+# An add-on whose lines are all in INTENDED_BR1 (no warning).
+ADDON_IN_INTENDED = "interface GigabitEthernet3\n description LAN (VPN 10)\n vrf forwarding 10\n"
 
 INTENDED_BR1 = """no config
 config
@@ -125,9 +131,24 @@ def _tlocs() -> dict[str, Any]:
     return body
 
 
-def mock_site(api: respx.MockRouter, *, tlocs: bool = True) -> None:
+def _cli_parcel(cli: str) -> dict[str, Any]:
+    """The recorded config parcel (v1_feature_profile_cli_config_parcel) with `cli` as its text."""
+    body = copy.deepcopy(fixture("v1_feature_profile_cli_config_parcel"))
+    body["payload"]["data"]["config"] = cli
+    return body
+
+
+def mock_site(
+    api: respx.MockRouter,
+    *,
+    tlocs: bool = True,
+    cli: str = ADDON_IN_INTENDED,
+    intended: str = INTENDED_BR1,
+    extra_vars: list[dict[str, Any]] | None = None,
+) -> respx.Route:
     mock_inventory(api, br1={"managed-by": "Config-Group mcp-test, Policy-Group mcp-pg"})
     _profiles(api)
+    parcel = api.get(CLI_PARCEL_PATH).respond(json=_cli_parcel(cli))
     api.get(f"/dataservice/v1/config-group/{W8_TEST_GROUP}/device/variables").respond(
         json={
             "family": "sdwan",
@@ -142,12 +163,13 @@ def mock_site(api: respx.MockRouter, *, tlocs: bool = True) -> None:
                         {"name": "ipsec_pre_shared_key", "value": SECRET},
                         {"name": "snmp_community", "value": SECRET},
                         {"name": "admin_password"},
+                        *(extra_vars or []),
                     ],
                 }
             ],
         }
     )
-    api.get(f"/dataservice/template/config/attached/{BR1}").respond(json={"config": INTENDED_BR1})
+    api.get(f"/dataservice/template/config/attached/{BR1}").respond(json={"config": intended})
     mock_policies(api, active=True)
     api.get("/dataservice/v1/policy-group").respond(
         json=[
@@ -168,6 +190,7 @@ def mock_site(api: respx.MockRouter, *, tlocs: bool = True) -> None:
         api.get("/dataservice/device/omp/tlocs/received").respond(json=_tlocs())
     else:
         api.get("/dataservice/device/omp/tlocs/received").respond(500, json={"error": {"message": "boom"}})
+    return parcel
 
 
 def _all_strings(v: Any) -> list[str]:
@@ -226,6 +249,8 @@ async def test_export_config_group_site(api: respx.MockRouter) -> None:
     assert group["name"] == "mcp-test" and group["id"] == W8_TEST_GROUP
     profiles = {p["type"]: p for p in group["feature_profiles"]}
     assert set(profiles) == {"service", "transport", "system", "cli"}
+    assert profiles["cli"]["parcels"][0]["cli"] == ADDON_IN_INTENDED.rstrip("\n")
+    assert "cli_addon_not_in_intended" not in br1
     aaa = next(p for p in profiles["system"]["parcels"] if p.get("name") == "aaa")
     assert aaa["values"]["user[0].password"] == {
         "secret_ref": "config-group/mcp-test/mcp-test-system/user/0/password"
@@ -250,6 +275,74 @@ async def test_export_config_group_site(api: respx.MockRouter) -> None:
     assert not [s for s in _all_strings(out) if SECRET in s or "$9$abcdefghijklmnop" in s]
     assert out["devices"][0].get("policy_group") is None  # the policy group is in policy_groups
     assert "warnings" not in out
+
+
+# The firewall leg the add-on adds (#166): the Manager's intended text has the interface as only
+# 'no shutdown / negotiation auto', as recorded on br1 in the W55 proof (2026-10-28).
+ADDON_FW = """banner motd ^Cmcp twin branch^C
+ip access-list extended mcp-contain
+ 10 deny ip any host 203.0.113.66
+ 20 permit ip any any
+interface GigabitEthernet5
+ description firewall leg (VPN 10)
+ vrf forwarding 10
+ ip address {{fw_ip}} 255.255.255.252
+ ip access-group mcp-contain in
+username ops privilege 15 secret 9 $9$zyxwvutsrqponmlk
+snmp-server community {{snmp_community}} RO
+"""
+
+
+async def test_export_includes_the_cli_addon(api: respx.MockRouter) -> None:
+    intended = INTENDED_BR1 + "  interface GigabitEthernet5\n   no shutdown\n   negotiation auto\n  exit\n"
+    parcel = mock_site(
+        api, cli=ADDON_FW, intended=intended, extra_vars=[{"name": "fw_ip", "value": "203.0.113.9"}]
+    )
+    out = await call("catsdwan_export_site", {"site": "200", "include_config": True})
+    assert parcel.called
+    (br1,) = out["devices"]
+    # the add-on's interface is in VPN 10 with its rendered address
+    (vpn10,) = br1["service_vpns"]
+    assert vpn10["vpn"] == 10
+    assert vpn10["interfaces"] == [
+        {"interface": "GigabitEthernet3", "address": "203.0.113.1/24", "description": "LAN (VPN 10)"},
+        {
+            "interface": "GigabitEthernet5",
+            "address": "203.0.113.9/30",
+            "description": "firewall leg (VPN 10)",
+        },
+    ]
+    assert [t["interface"] for t in br1["transports"]] == ["GigabitEthernet1", "GigabitEthernet2"]
+    # the parcel's CLI text: masked, {{variables}} kept (a secret variable is never filled in)
+    (group,) = out["config_groups"]
+    cli_profile = next(p for p in group["feature_profiles"] if p["type"] == "cli")
+    (cfg,) = cli_profile["parcels"]
+    assert cfg["name"] == "mcp-test-config" and "values" not in cfg
+    assert "ip address {{fw_ip}} 255.255.255.252" in cfg["cli"]
+    assert (
+        "ip access-list extended mcp-contain" in cfg["cli"] and "ip access-group mcp-contain in" in cfg["cli"]
+    )
+    assert "snmp-server community {{snmp_community}} RO" in cfg["cli"]
+    assert "secret 9 ********" in cfg["cli"]
+    assert not [s for s in _all_strings(out) if "$9$zyxwvutsrqponmlk" in s or SECRET in s]
+    # the lines the intended text lacks are counted and named; the twin is told to apply the add-on
+    assert br1["cli_addon_not_in_intended"] >= 6
+    (warning,) = out["warnings"]
+    assert warning.startswith("br1: ") and "mcp-test-cli" in warning and "banner motd" in warning
+    assert "{{" not in warning and SECRET not in warning
+    assert any("parcels[].cli" in n for n in out["twin_notes"])
+    assert out["service_vpns"] == [{"vpn": 10, "devices": ["br1"]}]
+
+
+async def test_export_cli_parcel_read_failure_is_a_warning(api: respx.MockRouter) -> None:
+    mock_site(api)
+    api.get(CLI_PARCEL_PATH).respond(500, json={"error": {"message": "boom"}})
+    out = await call("catsdwan_export_site", {"site": "200"})
+    assert any("CLI parcel mcp-test-cli/mcp-test-config: not read" in w for w in out["warnings"])
+    cfg = next(p for p in out["config_groups"][0]["feature_profiles"] if p["type"] == "cli")["parcels"][0]
+    assert "cli" not in cfg
+    assert not any("parcels[].cli" in n for n in out["twin_notes"])
+    assert out["devices"][0]["service_vpns"][0]["vpn"] == 10
 
 
 async def test_export_tloc_failure_is_a_warning(api: respx.MockRouter) -> None:
@@ -383,6 +476,25 @@ def test_parse_intended_running_style_and_no_sdwan() -> None:
     assert sx.parse_intended("hostname x\n") == {"transports": [], "service_vpns": []}
 
 
+def test_render_cli_and_missing_lines() -> None:
+    text = "interface Gi5\n ip address {{ip}} 255.255.255.0\n description {{desc}}\n shutdown {{flag}}\n"
+    got = sx.render_cli(text, {"ip": "192.0.2.5", "desc": {"secret_ref": "x"}, "flag": False})
+    assert (
+        got == "interface Gi5\n ip address 192.0.2.5 255.255.255.0\n description {{desc}}\n shutdown false\n"
+    )
+    intended = "  interface Gi5\n   ip address 192.0.2.5 255.255.255.0\n  exit\n"
+    assert sx.missing_from(got, intended) == ["interface Gi5 / shutdown false"]
+
+
+def test_parse_addon_wins_and_vrfs_are_not_repeated() -> None:
+    base = "vrf definition 10\ninterface Gi3\n vrf forwarding 20\n ip address 192.0.2.1 255.255.255.0\n"
+    addon = "vrf definition 10\ninterface Gi3\n vrf forwarding 10\n ip address 198.51.100.1 255.255.255.0\n"
+    got = sx.parse_intended(base, addon)
+    assert got["service_vpns"] == [
+        {"vpn": 10, "interfaces": [{"interface": "Gi3", "address": "198.51.100.1/24"}]}
+    ]
+
+
 def test_paths_are_in_the_bundled_spec() -> None:
     index = build_index(fixture("spec_subset"), source="dataservice", path_prefix="/dataservice")
     for method, p in (
@@ -392,6 +504,7 @@ def test_paths_are_in_the_bundled_spec() -> None:
         ("GET", "/dataservice/template/config/attached/{deviceId}"),
         ("GET", "/dataservice/template/policy/vsmart/definition/{policyId}"),
         ("GET", "/dataservice/v1/feature-profile/sdwan/transport/{transportId}"),
+        ("GET", "/dataservice/v1/feature-profile/sdwan/cli/{cliId}/config/{configId}"),
     ):
         _, methods = match_operation(index, method, p.replace("{", "").replace("}", ""))
         assert method in methods, p
