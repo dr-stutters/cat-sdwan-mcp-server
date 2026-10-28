@@ -2,6 +2,10 @@
 test_prompts.py; these check the order of the steps, the lab and no-lab renderings, the restore step and
 the hub resolution."""
 
+import re
+from typing import Any
+
+import pytest
 from fastmcp import Client
 
 from cat_sdwan_mcp._core.prompts import rendered_text
@@ -131,3 +135,52 @@ async def test_dc_services_given_or_found() -> None:
 async def test_sites_and_default_vpns() -> None:
     text = await text_of({"hub": "hub1", "sites": "200, 201"})
     assert '"200", "201"' in text and "service VPN (every one" in text
+
+
+# #168: the drill names tool calls with their arguments; each call must pass the tool's own checks.
+CALL = re.compile(r"`(catsdwan_\w+)`( with (?P<args>[^:;(]+?))?(?=[:;(]|\.\s|\.$|$)")
+
+
+def named_calls(text: str) -> list[tuple[str, str | None]]:
+    flat = " ".join(text.split())
+    return [(m.group(1), m.group("args")) for m in CALL.finditer(flat[flat.index("1. Before") :])]
+
+
+async def tool_schemas() -> dict[str, dict[str, Any]]:
+    server = make_server(mcp_enable_writes=True, mcp_enable_dangerous=True)
+    async with Client(server) as c:
+        return {t.name: t.inputSchema for t in await c.list_tools()}
+
+
+@pytest.mark.parametrize(
+    "args",
+    [
+        {"hub": "hub1", "lab": "mcp-lab-sdwan", "vpns": "10,20"},
+        {"hub": "hub1", "lab": "mcp-lab-sdwan", "method": "node"},
+        {"hub": "hub1", "dc_services": "ISE 192.0.2.20"},
+        {},
+    ],
+)
+async def test_named_calls_pass_each_tools_argument_checks(args: dict[str, str]) -> None:
+    schemas = await tool_schemas()
+    text = await text_of(args)
+    calls = named_calls(text)
+    flat = " ".join(text.split())
+    steps = flat[flat.index("1. Before") :]
+    explain = [given for name, given in calls if name == "catsdwan_explain_path"]
+    # every explain_path mention in the steps is a call with arguments (a bare one has no traffic)
+    assert explain and len(explain) == steps.count("`catsdwan_explain_path`")
+    for name, given in calls:
+        assert name in schemas, f"{name} is not a tool of this server"
+        if given is None:
+            # a bare mention runs with no arguments: only fine for a tool that needs none (#168: explain_path)
+            assert name != "catsdwan_explain_path", "catsdwan_explain_path named without its traffic"
+            continue
+        props = schemas[name].get("properties", {})
+        named = set(re.findall(r"\b([a-z_]+)=", given))
+        assert named <= set(props), f"{name}: unknown arguments {named - set(props)} in '{given}'"
+        mentioned = {p for p in props if re.search(rf"\b{p}\b", given)}
+        missing = set(schemas[name].get("required", [])) - mentioned
+        assert not missing, f"{name}: required {missing} missing in '{given}'"
+        if name == "catsdwan_explain_path":  # checked in the tool body, not the schema
+            assert {"app", "dscp"} & named, f"explain_path without app or dscp: '{given}'"
