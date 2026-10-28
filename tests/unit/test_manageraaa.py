@@ -172,10 +172,10 @@ async def test_single_tenant_blocks(api: respx.MockRouter) -> None:
     mock_single(api)
     async with Client(server()) as c:
         no_local = await tool(c, {**ARGS, "order": ["radius"]})
-        tacacs = await tool(c, {**ARGS, "protocol": "tacacs", "order": ["local", "tacacs"]})
+        tacacs = await tool(c, {"protocol": "tacacs", "order": ["local", "tacacs"]})
         noop = await tool(c, {"protocol": "radius", "order": ["local", "radius", "tacacs"]})
     assert no_local["status"] == "blocked" and "has no 'local'" in no_local["blockers"][0]
-    assert any("TACACS+ for the Manager's own logins is not built yet" in b for b in tacacs["blockers"])
+    assert any("uses tacacs, but no TACACS server" in b for b in tacacs["blockers"])
     assert any("nothing to change" in b for b in noop["blockers"])
 
 
@@ -270,3 +270,197 @@ def test_undo_order_passes_the_guard() -> None:
     assert undo_order(factory) == ["local", "radius", "tacacs"]
     assert undo_order({"order": ["local", "radius"], "radius": "not configured"}) == ["local"]
     assert undo_order({"order": ["local", "radius"], "radius": {"servers": [{}]}}) == ["local", "radius"]
+
+
+# --- W26 (#158): TACACS+ in the system AAA ---------------------------------------------------------------
+
+TAC_SECRET = "tacacs-s3cret-w26"
+TAC = "198.51.100.36"
+TAC_ARGS: dict[str, Any] = {
+    "protocol": "tacacs",
+    "order": ["local", "tacacs"],
+    "servers": [{"address": TAC, "secret": TAC_SECRET, "vpn": 512}],
+    "fallback": True,
+    "authentication": "ascii",
+}
+
+
+def with_radius() -> str:
+    """The lab's state after the W40 round: RADIUS set, order local radius, fallback on."""
+    return edit_system_aaa(
+        running_text(),
+        order=["local", "radius"],
+        fallback=True,
+        servers=[{"address": ISE, "secret": SECRET, "vpn": 512, "tag": "ise1"}],
+        timeout=5,
+        retransmit=3,
+    )
+
+
+def mock_running(api: respx.MockRouter, text: str) -> None:
+    api.get(RUNNING).respond(json={**fixture("template_config_running_manager"), "config": text})
+
+
+async def test_single_tenant_tacacs_preview(api: respx.MockRouter) -> None:
+    routes = mock_single(api)
+    async with Client(server()) as c:
+        prev = await tool(c, TAC_ARGS)
+    assert prev["status"] == "preview", prev.get("blockers")
+    p = prev["preview"]
+    assert p["path"] == "system AAA (single-tenant Manager)"
+    factory = ["local", "radius", "tacacs"]
+    assert p["before"] == {"order": factory, "fallback": False, "tacacs": "not configured"}
+    assert p["after"]["order"] == ["local", "tacacs"] and p["after"]["fallback"] is True
+    assert p["after"]["tacacs"] == {
+        "servers": [{"address": TAC, "vpn": 512, "secret-key": "********", "auth-port": 49, "priority": 0}],
+        "timeout": 5,
+        "authentication": "ascii",
+    }
+    diff = json.dumps(p["diff_vs_running"])
+    assert "auth-order local tacacs" in diff and f"server {TAC}" in diff and "authentication ascii" in diff
+    assert "radius" not in json.dumps(p["after"]) and "unchanged" not in p  # no RADIUS on the factory config
+    assert p["tier"] == "dangerous" and p["local_fallback"] is True
+    assert "protocol='tacacs'" in p["undo"] and "servers=[])" in p["undo"]
+    assert "order=['local', 'radius', 'tacacs']" in p["undo"]  # the factory order, which the guard allows
+    assert TAC_SECRET not in json.dumps(prev)
+    assert not routes["admin_radius"].called and not routes["admin_aaa"].called
+
+
+async def test_single_tenant_tacacs_next_to_radius(api: respx.MockRouter) -> None:
+    mock_single(api)
+    mock_running(api, with_radius())
+    args = {**TAC_ARGS, "order": ["local", "tacacs", "radius"], "fallback": None, "authentication": None}
+    async with Client(server()) as c:
+        prev = await tool(c, args)
+    assert prev["status"] == "preview", prev.get("blockers")
+    p = prev["preview"]
+    assert p["before"]["order"] == ["local", "radius"] and p["before"]["tacacs"] == "not configured"
+    assert p["unchanged"]["radius"]["servers"][0]["address"] == ISE
+    assert "authentication" not in p["after"]["tacacs"]  # Viptela's default (pap): no line
+    # The undo keeps RADIUS and drops TACACS+: order [local, radius], no TACACS+ servers.
+    assert "order=['local', 'radius'], servers=[])" in p["undo"]
+    assert SECRET not in json.dumps(prev) and TAC_SECRET not in json.dumps(prev)
+
+
+async def test_single_tenant_tacacs_confirm_and_undo(api: respx.MockRouter) -> None:
+    routes = mock_single(api)
+    login = api.post("/j_security_check").mock(side_effect=[LOGIN_OK, LOGIN_OK])
+    async with Client(server()) as c:
+        prev = await tool(c, TAC_ARGS)
+        done = (await tool(c, {**TAC_ARGS, "confirm": prev["confirm"]}))["result"]
+    assert login.call_count == 2 and done["outcome"] == "done"
+    assert done["test_login_before"]["ok"] and done["test_login"]["ok"]
+    cfg = json.loads(routes["create"].calls[0].request.content)["templateConfiguration"]
+    assert "  auth-order local tacacs\n  auth-fallback\n" in cfg
+    assert (
+        f" tacacs\n  timeout 5\n  authentication ascii\n  server {TAC}\n   vpn 512\n"
+        f"   secret-key {TAC_SECRET}\n   auth-port 49\n   priority 0\n  exit\n !\n"
+    ) in cfg
+    assert "$6$REDACTED-HASH-ADMIN" in cfg and "ip route 0.0.0.0/0 198.51.100.1" in cfg  # the rest kept
+    assert TAC_SECRET not in json.dumps(done)
+
+
+async def test_single_tenant_tacacs_undo_from_local_only(api: respx.MockRouter) -> None:
+    mock_single(api)
+    local_only = edit_system_aaa(
+        running_text(), order=["local"], fallback=None, servers=None, timeout=None, retransmit=None
+    )
+    tac = edit_system_aaa(
+        local_only,
+        order=["local", "tacacs"],
+        fallback=None,
+        servers=[{"address": TAC, "secret": TAC_SECRET}],
+        timeout=5,
+        retransmit=None,
+        protocol="tacacs",
+    )
+    mock_running(api, local_only)
+    async with Client(server()) as c:
+        first = await tool(c, {**TAC_ARGS, "fallback": None, "authentication": None})
+    assert first["status"] == "preview", first.get("blockers")
+    assert "order=['local'], servers=[])" in first["preview"]["undo"]
+    mock_running(api, tac)
+    async with Client(server()) as c:
+        undo = await tool(c, {"protocol": "tacacs", "order": ["local"], "servers": []})
+    assert undo["status"] == "preview", undo.get("blockers")
+    assert undo["preview"]["after"] == {"order": ["local"], "fallback": False, "tacacs": "removed"}
+    changed = undo["preview"]["diff_vs_running"]["changed"]["system"]
+    assert "+ auth-order local" in changed and "-tacacs" in changed and f"- server {TAC}" in changed
+    assert TAC_SECRET not in json.dumps(undo)
+
+
+async def test_single_tenant_tacacs_rolls_back_and_guards(api: respx.MockRouter) -> None:
+    routes = mock_single(api)
+    api.post("/j_security_check").mock(side_effect=[LOGIN_OK, LOGIN_REJECTED])
+    put = api.put("/dataservice/template/device/tpl-w40").respond(json={})
+    async with Client(server()) as c:
+        prev = await tool(c, TAC_ARGS)
+        done = (await tool(c, {**TAC_ARGS, "confirm": prev["confirm"]}))["result"]
+        no_local = await tool(c, {**TAC_ARGS, "order": ["tacacs"]})
+        first = await tool(c, {**TAC_ARGS, "order": ["tacacs", "local"]})
+        extra = {"address": TAC, "secret": TAC_SECRET, "tag": "ise1", "acct_port": 49}
+        tagged = await tool(c, {**TAC_ARGS, "servers": [extra]})
+    assert done["outcome"] == "rolled back" and routes["attach"].call_count == 2
+    assert json.loads(put.calls[0].request.content)["templateConfiguration"] == running_text()
+    assert no_local["status"] == "blocked" and "has no 'local'" in no_local["blockers"][0]
+    assert any("TACACS+ reject ends the login" in w for w in first["preview"]["warnings"])
+    assert any("tag and acct_port left out" in w for w in tagged["preview"]["warnings"])
+    assert "tag" not in json.dumps(tagged["preview"]["after"]["tacacs"])
+
+
+def test_edit_and_read_system_tacacs() -> None:
+    text = with_radius()
+    servers = [{"address": TAC, "secret": TAC_SECRET, "vpn": 0, "priority": 1, "auth_port": 4949}]
+    new = edit_system_aaa(
+        text,
+        order=["local", "tacacs", "radius"],
+        fallback=None,
+        servers=servers,
+        timeout=10,
+        retransmit=None,
+        protocol="tacacs",
+        authentication="pap",
+    )
+    got = system_aaa(new)
+    assert got["order"] == ["local", "tacacs", "radius"] and got["fallback"] is True
+    assert got["tacacs"] == {
+        "servers": [{"address": TAC, "vpn": 0, "secret-key": "********", "auth-port": 4949, "priority": 1}],
+        "timeout": 10,
+        "authentication": "pap",
+    }
+    assert got["radius"] == system_aaa(text)["radius"]  # RADIUS kept as it was
+    lines = new.splitlines()
+    assert lines.index(" tacacs") > lines.index(" radius")  # after the radius block
+    assert SECRET not in mask_config(new)[0] and TAC_SECRET not in mask_config(new)[0]
+    # Removing TACACS+ with the old order gives the RADIUS configuration back.
+    back = edit_system_aaa(
+        new, order=["local", "radius"], fallback=None, servers=[], timeout=None, retransmit=None,
+        protocol="tacacs",
+    )  # fmt: skip
+    assert back == text
+    # A TACACS+ block in place is replaced where it is; RADIUS removal leaves TACACS+ alone.
+    again = edit_system_aaa(
+        new,
+        order=["local", "tacacs"],
+        fallback=None,
+        servers=[{"address": "198.51.100.37", "secret": "x"}],
+        timeout=None,
+        retransmit=None,
+        protocol="tacacs",
+    )
+    assert [a["address"] for a in system_aaa(again)["tacacs"]["servers"]] == ["198.51.100.37"]
+    no_rad = edit_system_aaa(
+        new, order=["local", "tacacs"], fallback=None, servers=[], timeout=None, retransmit=None
+    )
+    assert system_aaa(no_rad)["radius"] == "not configured" and system_aaa(no_rad)["tacacs"] == got["tacacs"]
+
+
+def test_undo_order_tacacs() -> None:
+    from cat_sdwan_mcp.tools.manageraaa import undo_order
+
+    assert undo_order({"order": ["local"], "tacacs": "not configured"}, "tacacs") == ["local"]
+    assert undo_order({"order": ["local", "radius"], "radius": {"servers": [{}]}, "tacacs": "not configured"},
+                      "tacacs") == ["local", "radius"]  # fmt: skip
+    assert undo_order({"order": ["local", "radius", "tacacs"], "tacacs": "not configured"}, "tacacs") == [
+        "local", "radius", "tacacs"
+    ]  # fmt: skip

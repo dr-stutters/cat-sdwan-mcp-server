@@ -1,4 +1,5 @@
-"""W40 RADIUS for a single-tenant Manager's own logins: its system AAA, through a CLI device template.
+"""W40 / W26 RADIUS and TACACS+ for a single-tenant Manager's own logins: its system AAA, through a CLI
+device template.
 
 Why (Wave 8 GUI capture, 20.18.3.1, single-tenant): Administration > Users and Access has no Remote AAA tab
 there; the GUI adds it (and with it /dataservice/admin/aaa, /admin/radius, /admin/tacacs) only for a
@@ -20,6 +21,10 @@ edited, attached to the Manager (POST /template/device/config/attachcli). Everyt
 configuration stays as it is (the diff shows only the AAA lines). The Manager then leaves CLI mode and
 the template owns its configuration.
 
+TACACS+ (W26, #158) takes the same path: a `system tacacs` block with `server <ip>` entries (vpn,
+secret-key, auth-port, priority) plus `timeout` and `authentication pap|ascii` (Viptela's system tacacs; no
+accounting port and no retransmit), next to the radius block, and `tacacs` in the auth-order.
+
 Not taken: 20.18's Control Component Settings (/dataservice/v1/control-component/network-settings with
 `aaa` {authOrder, user [...], radius, ...} for ALL control components, then .../devices/settings/deploy):
 its AAA requires the full local user list with passwords (which the API can't read back) and an NTP list,
@@ -39,6 +44,8 @@ TEMPLATE_NAME = "mcp-manager-system-aaa"
 # Viptela's auth-order when the line is absent (the running config recorded on 20.18.3.1 shows it).
 DEFAULT_SYSTEM_ORDER = ["local", "radius", "tacacs"]
 MASK = "********"
+# Block-level settings of `system radius` / `system tacacs` (the rest of the indent-2 lines are servers).
+BLOCK_SETTINGS = ("timeout", "retransmit", "authentication")
 
 
 def tenancy(body: Any) -> str | None:
@@ -105,27 +112,34 @@ def system_aaa(text: str) -> dict[str, Any]:
                 out["fallback"] = True
             if _indent(ln) == 2 and words == ["admin-auth-order"]:
                 out["admin_auth_order"] = True
-    rad = _sub_span(lines, span[0] + 1, span[1], "radius", 1)
+    out["radius"] = _server_block(lines, span, "radius")
+    out["tacacs"] = _server_block(lines, span, "tacacs")
+    out["local_fallback"] = "local" in out["order"]
+    return out
+
+
+def _server_block(lines: list[str], span: tuple[int, int], name: str) -> Any:
+    """`system radius` or `system tacacs`: {servers: [...], timeout, retransmit | authentication} with the
+    secret keys masked, or 'not configured'."""
+    blk = _sub_span(lines, span[0] + 1, span[1], name, 1)
     servers: list[dict[str, Any]] = []
     settings: dict[str, Any] = {}
-    if rad:
+    if blk:
         cur: dict[str, Any] | None = None
-        for ln in lines[rad[0] + 1 : rad[1]]:
+        for ln in lines[blk[0] + 1 : blk[1]]:
             words = ln.split()
             if not words or words[0] in ("!", "exit"):
                 continue
             if _indent(ln) == 2 and words[0] == "server" and len(words) > 1:
                 cur = {"address": words[1]}
                 servers.append(cur)
-            elif _indent(ln) == 2 and words[0] in ("timeout", "retransmit") and len(words) > 1:
+            elif _indent(ln) == 2 and words[0] in BLOCK_SETTINGS and len(words) > 1:
                 settings[words[0]] = _int(words[1])
                 cur = None
             elif _indent(ln) >= 3 and cur is not None and len(words) > 1:
                 key = words[0]
                 cur[key] = MASK if key == "secret-key" else _int(words[1])
-    out["radius"] = {"servers": servers, **settings} if servers else "not configured"
-    out["local_fallback"] = "local" in out["order"]
-    return out
+    return {"servers": servers, **settings} if servers else "not configured"
 
 
 def _int(v: str) -> Any:
@@ -153,6 +167,25 @@ def radius_lines(servers: list[dict[str, Any]], timeout: int | None, retransmit:
     return out
 
 
+def tacacs_lines(servers: list[dict[str, Any]], timeout: int | None, authentication: str | None) -> list[str]:
+    """The `system tacacs` block (Viptela: server <ip> with vpn, secret-key, auth-port, priority; block-level
+    timeout and authentication pap|ascii; TACACS+ has no accounting port and no retransmit)."""
+    out = [" tacacs"]
+    if timeout is not None:
+        out.append(f"  timeout {timeout}")
+    if authentication:
+        out.append(f"  authentication {authentication}")
+    for s in servers:
+        out.append(f"  server {s['address']}")
+        out.append(f"   vpn {s.get('vpn', 0)}")
+        out.append(f"   secret-key {s['secret']}")
+        out.append(f"   auth-port {s.get('auth_port') or 49}")
+        out.append(f"   priority {s.get('priority', 0)}")
+        out.append("  exit")
+    out.append(" !")
+    return out
+
+
 def edit_system_aaa(
     text: str,
     *,
@@ -161,20 +194,18 @@ def edit_system_aaa(
     servers: list[dict[str, Any]] | None,
     timeout: int | None,
     retransmit: int | None,
+    protocol: str = "radius",
+    authentication: str | None = None,
 ) -> str:
     """The running configuration with only the AAA lines changed: `aaa / auth-order`, `auth-fallback` (when
-    `fallback` is given), and the `radius` block replaced (servers given; [] removes it) or kept (None)."""
+    `fallback` is given), and the `protocol` block (`radius` or `tacacs`) replaced (servers given; []
+    removes it) or kept (None), in place. The other protocol's block and everything else stay as they are;
+    a new block goes after `radius` (TACACS+, when there is one) or right after `aaa`."""
     lines = text.splitlines()
     span = _system_span(lines)
     if span is None:
         raise ValueError("the running configuration has no `system` block")
     lo, hi = span
-    rad = _sub_span(lines, lo + 1, hi, "radius", 1)
-    kept_radius: list[str] = []
-    if rad:
-        kept_radius = lines[rad[0] : rad[1]]
-        del lines[rad[0] : rad[1]]
-        hi -= rad[1] - rad[0]
     aaa = _sub_span(lines, lo + 1, hi, "aaa", 1)
     if aaa is None:
         lines[lo + 1 : lo + 1] = [" aaa"]
@@ -190,14 +221,23 @@ def edit_system_aaa(
     if fallback and not has_fallback:
         head.append("  auth-fallback")
     lines[a0 + 1 : a1] = head + body
+    hi += len(head) + len(body) - (a1 - a0 - 1)
     a1 = a0 + 1 + len(head) + len(body)
     if servers is None:
-        block = kept_radius
-    elif servers:
-        block = radius_lines(servers, timeout, retransmit)
+        return "\n".join(lines) + ("\n" if text.endswith("\n") else "")
+    if not servers:
+        block: list[str] = []
+    elif protocol == "tacacs":
+        block = tacacs_lines(servers, timeout, authentication)
     else:
-        block = []
-    lines[a1:a1] = block
+        block = radius_lines(servers, timeout, retransmit)
+    blk = _sub_span(lines, lo + 1, hi, protocol, 1)
+    if blk:  # replaced where it is
+        lines[blk[0] : blk[1]] = block
+    else:  # new: after the radius block for TACACS+ when there is one, else right after aaa
+        rad = _sub_span(lines, lo + 1, hi, "radius", 1) if protocol == "tacacs" else None
+        at = rad[1] if rad else a1
+        lines[at:at] = block
     return "\n".join(lines) + ("\n" if text.endswith("\n") else "")
 
 
@@ -205,8 +245,8 @@ def template_body(name: str, device_type: str, config: str, host: str) -> dict[s
     """POST /template/device/cli (and the PUT that edits it): a CLI device template for the Manager."""
     return {
         "templateName": name,
-        "templateDescription": f"{host}: the Manager's running configuration with its own AAA (RADIUS) set "
-        "by catsdwan_set_external_authentication",
+        "templateDescription": f"{host}: the Manager's running configuration with its own AAA (RADIUS, "
+        "TACACS+) set by catsdwan_set_external_authentication",
         "deviceType": device_type,
         "templateConfiguration": config,
         "factoryDefault": False,
