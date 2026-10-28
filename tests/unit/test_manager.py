@@ -297,6 +297,84 @@ async def test_create_backup_export_failed_is_readable(api: respx.MockRouter, sc
         assert "No active backup schedule was found" in text and "/dataservice/schedule/create" in text
 
 
+# Recorded on 20.18.3.1 (#165, l9): the first GET /backup/backupinfo/{id} right after the export call, before
+# the Manager has written the record (code and message as quoted in the issue; the envelope is the Manager's).
+RECORD_MISSING = {
+    "error": {
+        "message": "LocalBackUpInfo Id is missing in config-db: Exception occurred in creating "
+        "LocalBackupInfo POJO from vertex for schedulerId",
+        "code": "LOCALBK_ID_NOT_FOUND",
+    }
+}
+
+
+def export_echo(request: httpx.Request) -> httpx.Response:
+    sent = json.loads(request.content)["localBackupInfoId"]
+    return httpx.Response(200, json={"taskId": "t", "backupInfoId": sent, "status": "in_progress"})
+
+
+async def test_create_backup_waits_out_the_missing_record(api: respx.MockRouter) -> None:
+    mock_backup_reads(api)  # no schedule: proven to need none (#165)
+    api.post("/dataservice/backup/export").side_effect = export_echo
+    answers = iter([(404, None), (200, "IN_PROGRESS"), (200, "ALL_SUCCESS")])
+
+    def info_answer(request: httpx.Request) -> httpx.Response:
+        status, state = next(answers)
+        if state is None:
+            return httpx.Response(status, json=RECORD_MISSING)
+        return httpx.Response(status, json=backup(request.url.path.rsplit("/", 1)[1], state, 9, task="l9"))
+
+    info = api.get(url__regex=r"/dataservice/backup/backupinfo/[0-9a-f-]+$")
+    info.side_effect = info_answer
+    async with Client(make_server(mcp_enable_writes=True)) as c:
+        prev = (await c.call_tool("catsdwan_create_backup", {"task_name": "l9"})).structured_content
+        [note] = prev["preview"]["notes"]
+        assert "which the Manager accepts" in note
+        assert note.index("accepts") < note.index("Only if it refuses")
+        args = {"task_name": "l9", "confirm": prev["confirm"]}
+        done = (await c.call_tool("catsdwan_create_backup", args)).structured_content["result"]
+    assert done["outcome"] == "success" and done["state"] == "ALL_SUCCESS" and info.call_count == 3
+    assert done["file"].endswith("backup_9.tar.gz")
+
+
+async def test_create_backup_follows_the_list_while_the_record_is_missing(api: respx.MockRouter) -> None:
+    sent: dict[str, str] = {}
+
+    def export(request: httpx.Request) -> httpx.Response:
+        sent["id"] = json.loads(request.content)["localBackupInfoId"]
+        return export_echo(request)
+
+    def listed(request: httpx.Request) -> httpx.Response:
+        rows = [backup(sent["id"], "ALL_SUCCESS", 9)] if sent else []
+        return httpx.Response(200, json={"backupList": rows})
+
+    api.get("/dataservice/backup/list").side_effect = listed
+    api.get("/dataservice/clusterManagement/list").respond(json=cluster_with_ip())
+    api.get("/dataservice/schedule/list").respond(json=fixture("schedule_list"))
+    api.post("/dataservice/backup/export").side_effect = export
+    info = api.get(url__regex=r"/dataservice/backup/backupinfo/[0-9a-f-]+$").respond(404, json=RECORD_MISSING)
+    async with Client(make_server(mcp_enable_writes=True)) as c:
+        prev = (await c.call_tool("catsdwan_create_backup", {})).structured_content
+        res = (await c.call_tool("catsdwan_create_backup", {"confirm": prev["confirm"]})).structured_content
+    done = res["result"]
+    assert done["outcome"] == "success" and done["id"] == sent["id"] and info.call_count == 1
+
+
+async def test_create_backup_missing_record_past_the_grace_is_an_error(
+    api: respx.MockRouter, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setattr(tools, "RECORD_GRACE", 0.05)
+    mock_backup_reads(api)
+    api.post("/dataservice/backup/export").side_effect = export_echo
+    info = api.get(url__regex=r"/dataservice/backup/backupinfo/[0-9a-f-]+$").respond(404, json=RECORD_MISSING)
+    async with Client(make_server(mcp_enable_writes=True)) as c:
+        prev = (await c.call_tool("catsdwan_create_backup", {})).structured_content
+        res = await c.call_tool("catsdwan_create_backup", {"confirm": prev["confirm"]}, raise_on_error=False)
+    text = str(res.content)
+    assert res.is_error and "The backup was started" in text and "still has no record of it" in text
+    assert "catsdwan_list_backups" in text and info.call_count >= 2  # it kept waiting first
+
+
 async def test_create_backup_hidden_without_writes_and_name_checked(api: respx.MockRouter) -> None:
     async with Client(make_server()) as c:
         names = {t.name for t in await c.list_tools()}
