@@ -436,6 +436,46 @@ async def test_deploy_blocks_an_unreachable_device(api: respx.MockRouter) -> Non
     ]
 
 
+async def test_deploy_blocks_an_edge_whose_certificate_is_not_installed(api: respx.MockRouter) -> None:
+    """#117: a deploy to an edge still at csrgenerated is accepted, reported as success and only queued."""
+    mock_inventory(api, br1={"vedgeCertificateState": "csrgenerated"})
+    mock_group(api)
+    mock_variables(api, BR1_VARS)
+    mock_configs(api, BR1, RUNNING_BR1, PREVIEW_BR1)
+    deploy = api.post(f"{GROUP}/device/deploy").respond(json={"parentTaskId": PID})
+    async with Client(writes()) as c:
+        prev = await run(c, "catsdwan_deploy_config_group", {"group": "mcp-test", "devices": ["br1"]})
+        (blocker,) = prev["blockers"]
+        assert prev["status"] == "blocked" and "br1's certificate is csrgenerated" in blocker
+        assert "only queue this deploy" in blocker and "allow_pending_certificate" in blocker
+        args = {"group": "mcp-test", "devices": ["br1"], "allow_pending_certificate": True}
+        allowed = await run(c, "catsdwan_deploy_config_group", args)
+    assert allowed["status"] == "preview" and not deploy.called
+    assert any("csrgenerated" in w for w in allowed["preview"]["warnings"])
+
+
+async def test_deploy_installed_certificate_is_not_flagged(api: respx.MockRouter) -> None:
+    mock_inventory(api)
+    mock_group(api)
+    mock_variables(api, BR1_VARS)
+    mock_configs(api, BR1, RUNNING_BR1, PREVIEW_BR1)
+    async with Client(writes()) as c:
+        prev = await run(c, "catsdwan_deploy_config_group", {"group": "mcp-test", "devices": ["br1"]})
+    assert prev["status"] == "preview"
+    assert not any("certificate" in w for w in prev["preview"].get("warnings", []))
+
+
+def test_certificate_problems_only_for_edges_with_a_known_state() -> None:
+    rows = [
+        {"host": "br1", "role": "edge", "certificate_state": "certinstalled"},
+        {"host": "br2", "role": "edge", "certificate_state": "CSRGenerated"},
+        {"host": "br3", "role": "edge"},  # vedges inventory not read: the inventory warns instead
+        {"host": "controller", "role": "controller", "certificate_state": "Installed"},
+    ]
+    (line,) = tools._certificate_problems(rows)
+    assert line.startswith("br2's certificate is CSRGenerated")
+
+
 async def test_deploy_blocks_a_pending_action_and_an_empty_group(api: respx.MockRouter) -> None:
     mock_inventory(api)
     rec = group_record()

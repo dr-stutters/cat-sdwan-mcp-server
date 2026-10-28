@@ -76,6 +76,8 @@ from cat_sdwan_mcp.hubs import change_tier
 from cat_sdwan_mcp.inventory import load_inventory
 from cat_sdwan_mcp.servicevpns import vpn_context
 from cat_sdwan_mcp.tools.changes import (
+    AllowPendingCertificate,
+    _certificate_problems,
     _device_view,
     _pending_blockers,
     _reachability_blockers,
@@ -714,13 +716,16 @@ def register(reg: ToolRegistrar) -> None:
         ],
         show_cli: Annotated[bool, Field(description="Include the full intended CLI per device")] = True,
         wait: Annotated[bool, Field(description="Wait for every device to report success or failure")] = True,
+        allow_pending_certificate: AllowPendingCertificate = False,
         confirm: Confirm = None,
     ) -> dict[str, Any]:
         """Push a policy group (application priority, NGFW, SIG / DNS security profiles; the 20.12+ policy
         counterpart of configuration groups) to some of its devices. Preview-first: per device the Manager's
         own preview (POST /v1/policy-group/{id}/device/{deviceId}/preview) and its diff against the running
         configuration, secrets masked. Blocked for a device not associated with the group, on a device
-        template, unreachable or with an action still running. Confirm deploys (POST .../device/deploy) and
+        template, unreachable, with an action still running or with its certificate not installed (the
+        Manager would only queue the deploy and report success; allow_pending_certificate=true makes that a
+        warning). Confirm deploys (POST .../device/deploy) and
         follows the action status per device. The controller step is prechecked too (#118): every traffic
         policy target must be a LAN VPN parcel name, and every VPN of a zone the security policy binds a LAN
         VPN parcel, in each device's configuration group; otherwise the controller refuses the group after
@@ -753,6 +758,7 @@ def register(reg: ToolRegistrar) -> None:
             elif assoc and str(r["chassis"]) not in assoc:
                 blockers.append(f"{host} is not associated with policy group {gname}")
         blockers += _reachability_blockers(rows)
+        (warnings if allow_pending_certificate else blockers).extend(_certificate_problems(rows))
         busy, busy_warn = await _pending_blockers(app, rows)
         blockers += busy
         warnings += busy_warn
@@ -838,7 +844,13 @@ def register(reg: ToolRegistrar) -> None:
         return await preview_or_apply(
             ctx,
             tool="catsdwan_deploy_policy_group",
-            args={"group": group, "devices": devices, "show_cli": show_cli, "wait": wait},
+            args={
+                "group": group,
+                "devices": devices,
+                "show_cli": show_cli,
+                "wait": wait,
+                "allow_pending_certificate": allow_pending_certificate,
+            },
             confirm=confirm,
             plan=plan,
             apply=apply,

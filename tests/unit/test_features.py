@@ -448,6 +448,19 @@ async def test_policy_preview_and_deploy(api: respx.MockRouter) -> None:
     assert done["result"]["outcome"] == "success"
 
 
+async def test_policy_deploy_blocks_a_csrgenerated_edge(api: respx.MockRouter) -> None:
+    mock_inventory(api, br1={"vedgeCertificateState": "csrgenerated"})
+    mock_policy(api)
+    deploy = api.post(f"{PG}/device/deploy").respond(json={"parentTaskId": "pt-1"})
+    args: dict[str, Any] = {"group": "mcp-policy", "devices": ["br1"]}
+    out = await write("catsdwan_deploy_policy_group", args)
+    assert out["status"] == "blocked"
+    assert any("br1's certificate is csrgenerated" in b for b in out["blockers"])
+    out = await write("catsdwan_deploy_policy_group", {**args, "allow_pending_certificate": True})
+    assert out["status"] == "preview" and not deploy.called
+    assert any("csrgenerated" in w for w in out["preview"]["warnings"])
+
+
 async def test_policy_hub_is_dangerous_and_template_device_refused(api: respx.MockRouter) -> None:
     mock_inventory(api, br2=BR2_ON_TEMPLATE)
     mock_policy(api)

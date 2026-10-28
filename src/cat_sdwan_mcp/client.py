@@ -7,7 +7,8 @@ Login (CATSDWAN_AUTH=auto|jwt|session):
 - Session (every release): POST /j_security_check (form j_username, j_password). Success is a JSESSIONID
   cookie and an empty body; a wrong password answers 200 with the HTML login page, so that page is an auth
   error, never a parse error. GET /dataservice/client/token (a plain-text body) gives the XSRF token for
-  writes. An idle session (30 min) answers /dataservice calls with 401 or the login page: log in again.
+  writes. An idle session (30 min) answers /dataservice calls with 401 or the login page, on any method and
+  sometimes behind an error status (a PUT answered 405 with the login page, #117): log in again, resend once.
   POST /logout on close.
 - auto: JWT first, the session login when /jwt/login answers 404/405 (a Manager before 20.18.1).
 
@@ -156,10 +157,27 @@ def is_html_response(resp: httpx.Response) -> bool:
     return "text/html" in ctype or (bool(resp.content) and looks_html(resp.text))
 
 
+# What the Manager's login page has that a servlet error page ("HTTP Status 405 - Method Not Allowed") lacks.
+_LOGIN_MARKERS = ("j_security_check", "j_username", "login")
+
+
+def is_login_page(resp: httpx.Response) -> bool:
+    """The Manager's HTML login page: any HTML on a 2xx (an API never answers HTML there), and on an error
+    status HTML that reads like a login form (#117: an expired session answered PUT decommission with a 405
+    and the login page), never a plain servlet error page."""
+    if not is_html_response(resp):
+        return False
+    if not resp.is_error:
+        return True
+    text = resp.text.lower()
+    return any(m in text for m in _LOGIN_MARKERS)
+
+
 class SdwanApiClient(ApiClient):
     """ApiClient with the Manager's quirks: the XSRF token on every /dataservice call, separate buckets for
-    the bulk APIs, no cookie jar, and the HTML login page on a /dataservice read treated as an expired
-    session (log in again once, then an auth error)."""
+    the bulk APIs, no cookie jar, and the HTML login page on any /dataservice call treated as an expired
+    session, whatever the method and status (a 405 on a PUT too, #117): log in again and resend once, then
+    an auth error. Resending a write is safe there: the login page means the Manager never ran it."""
 
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         super().__init__(*args, **kwargs)
@@ -219,9 +237,14 @@ class SdwanApiClient(ApiClient):
     async def request(self, method: str, path: str, *, expect: Expect = "json", **kw: Any) -> Any:
         if expect != "json" or not _rel(self.base_url, path).startswith("dataservice/"):
             return await super().request(method, path, expect=expect, **kw)
+        # 4xx come back as responses so a login page behind an error status is seen; others raise as usual.
+        caller_ok = frozenset(kw.pop("ok_status", ()) or ())
+        ok = caller_ok | frozenset(range(400, 500))
         for attempt in range(2):
-            resp: httpx.Response = await super().request(method, path, expect="response", **kw)
-            if not is_html_response(resp):
+            resp: httpx.Response = await super().request(method, path, expect="response", ok_status=ok, **kw)
+            if not is_login_page(resp):
+                if resp.is_error and resp.status_code not in caller_ok:
+                    raise self.error_from_response(resp)
                 return self._decode(resp, "json")
             if attempt == 0 and isinstance(self.auth, LoginTokenAuth):
                 log.info(
