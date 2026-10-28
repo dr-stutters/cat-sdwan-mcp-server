@@ -6,6 +6,42 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+## [0.8.0] - 2026-10-28
+
+### Added
+- W55 (#77): `catsdwan_export_site` exports a site as a versioned twin spec (configuration group or template,
+  variables with secrets as refs, policy groups and centralised policy touching the site, transports, service VPNs,
+  TLOCs); the device list's configuration-group name no longer includes an associated policy group (new
+  `policy_group` field).
+- W58 (#78): prompt `catsdwan_renew_with_enterprise_ca`: controller certificate renewal with the Enterprise CA, one
+  controller at a time, with root sync and control-connection checks.
+- W56 (#83): prompt `catsdwan_why_is_voice_bad`: voice SLA per transport, edge QoS map and queue drops, Wi-Fi QoS and
+  ISE session, ending in a verdict naming the cause.
+- W54 (#82): prompt `catsdwan_hub_failover_drill`: take a hub down (CML or by hand), prove branch paths per VPN, SLA
+  per class and DC services, restore and compare snapshots.
+
+### Changed
+- #102: deploys and template attaches find hubs from hub-and-spoke topologies and BFD when `CATSDWAN_HUB_DEVICES` is
+  unset, tier them dangerous and show `hub_status` in the preview.
+- #103: `catsdwan_control_connections` falls back to the device's last known state and the validators' history when
+  the Manager answers DEV0001 'not connected to vmanage'; new `since_hours` (default 24) caps failed attempts and
+  join rejections.
+- #117: configuration- and policy-group deploy previews block edges whose certificate is not installed yet
+  (`allow_pending_certificate` overrides).
+
+### Fixed
+- #101: `catsdwan_set_feature_parcel` masks secrets nested in list items (RADIUS/TACACS server keys, user passwords,
+  SSH key strings) in the preview, the result and logs.
+- #117: the Manager's login page behind an error status (e.g. 405 on a PUT) now triggers one re-login and resend.
+- #123: `catsdwan_admin_tech` sends no device-type (the Manager's admin-tech works on 20.18), retries once on
+  DEVICE0007, warns that the Manager's archive holds the ISE password, and documents the octet-stream download and
+  DELETE path.
+- #132: `catsdwan_create_backup` sends the full LocalBackupInfo body (ids, createTime, LOCAL destination, active
+  schedule) that 20.18.3 needs, and its EXPORT_FAILED hint quotes the Manager instead of blaming the cluster IP.
+- #148: `catsdwan_set_ise_integration` maps pxGrid 'Approved' (plans the controller sync), plans nothing at 'vSmart
+  push is successful' unless a setting changed or `rotate_password`, and names the pxGrid client by pxGridUserName
+  instead of ISE's own '~ise-admin-ise' node.
+
 ## [0.7.0] - 2026-10-28
 
 ### Added
