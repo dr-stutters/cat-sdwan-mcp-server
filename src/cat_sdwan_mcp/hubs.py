@@ -13,7 +13,13 @@ hubs, so the fallback reads the evidence the Manager already holds, fail-safe
 2. BFD: the Manager's state database (GET /dataservice/data/device/state/BFDSessions; 20.18.3 recorded: per
    session `vdevice-name` = the local system IP, `system-ip` = the remote edge, `site-id` = the remote site),
    or each reachable edge live when that API is missing. An edge whose sessions reach every other site of the
-   fabric (at least two) is a hub, unless every edge does (a full mesh has no hub).
+   fabric (at least two) is a hub. When every edge's do (a full mesh), BFD cannot tell: the status is
+   'unknown' (#167: the lab's DC edge was called 'not a hub' and tiered write).
+3. OMP, only for a full mesh: the service-VPN routes the first reachable controller holds (GET
+   /dataservice/device/omp/routes/received?deviceId=<controller>; 20.18.3 recorded: `vpn-id`, `prefix`,
+   `originator`, `status`, one row per TLOC). An edge that alone originates most (more than half) of the
+   service-VPN prefixes, with at least two other originating edges, is a hub by heuristic: the DC site every
+   branch's shared prefixes come from (CVD: the data centre is the hub even without a hub-and-spoke policy).
 
 When neither can be read, or a device has no BFD sessions, its hub status is 'unknown' and the preview says so
 (the tier stays as the other rules make it).
@@ -29,6 +35,7 @@ from cat_sdwan_mcp._core import UpstreamError
 from cat_sdwan_mcp.changes import split_list, tier_reasons
 from cat_sdwan_mcp.client import SdwanApp, _as_list
 from cat_sdwan_mcp.configuration import path
+from cat_sdwan_mcp.control import OMP_ROUTES_PATH
 from cat_sdwan_mcp.dataplane import BFD_SESSIONS_PATH, BULK_BFD
 from cat_sdwan_mcp.fabric import device_rows, fan_out, reachable
 from cat_sdwan_mcp.inventory import Inventory
@@ -40,6 +47,9 @@ BULK_CAP = 5000  # BFD sessions read from the state database
 LIVE_CAP = 50  # edges read live when the state database API is missing
 DEF_CAP = 20  # hub-and-spoke definitions read
 SET_HINT = "set CATSDWAN_HUB_DEVICES"
+FULL_MESH = "unknown: the fabric's BFD is a full mesh, so BFD cannot tell"
+TRANSPORT_VPNS = ("0", "512")
+MIN_SERVICE_ROUTES = 3  # fewer service-VPN prefixes than this say nothing about a hub
 
 
 @dataclass
@@ -120,10 +130,45 @@ def bfd_view(
             )
         else:
             not_hubs[local] = f"not a hub: BFD sessions to {len(reached)} of {len(others)} other sites"
-    if hubs and not not_hubs:  # every edge reaches every site: a full mesh
-        not_hubs = {x: "not a hub: the fabric's BFD is a full mesh" for x in hubs}
+    if hubs and not not_hubs:  # every edge reaches every site: a full mesh, where BFD cannot tell (#167)
+        not_hubs = dict.fromkeys(hubs, FULL_MESH)
         hubs = {}
     return hubs, not_hubs
+
+
+def omp_view(routes: list[dict[str, Any]], source: str) -> tuple[dict[str, str], dict[str, str]]:
+    """From the OMP routes a controller holds: (system IP -> hub reason, system IP -> what OMP shows) for
+    every originator of service-VPN prefixes.
+
+    A hub is the sole originator of more than half of the service-VPN prefixes (VPN 0 and 512 and invalid
+    routes left out) while at least two other edges originate some: a DC site every branch's shared prefixes
+    come from. Too few prefixes or originators prove nothing."""
+    origins: dict[tuple[str, str], set[str]] = defaultdict(set)
+    for r in routes:
+        vpn, prefix, origin = (str(r.get(k, "")) for k in ("vpn-id", "prefix", "originator"))
+        if (
+            prefix in ("", "None")
+            or origin in ("", "None")
+            or vpn in TRANSPORT_VPNS
+            or "Inv" in str(r.get("status", "")).split()
+        ):
+            continue
+        origins[(vpn, prefix)].add(origin)
+    total = len(origins)
+    sole: dict[str, int] = defaultdict(int)
+    for owners in origins.values():
+        if len(owners) == 1:
+            sole[next(iter(owners))] += 1
+    every = {o for owners in origins.values() for o in owners}
+    seen = {o: f"OMP: sole originator of {sole.get(o, 0)} of {total} service routes" for o in every}
+    if total < MIN_SERVICE_ROUTES or len(every) < 3:
+        return {}, seen
+    hubs = {
+        o: f"sole originator of {n} of {total} service routes in OMP on {source}; BFD is a full mesh"
+        for o, n in sole.items()
+        if 2 * n > total
+    }
+    return hubs, seen
 
 
 # --- reads -----------------------------------------------------------------------------------------
@@ -145,6 +190,20 @@ async def _policy_evidence(app: SdwanApp, targets: list[dict[str, Any]]) -> tupl
     except UpstreamError as e:
         return {}, f"hub-and-spoke topologies not read ({str(e)[:160]})"
     return policy_hubs(targets, defs, lists), None
+
+
+async def _omp_evidence(app: SdwanApp, inv: Inventory) -> tuple[dict[str, str], dict[str, str], str | None]:
+    """omp_view() from the first reachable controller, or (empty, empty, why not read)."""
+    controllers = reachable(inv, "controller")
+    if not controllers:
+        return {}, {}, "no reachable controller to read OMP routes from"
+    ctl = controllers[0]
+    try:
+        routes = await device_rows(app, OMP_ROUTES_PATH.format(direction="received"), str(ctl["system_ip"]))
+    except UpstreamError as e:
+        return {}, {}, f"OMP routes not read from {ctl.get('host')} ({str(e)[:140]})"
+    hubs, seen = omp_view(routes, str(ctl.get("host") or ctl["system_ip"]))
+    return hubs, seen, None
 
 
 async def _bfd_sessions(
@@ -180,6 +239,11 @@ async def detect_hubs(app: SdwanApp, inv: Inventory, devices: list[dict[str, Any
     by_policy, policy_error = await _policy_evidence(app, targets)
     sessions, bfd_error, partial = await _bfd_sessions(app, inv)
     hubs, not_hubs = bfd_view(sessions or [], [r for r in inv.rows if r.get("role") == "edge"])
+    by_omp: dict[str, str] = {}
+    omp_seen: dict[str, str] = {}
+    omp_error: str | None = None
+    if any(not_hubs.get(str(r.get("system_ip") or "")) == FULL_MESH for r in targets):
+        by_omp, omp_seen, omp_error = await _omp_evidence(app, inv)
     for r in targets:
         c, ip = str(r["chassis"]), str(r.get("system_ip") or "")
         host = str(r.get("host") or c)
@@ -187,6 +251,8 @@ async def detect_hubs(app: SdwanApp, inv: Inventory, devices: list[dict[str, Any
             why = by_policy[c]
         elif ip in hubs:
             why = hubs[ip]
+        elif ip in by_omp:
+            why = by_omp[ip]
         else:
             seen = not_hubs.get(ip)
             if seen and partial:  # a cut-off read can miss this edge's sessions to some sites
@@ -197,6 +263,8 @@ async def detect_hubs(app: SdwanApp, inv: Inventory, devices: list[dict[str, Any
             missing = [x for x in (policy_error, bfd_error) if x]
             if seen:
                 missing.append(seen.removeprefix("unknown: "))
+                if seen == FULL_MESH:
+                    missing.append(omp_error or omp_seen.get(ip) or "OMP: originates no service routes")
             elif not bfd_error:
                 missing.append(f"no BFD sessions recorded for {host}")
             out.status[host] = "unknown"

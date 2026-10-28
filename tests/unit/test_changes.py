@@ -748,7 +748,9 @@ def test_bfd_view_finds_the_hub() -> None:
 def test_bfd_view_full_mesh_and_too_few_sites() -> None:
     mesh = HUB_SPOKE_BFD + [bfd("10.0.0.2", "10.0.0.3", 201), bfd("10.0.0.3", "10.0.0.2", 200)]
     hubs, not_hubs = hubs_mod.bfd_view(mesh, EDGES)
-    assert hubs == {} and set(not_hubs.values()) == {"not a hub: the fabric's BFD is a full mesh"}
+    assert hubs == {} and set(not_hubs.values()) == {
+        "unknown: the fabric's BFD is a full mesh, so BFD cannot tell"
+    }
     hubs, not_hubs = hubs_mod.bfd_view([bfd("10.0.0.1", "10.0.0.2", 200)], EDGES)
     assert hubs == {} and not_hubs["10.0.0.1"].startswith("unknown: BFD shows only 1 other site")
 
@@ -872,3 +874,111 @@ async def test_cut_off_bfd_read_cannot_clear_a_hub(
     assert prev["preview"]["hub_status"] == {"br1": "unknown"}
     (warn,) = [w for w in prev["preview"]["warnings"] if "hub status" in w]
     assert "BFD state database cut at 8 sessions" in warn and warn.endswith("set CATSDWAN_HUB_DEVICES")
+    assert "no BFD sessions recorded" not in warn  # the edge has sessions; the read was cut off
+
+
+# --- full-mesh BFD (#167): unknown, or a hub by OMP heuristic; never "not a hub" -------------------
+
+MESH_BFD = HUB_SPOKE_BFD + [
+    bfd("10.0.0.2", "10.0.0.3", 201),
+    bfd("10.0.0.2", "10.0.0.3", 201, "biz-internet"),
+    bfd("10.0.0.3", "10.0.0.2", 200),
+    bfd("10.0.0.3", "10.0.0.2", 200, "biz-internet"),
+]
+OMP_RECEIVED = "/dataservice/device/omp/routes/received"
+
+
+def omp(prefix: str, origin: str, vpn: int = 10, status: str = "C R") -> list[dict[str, Any]]:
+    """One prefix as a controller holds it (recorded on 20.18.3: a row per TLOC colour plus one without)."""
+    base = {"vpn-id": vpn, "prefix": prefix, "originator": origin, "protocol": "connected"}
+    return [
+        {**base, "ip": origin, "color": "mpls", "encap": "ipsec", "status": status},
+        {**base, "ip": origin, "color": "biz-internet", "encap": "ipsec", "status": status},
+        {**base, "ip": origin, "status": "R"},
+    ]
+
+
+# the lab's shape: the DC edge alone originates 3 of the 5 service-VPN prefixes
+DC_OMP = (
+    omp("198.51.100.0/26", "10.0.0.1")
+    + omp("198.51.100.64/26", "10.0.0.1")
+    + omp("198.51.100.128/26", "10.0.0.1")
+    + omp("203.0.113.0/26", "10.0.0.2")
+    + omp("203.0.113.64/26", "10.0.0.3")
+    + omp("192.0.2.0/24", "10.0.0.1", vpn=0)  # transport VPN: left out
+    + omp("192.0.2.128/25", "10.0.0.1", vpn=512)
+)
+
+
+def test_omp_view_finds_the_sole_originator() -> None:
+    hubs, seen = hubs_mod.omp_view(DC_OMP, "controller")
+    assert hubs == {
+        "10.0.0.1": "sole originator of 3 of 5 service routes in OMP on controller; BFD is a full mesh"
+    }
+    assert seen["10.0.0.2"] == "OMP: sole originator of 1 of 5 service routes"
+
+
+def test_omp_view_needs_a_majority_and_three_originators() -> None:
+    even = omp("198.51.100.0/26", "10.0.0.1") + omp("203.0.113.0/26", "10.0.0.2")
+    even += omp("203.0.113.64/26", "10.0.0.3") + omp("198.51.100.64/26", "10.0.0.2")
+    assert hubs_mod.omp_view(even, "c")[0] == {}  # 2 of 4 is not most
+    two = omp("198.51.100.0/26", "10.0.0.1") + omp("198.51.100.64/26", "10.0.0.1")
+    two += omp("198.51.100.128/26", "10.0.0.1") + omp("203.0.113.0/26", "10.0.0.2")
+    assert hubs_mod.omp_view(two, "c")[0] == {}  # only two originating edges
+    shared = omp("198.51.100.0/26", "10.0.0.1") + omp("198.51.100.0/26", "10.0.0.2")
+    shared += omp("198.51.100.64/26", "10.0.0.1") + omp("198.51.100.128/26", "10.0.0.1", status="Inv")
+    shared += omp("203.0.113.0/26", "10.0.0.2") + omp("203.0.113.64/26", "10.0.0.3")
+    assert hubs_mod.omp_view(shared, "c")[0] == {}  # 1 sole of 4: anycast and invalid routes don't count
+
+
+async def test_full_mesh_with_a_sole_originator_is_a_dangerous_hub(api: respx.MockRouter) -> None:
+    mock_inventory(api)
+    mock_group(api)
+    mock_variables(api, HUB1_VARS)
+    mock_configs(api, HUB1, RUNNING_BR1, PREVIEW_BR1)
+    api.get(BULK_BFD).respond(json={"data": MESH_BFD})
+    routes = api.get(OMP_RECEIVED, params={"deviceId": "1.1.1.3"}).respond(json={"data": DC_OMP})
+    args = {"group": "mcp-test", "devices": ["hub1"]}
+    async with Client(writes()) as c:
+        prev = await run(c, "catsdwan_deploy_config_group", args)
+    assert prev["status"] == "blocked" and routes.called
+    assert any("hub1 is a hub by heuristic (sole originator of 3 of 5" in b for b in prev["blockers"])
+    async with Client(writes(mcp_enable_dangerous=True)) as c:
+        prev = await run(c, "catsdwan_deploy_config_group", args)
+    assert prev["preview"]["tier"] == "dangerous"
+    assert prev["preview"]["hub_status"]["hub1"].startswith("hub by heuristic (sole originator of 3 of 5")
+
+
+async def test_full_mesh_branch_is_unknown_never_not_a_hub(api: respx.MockRouter) -> None:
+    mock_inventory(api)
+    mock_group(api)
+    mock_variables(api, BR1_VARS)
+    mock_configs(api, BR1, RUNNING_BR1, PREVIEW_BR1)
+    api.get(BULK_BFD).respond(json={"data": MESH_BFD})
+    api.get(OMP_RECEIVED).respond(json={"data": DC_OMP})
+    async with Client(writes()) as c:
+        prev = await run(c, "catsdwan_deploy_config_group", {"group": "mcp-test", "devices": ["br1"]})
+    assert prev["preview"]["tier"] == "write"
+    assert prev["preview"]["hub_status"] == {"br1": "unknown"}
+    (warn,) = [w for w in prev["preview"]["warnings"] if "hub status" in w]
+    assert warn == (
+        "hub status of br1 unknown: the fabric's BFD is a full mesh, so BFD cannot tell; "
+        "OMP: sole originator of 1 of 5 service routes; set CATSDWAN_HUB_DEVICES"
+    )
+
+
+async def test_full_mesh_without_omp_says_unknown(api: respx.MockRouter) -> None:
+    # the #167 lab case when OMP can't be read: hub1 was 'not a hub' (write); now unknown with a warning
+    mock_inventory(api)
+    mock_group(api)
+    mock_variables(api, HUB1_VARS)
+    mock_configs(api, HUB1, RUNNING_BR1, PREVIEW_BR1)
+    api.get(BULK_BFD).respond(json={"data": MESH_BFD})
+    api.get(OMP_RECEIVED).respond(500, json={"error": {"message": "boom"}})
+    async with Client(writes()) as c:
+        prev = await run(c, "catsdwan_deploy_config_group", {"group": "mcp-test", "devices": ["hub1"]})
+    assert prev["preview"]["hub_status"] == {"hub1": "unknown"}
+    assert not any("not a hub" in v for v in prev["preview"]["hub_status"].values())
+    (warn,) = [w for w in prev["preview"]["warnings"] if "hub status" in w]
+    assert "BFD is a full mesh, so BFD cannot tell; OMP routes not read from controller" in warn
+    assert warn.endswith("set CATSDWAN_HUB_DEVICES")
