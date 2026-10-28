@@ -263,8 +263,8 @@ async def detect_hubs(app: SdwanApp, inv: Inventory, devices: list[dict[str, Any
             missing = [x for x in (policy_error, bfd_error) if x]
             if seen:
                 missing.append(seen.removeprefix("unknown: "))
-            if seen == FULL_MESH:
-                missing.append(omp_error or omp_seen.get(ip) or "OMP: originates no service routes")
+                if seen == FULL_MESH:
+                    missing.append(omp_error or omp_seen.get(ip) or "OMP: originates no service routes")
             elif not bfd_error:
                 missing.append(f"no BFD sessions recorded for {host}")
             out.status[host] = "unknown"

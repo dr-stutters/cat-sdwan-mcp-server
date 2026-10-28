@@ -874,6 +874,7 @@ async def test_cut_off_bfd_read_cannot_clear_a_hub(
     assert prev["preview"]["hub_status"] == {"br1": "unknown"}
     (warn,) = [w for w in prev["preview"]["warnings"] if "hub status" in w]
     assert "BFD state database cut at 8 sessions" in warn and warn.endswith("set CATSDWAN_HUB_DEVICES")
+    assert "no BFD sessions recorded" not in warn  # the edge has sessions; the read was cut off
 
 
 # --- full-mesh BFD (#167): unknown, or a hub by OMP heuristic; never "not a hub" -------------------
