@@ -6,6 +6,17 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+## [0.7.0] - 2026-10-28
+
+### Added
+- W53 (#81): `catsdwan_remove_device` decommissions a WAN edge (off its configuration group or template, invalid,
+  decommissioned, deleted from the WAN edge list); dangerous tier.
+
+### Fixed
+- #131: `catsdwan_set_ise_integration` maps the Manager's pxGrid states `activated` (plans the Manager's approve +
+  sync) and `vSmart push is pending/successful/failed`; unknown states block with the raw text;
+  `catsdwan_integrations` shows the controller push result.
+
 ## [0.6.3] - 2026-10-25
 
 ### Changed
