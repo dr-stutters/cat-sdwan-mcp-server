@@ -203,6 +203,34 @@
         "cml"
       ]
     },
+    "catsdwan_renew_with_enterprise_ca": {
+      "arguments": [
+        "controllers",
+        "ca_template",
+        "expiring_days"
+      ],
+      "references": [
+        "catsdwan_certificates",
+        "catsdwan_list_controllers",
+        "catsdwan_snapshot",
+        "catsdwan_control_connections",
+        "catsdwan_create_backup",
+        "win_get_ca_certificate",
+        "catsdwan_search_spec",
+        "catsdwan_api_call",
+        "catsdwan_sync_root_cert",
+        "win_list_ca_templates",
+        "catsdwan_renew_controller_certificate",
+        "win_sign_csr",
+        "catsdwan_compare_snapshot"
+      ],
+      "rendered": true,
+      "tier": "dangerous",
+      "uses": [
+        "catsdwan",
+        "win"
+      ]
+    },
     "catsdwan_sgt_path": {
       "arguments": [
         "source",
