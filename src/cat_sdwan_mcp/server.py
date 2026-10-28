@@ -42,6 +42,7 @@ from cat_sdwan_mcp.tools import (
     securityprofiles,
     serviceinsertion,
     sgtpath,
+    sitexport,
     snapshot,
     sslproxy,
     triage,
@@ -108,6 +109,8 @@ catsdwan_top_applications(site) (needs application visibility (DPI) on the edges
 Change checks: catsdwan_snapshot(site) before a change (a blob to keep in the conversation), then
 catsdwan_compare_snapshot(before) after it names what changed by severity (control, BFD, OMP, app-route SLA,
 alarms, devices); the suite prompt suite_change_check runs the same on every connected server.
+Digital twin: catsdwan_export_site(site) gives the site as a twin spec (configuration group or template,
+variables with secrets as refs, policy, transports, service VPNs) for the cml recipe cat-sdwan-twin.
 SGTs across the overlay: catsdwan_trustsec_path(source_edge, destination_edge, source_ip, destination_ip)
 (inline tagging per tunnel, SXP, the destination edge's SGACL); the prompt catsdwan_sgt_path adds ISE.
 Edge security (UTD: IPS, URL filtering, AMP): catsdwan_upload_utd_image(file in CATSDWAN_IMAGE_DIR) ->
@@ -208,6 +211,7 @@ def create_server(
             upgrade.register,
             licensing.register,
             snapshot.register,
+            sitexport.register,
             suite.register,
         ],
         status=SdwanApp.status,

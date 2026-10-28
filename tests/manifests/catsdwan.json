@@ -471,6 +471,10 @@
       "tier": "read",
       "title": "Explain SD-WAN path"
     },
+    "catsdwan_export_site": {
+      "tier": "read",
+      "title": "Export an SD-WAN site as a twin spec"
+    },
     "catsdwan_find_host": {
       "tier": "read",
       "title": "Find a host on the SD-WAN fabric"
