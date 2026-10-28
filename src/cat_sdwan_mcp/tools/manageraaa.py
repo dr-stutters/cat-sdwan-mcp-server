@@ -1,5 +1,6 @@
-"""W40 catsdwan_set_external_authentication on a single-tenant Manager: RADIUS for the Manager's own logins
-through its system AAA (a CLI device template on the Manager). See cat_sdwan_mcp.manageraaa."""
+"""W40 / W26 catsdwan_set_external_authentication on a single-tenant Manager: RADIUS or TACACS+ for the
+Manager's own logins through its system AAA (a CLI device template on the Manager). See
+cat_sdwan_mcp.manageraaa."""
 
 # No `from __future__ import annotations`: FastMCP inspects signatures at runtime.
 from typing import Any
@@ -40,14 +41,40 @@ PROVIDER_ONLY = (
 DEFAULT_TIMEOUT, DEFAULT_RETRANSMIT = 5, 3
 
 
-def undo_order(before: dict[str, Any]) -> list[str]:
+NAMES = {"radius": "RADIUS", "tacacs": "TACACS+"}
+DEFAULT_PORTS = {"radius": 1812, "tacacs": 49}
+
+
+def undo_order(before: dict[str, Any], protocol: str = "radius") -> list[str]:
     """The order that puts `before` back and passes this tool's own lockout guard (#120): the old order, but
-    without radius when no RADIUS server was configured, unless it is the Manager's factory order (which the
-    guard allows)."""
+    without `protocol` when none of its servers was configured, unless it is the Manager's factory order
+    (which the guard allows)."""
     order = list(before["order"])
-    if before["radius"] == "not configured" and "radius" in order and order != DEFAULT_SYSTEM_ORDER:
-        order = [m for m in order if m != "radius"]
+    unset = before.get(protocol, "not configured") == "not configured"
+    if unset and protocol in order and order != DEFAULT_SYSTEM_ORDER:
+        order = [m for m in order if m != protocol]
     return order
+
+
+def shown_server(protocol: str, s: dict[str, Any]) -> dict[str, Any]:
+    """One server as the preview shows it (secret masked, the CLI's defaults filled in)."""
+    if protocol == "tacacs":
+        return {
+            "address": s["address"],
+            "vpn": s.get("vpn", 0),
+            "secret-key": MASK,
+            "auth-port": s.get("auth_port") or 49,
+            "priority": s.get("priority", 0),
+        }
+    return {
+        "address": s["address"],
+        "vpn": s.get("vpn", 0),
+        "secret-key": MASK,
+        "auth-port": s.get("auth_port") or 1812,
+        "acct-port": s.get("acct_port") or 1813,
+        "priority": s.get("priority", 0),
+        **({"tag": s["tag"]} if s.get("tag") else {}),
+    }
 
 
 async def system_path(
@@ -62,6 +89,7 @@ async def system_path(
     args: dict[str, Any],
     confirm: str | None,
     login_check: Any,
+    authentication: str | None = None,
 ) -> dict[str, Any]:
     """Plan and apply the system-AAA change for the Manager (preview-first, dangerous)."""
     inv = await load_inventory(app)
@@ -77,18 +105,15 @@ async def system_path(
     host = str((mgr or {}).get("host") or "manager")
     chassis = str((mgr or {}).get("chassis") or "")
     running: str | None = None
-    if protocol != "radius":
-        blockers.append(
-            f"{protocol}: on a single-tenant Manager this tool sets RADIUS in the system AAA only; TACACS+ "
-            "for the Manager's own logins is not built yet"
-        )
+    name = NAMES[protocol]
+    other = "tacacs" if protocol == "radius" else "radius"
     if mgr is not None:
         mode, cfg = mgr.get("config_mode"), mgr.get("config")
         if mode == "configuration group":
             blockers.append(f"{host} is in configuration group {cfg}: change its AAA there")
         elif mode == "template" and cfg and cfg != TEMPLATE_NAME:
             blockers.append(
-                f"{host} is on device template {cfg}: set the RADIUS servers and auth-order in that "
+                f"{host} is on device template {cfg}: set the {name} servers and auth-order in that "
                 "template's AAA feature template (catsdwan_list_templates type='feature'), not here"
             )
         blockers += _reachability_blockers([mgr])
@@ -108,22 +133,33 @@ async def system_path(
         for b in dangerous_blockers(ctx, app, reasons)
     ]
     before = system_aaa(running or "")
-    cur_rad = before["radius"] if isinstance(before["radius"], dict) else {}
-    timeout = server_timeout or cur_rad.get("timeout") or DEFAULT_TIMEOUT
-    retransmit = cur_rad.get("retransmit") or DEFAULT_RETRANSMIT
-    has_radius = bool(servers) if servers is not None else before["radius"] != "not configured"
-    blockers = order_problems(list(order), {"radius": has_radius, "tacacs": False}) + blockers
-    if "tacacs" in order and protocol == "radius":
-        blockers = [b for b in blockers if "no TACACS server" not in b]
-        warnings.append("tacacs stays in the order with no TACACS+ server: it is skipped")
-    if not has_radius and list(order) == DEFAULT_SYSTEM_ORDER:
-        # The Manager's factory order (what the running configuration has before RADIUS is set, and so the
-        # preview's own undo, #120): radius without a server is skipped, local stays first.
-        blockers = [b for b in blockers if "no RADIUS server" not in b]
+    cur = before[protocol] if isinstance(before[protocol], dict) else {}
+    timeout = server_timeout or cur.get("timeout") or DEFAULT_TIMEOUT
+    retransmit = (cur.get("retransmit") or DEFAULT_RETRANSMIT) if protocol == "radius" else None
+    auth = (authentication or cur.get("authentication")) if protocol == "tacacs" else None
+    has = {m: before[m] != "not configured" for m in ("radius", "tacacs")}
+    if servers is not None:
+        has[protocol] = bool(servers)
+    blockers = order_problems(list(order), has) + blockers
+    if other in order and not has[other]:
+        blockers = [b for b in blockers if f"no {other.upper()} server" not in b]
+        warnings.append(f"{other} stays in the order with no {NAMES[other]} server: it is skipped")
+    if not has[protocol] and list(order) == DEFAULT_SYSTEM_ORDER:
+        # The Manager's factory order (what the running configuration has before RADIUS or TACACS+ is set,
+        # and so the preview's own undo, #120): a method without a server is skipped, local stays first.
+        blockers = [b for b in blockers if f"no {protocol.upper()} server" not in b]
         warnings.append(
-            "radius stays in the Manager's factory order with no RADIUS server: it is skipped, local "
+            f"{protocol} stays in the Manager's factory order with no {name} server: it is skipped, local "
             "accounts log in as before"
         )
+    if protocol == "tacacs":
+        for s in servers or []:
+            dropped = [k for k in ("tag", "acct_port") if s.get(k)]
+            if dropped:
+                warnings.append(
+                    f"{s['address']}: {' and '.join(dropped)} left out (a TACACS+ server in the system AAA "
+                    "has neither)"
+                )
     new: str | None = None
     if running is not None and not any("system" in b and "block" in b for b in blockers):
         try:
@@ -134,6 +170,8 @@ async def system_path(
                 servers=servers,
                 timeout=timeout if servers else None,
                 retransmit=retransmit if servers else None,
+                protocol=protocol,
+                authentication=auth if servers else None,
             )
         except ValueError as e:
             blockers.append(f"{host}: {e}")
@@ -141,32 +179,23 @@ async def system_path(
         blockers.append("nothing to change: the Manager's system AAA is as asked")
     if list(order)[:1] != ["local"]:
         warnings.append(
-            f"{order[0]} is tried first: a RADIUS reject ends the login and never falls back, so local "
-            "users (admin and this server's API user) log in only while ISE is unreachable. Put 'local' "
-            "first."
+            f"{order[0]} is tried first: a {NAMES.get(order[0], order[0])} reject ends the login and never "
+            "falls back, so local users (admin and this server's API user) log in only while ISE is "
+            "unreachable. Put 'local' first."
         )
     tpl_body = await app.api.get(DEVICE_TEMPLATES_PATH, {"feature": "all"})
     existing = find_template(tpl_body, TEMPLATE_NAME)
     model = str((mgr or {}).get("model") or "vmanage")
     view = _device_view(new, running, show_cli=False) if new is not None else {}
-    shown_servers = [
-        {
-            "address": s["address"],
-            "vpn": s.get("vpn", 0),
-            "secret-key": MASK,
-            "auth-port": s.get("auth_port") or 1812,
-            "acct-port": s.get("acct_port") or 1813,
-            "priority": s.get("priority", 0),
-            **({"tag": s["tag"]} if s.get("tag") else {}),
-        }
-        for s in servers or []
-    ]
-    after_radius: Any = (
-        before["radius"]
+    settings: dict[str, Any] = {"timeout": timeout}
+    if protocol == "radius":
+        settings["retransmit"] = retransmit
+    elif auth:
+        settings["authentication"] = auth
+    after_proto: Any = (
+        before[protocol]
         if servers is None
-        else (
-            {"servers": shown_servers, "timeout": timeout, "retransmit": retransmit} if servers else "removed"
-        )
+        else ({"servers": [shown_server(protocol, s) for s in servers], **settings} if servers else "removed")
     )
     tpl_step = (
         f"PUT {path(TEMPLATE_PATH, id=str(existing.get('templateId')))} (template {TEMPLATE_NAME})"
@@ -176,7 +205,7 @@ async def system_path(
     user = app.settings.username or "the API user"
     plan = Plan(
         f"Set {host}'s own login order {before['order']} -> {list(order)}"
-        + (" with RADIUS servers " + ", ".join(s["address"] for s in servers) if servers else "")
+        + (f" with {name} servers " + ", ".join(s["address"] for s in servers) if servers else "")
         + " (system AAA, single-tenant Manager)",
         details={
             "path": "system AAA (single-tenant Manager)",
@@ -184,13 +213,14 @@ async def system_path(
             "before": {
                 "order": before["order"],
                 "fallback": before["fallback"],
-                "radius": before["radius"],
+                protocol: before[protocol],
             },
             "after": {
                 "order": list(order),
                 "fallback": before["fallback"] if fallback is None else fallback,
-                "radius": after_radius,
+                protocol: after_proto,
             },
+            **({"unchanged": {other: before[other]}} if has[other] else {}),
             "local_fallback": "local" in order,
             "manager": {"host": host, "chassis": chassis, "config_mode": (mgr or {}).get("config_mode")},
             **view,
@@ -205,15 +235,16 @@ async def system_path(
             "tier_reasons": reasons,
             **({"warnings": warnings} if warnings else {}),
             "undo": (
-                f"catsdwan_set_external_authentication(protocol='radius', order={undo_order(before)!r}, "
-                + ("servers=[])" if before["radius"] == "not configured" else "servers=<the old servers>)")
+                f"catsdwan_set_external_authentication(protocol={protocol!r}, "
+                f"order={undo_order(before, protocol)!r}, "
+                + ("servers=[])" if before[protocol] == "not configured" else "servers=<the old servers>)")
             ),
-            "then": f"catsdwan_test_login with the local admin, then with an ISE user; {host} stays on "
-            f"template {TEMPLATE_NAME} (detach it to return to CLI mode; the configuration stays)",
+            "then": f"catsdwan_test_login with the local admin, then with an ISE {name} user; {host} stays "
+            f"on template {TEMPLATE_NAME} (detach it to return to CLI mode; the configuration stays)",
         },
         side_effects=[
             f"Every login to {host} is checked in the order {list(order)}"
-            + (" against the RADIUS servers" if has_radius else ""),
+            + (f" against the {name} servers" if has[protocol] else ""),
             f"{host} leaves CLI mode: template {TEMPLATE_NAME} (its running configuration with the AAA lines "
             "changed, nothing else) owns its configuration from now on",
         ],
@@ -281,7 +312,7 @@ async def system_path(
             out["outcome"] = "done"
             out["check"] = (
                 "catsdwan_get_device_config(device='manager', section='system'); catsdwan_test_login with "
-                "the local admin and with an ISE user"
+                f"the local admin and with an ISE {name} user"
             )
         return out
 

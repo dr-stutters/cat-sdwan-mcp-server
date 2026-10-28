@@ -237,11 +237,12 @@ def register(reg: ToolRegistrar) -> None:
         """Point Manager logins at RADIUS (ISE) or TACACS+ servers and set the login order. The path follows
         the Manager's tenancy (/client/server tenancyMode). Single-tenant (the usual case): /admin/radius and
         /admin/aaa are a multi-tenant provider's Remote AAA only (the 20.18 GUI has no Remote AAA tab there),
-        so RADIUS for the Manager's own logins goes into its system AAA: the preview shows the running
-        configuration's AAA lines before and after (auth-order, auth-fallback, the radius block; nothing else
-        changes) and the diff; confirm tests the API user's login, puts that configuration in CLI device
-        template mcp-manager-system-aaa attached to the Manager, follows the attach, tests the login again
-        and re-attaches the old configuration if it fails (the Manager leaves CLI mode). Multi-tenant
+        so RADIUS or TACACS+ for the Manager's own logins goes into its system AAA: the preview shows the
+        running configuration's AAA lines before and after (auth-order, auth-fallback, the radius or tacacs
+        block; nothing else changes) and the diff; confirm tests the API user's login, puts that
+        configuration in CLI device template mcp-manager-system-aaa attached to the Manager, follows the
+        attach, tests the login again and re-attaches the old configuration if it fails (the Manager leaves
+        CLI mode). Multi-tenant
         provider: /admin/radius in the GUI's body shape, or /admin/tacacs, then /admin/aaa, then a test login
         with the old order put back if it fails. Lockout risk: BLOCKS an order without 'local', a method with
         no server and a no-op; keep 'local' first with fallback. Secrets are always masked. Dangerous tier.
@@ -274,6 +275,7 @@ def register(reg: ToolRegistrar) -> None:
                 args=call_args,
                 confirm=confirm,
                 login_check=login_check,
+                authentication=authentication,
             )
         if servers is not None and not servers:
             raise InvalidRequest("servers takes 1 to 8 servers (omit it to keep the current ones).")
