@@ -244,6 +244,68 @@ async def test_session_relogin_on_401(router: respx.MockRouter) -> None:
     assert router.routes[1].call_count == 2
 
 
+# --- #117: the login page behind an error status, on a write ----------------------------------------
+# The Wave 8 decommission of br1 answered PUT .../decommission with HTTP 405 and the Manager's login page
+# twice before it worked: an expired session, not a refused method.
+
+DECOMMISSION = "/dataservice/system/device/decommission/REDACTED-16"
+SERVLET_405 = (
+    '<!doctype html><html lang="en"><head><title>HTTP Status 405 - Method Not Allowed</title></head>'
+    "<body><h1>HTTP Status 405 - Method Not Allowed</h1></body></html>"
+)
+
+
+async def test_session_relogin_on_a_405_login_page_for_a_put(router: respx.MockRouter) -> None:
+    _session_router(router)
+    login = router.post("/j_security_check").mock(
+        side_effect=[
+            httpx.Response(200, headers={"Set-Cookie": SESSION_COOKIE}),
+            httpx.Response(200, headers={"Set-Cookie": "JSESSIONID=sess-2; Path=/; Secure"}),
+        ]
+    )
+    put = router.put(DECOMMISSION).mock(
+        side_effect=[
+            httpx.Response(405, headers=HTML, text=LOGIN_PAGE),
+            httpx.Response(200, json={"id": "decommission-1"}),
+        ]
+    )
+    app = SdwanApp(make_settings(auth="session"))
+    assert await app.api.put(DECOMMISSION, {}) == {"id": "decommission-1"}
+    await app.aclose()
+    assert login.call_count == 2 and put.call_count == 2
+    assert put.calls[1].request.headers["Cookie"] == "JSESSIONID=sess-2"
+
+
+async def test_405_login_page_twice_on_a_put_is_auth(router: respx.MockRouter) -> None:
+    _session_router(router)
+    put = router.put(DECOMMISSION).respond(405, headers=HTML, text=LOGIN_PAGE)
+    app = SdwanApp(make_settings(auth="session"))
+    with pytest.raises(AuthError, match=r"answered PUT /dataservice/system/device/decommission/\S+ with its"):
+        await app.api.put(DECOMMISSION, {})
+    await app.aclose()
+    assert put.call_count == 2
+
+
+async def test_405_servlet_error_page_is_not_a_login_page(api: respx.MockRouter) -> None:
+    put = api.put(DECOMMISSION).respond(405, headers=HTML, text=SERVLET_405)
+    app = SdwanApp(make_settings())
+    with pytest.raises(UpstreamError) as e:
+        await app.api.put(DECOMMISSION, {})
+    await app.aclose()
+    assert not isinstance(e.value, AuthError) and e.value.status_code == 405
+    assert put.call_count == 1 and api.routes[0].call_count == 1  # no second login
+
+
+async def test_4xx_json_still_raises_and_caller_ok_status_is_kept(api: respx.MockRouter) -> None:
+    api.get("/dataservice/device/missing").respond(404, json={"error": {"message": "No such device"}})
+    app = SdwanApp(make_settings())
+    with pytest.raises(NotFound, match="No such device"):
+        await app.api.get("/dataservice/device/missing")
+    got = await app.api.get("/dataservice/device/missing", ok_status={404})
+    await app.aclose()
+    assert got == {"error": {"message": "No such device"}}
+
+
 # --- tenancy, errors, throttling -------------------------------------------------------------------
 
 

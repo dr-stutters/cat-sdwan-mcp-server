@@ -87,6 +87,14 @@ Wait = Annotated[bool, Field(description="Wait for every device to report succes
 ShowCli = Annotated[
     bool, Field(description="Include the full intended CLI per device in the preview (secrets masked)")
 ]
+AllowPendingCertificate = Annotated[
+    bool,
+    Field(
+        description="Deploy even though an edge's certificate is not installed yet (certificate_state other "
+        "than certinstalled, e.g. csrgenerated): the blocker becomes a warning. The Manager then only queues "
+        "the deploy for that edge and still reports success (default false)"
+    ),
+]
 
 DEPLOY_ROLLBACK = (
     "The Manager has no undo. To roll back, set the previous variable values again "
@@ -139,6 +147,24 @@ def _reachability_blockers(rows: list[dict[str, Any]]) -> list[str]:
         reach = str(r.get("reachability") or "unknown")
         if reach.lower() != "reachable":
             out.append(f"{r.get('host') or r.get('chassis')} is {reach}: the Manager can't push to it")
+    return out
+
+
+def _certificate_problems(rows: list[dict[str, Any]]) -> list[str]:
+    """One line per WAN edge whose certificate is not installed (#117). The Manager accepts a deploy to such
+    an edge (csrgenerated after a wipe, tokengenerated, ...), reports success and only queues the change, so
+    the preview blocks (or warns, when the operator allows it). An unknown state (the WAN edge certificate
+    inventory not read) is left to the inventory warning."""
+    out = []
+    for r in rows:
+        state = str(r.get("certificate_state") or "")
+        if r.get("role") != "edge" or not state or state.lower() == "certinstalled":
+            continue
+        out.append(
+            f"{r.get('host') or r.get('chassis')}'s certificate is {state}, not certinstalled: the Manager "
+            "would only queue this deploy and report success; install the certificate first "
+            "(catsdwan_certificates, catsdwan_control_connections) or pass allow_pending_certificate=true"
+        )
     return out
 
 
@@ -336,15 +362,18 @@ def register(reg: ToolRegistrar) -> None:
         devices: DeviceList,
         show_cli: ShowCli = True,
         wait: Wait = True,
+        allow_pending_certificate: AllowPendingCertificate = False,
         confirm: Confirm = None,
     ) -> dict[str, Any]:
         """Push a configuration group to some of its devices. Preview-first: per device the intended CLI
         from the Manager's CLI preview (POST .../device/{id}/preview) and its diff against the running
         configuration ('-' running, '+' after the deploy), secrets masked; when the Manager has no CLI preview
         the preview is the intended-vs-running diff of the Manager's stored copy and says so. Blocked for a
-        device not in the group, on a device template, unreachable, or with an action still running, and for
-        a group without feature profiles. Confirm deploys, then follows the Manager's action status until
-        every device reports success or failure (with the failing device's reason). One device is write tier;
+        device not in the group, on a device template, unreachable, with an action still running or with its
+        certificate not installed (the Manager would only queue the deploy and report success;
+        allow_pending_certificate=true turns that into a warning), and for a group without feature profiles.
+        Confirm deploys, then follows the Manager's action status until every device reports success or
+        failure (with the failing device's reason). One device is write tier;
         several devices, a hub or a protected-site device need MCP_ENABLE_DANGEROUS (hubs:
         CATSDWAN_HUB_DEVICES, else found from hub-and-spoke topologies and BFD; `hub_status` in the
         preview)."""
@@ -376,6 +405,7 @@ def register(reg: ToolRegistrar) -> None:
             if a and a.get("unsupported_features"):
                 warnings.append(f"{host}: unsupported features {a['unsupported_features']}")
         blockers += _reachability_blockers(rows)
+        (warnings if allow_pending_certificate else blockers).extend(_certificate_problems(rows))
         busy, busy_warn = await _pending_blockers(app, rows)
         blockers += busy
         warnings += busy_warn
@@ -473,7 +503,13 @@ def register(reg: ToolRegistrar) -> None:
         return await preview_or_apply(
             ctx,
             tool="catsdwan_deploy_config_group",
-            args={"group": group, "devices": devices, "show_cli": show_cli, "wait": wait},
+            args={
+                "group": group,
+                "devices": devices,
+                "show_cli": show_cli,
+                "wait": wait,
+                "allow_pending_certificate": allow_pending_certificate,
+            },
             confirm=confirm,
             plan=plan,
             apply=apply,
