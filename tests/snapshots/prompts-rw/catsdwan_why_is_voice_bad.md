@@ -1,7 +1,7 @@
 # catsdwan_why_is_voice_bad
 
 title: Why is voice bad over SD-WAN?
-arguments: {"host": "198.51.100.10", "lab": "mcp-cat-sdwan", "site": "200", "sla_class": "Voice-And-Video"}
+arguments: {"host": "198.51.100.10", "lab": "mcp-lab-sdwan", "site": "200", "sla_class": "Voice-And-Video"}
 
 Why is voice bad at this branch? The voice SLA class and app-route loss, latency and jitter per
 transport, the path voice (DSCP 46) takes, the edge's QoS map and per-queue drops, the caller's
@@ -50,7 +50,7 @@ Read-only: change nothing; suggest fixes, don't apply them.
    and SGT the caller got, and when it last authenticated. A dACL or SGT that doesn't match the
    voice policy (a phone landing in the data VLAN or a guest profile), or re-authentications every
    few minutes (each one a gap in the call), is an ISE cause.
-9. Lab conditions (CML, skipped if that server is not connected: say so in one line and go on): `cml_get_link_scenarios` with lab="mcp-cat-sdwan". A
+9. Lab conditions (CML, skipped if that server is not connected: say so in one line and go on): `cml_get_link_scenarios` with lab="mcp-lab-sdwan". A
    wan-satellite, brownout or flap scenario on one edge transport link is a deliberate transport
    fault; lossy-wifi on the caller's access link is a deliberate Wi-Fi fault. Name it.
 

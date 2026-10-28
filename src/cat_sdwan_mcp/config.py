@@ -49,6 +49,11 @@ class Settings(BaseServerSettings):
     # setting (it never asks the client for a password).
     test_login_passwords: SecretStr | None = None
 
+    # CATSDWAN_CML_LAB: the CML lab (title or id) the workflow prompts use when their `lab` argument is blank
+    # (catsdwan_branch_health, catsdwan_site_down, catsdwan_brownout_drill, ...): a renamed lab needs no
+    # release.
+    cml_lab: str = "mcp-lab-sdwan"
+
     # CATSDWAN_IMAGE_DIR: the directory on the MCP server host catsdwan_upload_utd_image reads UTD engine
     # images from (like FMC_PKI_DIR): only the file name travels in the tool call, never the file's bytes.
     # Unset: uploads are off.

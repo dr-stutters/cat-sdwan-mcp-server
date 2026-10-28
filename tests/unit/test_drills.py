@@ -34,7 +34,7 @@ async def test_listed_without_writes() -> None:
 
 
 async def test_with_cml_lab_links_snapshot_down_paths_sla_services_restore_compare() -> None:
-    text = await text_of({"hub": "hub1", "lab": "mcp-cat-sdwan", "vpns": "10,20"})
+    text = await text_of({"hub": "hub1", "lab": "mcp-lab-sdwan", "vpns": "10,20"})
     assert in_order(
         text,
         [
@@ -59,20 +59,20 @@ async def test_with_cml_lab_links_snapshot_down_paths_sla_services_restore_compa
     )
     flat = " ".join(text.split())
     assert 'The hub to fail is "hub1" (given)' in flat
-    assert 'lab="mcp-cat-sdwan"' in text and 'state="down"' in text and 'state="up"' in text
+    assert 'lab="mcp-lab-sdwan"' in text and 'state="down"' in text and 'state="up"' in text
     assert "PREVIEW-FIRST" in text and "never a Manager, Controller or Validator" in flat
     assert "per service VPN (10, 20)" in text and "graceful restart" in text
     assert "cml_set_node_state` with" not in text  # links method: no power-off step
 
 
 async def test_with_cml_lab_node_method_powers_off_and_back_on() -> None:
-    text = await text_of({"hub": "hub1", "lab": "mcp-cat-sdwan", "method": "node"})
+    text = await text_of({"hub": "hub1", "lab": "mcp-lab-sdwan", "method": "node"})
     assert 'node=<hub>, state="stop"' in text and 'state="start"' in text
     assert "`cml_wait_for_converged`" in text
 
 
 async def test_unknown_method_falls_back_to_links() -> None:
-    text = await text_of({"hub": "hub1", "lab": "mcp-cat-sdwan", "method": "reboot"})
+    text = await text_of({"hub": "hub1", "lab": "mcp-lab-sdwan", "method": "reboot"})
     assert 'state="down"' in text and 'state="stop"' not in text
 
 
@@ -86,8 +86,8 @@ async def test_without_cml_lab_the_operator_takes_the_hub_down() -> None:
 
 async def test_restore_step_is_always_present() -> None:
     for args in (
-        {"hub": "hub1", "lab": "mcp-cat-sdwan"},
-        {"hub": "hub1", "lab": "mcp-cat-sdwan", "method": "node"},
+        {"hub": "hub1", "lab": "mcp-lab-sdwan"},
+        {"hub": "hub1", "lab": "mcp-lab-sdwan", "method": "node"},
         {"hub": "hub1"},
         {},
     ):
@@ -98,7 +98,7 @@ async def test_restore_step_is_always_present() -> None:
 
 
 async def test_hub_from_heuristics_when_setting_unset() -> None:
-    text = await text_of({"lab": "mcp-cat-sdwan"})
+    text = await text_of({"lab": "mcp-lab-sdwan"})
     flat = " ".join(text.split())
     assert "CATSDWAN_HUB_DEVICES is not set" in flat and "(#102)" in flat
     assert "`catsdwan_list_policies`" in text and "`catsdwan_get_policy`" in text

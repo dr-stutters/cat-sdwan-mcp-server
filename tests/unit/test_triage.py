@@ -59,7 +59,7 @@ async def test_wifi_lan_or_wan_starts_from_find_host_and_judges_each_layer() -> 
 
 async def test_wifi_lan_or_wan_without_site() -> None:
     text = await text_of("catsdwan_wifi_lan_or_wan", {"host": "alice"})
-    assert "site=<the site found in step 1>" in text and 'lab="mcp-cat-sdwan"' in text
+    assert "site=<the site found in step 1>" in text and 'lab="mcp-lab-sdwan"' in text
 
 
 async def test_network_or_ise_walks_overlay_then_radius_then_policy() -> None:
@@ -106,13 +106,13 @@ async def test_site_down_names_power_underlay_overlay() -> None:
     )
     for verdict in ("- power", "- underlay:", "- overlay:", "- not down:"):
         assert verdict in text
-    assert 'lab="mcp-cat-sdwan"' in text and "include_history=true" in text
+    assert 'lab="mcp-lab-sdwan"' in text and "include_history=true" in text
 
 
 async def test_brownout_drill_is_preview_first_and_always_clears() -> None:
     text = await text_of(
         "catsdwan_brownout_drill",
-        {"site": "200", "lab": "mcp-cat-sdwan", "scenario": "wan-satellite", "sla_class": "Realtime"},
+        {"site": "200", "lab": "mcp-lab-sdwan", "scenario": "wan-satellite", "sla_class": "Realtime"},
     )
     assert in_order(
         text,

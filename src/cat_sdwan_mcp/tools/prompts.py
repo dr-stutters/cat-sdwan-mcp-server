@@ -13,23 +13,29 @@ from pydantic import Field
 
 from cat_sdwan_mcp._core import Tier, ToolRegistrar, tool_ref
 
-LAB = "mcp-cat-sdwan"  # the CML lab cml_build_recipe('cat-sdwan-fabric') builds
+LAB = "mcp-lab-sdwan"  # default of CATSDWAN_CML_LAB: the standing SD-WAN CML lab
 OPTIONAL = "skipped if that server is not connected: say so in one line and go on"
 
 Site = Annotated[str, Field(description="Site id (e.g. '200') or site name (e.g. 'SITE_200')")]
 CmlLab = Annotated[
     str,
-    Field(
-        description=f"CML lab of the fabric (title or id; blank = '{LAB}', the cat-sdwan-fabric recipe's lab)"
-    ),
+    Field(description=f"CML lab of the fabric (title or id; blank = CATSDWAN_CML_LAB, default '{LAB}')"),
 ]
 
 
-def _lab(lab: str) -> str:
-    return lab.strip() or LAB
+def default_lab(reg: ToolRegistrar) -> str:
+    """The CML lab a blank `lab` argument means: CATSDWAN_CML_LAB, else LAB."""
+    configured: str | None = getattr(reg.settings, "cml_lab", None)
+    return (configured or "").strip() or LAB
+
+
+def _lab(lab: str, default: str = LAB) -> str:
+    return lab.strip() or default
 
 
 def register(reg: ToolRegistrar) -> None:
+    lab_default = default_lab(reg)
+
     @reg.prompt(
         title="SD-WAN branch health",
         uses=["catsdwan", "cml", "netbox"],
@@ -39,7 +45,7 @@ def register(reg: ToolRegistrar) -> None:
         """Is this branch healthy? Device health, control connections, BFD and app-route loss, latency and
         jitter per transport colour, alarms and recent activity, then a verdict per transport (healthy,
         degraded, down); in a CML lab, the link scenarios say whether a degradation is deliberate."""
-        lab_ = _lab(lab)
+        lab_ = _lab(lab, lab_default)
         return f"""Report the health of SD-WAN site {site}, one verdict per transport.
 Read-only: change nothing.
 
@@ -101,7 +107,7 @@ healthy."""
         then catsdwan_onboard_edge (validity, group, variables), boot or activate the edge, deploy the
         group, and prove it: control connections and BFD up, a ping from the branch host to the hub host,
         and a NetBox journal entry. Every write is preview-first."""
-        lab_ = _lab(lab)
+        lab_ = _lab(lab, lab_default)
         edge = f'chassis="{chassis.strip()}"' if chassis.strip() else "chassis=<the chassis from step 2>"
         group = (
             f'config_group="{config_group.strip()}"'
@@ -174,7 +180,7 @@ End with a short table: step, result, and anything left for the user."""
         NetBox), read the app-route loss, latency and jitter on each transport against the SLA class, the
         policy that picks the path, the firewall leg where an FTD sits behind the edge, and CML link
         conditions, then say in one sentence where the delay is."""
-        lab_ = _lab(lab)
+        lab_ = _lab(lab, lab_default)
         return f"""Find where {app} is slow for {host}.
 Read-only: change nothing; suggest fixes, don't apply them.
 

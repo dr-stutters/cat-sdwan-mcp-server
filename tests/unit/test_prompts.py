@@ -30,10 +30,10 @@ SAMPLES = {
         "vpn": "0",
         "keep_enabled": "false",
     },
-    "catsdwan_branch_health": {"site": "200", "lab": "mcp-cat-sdwan"},
+    "catsdwan_branch_health": {"site": "200", "lab": "mcp-lab-sdwan"},
     "catsdwan_hub_failover_drill": {
         "hub": "hub1",
-        "lab": "mcp-cat-sdwan",
+        "lab": "mcp-lab-sdwan",
         "method": "links",
         "vpns": "10",
         "sites": "200,201",
@@ -49,7 +49,7 @@ SAMPLES = {
         "chassis": "C8K-00000000-0000-4000-8000-000000000001",
         "config_group": "mcp-test",
         "hostname": "br2",
-        "lab": "mcp-cat-sdwan",
+        "lab": "mcp-lab-sdwan",
     },
     "catsdwan_contain_host": {
         "host": "10.61.100.10",
@@ -68,12 +68,12 @@ SAMPLES = {
         "site": "200",
         "host": "198.51.100.10",
         "sla_class": "Voice-And-Video",
-        "lab": "mcp-cat-sdwan",
+        "lab": "mcp-lab-sdwan",
     },
     "catsdwan_why_is_app_slow": {
         "host": "10.61.200.10",
         "app": "ssh to 10.61.100.10",
-        "lab": "mcp-cat-sdwan",
+        "lab": "mcp-lab-sdwan",
     },
 }
 
@@ -161,14 +161,33 @@ async def test_branch_health_renders_a_verdict_per_transport() -> None:
         "cml_get_link_scenarios",
     ):
         assert f"`{ref}`" in text
-    assert 'site="200"' in text and 'lab="mcp-cat-sdwan"' in text
+    assert 'site="200"' in text and 'lab="mcp-lab-sdwan"' in text
     assert "healthy" in text and "degraded" in text and "down" in text
     assert "skipped if that server is not connected" in text
 
 
 async def test_branch_health_default_lab() -> None:
     text = await text_of("catsdwan_branch_health", {"site": "SITE_100"})
-    assert 'lab="mcp-cat-sdwan"' in text
+    assert 'lab="mcp-lab-sdwan"' in text
+
+
+async def test_cml_lab_setting_overrides_the_default_lab() -> None:
+    """CATSDWAN_CML_LAB: a renamed standing lab needs no release; an explicit `lab` argument still wins."""
+    server = make_server(mcp_enable_writes=True, mcp_enable_dangerous=True, cml_lab="lab-renamed")
+    for name, args in (
+        ("catsdwan_branch_health", {"site": "200"}),
+        ("catsdwan_site_down", {"site": "200"}),
+        ("catsdwan_brownout_drill", {"site": "200"}),
+        ("catsdwan_why_is_app_slow", {"host": "192.0.2.10", "app": "webex"}),
+        ("catsdwan_why_is_voice_bad", {"site": "200"}),
+    ):
+        text = await text_of(name, args, server)
+        assert '"lab-renamed"' in text and "mcp-lab-sdwan" not in text, name
+    text = await text_of("catsdwan_branch_health", {"site": "200", "lab": "other-lab"}, server)
+    assert 'lab="other-lab"' in text and "lab-renamed" not in text
+    # blank or whitespace-only setting falls back to the default
+    text = await text_of("catsdwan_branch_health", {"site": "200"}, make_server(cml_lab="  "))
+    assert 'lab="mcp-lab-sdwan"' in text
 
 
 async def test_onboard_branch_is_preview_first_and_chains_the_servers() -> None:
