@@ -50,7 +50,10 @@ def _hub_step(hub: str, configured: str | None) -> str:
    - BFD, when no hub-and-spoke topology names one: {tool_ref("catsdwan_bfd_sessions")} for the
      fabric (no device), sessions by local edge and remote site: an edge whose sessions reach
      every other site seen in BFD (at least two) is a hub; if every edge's do, it is a full mesh
-     with no hub to fail: stop and say so.
+     and BFD cannot tell.
+   - OMP, for a full mesh: {tool_ref("catsdwan_omp_routes")} on the controller: an edge that alone
+     originates more than half of the service-VPN prefixes (with at least two other originating
+     edges) is the DC hub. If none does, it is a full mesh with no hub to fail: stop and say so.
    A hub found this way is "hub by heuristic": name the evidence (the policy, or the session count
    and sites) and ask the user to confirm it before going on; recommend setting
    CATSDWAN_HUB_DEVICES. Then check it in catsdwan_list_devices: a WAN edge (personality vedge),

@@ -145,8 +145,9 @@ attach to **one** device is write tier (`MCP_ENABLE_WRITES`); to **several** dev
 preview is blocked unless `MCP_ENABLE_DANGEROUS` is on (and, with per-user roles, the caller is admin).
 `CATSDWAN_HUB_DEVICES` is authoritative; when it is unset, a deploy or attach (config group, policy group, device
 template) finds hubs from the Manager's own evidence and tiers them dangerous: an edge at a hub site of a
-hub-and-spoke topology, else an edge whose BFD sessions reach every other site while the branches' don't (a full
-mesh has no hub). The preview's `hub_status` says why ("hub by heuristic (...); set CATSDWAN_HUB_DEVICES"), or
+hub-and-spoke topology, else an edge whose BFD sessions reach every other site while the branches' don't. In a
+full BFD mesh, where BFD cannot tell, the edge that alone originates most service-VPN prefixes in OMP (the DC
+site) is the hub; when none does, the status is "unknown". The preview's `hub_status` says why ("hub by heuristic (...); set CATSDWAN_HUB_DEVICES"), or
 "unknown" with a warning when the evidence can't be read. Every
 deploy reports `blast_radius` = its devices, so `MCP_MAX_BLAST_RADIUS` caps it. The Manager has no undo: the
 variables preview lists the old values, and a deploy's preview diff shows the running configuration it replaces.

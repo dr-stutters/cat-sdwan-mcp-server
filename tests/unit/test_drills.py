@@ -105,6 +105,7 @@ async def test_hub_from_heuristics_when_setting_unset() -> None:
     assert "hub site list of each hub-and-spoke definition" in flat
     assert "reach every other site seen in BFD (at least two) is a hub" in flat
     assert "full mesh with no hub to fail" in flat and '"hub by heuristic"' in flat
+    assert "`catsdwan_omp_routes` on the controller" in flat and "more than half of the service-VPN" in flat
 
 
 async def test_hub_from_setting() -> None:
