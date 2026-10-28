@@ -155,6 +155,19 @@ def test_admintech_rows_and_progress() -> None:
     )
     assert len(rows) == 1 and rows[0]["file"] == "10.0.0.2-br1-admin-tech.tar.gz"
     assert rows[0]["download"].endswith("/admintech/download/10.0.0.2-br1-admin-tech.tar.gz")
+    assert rows[0]["delete"] == "DELETE /dataservice/device/tools/admintech/r1"
+
+
+def test_admintech_body_has_no_device_type_and_retry_forms() -> None:
+    body = ts.admintech_body("192.0.2.1", exclude_cores=True, exclude_logs=False, exclude_tech=True)
+    assert "device-type" not in body and body["tech-filter"] == [] and body["custom-commands"] == []
+    # A body that still carries the key is retried without it, whatever the role.
+    retry = ts.admintech_retry_body({**body, "device-type": "vmanage"}, "manager")
+    assert retry is not None and retry[0] == body and "without device-type" in retry[1]
+    # The Manager's plain body is retried with the spec example's key; an edge has no other form.
+    retry = ts.admintech_retry_body(body, "manager")
+    assert retry is not None and retry[0] == {**body, "device-type": "vmanage"}
+    assert ts.admintech_retry_body(body, "edge") is None
 
 
 # --- ping / traceroute ---------------------------------------------------------------------------
@@ -333,6 +346,102 @@ async def test_admin_tech_preview_then_confirm(
         "custom-commands": [],
     }
     assert done["result"]["admin_tech"]["file"] == "10.0.0.2-br1-20261023-admin-tech.tar.gz"
+
+
+# The Manager's answer to the spec example's body (live, 20.18.3.1, #123); the message is the Manager's own.
+DEVICE0007 = {
+    "error": {
+        "message": "Invalid admintech payload",
+        "details": "Invalid admintech payload, parameters incorrect",
+        "code": "DEVICE0007",
+    }
+}
+MANAGER_ROW = {
+    "deviceIP": "1.1.1.1",
+    "fileName": "1.1.1.1-manager-20261028-admin-tech.tar.gz",
+    "size": 0,
+    "state": "done",
+    "requestTokenId": "mgr-1",
+    "creationTime": 1792752241087,
+}
+
+
+def _mock_admintech(api: respx.MockRouter, done_row: dict[str, Any]) -> None:
+    mock_inventory(api)
+    api.get(ts.ADMINTECHS_PATH).mock(
+        side_effect=[
+            respx.MockResponse(json=fixture("device_tools_admintechs")),  # preview
+            respx.MockResponse(json=fixture("device_tools_admintechs")),  # confirm's re-plan
+            respx.MockResponse(json={"data": [done_row]}),
+        ]
+    )
+    api.get(ts.ADMINTECH_PROGRESS_PATH).respond(json=fixture("device_tools_admintechs_inprogress"))
+
+
+async def test_admin_tech_manager_body_has_no_device_type_and_warns(
+    api: respx.MockRouter, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setattr(ts_tools, "POLL_INTERVAL", 0.0)
+    _mock_admintech(api, MANAGER_ROW)
+    post = api.post(ts.ADMINTECH_PATH).respond(json={"size": 0, "fileName": MANAGER_ROW["fileName"]})
+    async with Client(make_server(mcp_enable_writes=True)) as c:
+        prev = await run(c, "catsdwan_admin_tech", {"device": "manager", "exclude_tech": True})
+        assert "device-type" not in prev["preview"]["request"]
+        assert any("ISE login password in clear" in w for w in prev["preview"]["warnings"])
+        done = await run(
+            c, "catsdwan_admin_tech", {"device": "manager", "exclude_tech": True, "confirm": prev["confirm"]}
+        )
+    assert post.call_count == 1
+    sent = json.loads(post.calls[0].request.content)
+    assert "device-type" not in sent and sent["deviceIP"] == "1.1.1.1" and sent["exclude-tech"] is True
+    result = done["result"]
+    assert "retried" not in result and "DELETE" in result["warning"]
+    assert "application/octet-stream" in result["download_with"]
+    assert result["admin_tech"]["delete"] == "DELETE /dataservice/device/tools/admintech/mgr-1"
+
+
+async def test_admin_tech_device0007_retries_exactly_once(
+    api: respx.MockRouter, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setattr(ts_tools, "POLL_INTERVAL", 0.0)
+    _mock_admintech(api, MANAGER_ROW)
+    post = api.post(ts.ADMINTECH_PATH).mock(
+        side_effect=[respx.MockResponse(400, json=DEVICE0007), respx.MockResponse(json={"size": 0})]
+    )
+    async with Client(make_server(mcp_enable_writes=True)) as c:
+        prev = await run(c, "catsdwan_admin_tech", {"device": "manager"})
+        done = await run(c, "catsdwan_admin_tech", {"device": "manager", "confirm": prev["confirm"]})
+    assert post.call_count == 2
+    first, second = (json.loads(call.request.content) for call in post.calls)
+    assert "device-type" not in first and second == {**first, "device-type": "vmanage"}
+    assert "DEVICE0007" in done["result"]["retried"] and "retried once" in done["result"]["retried"]
+
+
+async def test_admin_tech_device0007_twice_fails_after_one_retry(
+    api: respx.MockRouter, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setattr(ts_tools, "POLL_INTERVAL", 0.0)
+    _mock_admintech(api, MANAGER_ROW)
+    post = api.post(ts.ADMINTECH_PATH).respond(400, json=DEVICE0007)
+    async with Client(make_server(mcp_enable_writes=True)) as c:
+        prev = await run(c, "catsdwan_admin_tech", {"device": "manager"})
+        with pytest.raises(ToolError, match="refused the admin-tech body twice"):
+            await run(c, "catsdwan_admin_tech", {"device": "manager", "confirm": prev["confirm"]})
+    assert post.call_count == 2
+
+
+async def test_admin_tech_edge_device0007_is_not_retried(
+    api: respx.MockRouter, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setattr(ts_tools, "POLL_INTERVAL", 0.0)
+    _mock_admintech(api, MANAGER_ROW)
+    post = api.post(ts.ADMINTECH_PATH).respond(400, json=DEVICE0007)
+    async with Client(make_server(mcp_enable_writes=True)) as c:
+        prev = await run(c, "catsdwan_admin_tech", {"device": "br1"})
+        assert "warnings" not in prev["preview"]
+        with pytest.raises(ToolError, match="DEVICE0007"):
+            await run(c, "catsdwan_admin_tech", {"device": "br1", "confirm": prev["confirm"]})
+    assert post.call_count == 1
 
 
 async def test_troubleshooting_tiers() -> None:

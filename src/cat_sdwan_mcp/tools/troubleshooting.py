@@ -31,6 +31,8 @@ from cat_sdwan_mcp.client import SdwanApp
 from cat_sdwan_mcp.fabric import device_rows, find_device, host_map, require_reachable
 from cat_sdwan_mcp.inventory import INTERFACE_PATH
 from cat_sdwan_mcp.troubleshooting import (
+    ADMINTECH_DELETE_PATH,
+    ADMINTECH_DOWNLOAD_ACCEPT,
     ADMINTECH_PATH,
     ADMINTECH_PROGRESS_PATH,
     ADMINTECHS_PATH,
@@ -42,16 +44,30 @@ from cat_sdwan_mcp.troubleshooting import (
     TOOL_TIMEOUT,
     TRACEROUTE_PATH,
     TUNNELPATH_PATH,
+    admintech_body,
+    admintech_retry_body,
     admintech_rows,
     bringup_steps,
     control_check,
     flow_body,
     flow_result,
     in_progress,
+    is_admintech_payload_error,
     path,
     ping_body,
     ping_result,
     traceroute_result,
+)
+
+MANAGER_SECRET_WARNING = (
+    "The Manager's admin-tech holds vmanage-server.log, which on 20.18 contains the ISE login password in "
+    "clear: hand it only to TAC and delete it after use (DELETE "
+    f"{ADMINTECH_DELETE_PATH}, the request_id of the row)"
+)
+DOWNLOAD_HINT = (
+    "GET the row's download path with the header 'Accept: "
+    f"{ADMINTECH_DOWNLOAD_ACCEPT}' (a browser session or curl with the JWT; the default Accept: "
+    "application/json answers 406, so catsdwan_api_call cannot fetch the archive)"
 )
 
 Device = Annotated[
@@ -298,9 +314,13 @@ def register(reg: ToolRegistrar) -> None:
     ) -> dict[str, Any]:
         """Generate an admin-tech archive on a device for TAC (POST /device/tools/admintech), wait until the
         Manager lists it (GET /device/tools/admintechs, /admintechs/inprogress) and return its file name and
-        download path (GET /device/tools/admintech/download/{file}, e.g. with catsdwan_api_call or a browser
-        session). Preview-first; the preview lists the device's existing admin-techs. Write tier: it writes a
-        file to the device's disk and loads its CPU for several minutes."""
+        download path (GET /device/tools/admintech/download/{file} with Accept: application/octet-stream, from
+        a browser session or curl; the archive is binary, so not through catsdwan_api_call). The body is the
+        same for every role; a 400 DEVICE0007 (invalid payload) is retried once with the other device-type
+        form and the result says so. Preview-first; the preview lists the device's existing admin-techs and,
+        for the Manager, warns that its archive holds the ISE password in clear (delete it after use: DELETE
+        /device/tools/admintech/{requestTokenId}). Write tier: it writes a file to the device's disk and loads
+        its CPU for several minutes."""
         app: SdwanApp = get_client(ctx)
         row, ip, _ = await _target(app, device)
         name = str(row.get("host") or ip)
@@ -309,22 +329,17 @@ def register(reg: ToolRegistrar) -> None:
         )
         existing = admintech_rows(existing_body, ip) if not isinstance(existing_body, UpstreamError) else []
         running = in_progress(progress_body) if not isinstance(progress_body, UpstreamError) else 0
-        # The Manager's own UI sends device-type only for itself ("vmanage"); for an edge or another
-        # controller 20.18 refuses the body with DEVICE0007 when it is there. The two empty lists are what
-        # the UI sends too (live 2026-10-24).
-        body: dict[str, Any] = {
-            "deviceIP": ip,
-            "exclude-cores": exclude_cores,
-            "exclude-logs": exclude_logs,
-            "exclude-tech": exclude_tech,
-            "tech-filter": [],
-            "custom-commands": [],
-        }
-        if row.get("role") == "manager":
-            body["device-type"] = "vmanage"
+        # The same body for every role: the spec example's device-type "vmanage" is what 20.18.3.1 refuses
+        # for the Manager (400 DEVICE0007); without it the Manager builds its own admin-tech (#123, live).
+        body = admintech_body(
+            ip, exclude_cores=exclude_cores, exclude_logs=exclude_logs, exclude_tech=exclude_tech
+        )
+        role = row.get("role")
         warnings = []
         if running:
             warnings.append(f"{running} admin-tech(s) already in progress on the Manager")
+        if role == "manager":
+            warnings.append(MANAGER_SECRET_WARNING)
         plan = Plan(
             f"Generate an admin-tech on {name} ({ip})",
             details={
@@ -344,8 +359,25 @@ def register(reg: ToolRegistrar) -> None:
         async def apply() -> Any:
             before = {r.get("request_id") for r in existing}
             started = time.time()
-            answer = await app.api.post(ADMINTECH_PATH, body, timeout=600)
             out: dict[str, Any] = {"device": name}
+            try:
+                answer = await app.api.post(ADMINTECH_PATH, body, timeout=600)
+            except UpstreamError as e:
+                retry = admintech_retry_body(body, role) if is_admintech_payload_error(e) else None
+                if retry is None:
+                    raise
+                other, how = retry
+                try:
+                    answer = await app.api.post(ADMINTECH_PATH, other, timeout=600)
+                except UpstreamError as e2:
+                    raise type(e2)(
+                        f"The Manager refused the admin-tech body twice: first {e}; then ({how}) {e2}",
+                        e2.status_code,
+                    ) from e2
+                out["retried"] = f"the Manager answered {e} to {body}; {how}: {other} was accepted"
+            if role == "manager":
+                out["warning"] = MANAGER_SECRET_WARNING
+            out["download_with"] = DOWNLOAD_HINT
             if not wait:
                 out["answer"] = answer
                 out["check_with"] = f"catsdwan_api_call('{ADMINTECHS_PATH}')"
