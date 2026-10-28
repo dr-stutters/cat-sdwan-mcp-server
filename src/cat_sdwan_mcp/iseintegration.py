@@ -207,8 +207,8 @@ def pxgrid_state(rec: dict[str, Any]) -> str:
     - none: no record; created: a record with no status yet (create ran, activate did not)
     - activated: POST /ise/pxgrid/activate ran; the Manager's own PUT /ise/pxgrid/approve is still due
     - pending: waits for approval on ISE (activate answered PENDING)
-    - enabled: approved (ENABLED), or any 'vSmart push is ...' status (pxgrid_push says how the controller
-      sync went)
+    - enabled: approved (ENABLED; 'Approved' right after PUT /ise/pxgrid/approve, before the controller sync
+      task starts, #148), or any 'vSmart push is ...' status (pxgrid_push says how the controller sync went)
     - disabled: the client is disabled on ISE
     - unknown: a status this server does not know (pxgrid_raw has the text)
     """
@@ -221,6 +221,8 @@ def pxgrid_state(rec: dict[str, Any]) -> str:
         return "enabled" if pxgrid_push(rec) != "unknown" else "unknown"
     if raw == "activated":
         return "activated"
+    if raw == "approved":
+        return "enabled"
     for s in ("disabled", "enabled", "pending"):
         if s in raw:
             return s
@@ -228,7 +230,12 @@ def pxgrid_state(rec: dict[str, Any]) -> str:
 
 
 def node_name_of(rec: dict[str, Any]) -> str | None:
-    v = rec.get("nodeName") or rec.get("pxGridUserName")
+    """The pxGrid client name ISE lists: `pxGridUserName` first. After the approve, 20.18.3.1 puts ISE's own
+    pxGrid node ('~ise-admin-ise') in `nodeName` (#148), so a '~' name there is never the client."""
+    v = rec.get("pxGridUserName")
+    if not v:
+        n = str(rec.get("nodeName") or "")
+        v = n if n and not n.startswith("~") else None
     return str(v) if v else None
 
 

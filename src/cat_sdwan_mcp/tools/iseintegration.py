@@ -132,13 +132,14 @@ def register(reg: ToolRegistrar) -> None:
         waits as pending for ise_approve_pxgrid_client (or approve_on_manager=true), then the settings sent to
         the controllers. Run it again after the approval: the preview plans only what is still missing (the
         controller sync; at 'activated' also the Manager's own approve step; a failed 'vSmart push' is
-        sent again; an unknown pxGrid status blocks with its text). The body is the GUI's own (every
+        sent again; at 'vSmart push is successful' nothing unless a setting changed or rotate_password; an
+        unknown status blocks). The body is the GUI's own (every
         field, strings, "" when empty); ISE is named by
-        IP (a host name is resolved here and said; the 20.18 GUI refuses names) and the ISE login must be
-        letters and digits only (the GUI's rule; the preview blocks otherwise). 'Test Connectivity failed'
-        errors list the suspects. Give pxgrid_root_cert when pxGrid's chain differs from the admin one; an
+        IP (a host name is resolved here and said) and the ISE login must be
+        letters and digits only (the GUI's rule). 'Test Connectivity failed'
+        names the suspects. Give pxgrid_root_cert when pxGrid's chain differs from the admin one; an
         update keeps the stored root certificates. The
-        preview shows the ISE host, VPN, subscriptions, the root-certificate checks, the
+        preview shows the ISE host, VPN, subscriptions, root-certificate checks, the
         pxGrid client name ISE will list, every request in order, and what the controllers and edges receive
         (identity lists for identity-based policy). action='disconnect' removes both on the Manager and the
         pxGrid client on ISE. Dangerous tier: identity-based policy on every edge depends on it. Check with
@@ -178,6 +179,9 @@ def register(reg: ToolRegistrar) -> None:
         wanted: dict[str, Any] | None = None
         write: str | None = None
         approve_planned = False
+        # The controller sync is due unless one is running, or the last one succeeded and nothing is written
+        # (#148: the controllers already hold these settings; rotate_password or a changed setting re-syncs).
+        sync_due = True
 
         if action == "disconnect":
             if not creds and state == "none":
@@ -261,6 +265,7 @@ def register(reg: ToolRegistrar) -> None:
                 )
             if write:
                 steps.append(f"{write} {CREDENTIALS_PATH} (ISE {host}, VPN {vpn})")
+            sync_due = push != "pending" and not (push == "successful" and not write)
             if creds and diff:
                 details["changes"] = diff
             if pxgrid:
@@ -315,7 +320,7 @@ def register(reg: ToolRegistrar) -> None:
                         f"the pxGrid client {node!r} is disabled on ISE: enable it there, or disconnect and "
                         "connect again"
                     )
-                if state_after == "enabled" and sync_controllers and controllers and push != "pending":
+                if state_after == "enabled" and sync_controllers and controllers and sync_due:
                     steps.append(
                         f"POST {SYNC_PATH} (send ISE and pxGrid settings to {', '.join(controllers)})"
                     )
@@ -339,6 +344,12 @@ def register(reg: ToolRegistrar) -> None:
                     f"nothing to change yet: the pxGrid client {node!r} is pending on ISE. Approve it with "
                     f"ise_approve_pxgrid_client(name={node!r}) (or approve_on_manager=true), then run this "
                     "tool again: it plans the controller sync"
+                )
+            elif not steps and pxgrid and push == "successful":
+                blockers.append(
+                    "already connected; nothing to do: ISE is configured as asked, pxGrid is enabled and the "
+                    f"last controller sync succeeded (the Manager says {raw_status!r}). Only "
+                    "rotate_password=true or a changed setting writes (and then re-syncs the controllers)"
                 )
             elif not steps:
                 blockers.append(
@@ -467,12 +478,7 @@ def register(reg: ToolRegistrar) -> None:
                 await app.api.put(PXGRID_APPROVE_PATH, None)
                 now = "enabled"
                 done.append("pxGrid client approved by the Manager")
-            if (
-                sync_controllers
-                and controllers
-                and ("enabled" in now or (not pxgrid and write))
-                and push != "pending"
-            ):
+            if sync_controllers and controllers and ("enabled" in now or (not pxgrid and write)) and sync_due:
                 task = await app.api.post(SYNC_PATH, None)
                 out["sync_task"] = first_value(task, "id")
                 done.append(f"settings sent to {', '.join(controllers)}")

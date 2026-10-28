@@ -215,6 +215,12 @@ def register(reg: ToolRegistrar) -> None:
                     "approve step has not run, so the controllers have no pxGrid settings: "
                     "catsdwan_set_ise_integration again plans the approve and the controller sync"
                 )
+            elif raw.lower() == "approved":
+                pxgrid["meaning"] = (
+                    f"the pxGrid client{' ' + node if node else ''} is approved; the sync to the controllers "
+                    "has not started yet (no 'vSmart push' status): catsdwan_set_ise_integration again plans "
+                    "it if none follows"
+                )
             elif push == "failed":
                 pxgrid["meaning"] = (
                     f"the last sync of the ISE and pxGrid settings to the controllers failed ({raw!r}): "
