@@ -241,6 +241,34 @@
         "cml"
       ]
     },
+    "catsdwan_renew_with_enterprise_ca": {
+      "arguments": [
+        "controllers",
+        "ca_template",
+        "expiring_days"
+      ],
+      "references": [
+        "catsdwan_certificates",
+        "catsdwan_list_controllers",
+        "catsdwan_snapshot",
+        "catsdwan_control_connections",
+        "catsdwan_create_backup",
+        "win_get_ca_certificate",
+        "catsdwan_search_spec",
+        "catsdwan_api_call",
+        "catsdwan_sync_root_cert",
+        "win_list_ca_templates",
+        "catsdwan_renew_controller_certificate",
+        "win_sign_csr",
+        "catsdwan_compare_snapshot"
+      ],
+      "rendered": true,
+      "tier": "dangerous",
+      "uses": [
+        "catsdwan",
+        "win"
+      ]
+    },
     "catsdwan_sgt_path": {
       "arguments": [
         "source",
@@ -343,6 +371,37 @@
         "fmc",
         "cml",
         "netbox"
+      ]
+    },
+    "catsdwan_why_is_voice_bad": {
+      "arguments": [
+        "site",
+        "host",
+        "sla_class",
+        "lab"
+      ],
+      "references": [
+        "catsdwan_find_host",
+        "ise_find_session",
+        "catsdwan_list_devices",
+        "catsdwan_list_sla_classes",
+        "catsdwan_app_route_stats",
+        "catsdwan_sla_history",
+        "catsdwan_tunnel_path",
+        "catsdwan_get_device_config",
+        "catsdwan_device_state",
+        "catsdwan_interface_stats",
+        "catc_client_360",
+        "catc_get_wlc_config",
+        "cml_get_link_scenarios"
+      ],
+      "rendered": true,
+      "tier": "read",
+      "uses": [
+        "catsdwan",
+        "catc",
+        "ise",
+        "cml"
       ]
     },
     "catsdwan_wifi_lan_or_wan": {
@@ -508,6 +567,10 @@
     "catsdwan_explain_path": {
       "tier": "read",
       "title": "Explain SD-WAN path"
+    },
+    "catsdwan_export_site": {
+      "tier": "read",
+      "title": "Export an SD-WAN site as a twin spec"
     },
     "catsdwan_find_host": {
       "tier": "read",

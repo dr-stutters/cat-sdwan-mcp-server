@@ -8,6 +8,9 @@ Sources (recorded on 20.18.3.1 unless marked):
 - GET /dataservice/device/control/connectionshistory?deviceId= (not recorded): failed and torn-down
   connections with the local and remote error codes (`local_enum`, `remote_enum`, their `-desc`), the time
   and a repeat count. Field names are read leniently until a payload is recorded.
+- A real-time read of a device the Manager has lost (powered off, its transport down) answers 400 DEV0001
+  'Device data error: System IP <ip> is not connected to vmanage' (seen on 20.18.3, issue #103), often
+  before /device marks it unreachable.
 - GET /dataservice/data/device/state/ControlConnection (not recorded; bulk, 48/min): the same rows for every
   device from the Manager's state database, paged with `pageInfo.startId/endId/moreEntries`.
 - GET /dataservice/device/omp/peers?deviceId=: `peer`, `type`, `state`, `site-id`, `up-time(-date)`.
@@ -20,7 +23,9 @@ Sources (recorded on 20.18.3.1 unless marked):
 from __future__ import annotations
 
 import ipaddress
+import re
 from collections import Counter
+from datetime import UTC, datetime, timedelta
 from typing import Any
 
 from cat_sdwan_mcp.client import ROLE
@@ -87,6 +92,8 @@ KEYWORDS = (
     ("DUP_SYSTEM_IP", "DUPSYSIPDEL"),
 )
 NORMAL_CODES = {"NOERR", "XTVMTRDN", "XTVSTRDN", "DISCVBD", "STNMODETD", ""}
+# The Manager's answer when it has no control connection to the device it is asked to read.
+NOT_CONNECTED = re.compile(r"not connected to v?manage|DEV0001", re.I)
 
 # OMP route status flags (show sdwan omp routes).
 FLAGS = {
@@ -208,6 +215,49 @@ def failed_attempts(rows: list[dict[str, Any]], keep: int = 25) -> list[dict[str
     out = [r for r in rows if r.get("reason")]
     out.sort(key=lambda r: str(r.get("time") or ""), reverse=True)
     return out[:keep]
+
+
+def now() -> datetime:
+    """The current time (a function so tests can pin it)."""
+    return datetime.now(UTC)
+
+
+def _when(v: Any) -> datetime | None:
+    try:
+        t = datetime.fromisoformat(str(v).replace("Z", "+00:00"))
+    except ValueError:
+        return None
+    return t if t.tzinfo else t.replace(tzinfo=UTC)
+
+
+def within(rows: list[dict[str, Any]], hours: int) -> tuple[list[dict[str, Any]], int]:
+    """The rows whose `time` is in the last `hours` hours (rows without a readable time are kept), and how
+    many older rows were dropped."""
+    cutoff = now() - timedelta(hours=hours)
+    kept = []
+    for r in rows:
+        t = _when(r.get("time"))
+        if t is None or t >= cutoff:
+            kept.append(r)
+    return kept, len(rows) - len(kept)
+
+
+def about(rows: list[dict[str, Any]], system_ip: Any, chassis: Any) -> list[dict[str, Any]]:
+    """The history or rejection rows naming this device (by peer system IP or chassis)."""
+    ip = str(system_ip or "").strip()
+    ch = str(chassis or "").strip().lower()
+    return [
+        r
+        for r in rows
+        if (ip and str(r.get("peer_system_ip") or "") == ip)
+        or (ch and str(r.get("chassis") or "").lower() == ch)
+    ]
+
+
+def last_known(raw: list[dict[str, Any]], system_ip: str) -> list[dict[str, Any]]:
+    """State-database ControlConnection records about one device: its own last report, and its peers' rows
+    for it (a controller's row towards the edge shows when that side went down)."""
+    return [r for r in raw if system_ip in (str(r.get("vdevice-name") or ""), str(r.get("system-ip") or ""))]
 
 
 def is_up(row: dict[str, Any]) -> bool:

@@ -68,11 +68,12 @@ def config_mode(rec: dict[str, Any] | None) -> tuple[str | None, str | None]:
     """(mode, name): "configuration group" + the group, "template" + the device template, or "cli".
 
     20.18 reports a configuration-group device as configOperationMode "cli" with managed-by
-    "Config-Group <name>"; a template-attached device is configOperationMode "vmanage" (`template` names
-    it; not recorded yet)."""
+    "Config-Group <name>" ("Config-Group <name>, Policy-Group <policy group>" once a policy group is
+    associated too, recorded 2026-10-28); a template-attached device is configOperationMode "vmanage"
+    (`template` names it; not recorded yet)."""
     if not rec:
         return None, None
-    managed = str(rec.get("managed-by") or "").strip()
+    managed = _managed_parts(rec)[0]
     if managed.lower().startswith("config-group"):
         name = managed.split(" ", 1)[1].strip() if " " in managed else None
         return "configuration group", name or None
@@ -85,6 +86,20 @@ def config_mode(rec: dict[str, Any] | None) -> tuple[str | None, str | None]:
     if mode == "cli":
         return "cli", None
     return mode or None, None
+
+
+def _managed_parts(rec: dict[str, Any]) -> tuple[str, str | None]:
+    """(the managed-by text without its policy group, the policy group's name or None)."""
+    managed = str(rec.get("managed-by") or "").strip()
+    head, sep, tail = managed.partition(", Policy-Group")
+    if not sep:
+        head, sep, tail = managed.partition(",Policy-Group")
+    return head.strip(), (tail.strip() or None) if sep else None
+
+
+def policy_group_of(rec: dict[str, Any] | None) -> str | None:
+    """The policy group the Manager's `managed-by` names for a device (None when there is none)."""
+    return _managed_parts(rec)[1] if rec else None
 
 
 def _key(v: Any) -> str | None:
@@ -124,6 +139,7 @@ def device_row(d: dict[str, Any], cert: dict[str, Any] | None) -> dict[str, Any]
         or (cert or {}).get("certInstallStatus"),
         "config_mode": mode,
         "config": name,
+        "policy_group": policy_group_of(cert),
         "config_status": (cert or {}).get("configStatusMessage"),
     }
     return {k: v for k, v in row.items() if v not in (None, "", [])}
