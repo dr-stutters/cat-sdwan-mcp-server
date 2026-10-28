@@ -24,13 +24,16 @@ they return the signed PEM.
    (status, expiry, days left, `breaks_when_expired`; `signing.controllers` must be 'enterprise': with Cisco
    signing the Manager renews controllers itself, so stop and say so). `catsdwan_list_controllers`
    for each controller's role, system IP and reachability: every controller to renew must be reachable.
-   Nothing due and none named: report the next expiry and stop. Write down each controller's current serial
-   and expiry: step 7 proves they changed.
+   Nothing due and none named: report the next expiry and stop. Then `catsdwan_certificates` with
+   kind="controller" and no expiring_days: the full list and the full `root_chain` (with expiring_days both
+   leave out what is healthy, so a controller named but not due and a healthy root are missing). Write down
+   each controller's current serial and expiry from it: step 7 proves they changed.
 2. Before the change: `catsdwan_snapshot` for the whole fabric (keep the blob for step 8) and
    `catsdwan_control_connections` with no device (the fabric's baseline: every edge's
    connections to the controllers). Then a configuration-database backup with
    `catsdwan_create_backup` (preview, approval; wait for it to finish).
-3. The root: `win_get_ca_certificate` (the CA's own certificate) against `root_chain` from step 1.
+3. The root: `win_get_ca_certificate` (the CA's own certificate) against the
+   full `root_chain` from step 1 (the list without expiring_days; match by subject or fingerprint).
    Listed: go on. Not listed, or a new root or intermediate: the Manager's Enterprise root CA must be updated
    first (Administration > Settings > Controller Certificate Authorization, or the settings endpoint
    `catsdwan_search_spec` finds, through `catsdwan_api_call`; preview-first), then

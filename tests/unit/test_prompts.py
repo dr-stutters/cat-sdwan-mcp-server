@@ -313,6 +313,10 @@ async def test_renew_with_enterprise_ca_one_controller_at_a_time() -> None:
     assert "validators first, then controllers, then the Manager last" in text
     assert "validator, controller" in text and 'template="SDWANController"' in text
     assert "expiring_days=60" in text and "MCP_ENABLE_DANGEROUS" in text
+    # The root comparison and the old serials use the unfiltered list: expiring_days hides healthy rows.
+    due = text[text.index("1. What is due") : text.index("2. Before")]
+    assert 'kind="controller" and no expiring_days' in due and "full `root_chain`" in due
+    assert "full `root_chain` from step 1" in text[text.index("3. The root") :]
 
 
 async def test_renew_with_enterprise_ca_defaults_pick_due_and_template() -> None:
