@@ -147,23 +147,28 @@ async def _policy_evidence(app: SdwanApp, targets: list[dict[str, Any]]) -> tupl
     return policy_hubs(targets, defs, lists), None
 
 
-async def _bfd_sessions(app: SdwanApp, inv: Inventory) -> tuple[list[dict[str, Any]] | None, str | None]:
-    """Every edge's BFD sessions (state database, else live per reachable edge), or (None, why not)."""
+async def _bfd_sessions(
+    app: SdwanApp, inv: Inventory
+) -> tuple[list[dict[str, Any]] | None, str | None, str | None]:
+    """Every edge's BFD sessions (state database, else live per reachable edge): (rows or None, why not read,
+    why incomplete). Incomplete rows can only prove a hub: a 'not a hub' from them is reported unknown."""
     try:
-        got, _more = await app.bulk_state(BULK_BFD, limit=BULK_CAP)
-        return got, None
+        got, more = await app.bulk_state(BULK_BFD, limit=BULK_CAP)
+        return got, None, (f"BFD state database cut at {BULK_CAP} sessions" if more else None)
     except UpstreamError as e:
         bulk_error = str(e)[:140]
     edges = reachable(inv, "edge")
     if len(edges) > LIVE_CAP:
-        return None, (
-            f"BFD state database not read ({bulk_error}) and {len(edges)} edges are too many to ask live"
+        return (
+            None,
+            f"BFD state database not read ({bulk_error}) and {len(edges)} edges are too many to ask live",
+            None,
         )
     res = await fan_out(edges, lambda d: device_rows(app, BFD_SESSIONS_PATH, str(d["system_ip"])))
     ok = [x for x in res if not isinstance(x, UpstreamError)]
     if not ok:
-        return None, f"BFD sessions not read ({bulk_error})"
-    return [b for x in ok for b in x], None
+        return None, f"BFD sessions not read ({bulk_error})", None
+    return [b for x in ok for b in x], None, None
 
 
 async def detect_hubs(app: SdwanApp, inv: Inventory, devices: list[dict[str, Any]]) -> HubCheck:
@@ -173,7 +178,7 @@ async def detect_hubs(app: SdwanApp, inv: Inventory, devices: list[dict[str, Any
     if split_list(app.settings.hub_devices) or not targets:
         return out
     by_policy, policy_error = await _policy_evidence(app, targets)
-    sessions, bfd_error = await _bfd_sessions(app, inv)
+    sessions, bfd_error, partial = await _bfd_sessions(app, inv)
     hubs, not_hubs = bfd_view(sessions or [], [r for r in inv.rows if r.get("role") == "edge"])
     for r in targets:
         c, ip = str(r["chassis"]), str(r.get("system_ip") or "")
@@ -184,6 +189,8 @@ async def detect_hubs(app: SdwanApp, inv: Inventory, devices: list[dict[str, Any
             why = hubs[ip]
         else:
             seen = not_hubs.get(ip)
+            if seen and partial:  # a cut-off read can miss this edge's sessions to some sites
+                seen = f"unknown: {partial}"
             if seen and not seen.startswith("unknown"):
                 out.status[host] = seen
                 continue

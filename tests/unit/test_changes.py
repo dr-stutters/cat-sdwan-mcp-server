@@ -815,3 +815,20 @@ async def test_hub_devices_setting_is_authoritative(api: respx.MockRouter) -> No
         prev = await run(c, "catsdwan_deploy_config_group", {"group": "mcp-test", "devices": ["br1"]})
     assert prev["preview"]["tier"] == "write" and "hub_status" not in prev["preview"]
     assert not bulk.called and not hs.called
+
+
+async def test_cut_off_bfd_read_cannot_clear_a_hub(
+    api: respx.MockRouter, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    # #102 review: a read cut at BULK_CAP may miss the edge's own sessions: unknown, never write-safe
+    mock_inventory(api)
+    mock_group(api)
+    mock_variables(api, BR1_VARS)
+    mock_configs(api, BR1, RUNNING_BR1, PREVIEW_BR1)
+    api.get(BULK_BFD).respond(json={"data": HUB_SPOKE_BFD, "pageInfo": {"moreEntries": True, "endId": "8"}})
+    monkeypatch.setattr(hubs_mod, "BULK_CAP", len(HUB_SPOKE_BFD))
+    async with Client(writes()) as c:
+        prev = await run(c, "catsdwan_deploy_config_group", {"group": "mcp-test", "devices": ["br1"]})
+    assert prev["preview"]["hub_status"] == {"br1": "unknown"}
+    (warn,) = [w for w in prev["preview"]["warnings"] if "hub status" in w]
+    assert "BFD state database cut at 8 sessions" in warn and warn.endswith("set CATSDWAN_HUB_DEVICES")
