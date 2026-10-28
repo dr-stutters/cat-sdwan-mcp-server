@@ -575,3 +575,126 @@ async def test_policy_deploy_to_a_bfd_hub_is_dangerous(api: respx.MockRouter) ->
     br1 = await write("catsdwan_deploy_policy_group", {"group": "mcp-policy", "devices": ["br1"]})
     assert br1["preview"]["tier"] == "write"
     assert br1["preview"]["hub_status"] == {"br1": "not a hub: BFD sessions to 1 of 2 other sites"}
+
+
+# --- secrets nested in list items (#101) ---------------------------------------------------------
+
+AAA = "00000000-0000-4000-8000-000000001035"
+RADIUS_KEY, TACACS_KEY, USER_PW, PUBKEY = "Rad1usShared!", "Tac4csShared!", "L0calUserPw!", "AAAAB3NzaC1yc2E"
+
+
+def aaa_parcel(**data: Any) -> dict[str, Any]:
+    d = {
+        "serverAuthOrder": {"optionType": "global", "value": ["local"]},
+        "authenticationGroup": {"optionType": "default", "value": False},
+        "accountingGroup": {"optionType": "default", "value": False},
+        "authorizationConsole": {"optionType": "default", "value": False},
+        "authorizationConfigCommands": {"optionType": "default", "value": False},
+        **data,
+    }
+    return {
+        "parcelId": AAA,
+        "parcelType": "aaa",
+        "lastUpdatedOn": 1,
+        "payload": {"name": "mcp-test-aaa", "description": "seed_lab.py", "data": d},
+    }
+
+
+def g(v: Any) -> dict[str, Any]:
+    return {"optionType": "global", "value": v}
+
+
+def radius(key: str = RADIUS_KEY) -> list[dict[str, Any]]:
+    server = {"address": g("192.0.2.10"), "authPort": g(1812), "key": g(key)}
+    return [{"groupName": g("radius-0"), "vpn": g(0), "server": [server]}]
+
+
+def mock_aaa(api: respx.MockRouter, parcel: dict[str, Any]) -> respx.Route:
+    api.get(f"{FP}/system/{SYS}/aaa/{AAA}").respond(json=parcel)
+    api.get(f"{FP}/system/aaa/schema").respond(json=fixture("v1_feature_profile_system_aaa_schema_put"))
+    return api.put(f"{FP}/system/{SYS}/aaa/{AAA}").respond(json={"parcelId": AAA})
+
+
+def test_mask_data_walks_list_items_and_keeps_siblings() -> None:
+    data = {
+        "radius": radius(),
+        "tacacs": [{"groupName": g("t"), "server": [{"address": g("192.0.2.11"), "key": g(TACACS_KEY)}]}],
+        "user": [
+            {
+                "name": g("mcp"),
+                "password": g(USER_PW),
+                "pubkeyChain": [{"keyString": g(PUBKEY), "keyType": g("ssh-rsa")}],
+            }
+        ],
+    }
+    masked = ft.mask_data(data)
+    text = json.dumps(masked)
+    assert all(s not in text for s in (RADIUS_KEY, TACACS_KEY, USER_PW, PUBKEY))
+    server = masked["radius"][0]["server"][0]
+    assert server["key"] == g("********") and server["address"] == g("192.0.2.10")
+    assert server["authPort"] == g(1812) and masked["user"][0]["name"] == g("mcp")
+    assert masked["user"][0]["pubkeyChain"][0]["keyType"] == g("ssh-rsa")
+    assert sorted(ft.secret_values(data)) == sorted([RADIUS_KEY, TACACS_KEY, USER_PW, PUBKEY])
+    # a variable's name is not the secret
+    assert ft.mask_data({"key": {"optionType": "variable", "value": "{{rad_key}}"}})["key"]["value"] == (
+        "{{rad_key}}"
+    )
+
+
+def test_sensitive_fields_from_the_schema_description() -> None:
+    dschema = ft.data_schema(ft.request_schema(fixture("v1_feature_profile_system_aaa_schema_put")))
+    assert "key" in ft.sensitive_fields(dschema)
+    assert ft.secret_values({"shh": g("Sens1tive!")}, {"shh"}) == ["Sens1tive!"]
+
+
+async def test_set_aaa_radius_key_masked_in_preview_and_result(api: respx.MockRouter) -> None:
+    mock_inventory(api)
+    mock_profiles(api)
+    put = mock_aaa(api, aaa_parcel())
+    args = {"profile": "mcp-test-system", "parcel": "aaa", "values": {"radius": radius()}}
+    out = await write("catsdwan_set_feature_parcel", args)
+    assert out["status"] == "preview", out
+    text = json.dumps(out)
+    assert RADIUS_KEY not in text
+    to = json.dumps(out["preview"]["changes"]["radius"]["to"])
+    assert "192.0.2.10" in to and "1812" in to and "********" in to
+    done = await confirmed("catsdwan_set_feature_parcel", args)
+    assert RADIUS_KEY not in json.dumps(done) and "192.0.2.10" in json.dumps(done)
+    sent = json.loads(put.calls.last.request.content)
+    assert sent["data"]["radius"][0]["server"][0]["key"] == g(RADIUS_KEY)  # the Manager gets the key
+
+
+async def test_set_nested_key_path_and_user_password_masked(api: respx.MockRouter) -> None:
+    mock_inventory(api)
+    mock_profiles(api)
+    user = [{"name": g("mcp"), "password": g("$6$hash"), "privilege": g("15")}]
+    mock_aaa(api, aaa_parcel(radius=radius("$CRYPT_CLUSTER$old"), user=user))
+    args = {
+        "profile": "mcp-test-system",
+        "parcel": "aaa",
+        "values": {"radius[0].server[0].key": RADIUS_KEY, "user[0].password": USER_PW},
+    }
+    out = await write("catsdwan_set_feature_parcel", args)
+    assert out["status"] == "preview", out
+    text = json.dumps(out)
+    assert RADIUS_KEY not in text and USER_PW not in text and "$CRYPT_CLUSTER$old" not in text
+    assert out["preview"]["changes"]["radius[0].server[0].key"] == {"from": "********", "to": "********"}
+    done = await confirmed("catsdwan_set_feature_parcel", args)
+    assert RADIUS_KEY not in json.dumps(done) and USER_PW not in json.dumps(done)
+
+
+async def test_set_aaa_secrets_are_registered_for_log_scrubbing(
+    api: respx.MockRouter, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    import cat_sdwan_mcp.tools.features as tf
+
+    mock_inventory(api)
+    mock_profiles(api)
+    mock_aaa(api, aaa_parcel())
+    seen: list[str] = []
+    monkeypatch.setattr(tf, "register_secret", seen.append)
+    await write(
+        "catsdwan_set_feature_parcel",
+        {"profile": "mcp-test-system", "parcel": "aaa", "values": {"radius": radius()}},
+    )
+    assert RADIUS_KEY in seen and "192.0.2.10" not in seen

@@ -27,6 +27,7 @@ from cat_sdwan_mcp._core import (
     object_result,
     preview_or_apply,
 )
+from cat_sdwan_mcp._core.secrets import register_secret
 from cat_sdwan_mcp.changes import device_brief, preview_text, text_hash
 from cat_sdwan_mcp.client import SdwanApp, _as_list
 from cat_sdwan_mcp.configuration import (
@@ -61,6 +62,7 @@ from cat_sdwan_mcp.features import (
     get_at,
     is_leaf,
     is_required,
+    mask_data,
     masked_change,
     missing_required,
     parcel_url,
@@ -68,6 +70,8 @@ from cat_sdwan_mcp.features import (
     parcels_of,
     pick_parcel,
     request_schema,
+    secret_values,
+    sensitive_fields,
     set_at,
     to_leaf,
 )
@@ -439,6 +443,11 @@ def register(reg: ToolRegistrar) -> None:
             current_data = copy.deepcopy(as_dict(payload.get("data")))
             unresolved = []
         new_data = copy.deepcopy(current_data)
+        # Secrets nested in list items (radius[i].server[j].key, user[i].password) are masked by name and by
+        # the schema's own sensitivity marks, and registered so log lines are scrubbed too (#101).
+        sensitive = sensitive_fields(dschema) if dschema else set()
+        for secret in secret_values(values, sensitive):
+            register_secret(secret)
         changes: dict[str, dict[str, Any]] = {}
         for p, value in values.items():
             fs = field_schema(dschema, p) if dschema else None
@@ -460,7 +469,7 @@ def register(reg: ToolRegistrar) -> None:
                 blockers.append(f"{p}: {e}")
                 continue
             if old != leaf:
-                changes[p] = masked_change(p, old, leaf)
+                changes[p] = masked_change(p, old, leaf, sensitive)
         cli_lines: list[str] = []
         if edits:
             text = get_at(new_data, "config")
@@ -504,7 +513,11 @@ def register(reg: ToolRegistrar) -> None:
             "parcel": {"name": found["name"], "type": ptype, **({"id": found["id"]} if found["id"] else {})},
             "changes": changes,
             **({"cli_changes": cli_lines} if cli_lines else {}),
-            **({"new_parcel_fields": {k: str(v) for k, v in new_data.items()}} if creating else {}),
+            **(
+                {"new_parcel_fields": {k: str(mask_data(v, sensitive)) for k, v in new_data.items()}}
+                if creating
+                else {}
+            ),
             "reaches": reach or "no configuration group uses this profile: no device is affected",
             "schema_check": "passed"
             if dschema and not blockers

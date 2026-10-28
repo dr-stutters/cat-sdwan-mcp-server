@@ -1,0 +1,1192 @@
+{
+ "request": {
+  "$schema": "http://json-schema.org/draft/2019-09/schema",
+  "title": "AAA Parcel Schema",
+  "description": "Trimmed from GET /v1/feature-profile/sdwan/system/aaa/schema?schemaType=put (20.18.3.1, 2026-10-28): sourceInterface, keyEnum/keyType, accounting/authorization rules and the examples left out. password/secretKey/keyString branches simplified (the recording masks them).",
+  "type": "object",
+  "properties": {
+   "name": {
+    "type": "string",
+    "minLength": 1,
+    "maxLength": 128
+   },
+   "description": {
+    "type": "string"
+   },
+   "data": {
+    "type": "object",
+    "properties": {
+     "authenticationGroup": {
+      "description": "Authentication configurations parameters",
+      "type": "object",
+      "oneOf": [
+       {
+        "properties": {
+         "optionType": {
+          "type": "string",
+          "enum": [
+           "global"
+          ]
+         },
+         "value": {
+          "type": "boolean"
+         }
+        },
+        "required": [
+         "optionType",
+         "value"
+        ],
+        "additionalProperties": false
+       },
+       {
+        "properties": {
+         "optionType": {
+          "type": "string",
+          "enum": [
+           "variable"
+          ]
+         },
+         "value": {
+          "type": "string",
+          "pattern": "^\\{\\{[.\\/\\[\\]a-zA-Z0-9_-]+\\}\\}$",
+          "minLength": 1,
+          "maxLength": 128
+         }
+        },
+        "required": [
+         "optionType",
+         "value"
+        ],
+        "additionalProperties": false
+       },
+       {
+        "properties": {
+         "optionType": {
+          "type": "string",
+          "enum": [
+           "default"
+          ]
+         },
+         "value": {
+          "type": "boolean",
+          "enum": [
+           false
+          ]
+         }
+        },
+        "required": [
+         "optionType",
+         "value"
+        ],
+        "additionalProperties": false
+       }
+      ]
+     },
+     "accountingGroup": {
+      "description": "Accounting configurations parameters",
+      "type": "object",
+      "oneOf": [
+       {
+        "properties": {
+         "optionType": {
+          "type": "string",
+          "enum": [
+           "global"
+          ]
+         },
+         "value": {
+          "type": "boolean"
+         }
+        },
+        "required": [
+         "optionType",
+         "value"
+        ],
+        "additionalProperties": false
+       },
+       {
+        "properties": {
+         "optionType": {
+          "type": "string",
+          "enum": [
+           "variable"
+          ]
+         },
+         "value": {
+          "type": "string",
+          "pattern": "^\\{\\{[.\\/\\[\\]a-zA-Z0-9_-]+\\}\\}$",
+          "minLength": 1,
+          "maxLength": 128
+         }
+        },
+        "required": [
+         "optionType",
+         "value"
+        ],
+        "additionalProperties": false
+       },
+       {
+        "properties": {
+         "optionType": {
+          "type": "string",
+          "enum": [
+           "default"
+          ]
+         },
+         "value": {
+          "type": "boolean",
+          "enum": [
+           false
+          ]
+         }
+        },
+        "required": [
+         "optionType",
+         "value"
+        ],
+        "additionalProperties": false
+       }
+      ]
+     },
+     "serverAuthOrder": {
+      "description": "ServerGroups priority order",
+      "type": "object",
+      "oneOf": [
+       {
+        "properties": {
+         "optionType": {
+          "type": "string",
+          "enum": [
+           "global"
+          ]
+         },
+         "value": {
+          "type": "array",
+          "items": {
+           "type": "string"
+          },
+          "minItems": 1,
+          "maxItems": 4
+         }
+        },
+        "required": [
+         "optionType",
+         "value"
+        ],
+        "additionalProperties": false
+       }
+      ]
+     },
+     "user": {
+      "type": "array",
+      "items": {
+       "type": "object",
+       "properties": {
+        "name": {
+         "description": "Set the username",
+         "type": "object",
+         "oneOf": [
+          {
+           "properties": {
+            "optionType": {
+             "type": "string",
+             "enum": [
+              "global"
+             ]
+            },
+            "value": {
+             "type": "string",
+             "minLength": 1,
+             "maxLength": 64
+            }
+           },
+           "required": [
+            "optionType",
+            "value"
+           ],
+           "additionalProperties": false
+          },
+          {
+           "properties": {
+            "optionType": {
+             "type": "string",
+             "enum": [
+              "variable"
+             ]
+            },
+            "value": {
+             "type": "string",
+             "pattern": "^\\{\\{[.\\/\\[\\]a-zA-Z0-9_-]+\\}\\}$",
+             "minLength": 1,
+             "maxLength": 128
+            }
+           },
+           "required": [
+            "optionType",
+            "value"
+           ],
+           "additionalProperties": false
+          }
+         ]
+        },
+        "password": {
+         "description": "Set the user password",
+         "type": "object",
+         "oneOf": [
+          {
+           "properties": {
+            "optionType": {
+             "type": "string",
+             "enum": [
+              "global"
+             ]
+            },
+            "value": {
+             "type": "string",
+             "minLength": 1
+            }
+           },
+           "required": [
+            "optionType",
+            "value"
+           ],
+           "additionalProperties": false
+          },
+          {
+           "properties": {
+            "optionType": {
+             "type": "string",
+             "enum": [
+              "variable"
+             ]
+            },
+            "value": {
+             "type": "string",
+             "pattern": "^\\{\\{[.\\/\\[\\]a-zA-Z0-9_-]+\\}\\}$",
+             "minLength": 1,
+             "maxLength": 128
+            }
+           },
+           "required": [
+            "optionType",
+            "value"
+           ],
+           "additionalProperties": false
+          }
+         ]
+        },
+        "privilege": {
+         "description": "Privilege level",
+         "type": "object",
+         "oneOf": [
+          {
+           "properties": {
+            "optionType": {
+             "type": "string",
+             "enum": [
+              "global"
+             ]
+            },
+            "value": {
+             "type": "string",
+             "enum": [
+              "1",
+              "15"
+             ]
+            }
+           },
+           "required": [
+            "optionType",
+            "value"
+           ],
+           "additionalProperties": false
+          },
+          {
+           "properties": {
+            "optionType": {
+             "type": "string",
+             "enum": [
+              "variable"
+             ]
+            },
+            "value": {
+             "type": "string",
+             "pattern": "^\\{\\{[.\\/\\[\\]a-zA-Z0-9_-]+\\}\\}$",
+             "minLength": 1,
+             "maxLength": 128
+            }
+           },
+           "required": [
+            "optionType",
+            "value"
+           ],
+           "additionalProperties": false
+          },
+          {
+           "properties": {
+            "optionType": {
+             "type": "string",
+             "enum": [
+              "default"
+             ]
+            },
+            "value": {
+             "type": "string",
+             "enum": [
+              "15"
+             ]
+            }
+           },
+           "required": [
+            "optionType",
+            "value"
+           ],
+           "additionalProperties": false
+          }
+         ]
+        },
+        "pubkeyChain": {
+         "type": "array",
+         "maxItems": 2,
+         "items": {
+          "type": "object",
+          "properties": {
+           "keyString": {
+            "description": "Set the RSA key string",
+            "type": "object",
+            "oneOf": [
+             {
+              "properties": {
+               "optionType": {
+                "type": "string",
+                "enum": [
+                 "global"
+                ]
+               },
+               "value": {
+                "type": "string",
+                "minLength": 1
+               }
+              },
+              "required": [
+               "optionType",
+               "value"
+              ],
+              "additionalProperties": false
+             },
+             {
+              "properties": {
+               "optionType": {
+                "type": "string",
+                "enum": [
+                 "variable"
+                ]
+               },
+               "value": {
+                "type": "string",
+                "pattern": "^\\{\\{[.\\/\\[\\]a-zA-Z0-9_-]+\\}\\}$",
+                "minLength": 1,
+                "maxLength": 128
+               }
+              },
+              "required": [
+               "optionType",
+               "value"
+              ],
+              "additionalProperties": false
+             }
+            ]
+           },
+           "keyType": {
+            "description": "Only RSA is supported",
+            "type": "object",
+            "oneOf": [
+             {
+              "properties": {
+               "optionType": {
+                "type": "string",
+                "enum": [
+                 "global"
+                ]
+               },
+               "value": {
+                "type": "string",
+                "enum": [
+                 "ssh-rsa"
+                ]
+               }
+              },
+              "required": [
+               "optionType",
+               "value"
+              ],
+              "additionalProperties": false
+             }
+            ]
+           }
+          },
+          "required": [
+           "keyString"
+          ],
+          "additionalProperties": false
+         }
+        }
+       },
+       "additionalProperties": false
+      }
+     },
+     "radius": {
+      "type": "array",
+      "items": {
+       "type": "object",
+       "properties": {
+        "groupName": {
+         "description": "Server group name",
+         "type": "object",
+         "oneOf": [
+          {
+           "properties": {
+            "optionType": {
+             "type": "string",
+             "enum": [
+              "global"
+             ]
+            },
+            "value": {
+             "type": "string",
+             "minLength": 1,
+             "maxLength": 32
+            }
+           },
+           "required": [
+            "optionType",
+            "value"
+           ],
+           "additionalProperties": false
+          }
+         ]
+        },
+        "vpn": {
+         "description": "VPN",
+         "type": "object",
+         "oneOf": [
+          {
+           "properties": {
+            "optionType": {
+             "type": "string",
+             "enum": [
+              "global"
+             ]
+            },
+            "value": {
+             "type": "integer",
+             "minimum": 0,
+             "maximum": 65530
+            }
+           },
+           "required": [
+            "optionType",
+            "value"
+           ],
+           "additionalProperties": false
+          },
+          {
+           "properties": {
+            "optionType": {
+             "type": "string",
+             "enum": [
+              "variable"
+             ]
+            },
+            "value": {
+             "type": "string",
+             "pattern": "^\\{\\{[.\\/\\[\\]a-zA-Z0-9_-]+\\}\\}$",
+             "minLength": 1,
+             "maxLength": 128
+            }
+           },
+           "required": [
+            "optionType",
+            "value"
+           ],
+           "additionalProperties": false
+          },
+          {
+           "properties": {
+            "optionType": {
+             "type": "string",
+             "enum": [
+              "default"
+             ]
+            },
+            "value": {
+             "type": "integer",
+             "minimum": 0,
+             "maximum": 0
+            }
+           },
+           "required": [
+            "optionType",
+            "value"
+           ],
+           "additionalProperties": false
+          }
+         ]
+        },
+        "server": {
+         "description": "Configure the server",
+         "type": "array",
+         "items": {
+          "type": "object",
+          "properties": {
+           "address": {
+            "description": "Set IP address of server",
+            "type": "object",
+            "oneOf": [
+             {
+              "properties": {
+               "optionType": {
+                "type": "string",
+                "enum": [
+                 "global"
+                ]
+               },
+               "value": {
+                "type": "string"
+               }
+              },
+              "required": [
+               "optionType",
+               "value"
+              ],
+              "additionalProperties": false
+             }
+            ]
+           },
+           "authPort": {
+            "description": "Port",
+            "type": "object",
+            "oneOf": [
+             {
+              "properties": {
+               "optionType": {
+                "type": "string",
+                "enum": [
+                 "global"
+                ]
+               },
+               "value": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 65534
+               }
+              },
+              "required": [
+               "optionType",
+               "value"
+              ],
+              "additionalProperties": false
+             },
+             {
+              "properties": {
+               "optionType": {
+                "type": "string",
+                "enum": [
+                 "variable"
+                ]
+               },
+               "value": {
+                "type": "string",
+                "pattern": "^\\{\\{[.\\/\\[\\]a-zA-Z0-9_-]+\\}\\}$",
+                "minLength": 1,
+                "maxLength": 128
+               }
+              },
+              "required": [
+               "optionType",
+               "value"
+              ],
+              "additionalProperties": false
+             },
+             {
+              "properties": {
+               "optionType": {
+                "type": "string",
+                "enum": [
+                 "default"
+                ]
+               },
+               "value": {
+                "type": "integer",
+                "minimum": 1812,
+                "maximum": 1812
+               }
+              },
+              "required": [
+               "optionType",
+               "value"
+              ],
+              "additionalProperties": false
+             }
+            ]
+           },
+           "key": {
+            "description": "Set the server shared key [Note: Catalyst SD-WAN Manager will encrypt this field before saving. Cleartext strings will not be returned back to the user in GET responses for sensitive fields.]",
+            "type": "object",
+            "oneOf": [
+             {
+              "properties": {
+               "optionType": {
+                "type": "string",
+                "enum": [
+                 "global"
+                ]
+               },
+               "value": {
+                "type": "string",
+                "minLength": 1
+               }
+              },
+              "required": [
+               "optionType",
+               "value"
+              ],
+              "additionalProperties": false
+             },
+             {
+              "properties": {
+               "optionType": {
+                "type": "string",
+                "enum": [
+                 "variable"
+                ]
+               },
+               "value": {
+                "type": "string",
+                "pattern": "^\\{\\{[.\\/\\[\\]a-zA-Z0-9_-]+\\}\\}$",
+                "minLength": 1,
+                "maxLength": 128
+               }
+              },
+              "required": [
+               "optionType",
+               "value"
+              ],
+              "additionalProperties": false
+             }
+            ]
+           },
+           "secretKey": {
+            "description": "Set the type 6 encrypted shared key",
+            "type": "object",
+            "oneOf": [
+             {
+              "properties": {
+               "optionType": {
+                "type": "string",
+                "enum": [
+                 "global"
+                ]
+               },
+               "value": {
+                "type": "string",
+                "minLength": 1
+               }
+              },
+              "required": [
+               "optionType",
+               "value"
+              ],
+              "additionalProperties": false
+             },
+             {
+              "properties": {
+               "optionType": {
+                "type": "string",
+                "enum": [
+                 "variable"
+                ]
+               },
+               "value": {
+                "type": "string",
+                "pattern": "^\\{\\{[.\\/\\[\\]a-zA-Z0-9_-]+\\}\\}$",
+                "minLength": 1,
+                "maxLength": 128
+               }
+              },
+              "required": [
+               "optionType",
+               "value"
+              ],
+              "additionalProperties": false
+             }
+            ]
+           }
+          },
+          "required": [
+           "address",
+           "key"
+          ],
+          "additionalProperties": false
+         }
+        }
+       },
+       "required": [
+        "groupName",
+        "server"
+       ],
+       "additionalProperties": false
+      }
+     },
+     "tacacs": {
+      "type": "array",
+      "items": {
+       "type": "object",
+       "properties": {
+        "groupName": {
+         "description": "Server group name",
+         "type": "object",
+         "oneOf": [
+          {
+           "properties": {
+            "optionType": {
+             "type": "string",
+             "enum": [
+              "global"
+             ]
+            },
+            "value": {
+             "type": "string",
+             "minLength": 1,
+             "maxLength": 32
+            }
+           },
+           "required": [
+            "optionType",
+            "value"
+           ],
+           "additionalProperties": false
+          }
+         ]
+        },
+        "vpn": {
+         "description": "VPN",
+         "type": "object",
+         "oneOf": [
+          {
+           "properties": {
+            "optionType": {
+             "type": "string",
+             "enum": [
+              "global"
+             ]
+            },
+            "value": {
+             "type": "integer",
+             "minimum": 0,
+             "maximum": 65530
+            }
+           },
+           "required": [
+            "optionType",
+            "value"
+           ],
+           "additionalProperties": false
+          },
+          {
+           "properties": {
+            "optionType": {
+             "type": "string",
+             "enum": [
+              "variable"
+             ]
+            },
+            "value": {
+             "type": "string",
+             "pattern": "^\\{\\{[.\\/\\[\\]a-zA-Z0-9_-]+\\}\\}$",
+             "minLength": 1,
+             "maxLength": 128
+            }
+           },
+           "required": [
+            "optionType",
+            "value"
+           ],
+           "additionalProperties": false
+          },
+          {
+           "properties": {
+            "optionType": {
+             "type": "string",
+             "enum": [
+              "default"
+             ]
+            },
+            "value": {
+             "type": "integer",
+             "minimum": 0,
+             "maximum": 0
+            }
+           },
+           "required": [
+            "optionType",
+            "value"
+           ],
+           "additionalProperties": false
+          }
+         ]
+        },
+        "server": {
+         "description": "Configure the server",
+         "type": "array",
+         "items": {
+          "type": "object",
+          "properties": {
+           "address": {
+            "description": "Set IP address of server",
+            "type": "object",
+            "oneOf": [
+             {
+              "properties": {
+               "optionType": {
+                "type": "string",
+                "enum": [
+                 "global"
+                ]
+               },
+               "value": {
+                "type": "string"
+               }
+              },
+              "required": [
+               "optionType",
+               "value"
+              ],
+              "additionalProperties": false
+             }
+            ]
+           },
+           "port": {
+            "description": "Port",
+            "type": "object",
+            "oneOf": [
+             {
+              "properties": {
+               "optionType": {
+                "type": "string",
+                "enum": [
+                 "global"
+                ]
+               },
+               "value": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 65534
+               }
+              },
+              "required": [
+               "optionType",
+               "value"
+              ],
+              "additionalProperties": false
+             },
+             {
+              "properties": {
+               "optionType": {
+                "type": "string",
+                "enum": [
+                 "variable"
+                ]
+               },
+               "value": {
+                "type": "string",
+                "pattern": "^\\{\\{[.\\/\\[\\]a-zA-Z0-9_-]+\\}\\}$",
+                "minLength": 1,
+                "maxLength": 128
+               }
+              },
+              "required": [
+               "optionType",
+               "value"
+              ],
+              "additionalProperties": false
+             },
+             {
+              "properties": {
+               "optionType": {
+                "type": "string",
+                "enum": [
+                 "default"
+                ]
+               },
+               "value": {
+                "type": "integer",
+                "minimum": 49,
+                "maximum": 49
+               }
+              },
+              "required": [
+               "optionType",
+               "value"
+              ],
+              "additionalProperties": false
+             }
+            ]
+           },
+           "key": {
+            "description": "Set the server shared key [Note: Catalyst SD-WAN Manager will encrypt this field before saving. Cleartext strings will not be returned back to the user in GET responses for sensitive fields.]",
+            "type": "object",
+            "oneOf": [
+             {
+              "properties": {
+               "optionType": {
+                "type": "string",
+                "enum": [
+                 "global"
+                ]
+               },
+               "value": {
+                "type": "string",
+                "minLength": 1
+               }
+              },
+              "required": [
+               "optionType",
+               "value"
+              ],
+              "additionalProperties": false
+             },
+             {
+              "properties": {
+               "optionType": {
+                "type": "string",
+                "enum": [
+                 "variable"
+                ]
+               },
+               "value": {
+                "type": "string",
+                "pattern": "^\\{\\{[.\\/\\[\\]a-zA-Z0-9_-]+\\}\\}$",
+                "minLength": 1,
+                "maxLength": 128
+               }
+              },
+              "required": [
+               "optionType",
+               "value"
+              ],
+              "additionalProperties": false
+             }
+            ]
+           },
+           "secretKey": {
+            "description": "Set the type 6 encrypted shared key",
+            "type": "object",
+            "oneOf": [
+             {
+              "properties": {
+               "optionType": {
+                "type": "string",
+                "enum": [
+                 "global"
+                ]
+               },
+               "value": {
+                "type": "string",
+                "minLength": 1
+               }
+              },
+              "required": [
+               "optionType",
+               "value"
+              ],
+              "additionalProperties": false
+             },
+             {
+              "properties": {
+               "optionType": {
+                "type": "string",
+                "enum": [
+                 "variable"
+                ]
+               },
+               "value": {
+                "type": "string",
+                "pattern": "^\\{\\{[.\\/\\[\\]a-zA-Z0-9_-]+\\}\\}$",
+                "minLength": 1,
+                "maxLength": 128
+               }
+              },
+              "required": [
+               "optionType",
+               "value"
+              ],
+              "additionalProperties": false
+             }
+            ]
+           }
+          },
+          "required": [
+           "address",
+           "key"
+          ],
+          "additionalProperties": false
+         }
+        }
+       },
+       "required": [
+        "groupName",
+        "server"
+       ],
+       "additionalProperties": false
+      }
+     },
+     "authorizationConsole": {
+      "description": "For enabling console authorization",
+      "type": "object",
+      "oneOf": [
+       {
+        "properties": {
+         "optionType": {
+          "type": "string",
+          "enum": [
+           "global"
+          ]
+         },
+         "value": {
+          "type": "boolean"
+         }
+        },
+        "required": [
+         "optionType",
+         "value"
+        ],
+        "additionalProperties": false
+       },
+       {
+        "properties": {
+         "optionType": {
+          "type": "string",
+          "enum": [
+           "variable"
+          ]
+         },
+         "value": {
+          "type": "string",
+          "pattern": "^\\{\\{[.\\/\\[\\]a-zA-Z0-9_-]+\\}\\}$",
+          "minLength": 1,
+          "maxLength": 128
+         }
+        },
+        "required": [
+         "optionType",
+         "value"
+        ],
+        "additionalProperties": false
+       },
+       {
+        "properties": {
+         "optionType": {
+          "type": "string",
+          "enum": [
+           "default"
+          ]
+         },
+         "value": {
+          "type": "boolean",
+          "enum": [
+           false
+          ]
+         }
+        },
+        "required": [
+         "optionType",
+         "value"
+        ],
+        "additionalProperties": false
+       }
+      ]
+     },
+     "authorizationConfigCommands": {
+      "description": "For configuration mode commands.",
+      "type": "object",
+      "oneOf": [
+       {
+        "properties": {
+         "optionType": {
+          "type": "string",
+          "enum": [
+           "global"
+          ]
+         },
+         "value": {
+          "type": "boolean"
+         }
+        },
+        "required": [
+         "optionType",
+         "value"
+        ],
+        "additionalProperties": false
+       },
+       {
+        "properties": {
+         "optionType": {
+          "type": "string",
+          "enum": [
+           "variable"
+          ]
+         },
+         "value": {
+          "type": "string",
+          "pattern": "^\\{\\{[.\\/\\[\\]a-zA-Z0-9_-]+\\}\\}$",
+          "minLength": 1,
+          "maxLength": 128
+         }
+        },
+        "required": [
+         "optionType",
+         "value"
+        ],
+        "additionalProperties": false
+       },
+       {
+        "properties": {
+         "optionType": {
+          "type": "string",
+          "enum": [
+           "default"
+          ]
+         },
+         "value": {
+          "type": "boolean",
+          "enum": [
+           false
+          ]
+         }
+        },
+        "required": [
+         "optionType",
+         "value"
+        ],
+        "additionalProperties": false
+       }
+      ]
+     }
+    },
+    "required": [
+     "serverAuthOrder",
+     "authorizationConsole",
+     "authorizationConfigCommands",
+     "authenticationGroup",
+     "accountingGroup"
+    ],
+    "additionalProperties": false
+   }
+  },
+  "required": [
+   "name",
+   "data"
+  ]
+ }
+}
