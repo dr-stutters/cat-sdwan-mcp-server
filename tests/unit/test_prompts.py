@@ -141,6 +141,11 @@ async def test_prompts_declare_their_servers() -> None:
         "catsdwan_hub_failover_drill": ["catsdwan", "cml", "ise", "fmc"],
         "catsdwan_renew_with_enterprise_ca": ["catsdwan", "win"],
         "catsdwan_why_is_voice_bad": ["catsdwan", "catc", "ise", "cml"],
+        # Core v0.19.0 suite pack (C28/C71/C72/C78).
+        "suite_access_review": ["ise", "catc", "fmc", "catsdwan", "cml", "win"],
+        "suite_asbuilt_drift": ["netbox", "catc"],
+        "suite_decommission_site": ["catsdwan", "catc", "ise", "fmc", "win"],
+        "suite_maintenance_window": ["catsdwan", "catc", "ise"],
     }
 
 
