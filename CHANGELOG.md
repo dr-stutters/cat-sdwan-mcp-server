@@ -6,6 +6,24 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+## [0.9.0] - 2026-10-28
+
+### Added
+- W26 (#158): `catsdwan_set_external_authentication` sets TACACS+ for a single-tenant Manager's own logins through
+  its system AAA.
+- Core v0.19.0 (#173): suite prompts `suite_access_review`, `suite_asbuilt_drift`, `suite_decommission_site` and
+  `suite_maintenance_window`; `suite_change_check` takes `expected`.
+
+### Changed
+- #167: change tiering no longer calls an edge "not a hub" in a full BFD mesh: the hub status is "unknown", and an
+  edge that alone originates most service-VPN prefixes in OMP is a hub by heuristic (dangerous tier).
+- #169: release workflow: the container image job runs on GitHub-hosted runners again, so the Trivy scan step no
+  longer fails with "unable to export the image".
+
+### Fixed
+- #165: `catsdwan_create_backup` waits out the Manager's transient LOCALBK_ID_NOT_FOUND 404 right after the export
+  instead of reporting a failure for a backup that succeeds.
+
 ## [0.8.0] - 2026-10-28
 
 ### Added
