@@ -1,7 +1,7 @@
 # catsdwan_wifi_lan_or_wan
 
 title: Is it the Wi-Fi, the LAN or the WAN?
-arguments: {"host": "10.61.200.10", "lab": "mcp-cat-sdwan", "site": "200"}
+arguments: {"host": "10.61.200.10", "lab": "mcp-lab-sdwan", "site": "200"}
 
 Is this user's problem the Wi-Fi, the LAN or the WAN? Locate the host (catsdwan_find_host, ISE
 session, Catalyst Center), read the client's own health and the access layer at the site (client
@@ -34,7 +34,7 @@ layer. Read-only: change nothing; suggest fixes, don't apply them.
    sla_class=<the class the user's application maps to> from
    `catsdwan_list_sla_classes` when there is one; and
    `catsdwan_bfd_sessions` with device=<the edge from step 1> and state="not_up".
-6. Lab conditions (CML, skipped if that server is not connected: say so in one line and go on): `cml_get_link_scenarios` with lab="mcp-cat-sdwan". A
+6. Lab conditions (CML, skipped if that server is not connected: say so in one line and go on): `cml_get_link_scenarios` with lab="mcp-lab-sdwan". A
    lossy-wifi scenario on the host's access link is a deliberate Wi-Fi/LAN fault; brownout,
    wan-satellite or flap on an edge's transport link is a deliberate WAN fault. Name it.
 

@@ -238,6 +238,7 @@ signed serial file (`catsdwan_onboard_edge(serial_file=...)`) or a Smart Account
 | `CATSDWAN_HUB_DEVICES` | | Hubs (host names, system IPs or chassis, comma-separated): a deploy or attach touching one is dangerous tier. Unset: hubs are found from hub-and-spoke topologies and BFD (fail-safe, the preview says so) |
 | `CATSDWAN_PROTECTED_SITES` | | Site ids or names (comma-separated): a deploy or attach touching a device there is dangerous tier |
 | `CATSDWAN_ISE_USERNAME`, `CATSDWAN_ISE_PASSWORD` (`_FILE`, `_REF`) | | The ISE ERS admin login `catsdwan_set_ise_integration` gives the Manager (never a tool argument) |
+| `CATSDWAN_CML_LAB` | `mcp-lab-sdwan` | CML lab (title or id) the workflow prompts send to the cml tools when their `lab` argument is blank (`catsdwan_branch_health`, `catsdwan_site_down`, `catsdwan_brownout_drill`, `catsdwan_why_is_app_slow`, ...); a renamed lab needs no release |
 | `CATSDWAN_IMAGE_DIR` | | Directory on the server host `catsdwan_upload_utd_image` reads UTD images from (only the file name is a tool argument); unset: uploads are off |
 | `MCP_ENABLE_WRITES` / `MCP_ENABLE_DANGEROUS` | `false` | Write tools and `catsdwan_api_call` writes (preview-first) / `/device/action/*` calls and dangerous-tier changes |
 | `LOG_LEVEL` | `INFO` | |

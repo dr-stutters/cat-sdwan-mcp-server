@@ -1,7 +1,7 @@
 # catsdwan_onboard_branch
 
 title: Onboard an SD-WAN branch
-arguments: {"chassis": "C8K-00000000-0000-4000-8000-000000000001", "config_group": "mcp-test", "hostname": "br2", "lab": "mcp-cat-sdwan", "site": "201"}
+arguments: {"chassis": "C8K-00000000-0000-4000-8000-000000000001", "config_group": "mcp-test", "hostname": "br2", "lab": "mcp-lab-sdwan", "site": "201"}
 
 Onboard a branch edge from the source of truth: site id, system IP and LAN prefixes from NetBox,
 then catsdwan_onboard_edge (validity, group, variables), boot or activate the edge, deploy the
@@ -34,7 +34,7 @@ source of truth should give.
      started with `cml_set_node_state`;
    - a node already running in controller mode: the activate command from
      catsdwan_bootstrap_config, sent with `cml_configure_node` (mode='exec') on that
-     node in lab "mcp-cat-sdwan".
+     node in lab "mcp-lab-sdwan".
 5. Joined? `catsdwan_control_connections` with device=<host name> until the vsmart
    and vmanage connections are up (a few minutes after boot; failed attempts give the reason:
    not in the list, org, certificate, clock). `cml_run_commands` with
@@ -44,7 +44,7 @@ source of truth should give.
    group and devices=[<host name>]: show the per-device CLI and diff, confirm, and report each
    device's outcome.
 7. Prove it: `catsdwan_bfd_sessions` with device=<host name> (up on every colour to
-   the hub), and, in CML, `cml_check_reachability` in lab "mcp-cat-sdwan" from the branch
+   the hub), and, in CML, `cml_check_reachability` in lab "mcp-lab-sdwan" from the branch
    host to the hub host (success % and RTT).
 8. Record it (NetBox, skipped if that server is not connected: say so in one line and go on): `netbox_add_journal_entry` on the site or
    device: chassis, system IP, site id, group, the date, and the BFD result (preview first).

@@ -1,7 +1,7 @@
 # catsdwan_why_is_app_slow
 
 title: Why is this app slow over SD-WAN?
-arguments: {"app": "ssh to 10.61.100.10", "host": "10.61.200.10", "lab": "mcp-cat-sdwan"}
+arguments: {"app": "ssh to 10.61.100.10", "host": "10.61.200.10", "lab": "mcp-lab-sdwan"}
 
 Why is this application slow for this user or host? Find the host's site (ISE session or
 NetBox), read the app-route loss, latency and jitter on each transport against the SLA class, the
@@ -35,7 +35,7 @@ Read-only: change nothing; suggest fixes, don't apply them.
    (`fmc_list_devices`), run `fmc_packet_tracer` for the host's IP to
    the application's server and port: a drop, an inspection (decryption, IPS) or a slow NAT
    path there explains slowness the SD-WAN statistics don't show.
-7. Lab conditions (CML, skipped if that server is not connected: say so in one line and go on): `cml_get_link_scenarios` in lab "mcp-cat-sdwan": a
+7. Lab conditions (CML, skipped if that server is not connected: say so in one line and go on): `cml_get_link_scenarios` in lab "mcp-lab-sdwan": a
    lossy-wifi or wan-satellite scenario on the branch host's link or a transport link is a
    deliberate cause; name it.
 

@@ -7,11 +7,12 @@ connected". The first three are read-only; the brownout drill changes the CML la
 with cml_apply_link_scenario / cml_clear_link_scenarios, which are preview-first on the CML server: the
 prompt says so and tells the model to show each preview and wait for the user's approval.
 
-Recorded on lab `mcp-cat-sdwan` (recipe cat-sdwan-fabric, 20.18): each edge (hub1 at site 100, br1 at 200,
-br2 at 201) has GigabitEthernet1 on the `mpls` switch and GigabitEthernet2 on the `inet` switch (colours
-mpls and biz-internet), a host on GigabitEthernet3 and VPN 512 on GigabitEthernet4; the CML links read
-'br1:GigabitEthernet1<->mpls:port2'. The Manager carries the default SLA classes (Realtime,
-Voice-And-Video, Business-Critical, ...) plus custom ones such as mcp-test-sla.
+Recorded on the standing lab (CATSDWAN_CML_LAB, default `mcp-lab-sdwan`; recipe cat-sdwan-fabric, 20.18):
+each edge (hub1 at site 100, br1 at 200, br2 at 201) has GigabitEthernet1 on the `mpls` switch and
+GigabitEthernet2 on the `inet` switch (colours mpls and biz-internet), a host on GigabitEthernet3 and VPN
+512 on GigabitEthernet4; the CML links read 'br1:GigabitEthernet1<->mpls:port2'. The Manager carries the
+default SLA classes (Realtime, Voice-And-Video, Business-Critical, ...) plus custom ones such as
+mcp-test-sla.
 """
 
 # No `from __future__ import annotations`: FastMCP inspects signatures at runtime.
@@ -20,7 +21,7 @@ from typing import Annotated
 from pydantic import Field
 
 from cat_sdwan_mcp._core import ToolRegistrar, tool_ref
-from cat_sdwan_mcp.tools.prompts import LAB, OPTIONAL, CmlLab, Site, _lab
+from cat_sdwan_mcp.tools.prompts import LAB, OPTIONAL, CmlLab, Site, _lab, default_lab
 
 NO_CATC = (
     "skipped when Catalyst Center is not connected or does not manage this site's access layer "
@@ -33,6 +34,8 @@ def _site_arg(site: str) -> str:
 
 
 def register(reg: ToolRegistrar) -> None:
+    lab_default = default_lab(reg)
+
     @reg.prompt(
         title="Is it the Wi-Fi, the LAN or the WAN?",
         uses=["catsdwan", "catc", "ise", "cml"],
@@ -52,7 +55,7 @@ def register(reg: ToolRegistrar) -> None:
         session, Catalyst Center), read the client's own health and the access layer at the site (client
         360, site health, switch and AP health) against the SD-WAN site and tunnel health and app-route SLA,
         then give a verdict per layer (Wi-Fi, LAN, WAN) and name the one at fault."""
-        lab_ = _lab(lab)
+        lab_ = _lab(lab, lab_default)
         where = _site_arg(site)
         return f"""Find out whether {host}'s problem is the Wi-Fi, the LAN or the WAN, one verdict per
 layer. Read-only: change nothing; suggest fixes, don't apply them.
@@ -161,7 +164,7 @@ Then the evidence per step and the next action."""
         BFD)? Edge reachability, control connections with their failure reasons, BFD and the last alarms,
         then the switches behind the edge (Catalyst Center health), when ISE last heard from the site's NADs,
         and in the CML lab the edge's console log; a verdict: power, underlay, overlay or not down."""
-        lab_ = _lab(lab)
+        lab_ = _lab(lab, lab_default)
         return f"""SD-WAN site {site} is reported down. Find out whether it is power, the underlay or the
 overlay. Read-only: change nothing.
 
@@ -222,7 +225,7 @@ Then the evidence per step and the next tool to run."""
         cml_apply_link_scenario, watch app-aware routing move (or not move) each SLA class to the other
         colour, report what each class did, and clear the scenario. The CML writes are preview-first; the
         SD-WAN side is read-only."""
-        lab_ = _lab(lab)
+        lab_ = _lab(lab, lab_default)
         scen = scenario.strip() or "brownout"
         classes = (
             f'sla_class="{sla_class.strip()}"'

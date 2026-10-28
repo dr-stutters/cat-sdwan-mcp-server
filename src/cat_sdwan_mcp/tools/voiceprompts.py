@@ -17,7 +17,7 @@ from typing import Annotated
 from pydantic import Field
 
 from cat_sdwan_mcp._core import ToolRegistrar, tool_ref
-from cat_sdwan_mcp.tools.prompts import LAB, OPTIONAL, CmlLab, _lab
+from cat_sdwan_mcp.tools.prompts import LAB, OPTIONAL, CmlLab, _lab, default_lab
 from cat_sdwan_mcp.tools.triage import NO_CATC
 
 VOICE_DSCP = 46  # EF: RFC 4594 telephony, the class every Cisco QoS model puts in the priority queue
@@ -42,6 +42,8 @@ def _client_legs(host: str) -> str:
 
 
 def register(reg: ToolRegistrar) -> None:
+    lab_default = default_lab(reg)
+
     @reg.prompt(
         title="Why is voice bad over SD-WAN?",
         uses=["catsdwan", "catc", "ise", "cml"],
@@ -66,7 +68,7 @@ def register(reg: ToolRegistrar) -> None:
         transport, the path voice (DSCP 46) takes, the edge's QoS map and per-queue drops, the caller's
         Wi-Fi QoS (Catalyst Center) and ISE session, and CML link conditions; ends in a verdict naming the
         cause: a transport, a queue, the Wi-Fi or ISE."""
-        lab_ = _lab(lab)
+        lab_ = _lab(lab, lab_default)
         site_ = site.strip()
         host_ = host.strip()
         sla = sla_class.strip()

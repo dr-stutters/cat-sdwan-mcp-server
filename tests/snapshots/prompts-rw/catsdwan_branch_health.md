@@ -1,7 +1,7 @@
 # catsdwan_branch_health
 
 title: SD-WAN branch health
-arguments: {"lab": "mcp-cat-sdwan", "site": "200"}
+arguments: {"lab": "mcp-lab-sdwan", "site": "200"}
 
 Is this branch healthy? Device health, control connections, BFD and app-route loss, latency and
 jitter per transport colour, alarms and recent activity, then a verdict per transport (healthy,
@@ -30,7 +30,7 @@ Read-only: change nothing.
 5. Events: `catsdwan_list_alarms` with site="200" (active), then
    `catsdwan_recent_activity` with site="200" and since_hours=24 (alarms,
    events and who changed what, on one timeline).
-6. Lab conditions (skipped if that server is not connected: say so in one line and go on): `cml_get_link_scenarios` with lab="mcp-cat-sdwan". A
+6. Lab conditions (skipped if that server is not connected: say so in one line and go on): `cml_get_link_scenarios` with lab="mcp-lab-sdwan". A
    scenario on a link of this site's edges (wan-satellite, lossy-wifi, brownout, flap) is a
    DELIBERATE degradation: name it next to the colour it explains. Not a CML lab: skip.
 

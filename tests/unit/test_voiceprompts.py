@@ -54,7 +54,7 @@ async def test_with_host_walks_overlay_edge_wifi_and_ise() -> None:
     assert 'feature="qos"' in text and "qos=true" in text and "dscp=46" in text
     assert "platinum" in text and "WMM" in text and "dACL" in text
     assert "does not manage this site's access layer" in text
-    assert "not checked" in text and "Read-only" in text and 'lab="mcp-cat-sdwan"' in text
+    assert "not checked" in text and "Read-only" in text and 'lab="mcp-lab-sdwan"' in text
     flat = " ".join(text.split())
     for cause in ("a transport, a queue on the edge, the Wi-Fi or ISE", "ONE sentence naming the cause"):
         assert cause in flat

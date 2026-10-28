@@ -1,7 +1,7 @@
 # catsdwan_hub_failover_drill
 
 title: SD-WAN hub failover drill
-arguments: {"dc_services": "ISE 192.0.2.20, DHCP 192.0.2.30, FTD 192.0.2.40", "hub": "hub1", "lab": "mcp-cat-sdwan", "method": "links", "sites": "200,201", "vpns": "10"}
+arguments: {"dc_services": "ISE 192.0.2.20, DHCP 192.0.2.30, FTD 192.0.2.40", "hub": "hub1", "lab": "mcp-lab-sdwan", "method": "links", "sites": "200,201", "vpns": "10"}
 
 Hub failover drill: snapshot the fabric, take one hub down (in a CML lab with cml_set_link_state
 or cml_set_node_state, preview-first; by hand without one), then per branch and service VPN check
@@ -15,7 +15,7 @@ Run a hub failover drill: take one hub down and prove that the branches move to 
 hub, that each SLA class keeps its SLA and that the data-centre services still answer; then restore the
 hub and show the fabric is back as it was.
 
-This drill CHANGES THE CML LAB "mcp-cat-sdwan": `cml_set_link_state` and
+This drill CHANGES THE CML LAB "mcp-lab-sdwan": `cml_set_link_state` and
 `cml_set_node_state` are write tools on the CML server and PREVIEW-FIRST: show each
 preview (the lab, the node or link, the new state), wait for the user's approval, then repeat the
 identical call with the confirm token. Only touch the chosen hub's node and links in this lab:
@@ -46,12 +46,12 @@ stop, and report what failed.
    g. DC services. The data-centre services to prove: ISE 192.0.2.20; DHCP 192.0.2.30; FTD 192.0.2.40.
       Prove each from each branch edge: `catsdwan_ping` with device=<branch edge>,
       destination=<service address>, vpn=<its VPN> and count=5.
-   h. Where the hub sits: `cml_get_lab_topology` with lab="mcp-cat-sdwan": the hub's node and its
+   h. Where the hub sits: `cml_get_lab_topology` with lab="mcp-lab-sdwan": the hub's node and its
      transport links (in the cat-sdwan-fabric recipe GigabitEthernet1 is on 'mpls' and
      GigabitEthernet2 on 'inet', e.g. '<hub>:GigabitEthernet1<->mpls:portN'); check the colours with
      `catsdwan_list_tlocs` with edge=<hub>. Never a link to VPN 512 (management).
 
-2. Hub down: `cml_set_link_state` with lab="mcp-cat-sdwan", link=<each transport link
+2. Hub down: `cml_set_link_state` with lab="mcp-lab-sdwan", link=<each transport link
    of the hub>, state="down" (preview, approval, confirm, one link at a time, back to back): the
    hub loses every colour. Note the time the last link went down (T0).
 
@@ -70,14 +70,14 @@ stop, and report what failed.
    each class meets its SLA on the surviving paths, or which class misses and by how much.
 
 6. DC services during: `catsdwan_ping` as in 1g from each branch edge to each service
-   (ISE, DHCP, FTD). In the lab: `cml_check_reachability` with lab="mcp-cat-sdwan",
+   (ISE, DHCP, FTD). In the lab: `cml_check_reachability` with lab="mcp-lab-sdwan",
      nodes=<a host behind each branch edge>, targets=<the service addresses> and wait_seconds=60:
      what a user sees (success %, RTT).
    ISE (skipped if that server is not connected: say so in one line and go on): `ise_deployment_health`: the PSNs still healthy (a PSN that sits
    only in the failed hub's DC is expected to be unreachable: say so). FMC (skipped if that server is not connected: say so in one line and go on):
    `fmc_get_ha_status` for the DC FTD pair, if it is one.
 
-7. Restore (ALWAYS, also after a failure): `cml_set_link_state` with lab="mcp-cat-sdwan", link=<each link taken
+7. Restore (ALWAYS, also after a failure): `cml_set_link_state` with lab="mcp-lab-sdwan", link=<each link taken
    down in step 2>, state="up" (preview, approval, confirm).
    Then `catsdwan_control_connections` with device=<hub> until its controller and
    Manager connections are up on every colour, and `catsdwan_bfd_sessions` with

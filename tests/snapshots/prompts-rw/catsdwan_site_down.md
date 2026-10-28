@@ -1,7 +1,7 @@
 # catsdwan_site_down
 
 title: SD-WAN site down: power, underlay or overlay?
-arguments: {"lab": "mcp-cat-sdwan", "site": "200"}
+arguments: {"lab": "mcp-lab-sdwan", "site": "200"}
 
 The branch is down: is it power, the underlay (transport circuits) or the overlay (control and
 BFD)? Edge reachability, control connections with their failure reasons, BFD and the last alarms,
@@ -31,10 +31,10 @@ overlay. Read-only: change nothing.
    since_minutes=240: when ISE last heard RADIUS from the site. Silence since the outage began
    with the switches healthy = the path to ISE is gone (WAN), not the switches.
 7. The edge itself (CML, skipped if that server is not connected: say so in one line and go on; on hardware ask whoever is on site to check power and
-   circuit LEDs): `cml_get_node_console_log` with lab="mcp-cat-sdwan", node=<edge> and
+   circuit LEDs): `cml_get_node_console_log` with lab="mcp-lab-sdwan", node=<edge> and
    lines=200: no output or a boot loop = power or the box; "%LINEPROTO" / "%LINK" down on a
    transport interface = underlay; "%Cisco-SDWAN" control, OMP or BFD messages with the interface
-   up = overlay. Then `cml_get_link_scenarios` with lab="mcp-cat-sdwan": a flap or brownout
+   up = overlay. Then `cml_get_link_scenarios` with lab="mcp-lab-sdwan": a flap or brownout
    on a transport link is a deliberate fault.
 
 Verdict, ONE line first:
