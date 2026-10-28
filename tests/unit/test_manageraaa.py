@@ -464,3 +464,92 @@ def test_undo_order_tacacs() -> None:
     assert undo_order({"order": ["local", "radius", "tacacs"], "tacacs": "not configured"}, "tacacs") == [
         "local", "radius", "tacacs"
     ]  # fmt: skip
+
+
+# --- #175 catsdwan_get_aaa on a single-tenant Manager ---------------------------------------------------
+# The running configuration after #158's live round (20.18.3.1, 2026-10-28; shape read with
+# catsdwan_get_device_config(section='system')): `auth-order local radius`, `auth-fallback` and one RADIUS
+# server under `system radius` (tag, vpn 512, secret). Synthetic: the recorded fixture with those lines
+# edited in, a documentation address and a placeholder secret.
+RADIUS_SET_SECRET = "get-aaa-s3cret-175"
+
+
+def running_with_radius() -> dict[str, Any]:
+    body = dict(fixture("template_config_running_manager"))
+    text = str(body["config"]).replace(
+        "  auth-order      local radius tacacs\n", "  auth-order local radius\n  auth-fallback\n"
+    )
+    assert "auth-order local radius\n" in text
+    radius = (
+        f" radius\n  server {ISE}\n   tag mcpise1\n   vpn 512\n"
+        f"   secret-key {RADIUS_SET_SECRET}\n  exit\n !\n"
+    )  # fmt: skip
+    text = text.replace(" ntp\n", radius + " ntp\n", 1)
+    body["config"] = text
+    return body
+
+
+def mock_get_aaa(api: respx.MockRouter, running: Any) -> None:
+    mock_inventory(api)
+    api.get("/dataservice/client/server").respond(json=fixture("client_server"))
+    api.get(RUNNING).respond(json=running)
+    api.get("/dataservice/admin/aaa").respond(json=fixture("admin_aaa"))
+    api.get("/dataservice/admin/radius").respond(json=fixture("admin_radius"))
+    api.get("/dataservice/admin/tacacs").respond(json=fixture("admin_tacacs"))
+
+
+async def get_aaa() -> dict[str, Any]:
+    async with Client(make_server()) as c:
+        out = (await c.call_tool("catsdwan_get_aaa", {})).structured_content
+    assert out is not None
+    return out
+
+
+async def test_get_aaa_single_tenant_reads_system_aaa(api: respx.MockRouter) -> None:
+    mock_get_aaa(api, running_with_radius())
+    out = await get_aaa()
+    assert out["tenancy"] == "single"
+    assert out["source"] == "running configuration (system aaa)"
+    assert out["order"] == ["local", "radius"] and out["order_source"] == "set"
+    assert out["fallback"] is True and out["local_fallback"] is True
+    [srv] = out["radius"]["servers"]
+    assert srv == {"address": ISE, "tag": "mcpise1", "vpn": 512, "secret-key": "********"}
+    assert out["tacacs"] == "not configured"
+    assert RADIUS_SET_SECRET not in json.dumps(out)
+    # The recorded empty /admin/* answers: shown beside it, labelled, not as the order in use.
+    assert out["remote_aaa"].startswith("not set (the multi-tenant provider's Remote AAA")
+    assert f"GET {RUNNING}" in out["sources"] and "GET /dataservice/admin/aaa" in out["sources"]
+    assert out["manager"]["host"] == "manager"
+
+
+async def test_get_aaa_single_tenant_recorded_default_order(api: respx.MockRouter) -> None:
+    mock_get_aaa(api, fixture("template_config_running_manager"))
+    out = await get_aaa()
+    assert out["order"] == ["local", "radius", "tacacs"] and out["order_source"] == "set"
+    assert out["radius"] == "not configured" and out["tacacs"] == "not configured"
+    assert out["source"] == "running configuration (system aaa)"
+
+
+async def test_get_aaa_single_tenant_remote_set_shown_beside(api: respx.MockRouter) -> None:
+    mock_inventory(api)
+    api.get("/dataservice/client/server").respond(json=fixture("client_server"))
+    api.get(RUNNING).respond(json=running_with_radius())
+    api.get("/dataservice/admin/aaa").respond(json={"data": {"authOrder": ["local", "tacacs"]}})
+    api.get("/dataservice/admin/radius").respond(json=fixture("admin_radius"))
+    api.get("/dataservice/admin/tacacs").respond(json=fixture("admin_tacacs"))
+    out = await get_aaa()
+    assert out["order"] == ["local", "radius"]  # the system AAA is the one in use
+    assert out["remote_aaa"]["source"].startswith("Remote AAA (/admin/*")
+    assert out["remote_aaa"]["order"] == ["local", "tacacs"]
+
+
+async def test_get_aaa_single_tenant_running_unreadable_falls_back(api: respx.MockRouter) -> None:
+    mock_inventory(api)
+    api.get("/dataservice/client/server").respond(json=fixture("client_server"))
+    api.get(RUNNING).respond(500)
+    api.get("/dataservice/admin/aaa").respond(json=fixture("admin_aaa"))
+    api.get("/dataservice/admin/radius").respond(json=fixture("admin_radius"))
+    api.get("/dataservice/admin/tacacs").respond(json=fixture("admin_tacacs"))
+    out = await get_aaa()
+    assert out["source"].startswith("Remote AAA (/admin/*): the system AAA could not be read")
+    assert any("may not be the one in use" in w for w in out["warnings"])
