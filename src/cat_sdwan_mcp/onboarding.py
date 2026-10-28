@@ -19,6 +19,11 @@ Pure helpers; the tools are in tools/onboarding.py. Sources (recorded on 20.18.3
 - POST /dataservice/certificate/save/vedge/list [{chasisNumber, serialNumber, validity}] then
   POST /dataservice/certificate/vedge/list?action=push -> {id} (an action: "Send to Controllers"), the
   validity change as the GUI makes it (Cisco's documented flow; bodies not recorded yet).
+- Removal (W53, spec 20.18.3; bodies not recorded yet): PUT /dataservice/system/device/decommission/{uuid}
+  (decommissionVedgeCloud: a software edge loses its certificate and the slot gets a new token), then
+  DELETE /dataservice/system/device/{uuid} (deleteDevice, answers {status}). A template-attached edge leaves
+  its template first with POST /dataservice/template/config/device/mode/cli {deviceType, devices: [{deviceId,
+  deviceIP}]} -> {id} (an action; spec example).
 """
 
 from __future__ import annotations
@@ -39,6 +44,9 @@ SMART_SYNC_PATH = "/dataservice/system/device/smartaccount/sync"
 BOOTSTRAP_PATH = "/dataservice/system/device/bootstrap/device/{id}"
 SAVE_VALIDITY_PATH = "/dataservice/certificate/save/vedge/list"
 PUSH_VEDGES_PATH = "/dataservice/certificate/vedge/list"
+DECOMMISSION_PATH = "/dataservice/system/device/decommission/{id}"
+DELETE_DEVICE_PATH = "/dataservice/system/device/{id}"
+CLI_MODE_PATH = "/dataservice/template/config/device/mode/cli"
 
 MASK = "********"
 MAX_SERIAL_FILE = 4 * 1024 * 1024  # bytes; a serial file for a few thousand edges is well under this
@@ -50,6 +58,12 @@ WAYS_IN = (
     f"(POST {FILEUPLOAD_PATH}, multipart `file` with validity=valid and upload=true; "
     "catsdwan_onboard_edge(serial_file=...) does it as its first step), or sync the Smart Account "
     f"(POST {SMART_SYNC_PATH} with the Smart Account credentials, through catsdwan_api_call)."
+)
+
+COMES_BACK = (
+    "A deleted slot comes back only by uploading the signed serial file again (catsdwan_onboard_edge("
+    "serial_file=...)) or by a Smart Account sync; the chassis then has a new token and must be onboarded "
+    "again (validity, configuration group or template)."
 )
 
 ACTIVATE_COMMAND = (
@@ -294,3 +308,38 @@ GROUP_KEYS = {"hostname": "host_name", "system_ip": "system_ip", "site_id": "sit
 def rows_of(body: Any) -> list[dict[str, Any]]:
     rows = body.get("data") if isinstance(body, dict) else body
     return [r for r in _as_list(rows) if isinstance(r, dict)]
+
+
+# --- removal -------------------------------------------------------------------------------------
+
+
+def control_peers(rows: list[dict[str, Any]]) -> list[str]:
+    """One line per control connection of an edge (GET /device/control/connections?deviceId=)."""
+    out = []
+    for r in rows:
+        who = r.get("peer-host-name") or r.get("system-ip") or "?"
+        color = r.get("local-color")
+        out.append(
+            f"{r.get('peer-type') or 'peer'} {who}"
+            + (f" over {color}" if color else "")
+            + f" ({r.get('state')})"
+        )
+    return out
+
+
+def bfd_peers(rows: list[dict[str, Any]]) -> list[str]:
+    """One line per BFD session of an edge (GET /device/bfd/sessions?deviceId=): remote end, colours."""
+    out = []
+    for r in rows:
+        site = r.get("site-id")
+        out.append(
+            f"{r.get('system-ip') or '?'}"
+            + (f" (site {site})" if site not in (None, "") else "")
+            + f" {r.get('local-color') or '?'} -> {r.get('color') or '?'} ({r.get('state')})"
+        )
+    return out
+
+
+def cli_mode_body(v: dict[str, Any]) -> dict[str, Any]:
+    """The body that takes an edge off its device template (to CLI mode), as the spec's example."""
+    return {"deviceType": "vedge", "devices": [{"deviceId": chassis_of(v), "deviceIP": v.get("system-ip")}]}
