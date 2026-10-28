@@ -50,6 +50,7 @@ from cat_sdwan_mcp.tools import (
     trustsec,
     upgrade,
     utd,
+    voiceprompts,
 )
 
 INSTRUCTIONS = """
@@ -113,6 +114,8 @@ Digital twin: catsdwan_export_site(site) gives the site as a twin spec (configur
 variables with secrets as refs, policy, transports, service VPNs) for the cml recipe cat-sdwan-twin.
 SGTs across the overlay: catsdwan_trustsec_path(source_edge, destination_edge, source_ip, destination_ip)
 (inline tagging per tunnel, SXP, the destination edge's SGACL); the prompt catsdwan_sgt_path adds ISE.
+"Why is voice bad at this branch?" -> the prompt catsdwan_why_is_voice_bad(site, host) (voice SLA per
+transport, the QoS map and queue drops on the edge, the caller's Wi-Fi QoS and ISE session; a verdict).
 Edge security (UTD: IPS, URL filtering, AMP): catsdwan_upload_utd_image(file in CATSDWAN_IMAGE_DIR) ->
 catsdwan_set_ips_profile / catsdwan_set_url_filtering_profile / catsdwan_set_amp_profile ->
 catsdwan_set_inspection_profile -> catsdwan_set_security_policy (stores only) -> the policy group
@@ -192,6 +195,7 @@ def create_server(
             health.register,
             prompts.register,
             triage.register,
+            voiceprompts.register,
             certificates.register,
             troubleshooting.register,
             devicestate.register,
