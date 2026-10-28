@@ -16,6 +16,7 @@ from fastmcp import Client
 from fastmcp.exceptions import ToolError
 
 from cat_sdwan_mcp import changes as ch
+from cat_sdwan_mcp import hubs as hubs_mod
 from cat_sdwan_mcp._core.spec import build_index
 from cat_sdwan_mcp.spec import match_operation
 from cat_sdwan_mcp.tools import changes as tools
@@ -656,3 +657,178 @@ def test_change_paths_are_in_the_spec(method: str, template: str) -> None:
     concrete = template.replace("{id}", "x").replace("{device}", "y")
     _, methods = match_operation(idx, method, concrete)
     assert method in methods
+
+
+# --- hub detection without CATSDWAN_HUB_DEVICES (#102) -------------------------------------------
+
+BULK_BFD = "/dataservice/data/device/state/BFDSessions"
+HUB_SPOKE = "/dataservice/template/policy/definition/hubandspoke"
+EDGES = [
+    {"host": "hub1", "system_ip": "10.0.0.1", "site_id": "100", "role": "edge"},
+    {"host": "br1", "system_ip": "10.0.0.2", "site_id": "200", "role": "edge"},
+    {"host": "br2", "system_ip": "10.0.0.3", "site_id": "201", "role": "edge"},
+]
+
+
+def bfd(local: str, remote: str, site: int, colour: str = "mpls") -> dict[str, Any]:
+    """One state-database BFD row as recorded on 20.18.3 (vdevice-name = the local edge)."""
+    return {
+        "vdevice-name": local,
+        "system-ip": remote,
+        "site-id": site,
+        "local-color": "mpls",
+        "color": colour,
+        "state": "up",
+        "proto": "ipsec",
+    }
+
+
+# hub-and-spoke: hub1 (site 100) has 4 sessions to both branch sites; each branch only reaches the hub
+HUB_SPOKE_BFD = [
+    bfd("10.0.0.1", "10.0.0.2", 200),
+    bfd("10.0.0.1", "10.0.0.2", 200, "biz-internet"),
+    bfd("10.0.0.1", "10.0.0.3", 201),
+    bfd("10.0.0.1", "10.0.0.3", 201, "biz-internet"),
+    bfd("10.0.0.2", "10.0.0.1", 100),
+    bfd("10.0.0.2", "10.0.0.1", 100, "biz-internet"),
+    bfd("10.0.0.3", "10.0.0.1", 100),
+    bfd("10.0.0.3", "10.0.0.1", 100, "biz-internet"),
+]
+
+
+def test_bfd_view_finds_the_hub() -> None:
+    hubs, not_hubs = hubs_mod.bfd_view(HUB_SPOKE_BFD, EDGES)
+    assert hubs == {"10.0.0.1": "BFD sessions to all 2 other sites (4 sessions, the most of any edge)"}
+    assert not_hubs == {
+        "10.0.0.2": "not a hub: BFD sessions to 1 of 2 other sites",
+        "10.0.0.3": "not a hub: BFD sessions to 1 of 2 other sites",
+    }
+
+
+def test_bfd_view_full_mesh_and_too_few_sites() -> None:
+    mesh = HUB_SPOKE_BFD + [bfd("10.0.0.2", "10.0.0.3", 201), bfd("10.0.0.3", "10.0.0.2", 200)]
+    hubs, not_hubs = hubs_mod.bfd_view(mesh, EDGES)
+    assert hubs == {} and set(not_hubs.values()) == {"not a hub: the fabric's BFD is a full mesh"}
+    hubs, not_hubs = hubs_mod.bfd_view([bfd("10.0.0.1", "10.0.0.2", 200)], EDGES)
+    assert hubs == {} and not_hubs["10.0.0.1"].startswith("unknown: BFD shows only 1 other site")
+
+
+def test_policy_hubs_from_a_hub_and_spoke_topology() -> None:
+    definition = {
+        "name": "dc-hubs",
+        "definition": {
+            "subDefinitions": [{"spokes": [{"siteList": "sl-br", "hubs": [{"siteList": "sl-dc"}]}]}]
+        },
+    }
+    lists = {"sl-dc": {"listId": "sl-dc", "name": "DC", "type": "site", "entries": [{"siteId": "100-110"}]}}
+    hub1 = {"host": "hub1", "chassis": HUB1, "site_id": "100"}
+    br1 = {"host": "br1", "chassis": BR1, "site_id": "200"}
+    assert hubs_mod.policy_hubs([hub1, br1], [definition], lists) == {
+        HUB1: "site 100 is a hub site (list DC) of hub-and-spoke topology dc-hubs"
+    }
+
+
+async def test_deploy_to_a_bfd_hub_is_dangerous_without_hub_devices(api: respx.MockRouter) -> None:
+    mock_inventory(api)
+    mock_group(api)
+    mock_variables(api, HUB1_VARS)
+    mock_configs(api, HUB1, RUNNING_BR1, PREVIEW_BR1)
+    api.get(BULK_BFD).respond(json={"data": HUB_SPOKE_BFD})
+    args = {"group": "mcp-test", "devices": ["hub1"]}
+    async with Client(writes()) as c:
+        prev = await run(c, "catsdwan_deploy_config_group", args)
+    assert prev["status"] == "blocked"
+    assert any(
+        "hub1 is a hub by heuristic (BFD sessions to all 2 other sites" in b
+        and "set CATSDWAN_HUB_DEVICES" in b
+        and "MCP_ENABLE_DANGEROUS" in b
+        for b in prev["blockers"]
+    )
+    async with Client(writes(mcp_enable_dangerous=True)) as c:
+        prev = await run(c, "catsdwan_deploy_config_group", args)
+    assert prev["status"] == "preview" and prev["preview"]["tier"] == "dangerous"
+    assert prev["preview"]["hub_status"]["hub1"].startswith("hub by heuristic (BFD sessions to all 2")
+
+
+async def test_deploy_to_a_branch_stays_write_with_bfd_evidence(api: respx.MockRouter) -> None:
+    mock_inventory(api)
+    mock_group(api)
+    mock_variables(api, BR1_VARS)
+    mock_configs(api, BR1, RUNNING_BR1, PREVIEW_BR1)
+    api.get(BULK_BFD).respond(json={"data": HUB_SPOKE_BFD})
+    async with Client(writes()) as c:
+        prev = await run(c, "catsdwan_deploy_config_group", {"group": "mcp-test", "devices": ["br1"]})
+    assert prev["status"] == "preview" and prev["preview"]["tier"] == "write"
+    assert prev["preview"]["hub_status"] == {"br1": "not a hub: BFD sessions to 1 of 2 other sites"}
+    assert not any("hub status" in w for w in prev["preview"].get("warnings", []))
+
+
+async def test_deploy_says_hub_status_unknown_when_bfd_is_not_read(api: respx.MockRouter) -> None:
+    mock_inventory(api)
+    mock_group(api)
+    mock_variables(api, HUB1_VARS)
+    mock_configs(api, HUB1, RUNNING_BR1, PREVIEW_BR1)
+    api.get(BULK_BFD).respond(404, json={"error": {"message": "Not found"}})
+    api.get("/dataservice/device/bfd/sessions").respond(500, json={"error": {"message": "boom"}})
+    api.get(HUB_SPOKE).respond(403, json={"error": {"message": "Forbidden"}})
+    async with Client(writes()) as c:
+        prev = await run(c, "catsdwan_deploy_config_group", {"group": "mcp-test", "devices": ["hub1"]})
+    assert prev["status"] == "preview" and prev["preview"]["tier"] == "write"
+    assert prev["preview"]["hub_status"] == {"hub1": "unknown"}
+    (warn,) = [w for w in prev["preview"]["warnings"] if "hub status" in w]
+    assert warn.startswith("hub status of hub1 unknown: hub-and-spoke topologies not read")
+    assert "BFD sessions not read" in warn and warn.endswith("set CATSDWAN_HUB_DEVICES")
+
+
+async def test_deploy_hub_from_a_hub_and_spoke_policy(api: respx.MockRouter) -> None:
+    mock_inventory(api)
+    mock_group(api)
+    mock_variables(api, HUB1_VARS)
+    mock_configs(api, HUB1, RUNNING_BR1, PREVIEW_BR1)
+    api.get(HUB_SPOKE).respond(json={"data": [{"definitionId": "hs-1", "name": "dc-hubs"}]})
+    api.get(f"{HUB_SPOKE}/hs-1").respond(
+        json={
+            "name": "dc-hubs",
+            "type": "hubAndSpoke",
+            "definition": {
+                "subDefinitions": [{"spokes": [{"siteList": "sl-br", "hubs": [{"siteList": "sl-dc"}]}]}]
+            },
+        }
+    )
+    api.get("/dataservice/template/policy/list/site").respond(
+        json={"data": [{"listId": "sl-dc", "name": "DC", "type": "site", "entries": [{"siteId": "100"}]}]}
+    )
+    async with Client(writes(mcp_enable_dangerous=True)) as c:
+        prev = await run(c, "catsdwan_deploy_config_group", {"group": "mcp-test", "devices": ["hub1"]})
+    assert prev["preview"]["tier"] == "dangerous"
+    assert any("hub-and-spoke topology dc-hubs" in r for r in prev["preview"]["tier_reasons"])
+
+
+async def test_hub_devices_setting_is_authoritative(api: respx.MockRouter) -> None:
+    mock_inventory(api)
+    mock_group(api)
+    mock_variables(api, BR1_VARS)
+    mock_configs(api, BR1, RUNNING_BR1, PREVIEW_BR1)
+    bulk = api.get(BULK_BFD).respond(json={"data": HUB_SPOKE_BFD})
+    hs = api.get(HUB_SPOKE).respond(json={"data": []})
+    async with Client(writes(hub_devices="hub1")) as c:
+        prev = await run(c, "catsdwan_deploy_config_group", {"group": "mcp-test", "devices": ["br1"]})
+    assert prev["preview"]["tier"] == "write" and "hub_status" not in prev["preview"]
+    assert not bulk.called and not hs.called
+
+
+async def test_cut_off_bfd_read_cannot_clear_a_hub(
+    api: respx.MockRouter, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    # #102 review: a read cut at BULK_CAP may miss the edge's own sessions: unknown, never write-safe
+    mock_inventory(api)
+    mock_group(api)
+    mock_variables(api, BR1_VARS)
+    mock_configs(api, BR1, RUNNING_BR1, PREVIEW_BR1)
+    api.get(BULK_BFD).respond(json={"data": HUB_SPOKE_BFD, "pageInfo": {"moreEntries": True, "endId": "8"}})
+    monkeypatch.setattr(hubs_mod, "BULK_CAP", len(HUB_SPOKE_BFD))
+    async with Client(writes()) as c:
+        prev = await run(c, "catsdwan_deploy_config_group", {"group": "mcp-test", "devices": ["br1"]})
+    assert prev["preview"]["hub_status"] == {"br1": "unknown"}
+    (warn,) = [w for w in prev["preview"]["warnings"] if "hub status" in w]
+    assert "BFD state database cut at 8 sessions" in warn and warn.endswith("set CATSDWAN_HUB_DEVICES")
