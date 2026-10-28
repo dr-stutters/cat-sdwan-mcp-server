@@ -66,6 +66,9 @@ from cat_sdwan_mcp.manager import (
 )
 
 POLL_INTERVAL = 10.0  # seconds between backup-state reads (tests set it to 0)
+# The Manager writes the LocalBackupInfo record to its config DB a few seconds after /backup/export returns:
+# until then GET /backup/backupinfo/{id} answers 404 LOCALBK_ID_NOT_FOUND (recorded on 20.18.3.1, #165).
+RECORD_GRACE = 60.0  # seconds after the export call that a 404 on the record still means "pending"
 MEMORY_WARN = 90.0  # JVM memory % named in the verdict
 BACKUP_COLUMNS = ["created", "task", "type", "state", "file", "id"]
 BUSY_WARNING = (
@@ -230,6 +233,8 @@ def register(reg: ToolRegistrar) -> None:
         the active backup schedule when /schedule/list has one. Preview-first: the preview names the newest
         existing backup and the schedule (or that there is none), warns that the Manager is busy while it
         runs, and blocks while another backup is still running or when no cluster IP is configured. The
+        Manager writes the record a few seconds after the export call: a 404 on it counts as pending for the
+        first minute (the backup list is checked too). The
         first step of a change window and of controller or edge upgrades. Restores stay in the GUI."""
         if not TASK_NAME_RE.fullmatch(task_name):
             raise InvalidRequest(
@@ -288,9 +293,10 @@ def register(reg: ToolRegistrar) -> None:
             notes.append(f"the backup schedules could not be read ({_err(sched)}); the request names none")
         elif schedule is None:
             notes.append(
-                "no active backup schedule on the Manager: the request names none. If the Manager refuses "
-                f"it, create a local schedule (Administration > Backup, or POST {SCHEDULE_CREATE_PATH} "
-                "with destination.backupDest LOCAL) and try again"
+                "no active backup schedule on the Manager: the request names none, which the Manager accepts "
+                "(proven on 20.18.3.1). Only if it refuses: create a local schedule "
+                f"(Administration > Backup, or POST {SCHEDULE_CREATE_PATH} with destination.backupDest "
+                "LOCAL) and try again"
             )
         if version is None:
             notes.append(f"the Manager's release is {release!r}: destination.vmVersion is left out")
@@ -334,26 +340,47 @@ def register(reg: ToolRegistrar) -> None:
                 out["check_with"] = "catsdwan_list_backups"
                 return out
             info_path = BACKUP_INFO_PATH.format(id=bid)
+            grace_until = time.monotonic() + RECORD_GRACE
 
-            def state(b: Any) -> str:
+            async def fetch() -> dict[str, Any]:
+                # The backup's record as a backup row; {} while the Manager has not written it yet.
+                try:
+                    b = await app.api.get(info_path)
+                except UpstreamError as e:
+                    if e.status_code != 404:
+                        raise
+                    # Not in the config DB yet (LOCALBK_ID_NOT_FOUND): look for it in the backup list
+                    # (the one catsdwan_list_backups reads), and keep waiting inside the grace window.
+                    try:
+                        listed = await _backups(app)
+                    except UpstreamError:
+                        listed = []
+                    hit = next((r for r in listed if str(r.get("id")) == bid), None)
+                    if hit is not None:
+                        return hit
+                    if time.monotonic() < grace_until:
+                        return {}
+                    raise UpstreamError(
+                        f"The backup was started (id {bid}) but the Manager still has no record of it "
+                        f"{int(RECORD_GRACE)}s later (GET {info_path} and {BACKUP_LIST_PATH}): "
+                        f"{str(e)[:300]}. Check catsdwan_list_backups.",
+                        404,
+                    ) from e
                 rec = b.get("data", b) if isinstance(b, dict) else {}
                 rec = rec[0] if isinstance(rec, list) and rec else rec
-                return backup_state(backup_row(rec)) if isinstance(rec, dict) else ""
+                return backup_row(rec) if isinstance(rec, dict) else {}
 
-            final = await poll_until(
-                lambda: app.api.get(info_path),
-                done=lambda b: state(b) in BACKUP_DONE | BACKUP_FAILED,
-                describe=lambda b: f"backup {state(b) or 'pending'}",
+            row = await poll_until(
+                fetch,
+                done=lambda r: backup_state(r) in BACKUP_DONE | BACKUP_FAILED,
+                describe=lambda r: f"backup {backup_state(r) or 'pending'}",
                 timeout=app.settings.mcp_task_timeout,
                 interval=POLL_INTERVAL,
                 ctx=ctx,
                 what="the backup",
             )
-            rec = final.get("data", final) if isinstance(final, dict) else {}
-            rec = rec[0] if isinstance(rec, list) and rec else rec
-            row = backup_row(rec) if isinstance(rec, dict) else {}
             out.update(row)
-            out["outcome"] = "success" if state(final) in BACKUP_DONE else "failed"
+            out["outcome"] = "success" if backup_state(row) in BACKUP_DONE else "failed"
             out["seconds"] = round((time.time() * 1000 - started) / 1000)
             out.pop("answer", None)
             return out
