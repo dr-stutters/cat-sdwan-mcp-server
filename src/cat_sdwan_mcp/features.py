@@ -30,7 +30,7 @@ import re
 from typing import Any
 
 from cat_sdwan_mcp._core import InvalidRequest
-from cat_sdwan_mcp._core.formatting import mask_secrets
+from cat_sdwan_mcp._core.formatting import MASK, is_secret_key, mask_secrets
 from cat_sdwan_mcp.client import _as_list
 from cat_sdwan_mcp.configuration import mask_config, path
 
@@ -116,20 +116,115 @@ def _secret_key(path: str) -> str:
     return re.sub(r"\[\d+\]$", "", path.rsplit(".", 1)[-1])
 
 
+# Parcel fields that hold secrets but don't match core's secret-name pattern: the AAA parcel's RADIUS/TACACS
+# shared `key` (radius[i].server[j].key, tacacs[i].server[j].key) and its type-6 `secretKey`, a local user's
+# `password` and SSH `pubkeyChain[k].keyString` (20.18 aaa schema, #101). The Manager's schema also marks
+# sensitive fields in their description (SENSITIVE_HINTS).
+SECRET_FIELDS = frozenset(
+    {"key", "secretKey", "password", "keyString", "pacKey", "authPassword", "privPassword"}
+)
+SENSITIVE_HINTS = ("will encrypt this field", "sensitive field")
+
+
+def is_secret_field(name: str, extra: frozenset[str] | set[str] = frozenset()) -> bool:
+    return name in SECRET_FIELDS or name in extra or is_secret_key(name)
+
+
+def sensitive_fields(dschema: Any) -> set[str]:
+    """Field names the Manager's parcel schema marks sensitive: a description saying the Manager encrypts
+    the field ('... will encrypt this field before saving. Cleartext strings will not be returned back to
+    the user in GET responses for sensitive fields.', the 20.18 aaa parcel's radius/tacacs server `key`)."""
+    out: set[str] = set()
+
+    def walk(node: Any) -> None:
+        if isinstance(node, dict):
+            for k, v in as_dict(node.get("properties")).items():
+                if isinstance(v, dict):
+                    desc = str(v.get("description") or "").lower()
+                    if any(h in desc for h in SENSITIVE_HINTS):
+                        out.add(str(k))
+            for v in node.values():
+                walk(v)
+        elif isinstance(node, list):
+            for v in node:
+                walk(v)
+
+    walk(dschema)
+    return out
+
+
+def _mask_secret_value(v: Any) -> Any:
+    if is_leaf(v):
+        if v.get("optionType") == "variable" or v.get("value") in (None, ""):
+            return dict(v)  # a {{variable}} name is not the secret
+        return {**v, "value": MASK}
+    if v in (None, "", [], {}) or isinstance(v, bool):
+        return v
+    return MASK
+
+
+def mask_data(v: Any, extra: frozenset[str] | set[str] = frozenset()) -> Any:
+    """`v` (parcel data, a leaf, a list of server objects) with every secret field masked at any depth, by
+    name (SECRET_FIELDS, core's secret names, `extra` from the schema): list items and nested objects
+    included. Structure and the non-secret siblings (address, authPort) are kept."""
+    if isinstance(v, list):
+        return [mask_data(x, extra) for x in v]
+    if not isinstance(v, dict):
+        return v
+    return {
+        k: _mask_secret_value(x) if is_secret_field(str(k), extra) else mask_data(x, extra)
+        for k, x in v.items()
+    }
+
+
+def secret_values(v: Any, extra: frozenset[str] | set[str] = frozenset()) -> list[str]:
+    """The cleartext secret strings in `v` (the values mask_data hides), to register for log scrubbing."""
+    out: list[str] = []
+
+    def take(x: Any) -> None:
+        if is_leaf(x):
+            if x.get("optionType") != "variable":
+                take(x.get("value"))
+        elif isinstance(x, str) and x and x != MASK:
+            out.append(x)
+        elif isinstance(x, list | dict):
+            for y in x.values() if isinstance(x, dict) else x:
+                take(y)
+
+    def walk(x: Any) -> None:
+        if isinstance(x, list):
+            for y in x:
+                walk(y)
+        elif isinstance(x, dict):
+            for k, y in x.items():
+                # a key may be a field path: radius[0].server[0].key
+                if is_secret_field(_secret_key(str(k)), extra):
+                    take(y)
+                else:
+                    walk(y)
+
+    walk(v)
+    return out
+
+
 def shown(path: str, leaf: Any) -> Any:
     """A leaf for people: '{{name}}' for a variable, the value for global, 'default (<value>)' for a default;
     secrets masked; CLI text masked line by line."""
     if not is_leaf(leaf):
         if isinstance(leaf, str) and "\n" in leaf:
             return mask_config(leaf)[0]
-        return mask_secrets({_secret_key(path): leaf})[_secret_key(path)]
+        if is_secret_field(_secret_key(path)):
+            return _mask_secret_value(leaf)
+        return mask_data(mask_secrets({_secret_key(path): leaf})[_secret_key(path)])
     kind, value = leaf.get("optionType"), leaf.get("value", MISSING)
     if kind == "variable":
         return value
     if kind == "default":
         return "default" if value is MISSING or value is None else f"default ({value})"
     key = _secret_key(path)
-    return mask_secrets({key: None if value is MISSING else value})[key]
+    if is_secret_field(key) and value not in (MISSING, None, ""):
+        return MASK
+    return mask_data(mask_secrets({key: None if value is MISSING else value})[key])
 
 
 def parcel_view(body: Any) -> dict[str, Any]:
@@ -512,11 +607,27 @@ def describe(leaf: Any) -> Any:
     return f"{kind}: {value!r}"
 
 
-def masked_change(path: str, old: Any, new: Any) -> dict[str, Any]:
+def masked_change(
+    path: str, old: Any, new: Any, extra: frozenset[str] | set[str] = frozenset()
+) -> dict[str, Any]:
+    """old -> new for the preview and the result, secrets masked: a secret field itself shows '********'
+    (a variable keeps its name), and a list or object value (radius server groups, users) has every secret
+    field inside it masked at any depth (#101). `extra`: field names the parcel schema marks sensitive."""
     key = _secret_key(path)
-    if mask_secrets({key: "x"})[key] != "x":
-        return {"from": "********" if old is not MISSING else "(not set)", "to": "********"}
-    return {"from": describe(old), "to": describe(new)}
+    if is_secret_field(key, extra) or mask_secrets({key: "x"})[key] != "x":
+
+        def one(leaf: Any) -> Any:
+            if leaf is MISSING:
+                return "(not set)"
+            if is_leaf(leaf) and leaf.get("optionType") == "variable":
+                return describe(leaf)
+            return MASK
+
+        return {"from": one(old), "to": one(new)}
+    return {
+        "from": describe(mask_data(mask_secrets(old), extra) if old is not MISSING else old),
+        "to": describe(mask_data(mask_secrets(new), extra) if new is not MISSING else new),
+    }
 
 
 def cli_replace(text: str, edits: dict[str, str]) -> tuple[str, list[str]]:
