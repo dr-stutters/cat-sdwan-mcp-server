@@ -51,6 +51,12 @@ SAMPLES = {
         "app": "tcp/22",
         "vpn": "10",
     },
+    "catsdwan_why_is_voice_bad": {
+        "site": "200",
+        "host": "198.51.100.10",
+        "sla_class": "Voice-And-Video",
+        "lab": "mcp-cat-sdwan",
+    },
     "catsdwan_why_is_app_slow": {
         "host": "10.61.200.10",
         "app": "ssh to 10.61.100.10",
@@ -119,6 +125,7 @@ async def test_prompts_declare_their_servers() -> None:
         "catsdwan_network_or_ise": ["catsdwan", "ise"],
         "catsdwan_site_down": ["catsdwan", "catc", "ise", "cml"],
         "catsdwan_brownout_drill": ["catsdwan", "cml"],
+        "catsdwan_why_is_voice_bad": ["catsdwan", "catc", "ise", "cml"],
     }
 
 
