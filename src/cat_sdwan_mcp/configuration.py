@@ -323,6 +323,7 @@ _SECRET = re.compile(
     rf"(?P<sep>\s+){_TYPE}{_NOT_SECRET}(?P<secret>[^\s*<]\S*)",
     re.IGNORECASE,
 )
+_PLACEHOLDER = re.compile(r"\{\{\s*[\w.-]+\s*\}\}")
 _SNMP_USER = re.compile(r"^\s*snmp-server\s+user\b", re.IGNORECASE)
 _SNMP_SECRETS = re.compile(
     r"\b(?P<kw>auth\s+(?:md5|sha\S*)|priv\s+(?:des\S*|3des|aes(?:\s+\d{3})?))\s+(?P<secret>\S+)",
@@ -332,6 +333,8 @@ _SNMP_SECRETS = re.compile(
 
 def _mask(m: re.Match[str]) -> str:
     whole = m.group(0)
+    if _PLACEHOLDER.fullmatch(m.group("secret")):
+        return whole  # a {{variable}} in CLI-profile text names the secret, it is not one (#166)
     if m.group("kw").lower() == "key" and m.group("secret").isdigit() and not m.string[m.end() :].strip():
         return whole  # 'key 1' under a key chain: the key's number, not a secret
     start, end = m.start("secret") - m.start(0), m.end("secret") - m.start(0)
