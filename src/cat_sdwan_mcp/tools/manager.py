@@ -3,6 +3,7 @@
 # No `from __future__ import annotations`: FastMCP inspects signatures at runtime.
 import asyncio
 import time
+import uuid
 from typing import Annotated, Any
 
 from fastmcp import Context
@@ -38,11 +39,14 @@ from cat_sdwan_mcp.manager import (
     HEALTH_STATUS_PATH,
     HEALTH_SUMMARY_PATH,
     RESOURCES_PATH,
+    SCHEDULE_CREATE_PATH,
     SCHEDULE_LIST_PATH,
     SERVER_INFO_PATH,
     STATS_SETTINGS_PATH,
     TASK_NAME_RE,
+    active_schedule,
     backup_addresses,
+    backup_destination,
     backup_row,
     backup_rows,
     backup_state,
@@ -58,6 +62,7 @@ from cat_sdwan_mcp.manager import (
     services,
     statistics_processing,
     summary_rows,
+    vm_version,
 )
 
 POLL_INTERVAL = 10.0  # seconds between backup-state reads (tests set it to 0)
@@ -78,6 +83,13 @@ async def _get(app: SdwanApp, path: str) -> Any:
 
 def _err(body: Any) -> str | None:
     return body.get("error") if isinstance(body, dict) and isinstance(body.get("error"), str) else None
+
+
+async def _release(app: SdwanApp) -> str:
+    try:
+        return await app.version()
+    except UpstreamError:
+        return "unknown"
 
 
 async def _backups(app: SdwanApp) -> list[dict[str, Any]]:
@@ -212,17 +224,24 @@ def register(reg: ToolRegistrar) -> None:
         confirm: Confirm = None,
     ) -> dict[str, Any]:
         """Back up the Manager's configuration database and statistics (POST /backup/export, an on-demand
-        backup stored on the Manager), then follow it (GET /backup/backupinfo/{id}) to ALL_SUCCESS or a
-        failure with the file to download. Preview-first: the preview names the newest existing backup,
-        warns that the Manager is busy while it runs, and blocks while another backup is still running or
-        when no cluster IP is configured (the request names the nodes' cluster IPs). The
+        backup stored on the Manager's disk), then follow it (GET /backup/backupinfo/{id}) to ALL_SUCCESS or
+        a failure with the file to download. The request is the full LocalBackupInfo the Manager needs
+        (fresh ids, LOCAL /backup destination with the Manager's release, the nodes' cluster IPs) and names
+        the active backup schedule when /schedule/list has one. Preview-first: the preview names the newest
+        existing backup and the schedule (or that there is none), warns that the Manager is busy while it
+        runs, and blocks while another backup is still running or when no cluster IP is configured. The
         first step of a change window and of controller or edge upgrades. Restores stay in the GUI."""
         if not TASK_NAME_RE.fullmatch(task_name):
             raise InvalidRequest(
                 "task_name may hold letters, digits, spaces and _ - / \\ only (the Manager's own rule)."
             )
         app: SdwanApp = get_client(ctx)
-        rows, cluster = await asyncio.gather(_backups(app), app.api.get(CLUSTER_LIST_PATH))
+        rows, cluster, sched, release = await asyncio.gather(
+            _backups(app), app.api.get(CLUSTER_LIST_PATH), _get(app, SCHEDULE_LIST_PATH), _release(app)
+        )
+        schedule = None if _err(sched) else active_schedule(schedule_rows(sched))
+        schedule_id = str(schedule["scheduleId"]) if schedule else None
+        version = vm_version(release)
         nodes = cluster_nodes(cluster)
         configured = cluster_ip_configured(cluster)
         src, followers = backup_addresses(nodes)
@@ -239,46 +258,77 @@ def register(reg: ToolRegistrar) -> None:
                 + (f"; GET {CLUSTER_LIST_PATH} says isIPConfigured false" if configured is False else "")
             )
         newest = next((r for r in rows if backup_state(r) in BACKUP_DONE), None)
-        body: dict[str, Any] = {
-            "backupType": "ON_DEMAND",
-            "taskName": task_name,
-            "srcIpAddress": src,
-            "followerIpAddressList": followers,
+        destination = backup_destination(schedule, version)
+
+        def request_body() -> dict[str, Any]:
+            # Fresh ids per request: the Manager echoes localBackupInfoId as the answer's backupInfoId.
+            body: dict[str, Any] = {
+                "backupType": "ON_DEMAND",
+                "backupState": "SCHEDULED",
+                "taskName": task_name,
+                "taskId": str(uuid.uuid4()),
+                "localBackupInfoId": str(uuid.uuid4()),
+                "createTime": int(time.time() * 1000),
+                "srcIpAddress": src,
+                "followerIpAddressList": followers,
+                "destination": destination,
+            }
+            if schedule_id:
+                body["scheduleId"] = schedule_id
+            return body
+
+        shown = {
+            **request_body(),
+            "taskId": "<new uuid>",
+            "localBackupInfoId": "<new uuid>",
+            "createTime": "<now, epoch ms>",
         }
+        notes: list[str] = []
+        if _err(sched):
+            notes.append(f"the backup schedules could not be read ({_err(sched)}); the request names none")
+        elif schedule is None:
+            notes.append(
+                "no active backup schedule on the Manager: the request names none. If the Manager refuses "
+                f"it, create a local schedule (Administration > Backup, or POST {SCHEDULE_CREATE_PATH} "
+                "with destination.backupDest LOCAL) and try again"
+            )
+        if version is None:
+            notes.append(f"the Manager's release is {release!r}: destination.vmVersion is left out")
         plan = Plan(
             f"Back up the Manager's configuration database and statistics (task {task_name!r})",
             details={
-                "request": f"POST {BACKUP_EXPORT_PATH} {body}",
+                "request": f"POST {BACKUP_EXPORT_PATH} {shown}",
                 "then": f"GET {BACKUP_INFO_PATH} until ALL_SUCCESS or a failure" if wait else "not followed",
                 "newest_backup": newest or "none",
                 "existing_backups": len(rows),
+                "schedule": (
+                    {"id": schedule_id, "name": schedule.get("scheduleName")} if schedule else "none active"
+                ),
                 "cluster": {"ip_configured": configured, "nodes": nodes},
                 "warning": BUSY_WARNING,
+                **({"notes": notes} if notes else {}),
             },
             side_effects=[BUSY_WARNING, "The backup file stays on the Manager's disk until it is deleted."],
-            fingerprint=[[(r.get("id"), r.get("state")) for r in running], src, followers],
+            fingerprint=[[(r.get("id"), r.get("state")) for r in running], src, followers, schedule_id],
             blockers=blockers,
             blast_radius=1,
         )
 
         async def apply() -> Any:
             started = time.time() * 1000
+            body = request_body()
             try:
                 answer = await app.api.post(BACKUP_EXPORT_PATH, body)
             except UpstreamError as e:
-                reason = export_error(str(e))
+                reason = export_error(str(e), cluster_ip=configured, schedule=schedule_id)
                 if reason is None:
                     raise
                 raise UpstreamError(f"Backup not started: {reason}", e.status_code) from e
-            bid = export_id(answer)
-            if bid is None:
-                # No id in the answer: the new backup is the newest one created since the request.
-                fresh = [r for r in await _backups(app) if r.get("task") == task_name]
-                bid = next((str(r["id"]) for r in fresh if r.get("id")), None)
+            # The Manager echoes the localBackupInfoId sent as backupInfoId: that is the record to follow
+            # (its taskId is a different id, so it is not used here).
+            echoed = {k: v for k, v in (answer if isinstance(answer, dict) else {}).items() if k != "taskId"}
+            bid = export_id(echoed) or str(body["localBackupInfoId"])
             out: dict[str, Any] = {"outcome": "started", "task": task_name, "answer": answer}
-            if bid is None:
-                out["note"] = "the Manager returned no backup id; check catsdwan_list_backups"
-                return out
             out["id"] = bid
             if not wait:
                 out["check_with"] = "catsdwan_list_backups"

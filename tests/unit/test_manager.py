@@ -8,6 +8,8 @@ so.
 """
 
 import json
+import re
+import time
 from typing import Any
 
 import httpx
@@ -16,7 +18,9 @@ import respx
 from fastmcp import Client
 
 from cat_sdwan_mcp.manager import (
+    active_schedule,
     backup_addresses,
+    backup_destination,
     backup_rows,
     cluster_ip_configured,
     cluster_nodes,
@@ -24,6 +28,7 @@ from cat_sdwan_mcp.manager import (
     export_id,
     resources,
     services,
+    vm_version,
 )
 from cat_sdwan_mcp.tools import manager as tools
 
@@ -115,6 +120,46 @@ def cluster_with_ip() -> dict[str, Any]:
     return body
 
 
+UUID_RE = re.compile(r"^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$")
+SCHEDULE_ID = "00000000-0000-4000-8000-0000000b4c01"
+INFO_ID = "00000000-0000-4000-8000-0000000b4c09"
+
+
+def active_schedule_list(status: str = "ACTIVE") -> dict[str, Any]:
+    """The /schedule/list row recorded on 20.18.3.1 after the l3 run (#132; id replaced, status CANCELLED
+    there after the schedule was deleted: ACTIVE is how it answered while it existed)."""
+    return {
+        "scheduleList": [
+            {
+                "scheduleName": "mcp-r96-backup",
+                "scheduleId": SCHEDULE_ID,
+                "startDateTime": 1793250000000,
+                "endDateTime": 1793336400000,
+                "backupDurationInHour": 24,
+                "status": status,
+                "retryCount": 1,
+                "lastSuccessBackupTime": -1,
+                "destination": {
+                    "backupDest": "LOCAL",
+                    "vmVersion": "20.18",
+                    "backupTTLInDays": 1,
+                    "backupStorageInGB": 5,
+                    "numOfReplica": 1,
+                    "backupDir": "/backup",
+                },
+            }
+        ]
+    }
+
+
+def mock_backup_reads(
+    api: respx.MockRouter, rows: list[dict[str, Any]] | None = None, schedules: Any = None
+) -> None:
+    api.get("/dataservice/backup/list").respond(json={"backupList": rows or []})
+    api.get("/dataservice/clusterManagement/list").respond(json=cluster_with_ip())
+    api.get("/dataservice/schedule/list").respond(json=schedules or fixture("schedule_list"))
+
+
 def backup(bid: str, state: str, n: int, task: str = "nightly") -> dict[str, Any]:
     return {  # hand-built LocalBackupInfo
         "localBackupInfoId": bid,
@@ -127,13 +172,21 @@ def backup(bid: str, state: str, n: int, task: str = "nightly") -> dict[str, Any
 
 
 async def test_create_backup_preview_then_follow(api: respx.MockRouter) -> None:
-    api.get("/dataservice/backup/list").respond(json={"backupList": [backup("b-1", "ALL_SUCCESS", 1)]})
-    api.get("/dataservice/clusterManagement/list").respond(json=cluster_with_ip())
-    export = api.post("/dataservice/backup/export").respond(json={"localBackupInfoId": "b-9"})
+    mock_backup_reads(api, [backup("b-1", "ALL_SUCCESS", 1)], active_schedule_list())
+    # Recorded (#132, l3): the 200 answer echoes the localBackupInfoId sent as backupInfoId.
+    export = api.post("/dataservice/backup/export")
+    export.side_effect = lambda request: httpx.Response(
+        200,
+        json={
+            "taskId": "00000000-0000-4000-8000-0000000b4c0a",
+            "backupInfoId": json.loads(request.content)["localBackupInfoId"],
+            "status": "in_progress",
+        },
+    )
     states = iter(["IN_PROGRESS", "STATS_DB_EXPORT_SUCCESS", "ALL_SUCCESS"])
-    info = api.get("/dataservice/backup/backupinfo/b-9")
+    info = api.get(url__regex=r"/dataservice/backup/backupinfo/[0-9a-f-]+$")
     info.side_effect = lambda request: httpx.Response(
-        200, json=backup("b-9", next(states), 9, task="before upgrade")
+        200, json=backup(request.url.path.rsplit("/", 1)[1], next(states), 9, task="before upgrade")
     )
     async with Client(make_server(mcp_enable_writes=True)) as c:
         prev = (
@@ -141,22 +194,58 @@ async def test_create_backup_preview_then_follow(api: respx.MockRouter) -> None:
         ).structured_content
         assert prev["status"] == "preview" and not export.called
         assert prev["preview"]["newest_backup"]["id"] == "b-1"
+        assert prev["preview"]["schedule"] == {"id": SCHEDULE_ID, "name": "mcp-r96-backup"}
+        assert "'localBackupInfoId': '<new uuid>'" in prev["preview"]["request"]
+        assert "notes" not in prev["preview"]
         assert "GUI and API are slower" in prev["preview"]["warning"]
         args = {"task_name": "before upgrade", "confirm": prev["confirm"]}
         done = (await c.call_tool("catsdwan_create_backup", args)).structured_content["result"]
-    assert json.loads(export.calls[0].request.content) == {
+    sent = json.loads(export.calls[0].request.content)
+    assert UUID_RE.match(sent.pop("taskId")) and UUID_RE.match(bid := sent.pop("localBackupInfoId"))
+    assert abs(sent.pop("createTime") / 1000 - time.time()) < 60
+    assert sent == {
         "backupType": "ON_DEMAND",
+        "backupState": "SCHEDULED",
         "taskName": "before upgrade",
         "srcIpAddress": "10.60.2.10",
         "followerIpAddressList": ["10.60.2.10"],
+        "scheduleId": SCHEDULE_ID,
+        "destination": {
+            "backupDest": "LOCAL",
+            "backupDir": "/backup",
+            "backupStorageInGB": 5,
+            "backupTTLInDays": 1,
+            "numOfReplica": 1,
+            "vmVersion": "20.18",
+        },
     }
-    assert done["outcome"] == "success" and done["id"] == "b-9" and done["state"] == "ALL_SUCCESS"
+    assert done["outcome"] == "success" and done["id"] == bid and done["state"] == "ALL_SUCCESS"
+    assert info.calls[0].request.url.path == f"/dataservice/backup/backupinfo/{bid}"
     assert done["file"].endswith("backup_9.tar.gz") and info.call_count == 3
 
 
+async def test_create_backup_without_schedule_tries_anyway(api: respx.MockRouter) -> None:
+    # Recorded: the empty schedule list; a cancelled schedule is not active either.
+    mock_backup_reads(api, schedules=active_schedule_list("CANCELLED"))
+    export = api.post("/dataservice/backup/export").respond(
+        200,
+        json={"taskId": "t", "backupInfoId": INFO_ID, "status": "in_progress"},
+    )
+    async with Client(make_server(mcp_enable_writes=True)) as c:
+        prev = (await c.call_tool("catsdwan_create_backup", {"wait": False})).structured_content
+        assert prev["status"] == "preview" and prev["preview"]["schedule"] == "none active"
+        [note] = prev["preview"]["notes"]
+        assert note.startswith("no active backup schedule") and "/dataservice/schedule/create" in note
+        args = {"wait": False, "confirm": prev["confirm"]}
+        out = (await c.call_tool("catsdwan_create_backup", args)).structured_content["result"]
+    sent = json.loads(export.calls[0].request.content)
+    assert "scheduleId" not in sent and sent["destination"]["vmVersion"] == "20.18"
+    assert sent["destination"]["backupDest"] == "LOCAL" and sent["backupState"] == "SCHEDULED"
+    assert out["id"] == INFO_ID and out["check_with"] == "catsdwan_list_backups"
+
+
 async def test_create_backup_blocked_while_one_runs(api: respx.MockRouter) -> None:
-    api.get("/dataservice/backup/list").respond(json={"backupList": [backup("b-3", "IN_PROGRESS", 3)]})
-    api.get("/dataservice/clusterManagement/list").respond(json=cluster_with_ip())
+    mock_backup_reads(api, [backup("b-3", "IN_PROGRESS", 3)])
     async with Client(make_server(mcp_enable_writes=True)) as c:
         prev = (await c.call_tool("catsdwan_create_backup", {})).structured_content
     assert prev["status"] == "blocked"
@@ -168,6 +257,7 @@ async def test_create_backup_blocked_without_cluster_ip(api: respx.MockRouter) -
     # Recorded: the lab Manager's cluster list (isIPConfigured false, deviceIP 'localhost').
     api.get("/dataservice/backup/list").respond(json=fixture("backup_list"))
     api.get("/dataservice/clusterManagement/list").respond(json=fixture("cluster_list"))
+    api.get("/dataservice/schedule/list").respond(json=fixture("schedule_list"))
     export = api.post("/dataservice/backup/export").respond(json={})
     async with Client(make_server(mcp_enable_writes=True)) as c:
         prev = (await c.call_tool("catsdwan_create_backup", {})).structured_content
@@ -180,19 +270,31 @@ async def test_create_backup_blocked_without_cluster_ip(api: respx.MockRouter) -
     assert prev["preview"]["cluster"]["ip_configured"] is False
 
 
-async def test_create_backup_export_failed_is_readable(api: respx.MockRouter) -> None:
-    api.get("/dataservice/backup/list").respond(json=fixture("backup_list"))
-    api.get("/dataservice/clusterManagement/list").respond(json=cluster_with_ip())
-    # The lab's answer when the addresses pass validation but no cluster IP is set.
-    api.post("/dataservice/backup/export").respond(
-        400, json={"error": {"message": "Failed to export scheduled backup data", "code": "EXPORT_FAILED"}}
-    )
+# Recorded on 20.18.3.1 (#132): the answer to a body with `destination` but without the ids/createTime/state.
+NPE_ANSWER = {
+    "error": {
+        "message": "Failed to export scheduled backup data",
+        "code": "EXPORT_FAILED",
+        "details": "java.lang.NullPointerException: Value in JsonObjects name/value pair cannot be null",
+    }
+}
+
+
+@pytest.mark.parametrize("schedules", [None, "active"])
+async def test_create_backup_export_failed_is_readable(api: respx.MockRouter, schedules: str | None) -> None:
+    mock_backup_reads(api, schedules=active_schedule_list() if schedules else None)
+    api.post("/dataservice/backup/export").respond(400, json=NPE_ANSWER)
     async with Client(make_server(mcp_enable_writes=True)) as c:
         prev = (await c.call_tool("catsdwan_create_backup", {})).structured_content
         res = await c.call_tool("catsdwan_create_backup", {"confirm": prev["confirm"]}, raise_on_error=False)
     text = str(res.content)
-    assert res.is_error and "Backup not started: the Manager refused the backup (EXPORT_FAILED" in text
-    assert "Administration > Cluster Management" in text
+    assert res.is_error and "Backup not started: the Manager refused the backup before creating" in text
+    assert "JsonObjects name/value pair cannot be null" in text  # the Manager's own text is quoted
+    assert "Cluster Management" not in text  # the cluster IP is set: it is not blamed
+    if schedules:
+        assert "No active backup schedule" not in text and "vmanage-server.log" in text
+    else:
+        assert "No active backup schedule was found" in text and "/dataservice/schedule/create" in text
 
 
 async def test_create_backup_hidden_without_writes_and_name_checked(api: respx.MockRouter) -> None:
@@ -219,6 +321,18 @@ def test_helpers() -> None:
     refused = export_error("Validation failed for LocalBackupInfo object: InValid number of IP in List")
     assert refused is not None and "srcIpAddress" in refused
     assert export_error("other") is None
+    no_ip = export_error("400 EXPORT_FAILED: Failed to export scheduled backup data", cluster_ip=False)
+    assert no_ip is not None and "Administration > Cluster Management" in no_ip
+    assert vm_version("20.18.3.1") == "20.18" and vm_version("20.15.1, 20.18.3.1") == "20.15"
+    assert vm_version("unknown") is None
+    assert backup_destination(None, None) == {
+        "backupDest": "LOCAL",
+        "backupDir": "/backup",
+        "backupStorageInGB": 5,
+        "backupTTLInDays": 1,
+        "numOfReplica": 1,
+    }
+    assert active_schedule(active_schedule_list("CANCELLED")["scheduleList"]) is None
     assert services({"data": [{"deviceIP": "a", "olap-db": False}]}) == [
         {"node": "a", "services_up": [], "services_down": ["olap-db"]}
     ]
