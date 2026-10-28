@@ -24,14 +24,17 @@ from cat_sdwan_mcp.control import (
     BULK_CONTROL,
     CONNECTIONS_PATH,
     HISTORY_PATH,
+    NOT_CONNECTED,
     OMP_PEERS_PATH,
     OMP_ROUTES_PATH,
     OMP_TLOCS_PATH,
     SUMMARY_PATH,
+    about,
     connection_row,
     failed_attempts,
     history_row,
     is_up,
+    last_known,
     peer_row,
     per_device,
     prefix_matches,
@@ -40,6 +43,7 @@ from cat_sdwan_mcp.control import (
     sort_routes,
     summary_row,
     tloc_row,
+    within,
 )
 from cat_sdwan_mcp.events import EVENTS_PATH, REJECT_EVENTS, rejection_row
 from cat_sdwan_mcp.fabric import (
@@ -57,7 +61,7 @@ from cat_sdwan_mcp.inventory import Inventory, load_inventory, resolve
 Device = Annotated[str, Field(description="Host name, system IP, chassis number or serial number")]
 PeerType = Literal["controller", "manager", "validator", "edge"]
 BULK_CAP = 5000  # rows read from the bulk state API for the fabric view
-REJECT_HOURS = 24  # how far back join rejections are searched in the event log
+REJECT_HOURS = 24  # default since_hours: how far back failed attempts and join rejections go
 REJECT_CAP = 200
 FETCH_CAP = 2000
 
@@ -90,27 +94,36 @@ def _state_filter(rows: list[dict[str, Any]], state: str | None) -> list[dict[st
     return [r for r in rows if str(r.get("state", "")).lower() == want]
 
 
-async def _rejected_joins(app: SdwanApp) -> dict[str, Any]:
+async def _rejected_joins(app: SdwanApp, since_hours: int) -> dict[str, Any]:
     """Join rejections from the event log (vbond-reject-vedge-connection, control-connection-auth-fail) in
-    the last REJECT_HOURS, with the chassis and the reason in plain words. The eventname rule is asked for
+    the last `since_hours`, with the chassis and the reason in plain words. The eventname rule is asked for
     server-side; a Manager that refuses it is searched client-side over the newest events."""
-    query = last_hours(REJECT_HOURS, rule("eventname", list(REJECT_EVENTS)))
+    query = last_hours(since_hours, rule("eventname", list(REJECT_EVENTS)))
     try:
         result = await app.query(EVENTS_PATH, query, limit=REJECT_CAP)
     except UpstreamError:
         try:
-            result = await app.query(EVENTS_PATH, last_hours(REJECT_HOURS), limit=FETCH_CAP)
+            result = await app.query(EVENTS_PATH, last_hours(since_hours), limit=FETCH_CAP)
         except UpstreamError as e:
             return {"rejected_joins_error": f"POST {EVENTS_PATH} failed: {str(e)[:200]}"}
     rows = [rejection_row(e) for e in result.rows if e.get("eventname") in REJECT_EVENTS]
+    rows, _ = within(rows, since_hours)
     rows.sort(key=lambda r: str(r.get("time") or ""), reverse=True)
     return {"rejected_joins": rows[:25]} if rows else {}
 
 
-async def _validator_history(app: SdwanApp, inv: Inventory, hosts: dict[str, str]) -> dict[str, Any]:
-    """Failed attempts the reachable validators saw (an edge that never joins only ever reaches them), plus
-    the join rejections in the event log."""
-    rejected = await _rejected_joins(app)
+async def _validator_history(
+    app: SdwanApp,
+    inv: Inventory,
+    hosts: dict[str, str],
+    since_hours: int,
+    device: dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    """Failed attempts the reachable validators saw in the last `since_hours` (an edge that never joins only
+    ever reaches them), plus the join rejections in the event log. With `device`, the rows naming it (by
+    system IP or chassis) when there are any; every row otherwise, since an edge that never joined is named
+    only by its public address."""
+    rejected = await _rejected_joins(app, since_hours)
     validators = reachable(inv, "validator")
     if not validators:
         return {"failed_attempts_note": "no reachable validator to read connection history from", **rejected}
@@ -122,10 +135,43 @@ async def _validator_history(app: SdwanApp, inv: Inventory, hosts: dict[str, str
             errors.append(f"{v.get('host')}: GET {HISTORY_PATH} failed: {str(res)[:200]}")
         else:
             rows.extend(history_row(h, hosts) for h in res)
-    out: dict[str, Any] = {"failed_attempts": failed_attempts(rows), **rejected}
+    rows, older = within(rows, since_hours)
+    out: dict[str, Any] = {**rejected}
+    if device is not None:
+        mine = about(rows, device.get("system_ip"), device.get("chassis"))
+        if mine:
+            others = sum(1 for r in rows if r.get("reason")) - sum(1 for r in mine if r.get("reason"))
+            out["failed_attempts_scope"] = (
+                f"the validators' rows naming {device.get('host') or device.get('chassis')} "
+                f"({others} failed attempt(s) of other devices left out)"
+            )
+            rows = mine
+        else:
+            out["failed_attempts_scope"] = (
+                "no validator row names this device by system IP: every edge's rows, newest first (an edge "
+                "that cannot join is named by its public address or chassis, not its host name)"
+            )
+        if "rejected_joins" in out and (rej := about(out["rejected_joins"], None, device.get("chassis"))):
+            out["rejected_joins"] = rej
+    out["failed_attempts"] = failed_attempts(rows)
+    if older:
+        out["older_than_since_hours"] = f"{older} history row(s) older than {since_hours} h left out"
     if errors:
         out["history_errors"] = errors
     return out
+
+
+async def _last_known_state(
+    app: SdwanApp, ip: str, hosts: dict[str, str]
+) -> tuple[list[dict[str, Any]], dict[str, Any]]:
+    """The device's last known control connections from the Manager's state database (its own last report
+    and its peers' rows for it), for a device that cannot be read live."""
+    try:
+        raw, _ = await app.bulk_state(BULK_CONTROL, limit=BULK_CAP)
+    except UpstreamError as e:
+        return [], {"last_known_state_error": f"bulk {BULK_CONTROL} failed: {str(e)[:200]}"}
+    rows = [connection_row(c, hosts) for c in last_known(raw, ip)]
+    return rows, {"source": f"the Manager's state database (bulk {BULK_CONTROL}): last known state, not live"}
 
 
 async def _omp_targets(app: SdwanApp, device: str | None) -> tuple[list[dict[str, Any]], Inventory]:
@@ -168,6 +214,15 @@ def register(reg: ToolRegistrar) -> None:
                 "device's history; the validators' for the fabric view or a device that is not up)"
             ),
         ] = True,
+        since_hours: Annotated[
+            int,
+            Field(
+                ge=1,
+                le=720,
+                description="How far back failed attempts and join rejections go (hours); keep it short "
+                "during an incident so yesterday's rejections do not show",
+            ),
+        ] = REJECT_HOURS,
         limit: Annotated[int, Field(ge=1, le=500)] = 50,
         offset: Annotated[int, Field(ge=0)] = 0,
         response_format: ResponseFormat = "markdown",
@@ -178,8 +233,10 @@ def register(reg: ToolRegistrar) -> None:
         one, the whole fabric from the Manager's state database with the devices whose connections are not
         all up. `failed_attempts` names why connections failed in plain words (chassis/serial not in the WAN
         edge list, certificate or organisation-name mismatch, clock skew, DTLS timeouts): the answer to
-        'why didn't this edge join?'. An edge that is down or never joined has no live state, so the tool
-        reads the validators' history instead."""
+        'why didn't this edge join?'. An edge that is down or never joined has no live state (the Manager
+        reports it unreachable, or answers DEV0001 'not connected to vmanage'), so the tool returns its last
+        known connections from the state database and the validators' history about it instead.
+        `since_hours` (default 24) caps the failed attempts and join rejections."""
         app: SdwanApp = get_client(ctx)
         extra: dict[str, Any] = {}
         if device:
@@ -187,33 +244,48 @@ def register(reg: ToolRegistrar) -> None:
             hosts = host_map(inv)
             extra["device"] = row.get("host") or row.get("chassis")
             why = unreachable_reason(row)
-            if why:
-                extra["realtime"] = f"not read: {why}"
-                if include_history:
-                    extra.update(await _validator_history(app, inv, hosts))
-                    extra["note"] = (
-                        "failed_attempts are the validators' (every edge's, newest first): an edge that "
-                        "cannot join is named there by its public address or chassis, not its host name"
+            conns: list[dict[str, Any]] | None = None
+            if not why:
+                ip = str(row["system_ip"])
+                try:
+                    conns = await device_rows(app, CONNECTIONS_PATH, ip)
+                except UpstreamError as e:
+                    if not NOT_CONNECTED.search(str(e)):
+                        raise
+                    why = (
+                        f"the Manager answered GET {CONNECTIONS_PATH} with '{str(e)[:200]}': it has no "
+                        "control connection to the device (down, or its transports are)"
                     )
-                return list_result(page_of([], limit=limit), fmt=response_format, extra=extra)
-            ip = str(row["system_ip"])
-            conns, summary, history = await asyncio.gather(
-                device_rows(app, CONNECTIONS_PATH, ip),
-                safely(device_rows(app, SUMMARY_PATH, ip), f"GET {SUMMARY_PATH}"),
-                safely(device_rows(app, HISTORY_PATH, ip), f"GET {HISTORY_PATH}")
-                if include_history
-                else _nothing(),
-            )
-            rows = [connection_row(c, hosts) for c in conns]
-            extra["source"] = f"GET {CONNECTIONS_PATH} (live from the device)"
-            if isinstance(summary, dict):
-                extra["summary"] = summary
-            elif shaped := summary_row(summary):
-                extra["summary"] = shaped
-            if isinstance(history, dict):
-                extra["history_error"] = history["error"]
-            elif include_history:
-                extra["failed_attempts"] = failed_attempts([history_row(x, hosts) for x in history])
+            if conns is None:
+                extra["realtime"] = f"not read: {why}"
+                rows: list[dict[str, Any]] = []
+                if row.get("system_ip"):
+                    rows, known = await _last_known_state(app, str(row["system_ip"]), hosts)
+                    extra.update(known)
+                if include_history:
+                    extra.update(await _validator_history(app, inv, hosts, since_hours, device=row))
+            else:
+                summary, history = await asyncio.gather(
+                    safely(device_rows(app, SUMMARY_PATH, ip), f"GET {SUMMARY_PATH}"),
+                    safely(device_rows(app, HISTORY_PATH, ip), f"GET {HISTORY_PATH}")
+                    if include_history
+                    else _nothing(),
+                )
+                rows = [connection_row(c, hosts) for c in conns]
+                extra["source"] = f"GET {CONNECTIONS_PATH} (live from the device)"
+                if isinstance(summary, dict):
+                    extra["summary"] = summary
+                elif shaped := summary_row(summary):
+                    extra["summary"] = shaped
+                if isinstance(history, dict):
+                    extra["history_error"] = history["error"]
+                elif include_history:
+                    attempts, older = within([history_row(x, hosts) for x in history], since_hours)
+                    extra["failed_attempts"] = failed_attempts(attempts)
+                    if older:
+                        extra["older_than_since_hours"] = (
+                            f"{older} history row(s) older than {since_hours} h left out"
+                        )
         else:
             inv = await load_inventory(app)
             hosts = host_map(inv)
@@ -241,7 +313,7 @@ def register(reg: ToolRegistrar) -> None:
             if down:
                 extra["unreachable_devices"] = down
             if include_history:
-                extra.update(await _validator_history(app, inv, hosts))
+                extra.update(await _validator_history(app, inv, hosts, since_hours))
         extra["by_state"] = dict(sorted(Counter(str(r.get("state")) for r in rows).items()))
         if not_all_up := per_device(rows):
             extra["not_all_up"] = not_all_up

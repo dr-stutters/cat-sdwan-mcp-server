@@ -6,6 +6,7 @@ their bodies here are hand-built from the documented fields and marked so.
 
 import copy
 import json
+from datetime import UTC, datetime
 from typing import Any
 
 import httpx
@@ -13,12 +14,20 @@ import pytest
 import respx
 from fastmcp.exceptions import ToolError
 
-from cat_sdwan_mcp.control import explain, history_row, prefix_matches, status_meaning
+from cat_sdwan_mcp import control
+from cat_sdwan_mcp.control import explain, history_row, prefix_matches, status_meaning, within
 
 from .conftest import fixture
 from .test_inventory import call, mock_inventory
 
 HUB1, BR1, BR2, VALIDATOR, CONTROLLER = "10.0.0.1", "10.0.0.2", "10.0.0.3", "1.1.1.2", "1.1.1.3"
+# The recorded history and event rows are from 2026-10-23 07:53-08:07 UTC: "now" is an hour later.
+NOW = datetime(2026, 10, 23, 9, 0, tzinfo=UTC)
+
+
+@pytest.fixture(autouse=True)
+def _pin_clock(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(control, "now", lambda: NOW)
 
 
 def history(*rows: dict[str, Any], device: str = HUB1, host: str = "hub1") -> dict[str, Any]:
@@ -93,6 +102,7 @@ async def test_control_connections_device_with_history(api: respx.MockRouter) ->
 async def test_control_connections_unreachable_edge_reads_the_validator(api: respx.MockRouter) -> None:
     mock_inventory(api, reach={"br2": "unreachable"})
     conns = rt(api, "control/connections", BR2, {"data": []})
+    bulk_pages(api)
     rt(
         api,
         "control/connectionshistory",
@@ -101,8 +111,13 @@ async def test_control_connections_unreachable_edge_reads_the_validator(api: res
     )
     events = mock_events(api)
     out = await call("catsdwan_control_connections", {"device": "br2", "response_format": "json"})
-    assert conns.call_count == 0 and out["total"] == 0
+    assert conns.call_count == 0
     assert out["realtime"].startswith("not read: the Manager reports br2 unreachable")
+    # Its last known state: the controller's rows towards br2 from the state database (mpls is down).
+    assert out["source"].startswith("the Manager's state database") and "not live" in out["source"]
+    assert {(r["host"], r["peer"]) for r in out["results"]} == {("controller", "br2")}
+    assert out["results"][0]["state"] == "down" and out["not_all_up"] == ["controller: 1/2 up"]
+    assert out["failed_attempts_scope"].startswith("no validator row names this device")
     [failed] = out["failed_attempts"]
     assert failed["host"] == "validator" and failed["public"] == "10.60.1.15:12386" and failed["repeats"] == 7
     assert "peer_system_ip" not in failed  # '::' is no address
@@ -124,6 +139,83 @@ async def test_control_connections_unreachable_edge_reads_the_validator(api: res
     )
     auth = next(r for r in rejected if r["event"] == "control-connection-auth-fail")
     assert auth["peer_type"] == "vedge" and "peer_system_ip" not in auth and auth["colour"] == "default"
+
+
+# The Manager's answer for a device it lost a moment ago (issue #103, 20.18.3; the address is the device's).
+NOT_CONNECTED = {
+    "error": {
+        "message": "Device data error",
+        "code": "DEV0001",
+        "details": f"System IP {BR2} is not connected to vmanage",
+    }
+}
+BR2_DOWN = {
+    **BID_FAIL,
+    "system-ip": BR2,
+    "peer-host-name": "br2",
+    "public-ip": "203.0.113.20",
+    "local_enum": "VP_TMO",
+    "local_enum_desc": "Peer vEdge timed out",
+    "downtime-date": 1792745000000,  # 2026-10-23 08:43:20 UTC
+    "rep-count": 1,
+}
+
+
+async def test_control_connections_dev0001_falls_back_to_history(api: respx.MockRouter) -> None:
+    """/device still says br2 is reachable, but the live read answers DEV0001: the validators' history
+    about br2 and its last known state come back instead of an error."""
+    mock_inventory(api)
+    conns = rt(api, "control/connections", BR2, NOT_CONNECTED, 400)
+    summary = rt(api, "control/summary", BR2, {"data": []})
+    rt(
+        api,
+        "control/connectionshistory",
+        VALIDATOR,
+        history(BID_FAIL, BR2_DOWN, NORMAL, device=VALIDATOR, host="validator"),
+    )
+    bulk_pages(api)
+    mock_events(api)
+    out = await call("catsdwan_control_connections", {"device": "br2", "response_format": "json"})
+    assert conns.call_count == 1 and summary.call_count == 0
+    assert "DEV0001" in out["realtime"] and "not connected to vmanage" in out["realtime"]
+    assert {(r["host"], r["peer"]) for r in out["results"]} == {("controller", "br2")}
+    [failed] = out["failed_attempts"]  # only the row naming br2; the other edge's BIDNTVRFD is left out
+    assert failed["peer"] == "br2" and failed["public"] == "203.0.113.20:12386"
+    assert failed["reason"].startswith("VP_TMO: the edge stopped answering hellos")
+    assert "(1 failed attempt(s) of other devices left out)" in out["failed_attempts_scope"]
+
+
+async def test_control_connections_other_upstream_errors_still_raise(api: respx.MockRouter) -> None:
+    mock_inventory(api)
+    rt(api, "control/connections", BR2, {"error": {"message": "Server error", "code": "X"}}, 500)
+    with pytest.raises(ToolError):
+        await call("catsdwan_control_connections", {"device": "br2", "include_history": False})
+
+
+async def test_control_connections_fabric_since_hours_drops_old_rows(api: respx.MockRouter) -> None:
+    """The recorded rejections and history are about an hour old: since_hours=1 keeps them, but the next
+    morning (21 h later, the #103 incident) the default 24 h still does and since_hours=4 does not."""
+    mock_inventory(api)
+    bulk_pages(api)
+    rt(api, "control/connectionshistory", VALIDATOR, history(BID_FAIL, device=VALIDATOR, host="validator"))
+    events = mock_events(api)
+    out = await call("catsdwan_control_connections", {"since_hours": 2, "response_format": "json"})
+    assert len(out["rejected_joins"]) == 12 and len(out["failed_attempts"]) == 1
+    assert json.loads(events.calls[0].request.content)["query"]["rules"][0]["value"] == ["2"]
+    control_now = datetime(2026, 10, 24, 5, 0, tzinfo=UTC)
+    with pytest.MonkeyPatch.context() as mp:
+        mp.setattr(control, "now", lambda: control_now)
+        late = await call("catsdwan_control_connections", {"since_hours": 4, "response_format": "json"})
+        default = await call("catsdwan_control_connections", {"response_format": "json"})
+    assert "rejected_joins" not in late and late["failed_attempts"] == []
+    assert late["older_than_since_hours"] == "1 history row(s) older than 4 h left out"
+    assert len(default["rejected_joins"]) == 12 and len(default["failed_attempts"]) == 1
+
+
+def test_within_keeps_rows_without_a_time() -> None:
+    rows = [{"time": "2026-10-23T08:30:00Z"}, {"time": "2026-10-22T08:30:00Z"}, {"time": "yesterday"}, {}]
+    kept, dropped = within(rows, 24)
+    assert dropped == 1 and [r.get("time") for r in kept] == ["2026-10-23T08:30:00Z", "yesterday", None]
 
 
 def mock_events(api: respx.MockRouter, *, refuse_rules: bool = False) -> respx.Route:
