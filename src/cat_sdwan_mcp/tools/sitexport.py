@@ -216,7 +216,8 @@ async def _intended(
         if isinstance(res, BaseException):
             raise res
         mine = addons.get(str(d.get("config_group")), [])
-        rendered = [render_cli(a["cli"], d.get("variables") or {}) for a in mine]
+        # masked again once rendered: a variable not named like a secret can sit after `secret` / `password`
+        rendered = [mask_config(render_cli(a["cli"], d.get("variables") or {}))[0] for a in mine]
         text = res.get("config") if isinstance(res, dict) else res
         if not isinstance(text, str) or not text.strip():
             warnings.append(f"{d.get('host')}: the Manager holds no intended configuration")

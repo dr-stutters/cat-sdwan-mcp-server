@@ -334,6 +334,15 @@ async def test_export_includes_the_cli_addon(api: respx.MockRouter) -> None:
     assert out["service_vpns"] == [{"vpn": 10, "devices": ["br1"]}]
 
 
+async def test_export_cli_addon_rendered_secret_is_masked(api: respx.MockRouter) -> None:
+    # a variable whose name is not a secret name, used after `secret` / `password` in the add-on
+    addon = "username ops privilege 15 secret 0 {{pw}}\nline vty 0 4\n password {{pw}}\n"
+    mock_site(api, cli=addon, extra_vars=[{"name": "pw", "value": "Plain1Value"}])
+    out = await call("catsdwan_export_site", {"site": "200"})
+    (warning,) = out["warnings"]
+    assert "Plain1Value" not in warning and "secret 0 ********" in warning
+
+
 async def test_export_cli_parcel_read_failure_is_a_warning(api: respx.MockRouter) -> None:
     mock_site(api)
     api.get(CLI_PARCEL_PATH).respond(500, json={"error": {"message": "boom"}})
