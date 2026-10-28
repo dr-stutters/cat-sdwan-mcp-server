@@ -19,6 +19,7 @@ from cat_sdwan_mcp.iseintegration import (
     differences,
     is_host,
     keep_stored_certs,
+    node_name_of,
     pxgrid_push,
     pxgrid_raw,
     pxgrid_state,
@@ -553,20 +554,22 @@ async def test_push_pending_plans_no_second_sync(api: respx.MockRouter) -> None:
     assert any("vSmart push is pending" in b for b in prev["blockers"])
 
 
-async def test_push_successful_is_enabled_and_resyncs(api: respx.MockRouter) -> None:
+async def test_push_successful_plans_nothing(api: respx.MockRouter) -> None:
+    # #148: a re-run at 'vSmart push is successful' with nothing changed planned the sync again.
     mock_state(api, creds={"data": SET}, px=px_with("vSmart push is successful"))
+    sync = api.post(SYNC).respond(json={"id": "s"})
     async with Client(server()) as c:
         prev = await tool(c, {"ise_host": ISE})
     p = prev["preview"]
-    assert prev["status"] == "preview", prev.get("blockers")
+    assert prev["status"] == "blocked" and not sync.called
     assert p["before"]["pxgrid"] == {
         "state": "enabled",
         "status": "vSmart push is successful",
         "controller_push": "successful",
         "node": "vmanage-manager",
     }
-    assert p["requests"] == [SYNC_STEP]
-    assert not any(r.startswith(f"PUT {APPROVE}") for r in p["requests"])
+    assert p["requests"] == []
+    assert any(b.startswith("already connected; nothing to do") for b in prev["blockers"])
 
 
 async def test_push_failed_plans_a_resync_and_shows_the_failure(api: respx.MockRouter) -> None:
@@ -635,3 +638,123 @@ async def test_integrations_names_the_push_and_activated_states(api: respx.MockR
     route.respond(json={"data": px_with("activated")})
     out = await call("catsdwan_integrations", {})
     assert out["pxgrid"]["state"] == "activated" and "approve step" in out["pxgrid"]["meaning"]
+
+
+# #148: the four statuses of the live 20.18.3.1 sequence (approve_on_manager=false, fresh connect), one
+# fixture each, hand-built from the issue's table (documentation addresses, password redacted). From the
+# approve on, `nodeName` is ISE's own pxGrid node ('~ise-admin-ise'); `pxGridUserName` is the client ISE
+# lists.
+CLIENT = "example_vmanage-manager"
+
+
+def px_fixture(status: str) -> dict[str, Any]:
+    return stored(fixture(f"ise_credentials_pxgrid_{status}"))
+
+
+def test_pxgrid_fixtures_map_every_status_of_the_live_sequence() -> None:
+    expect = {
+        "activated": ("activated", None),
+        "approved": ("enabled", None),
+        "push_pending": ("enabled", "pending"),
+        "push_successful": ("enabled", "successful"),
+    }
+    for name, (state, push) in expect.items():
+        rec = px_fixture(name)
+        assert (pxgrid_state(rec), pxgrid_push(rec)) == (state, push), name
+        assert node_name_of(rec) == CLIENT, name
+    assert pxgrid_state(px_with("approved")) == "enabled"
+
+
+def test_node_name_prefers_the_client_ise_lists() -> None:
+    assert node_name_of({"nodeName": "~ise-admin-ise", "pxGridUserName": CLIENT}) == CLIENT
+    assert node_name_of({"nodeName": "~ise-admin-ise"}) is None
+    assert node_name_of({"nodeName": "vmanage-manager"}) == "vmanage-manager"
+    assert node_name_of({}) is None
+
+
+async def test_activated_fixture_plans_approve_and_sync(api: respx.MockRouter) -> None:
+    mock_state(api, creds={"data": SET}, px=fixture("ise_credentials_pxgrid_activated"))
+    async with Client(server()) as c:
+        prev = await tool(c, {"ise_host": ISE})
+    assert prev["status"] == "preview", prev.get("blockers")
+    reqs = prev["preview"]["requests"]
+    assert reqs[0].startswith(f"PUT {APPROVE}") and CLIENT in reqs[0] and reqs[1:] == [SYNC_STEP]
+
+
+async def test_approved_fixture_plans_the_sync(api: respx.MockRouter) -> None:
+    # 'Approved' is the minute between PUT /ise/pxgrid/approve and the sync task starting: it was 'unknown'
+    # and blocked; now it is enabled with the controller sync still due.
+    mock_state(api, creds={"data": SET}, px=fixture("ise_credentials_pxgrid_approved"))
+    sync = api.post(SYNC).respond(json={"id": "sync-148"})
+    approve = api.put(APPROVE).respond(json=True)
+    async with Client(server()) as c:
+        prev = await tool(c, {"ise_host": ISE})
+        assert prev["status"] == "preview", prev.get("blockers")
+        p = prev["preview"]
+        assert p["before"]["pxgrid"] == {"state": "enabled", "status": "Approved", "node": CLIENT}
+        assert p["requests"] == [SYNC_STEP]
+        assert p["after"]["pxgrid"] == {"node": CLIENT, "state": "enabled"}
+        done = (await tool(c, {"ise_host": ISE, "confirm": prev["confirm"]}))["result"]
+    assert sync.called and not approve.called and done["sync_task"] == "sync-148"
+    assert done["outcome"] == "done"
+
+
+async def test_push_pending_fixture_plans_no_second_sync(api: respx.MockRouter) -> None:
+    mock_state(api, creds={"data": SET}, px=fixture("ise_credentials_pxgrid_push_pending"))
+    async with Client(server()) as c:
+        prev = await tool(c, {"ise_host": ISE})
+    assert prev["status"] == "blocked" and prev["preview"]["requests"] == []
+    assert any("controller sync is still running" in b for b in prev["blockers"])
+
+
+async def test_push_successful_fixture_is_already_connected(api: respx.MockRouter) -> None:
+    mock_state(api, creds={"data": SET}, px=fixture("ise_credentials_pxgrid_push_successful"))
+    async with Client(server()) as c:
+        prev = await tool(c, {"ise_host": ISE})
+    p = prev["preview"]
+    assert prev["status"] == "blocked" and p["requests"] == []
+    assert p["before"]["pxgrid"]["node"] == CLIENT
+    assert any(b.startswith("already connected; nothing to do") for b in prev["blockers"])
+
+
+async def test_push_successful_rotate_password_puts_and_resyncs(api: respx.MockRouter) -> None:
+    mock_state(api, creds={"data": SET}, px=fixture("ise_credentials_pxgrid_push_successful"))
+    put = api.put(CREDS).respond(json=True)
+    sync = api.post(SYNC).respond(json={"id": "rot"})
+    async with Client(server()) as c:
+        prev = await tool(c, {"ise_host": ISE, "rotate_password": True})
+        assert prev["status"] == "preview", prev.get("blockers")
+        assert prev["preview"]["requests"] == [f"PUT {CREDS} (ISE {ISE}, VPN 0)", SYNC_STEP]
+        done = (await tool(c, {"ise_host": ISE, "rotate_password": True, "confirm": prev["confirm"]}))[
+            "result"
+        ]
+    assert put.called and sync.called and done["sync_task"] == "rot"
+
+
+async def test_push_successful_changed_setting_resyncs(api: respx.MockRouter) -> None:
+    mock_state(api, creds={"data": SET}, px=fixture("ise_credentials_pxgrid_push_successful"))
+    async with Client(server()) as c:
+        prev = await tool(c, {"ise_host": ISE, "vpn": 512})
+    assert prev["status"] == "preview", prev.get("blockers")
+    assert prev["preview"]["requests"] == [f"PUT {CREDS} (ISE {ISE}, VPN 512)", SYNC_STEP]
+
+
+async def test_disconnect_names_the_client_not_ises_node(api: respx.MockRouter) -> None:
+    mock_state(api, creds={"data": SET}, px=fixture("ise_credentials_pxgrid_push_successful"))
+    async with Client(server()) as c:
+        prev = await tool(c, {"action": "disconnect"})
+    assert prev["status"] == "preview", prev.get("blockers")
+    effects = " ".join(prev["side_effects"])
+    assert f"pxGrid client {CLIENT}" in effects and "~ise-admin-ise" not in effects
+
+
+async def test_integrations_explains_approved(api: respx.MockRouter) -> None:
+    api.get(CREDS).respond(json={"data": SET})
+    api.get(PXGRID).respond(json=fixture("ise_credentials_pxgrid_approved"))
+    api.get("/dataservice/partner").respond(json=fixture("partner"))
+    api.get("/dataservice/partner/dnac/sda/vpn").respond(json=fixture("partner_dnac_sda_vpn"))
+    api.get("/dataservice/ise/connect").respond(json={"VersionInfo": {"currentServerVersion": "3.5"}})
+    api.get("/dataservice/template/policy/ise/identity/sgt").respond(json={"data": []})
+    out = await call("catsdwan_integrations", {})
+    assert out["pxgrid"]["state"] == "enabled" and out["pxgrid"]["status"] == "Approved"
+    assert "approved" in out["pxgrid"]["meaning"] and CLIENT in out["pxgrid"]["meaning"]
