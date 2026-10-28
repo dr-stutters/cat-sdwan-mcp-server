@@ -46,8 +46,10 @@ from cat_sdwan_mcp.access import (
     user_row,
 )
 from cat_sdwan_mcp.client import SdwanApp, _as_list, is_html_response
-from cat_sdwan_mcp.manageraaa import CLIENT_SERVER_PATH, tenancy
-from cat_sdwan_mcp.tools.changes import dangerous_blockers
+from cat_sdwan_mcp.configuration import RUNNING_PATH, path
+from cat_sdwan_mcp.inventory import load_inventory
+from cat_sdwan_mcp.manageraaa import CLIENT_SERVER_PATH, DEFAULT_SYSTEM_ORDER, system_aaa, tenancy
+from cat_sdwan_mcp.tools.changes import _running, dangerous_blockers
 from cat_sdwan_mcp.tools.manageraaa import system_path
 
 # The first write of /admin/radius, /admin/tacacs and /admin/aaa (never set: `"data": {}`) sends the 20.18
@@ -112,6 +114,45 @@ async def manager_tenancy(app: SdwanApp) -> str | None:
         return tenancy(await app.api.get(CLIENT_SERVER_PATH))
     except UpstreamError:
         return None
+
+
+async def _system_aaa(app: SdwanApp) -> tuple[dict[str, Any] | None, list[str], list[str]]:
+    """The single-tenant Manager's own AAA from its running configuration's `system aaa` (#175): order,
+    fallback, RADIUS and TACACS+ servers (secrets masked), labelled with the source and the attached template.
+    None when it can't be read (the reason is in the warnings)."""
+    sources = ["GET /dataservice/device (the Manager)"]
+    try:
+        inv = await load_inventory(app)
+    except UpstreamError as e:
+        return None, sources, [f"the inventory could not be read: {str(e)[:200]}"]
+    warnings = list(inv.warnings)
+    mgr = next((r for r in inv.rows if r.get("role") == "manager" and r.get("chassis")), None)
+    if mgr is None:
+        return None, sources, [*warnings, "the inventory lists no Manager (personality vmanage) with a uuid"]
+    chassis = str(mgr["chassis"])
+    sources.append(f"GET {path(RUNNING_PATH, id=chassis)}")
+    running, note = await _running(app, chassis)
+    if running is None:
+        return (
+            None,
+            sources,
+            [*warnings, note or f"{mgr.get('host') or 'the Manager'} returned no running configuration"],
+        )
+    view = system_aaa(running)
+    if view["order_source"] == "default":
+        view["order_source"] = (
+            "not set: Viptela's default auth-order "
+            + " ".join(DEFAULT_SYSTEM_ORDER)
+            + " (a method with no server is skipped)"
+        )
+    view["source"] = "running configuration (system aaa)"
+    mode, cfg = mgr.get("config_mode"), mgr.get("config")
+    view["manager"] = {"host": mgr.get("host"), "config_mode": mode}
+    if mode == "template" and cfg:
+        view["template"] = cfg
+    elif mode == "configuration group" and cfg:
+        view["configuration_group"] = cfg
+    return view, sources, warnings
 
 
 async def login_check(app: SdwanApp) -> dict[str, Any]:
@@ -194,11 +235,58 @@ def register(reg: ToolRegistrar) -> None:
         """How logins to the Manager are authenticated: the order (local, radius, tacacs; local only when
         never set, the Manager's default), fall-back, accounting, and the RADIUS and TACACS+ servers (address,
         ports, VPN, priority; secrets always masked). `local_fallback` says whether local users can still log
-        in when the servers fail. Change it with catsdwan_set_external_authentication."""
+        in when the servers fail. The source follows the Manager's tenancy (/client/server tenancyMode):
+        single-tenant (the usual case) reads its running configuration's `system aaa` (auth-order,
+        auth-fallback, the radius and tacacs blocks; `source` and `template` say where it came from) and shows
+        the provider-only Remote AAA (/admin/*) beside it as `remote_aaa`; a multi-tenant provider reads
+        /admin/aaa, /admin/radius and /admin/tacacs. Change it with catsdwan_set_external_authentication."""
         app: SdwanApp = get_client(ctx)
-        aaa, radius, tacacs = await _aaa(app)
-        out = aaa_view(aaa, radius, tacacs)
-        out["sources"] = [f"GET {AAA_PATH}", f"GET {RADIUS_PATH}", f"GET {TACACS_PATH}"]
+        mode = await manager_tenancy(app)
+        remote_sources = [f"GET {AAA_PATH}", f"GET {RADIUS_PATH}", f"GET {TACACS_PATH}"]
+        if mode != "single":
+            aaa, radius, tacacs = await _aaa(app)
+            out = aaa_view(aaa, radius, tacacs)
+            out["source"] = "Remote AAA (/admin/*, multi-tenant provider)"
+            out["sources"] = remote_sources
+            if mode is None:
+                out["warnings"] = [
+                    f"the Manager's tenancy ({CLIENT_SERVER_PATH} tenancyMode) could not be read: this "
+                    "is the multi-tenant provider's Remote AAA; a single-tenant Manager's own logins "
+                    "follow its system AAA (catsdwan_get_device_config(device='manager', section='system'))"
+                ]
+            return object_result(out, fmt=response_format)
+        # Single-tenant (#175): the Manager's own logins follow its system AAA in the running configuration;
+        # /admin/* is the provider's Remote AAA (empty here), shown alongside, labelled, when it answers.
+        system, sys_sources, warnings = await _system_aaa(app)
+        aaa, radius, tacacs = await asyncio.gather(
+            _get(app, AAA_PATH), _get(app, RADIUS_PATH), _get(app, TACACS_PATH)
+        )
+        remote_errors = [e for e in (_err(aaa), _err(radius), _err(tacacs)) if e]
+        remote = None if remote_errors else aaa_view(aaa, radius, tacacs)
+        if system is None:
+            out = dict(remote) if remote else {}
+            out["source"] = "Remote AAA (/admin/*): the system AAA could not be read"
+            warnings.append(
+                "this Manager is single-tenant: its own logins follow its system AAA, which could not be "
+                "read, so the order below may not be the one in use"
+            )
+        else:
+            out = system
+            if remote is not None:
+                remote_set = remote["order_source"] == "set" or any(
+                    remote[k] != "not configured" for k in ("radius", "tacacs")
+                )
+                out["remote_aaa"] = (
+                    {"source": "Remote AAA (/admin/*, multi-tenant provider only)", **remote}
+                    if remote_set
+                    else "not set (the multi-tenant provider's Remote AAA, unused on a single-tenant Manager)"
+                )
+        out["tenancy"] = "single"
+        out["sources"] = sys_sources + remote_sources
+        if remote_errors:
+            warnings += remote_errors
+        if warnings:
+            out["warnings"] = warnings
         return object_result(out, fmt=response_format)
 
     @reg.write(title="Set SD-WAN Manager external authentication", destructive=True)

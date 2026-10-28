@@ -2,6 +2,7 @@
 
 # No `from __future__ import annotations`: FastMCP inspects signatures at runtime.
 import asyncio
+import re
 from typing import Annotated, Any, Literal
 
 from fastmcp import Context
@@ -37,6 +38,8 @@ from cat_sdwan_mcp.iseintegration import (
     keep_stored_certs,
     masked,
     node_name_of,
+    pxgrid_create_hint,
+    pxgrid_node_problem,
     pxgrid_push,
     pxgrid_raw,
     pxgrid_state,
@@ -60,7 +63,8 @@ async def _read(app: SdwanApp, path: str) -> tuple[dict[str, Any], str | None]:
 
 def _node_default(inv_rows: list[dict[str, Any]]) -> str:
     mgr = next((r for r in inv_rows if r.get("role") == "manager" and r.get("host")), None)
-    return f"vmanage-{mgr['host']}" if mgr else "vmanage"
+    # ISE takes letters and digits only (#149): 'vmanage-manager' fails with ISEERRORR0013.
+    return "vmanage" + re.sub(r"[^A-Za-z0-9]", "", str(mgr["host"])) if mgr else "vmanage"
 
 
 def register(reg: ToolRegistrar) -> None:
@@ -109,7 +113,10 @@ def register(reg: ToolRegistrar) -> None:
         pxgrid: Annotated[bool, Field(description="Also create and activate the pxGrid client")] = True,
         pxgrid_node_name: Annotated[
             str | None,
-            Field(description="The pxGrid client name ISE lists (default vmanage-<Manager host name>)"),
+            Field(
+                description="The pxGrid client name ISE lists, letters and digits only (ISE refuses any "
+                "other character); default 'vmanage' + the Manager host name minus every other character"
+            ),
         ] = None,
         approve_on_manager: Annotated[
             bool,
@@ -270,6 +277,8 @@ def register(reg: ToolRegistrar) -> None:
                 details["changes"] = diff
             if pxgrid:
                 if state in ("none", "created"):
+                    if problem := pxgrid_node_problem(node):
+                        blockers.append(problem)
                     steps.append(
                         f"POST {PXGRID_CREATE_PATH} {{nodeName: {node!r}}} (the client account on ISE)"
                     )
@@ -456,7 +465,12 @@ def register(reg: ToolRegistrar) -> None:
                 done.append(f"ISE {wanted['iseServerIP']} {'added' if write == 'POST' else 'updated'}")
             now = state
             if pxgrid and now in ("none", "created"):
-                created = await app.api.post(PXGRID_CREATE_PATH, {"nodeName": node})
+                try:
+                    created = await app.api.post(PXGRID_CREATE_PATH, {"nodeName": node})
+                except UpstreamError as e:
+                    if not (hint := pxgrid_create_hint(str(e), node)):
+                        raise
+                    raise type(e)(f"{e} {hint}.", e.status_code) from e
                 px_user = first_value(created, "userName", "nodeName") or node
                 px_pass = first_value(created, "password")
                 if isinstance(px_pass, str) and px_pass:

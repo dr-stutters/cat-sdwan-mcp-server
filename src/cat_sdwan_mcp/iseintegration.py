@@ -166,6 +166,28 @@ def username_problem(user: str) -> str | None:
     )
 
 
+def pxgrid_node_problem(node: str) -> str | None:
+    """Why ISE would refuse this pxGrid client name, or None (#149)."""
+    if USERNAME_RE.fullmatch(node):
+        return None
+    return (
+        f"pxgrid_node_name {node!r} is not letters and digits only: ISE refuses it ('Found Special Character "
+        "in NodeName, should only be alphanumeric', ISEERRORR0013 on POST /ise/pxgrid/create): give "
+        f"pxgrid_node_name={re.sub(r'[^A-Za-z0-9]', '', node) or 'vmanage'!r} or another alphanumeric name"
+    )
+
+
+def pxgrid_create_hint(error: str, node: str) -> str | None:
+    """The plain-words hint for a refused POST /ise/pxgrid/create, or None when it is not the name rule."""
+    if "ISEERRORR0013" not in error.upper():
+        return None
+    return (
+        f"pxGrid client name must be alphanumeric: ISE refused {node!r} (ISEERRORR0013, 'should only be "
+        "alphanumeric'). The ISE server record is stored; run this tool again with an alphanumeric "
+        "pxgrid_node_name"
+    )
+
+
 def differences(current: dict[str, Any], wanted: dict[str, Any]) -> dict[str, dict[str, Any]]:
     """{field: {from, to}} for the compared fields that differ (missing counts as '')."""
     out = {}
