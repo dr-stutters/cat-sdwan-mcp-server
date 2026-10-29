@@ -1,7 +1,15 @@
+import logging
+
+import pytest
 import respx
 from fastmcp import Client
 
-from cat_sdwan_mcp._core.testing import assert_prompt_contract, assert_tool_contract
+from cat_sdwan_mcp._core.testing import (
+    SurfaceBudget,
+    assert_prompt_contract,
+    assert_surface_budget,
+    assert_tool_contract,
+)
 from tests.unit.conftest import make_server
 
 
@@ -25,3 +33,20 @@ async def test_status_tool_reports_the_manager(api: respx.MockRouter) -> None:
     text = str(result.data or result.structured_content or result.content)
     assert "20.18.3.1" in text and "JWT" in text and "validator" in text
     assert "jwt-123" not in text and "csrf-123" not in text
+
+
+# Core C31 tool-surface budget: ceilings ~10% above use at core v0.20.0 (110 tools, ~69.1k description chars,
+# ~10.5k instruction chars, largest description 1469). Raise one on purpose when a release needs it.
+BUDGET = SurfaceBudget(descriptions=76_000, instructions=11_500, tools=121, per_tool=1500)
+
+
+async def test_surface_budget() -> None:
+    await assert_surface_budget(make_server(mcp_enable_writes=True, mcp_enable_dangerous=True), BUDGET)
+
+
+def test_no_unknown_toolset_warning_by_default(caplog: pytest.LogCaptureFixture) -> None:
+    """Core C31 reads CATSDWAN_TOOLSETS itself; cat-sdwan declares no toolsets, so with the setting unset
+    core must not warn about unknown toolsets (the fmc #376 fit bug) and every tool stays registered."""
+    caplog.set_level(logging.WARNING)
+    make_server(mcp_enable_writes=True, mcp_enable_dangerous=True)
+    assert "unknown toolset" not in caplog.text
