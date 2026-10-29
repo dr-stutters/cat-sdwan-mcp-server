@@ -167,9 +167,14 @@ async def test_ips_create_preview_and_confirm(api: respx.MockRouter) -> None:
         }
         assert p["undo"] == "catsdwan_delete_security_profile(kind='intrusion-prevention', name='mcp-ips')"
         assert "catsdwan_create_policy_group" in p["next"]
-        done = (await run(c, "catsdwan_set_ips_profile", {"name": "mcp-ips", "confirm": prev["confirm"]}))[
-            "result"
-        ]
+        # C81: the back-out step is the delete of the new parcel
+        assert prev["undo"] == (
+            'back-out: catsdwan_delete_security_profile(kind="intrusion-prevention", name="mcp-ips")'
+        )
+        applied = await run(c, "catsdwan_set_ips_profile", {"name": "mcp-ips", "confirm": prev["confirm"]})
+        done = applied["result"]
+    assert applied["undo"]["tool"] == "catsdwan_delete_security_profile"
+    assert applied["undo"]["args"] == {"kind": "intrusion-prevention", "name": "mcp-ips"}
     assert done == {"outcome": "created", "parcel_id": IPS_ID, "name": "mcp-ips", "next": done["next"]}
     sent = json.loads(post.calls.last.request.content)
     assert sent["name"] == "mcp-ips" and sent["data"]["inspectionMode"] == {
@@ -186,6 +191,9 @@ async def test_ips_update_and_no_change(api: respx.MockRouter) -> None:
     async with Client(server()) as c:
         prev = await run(c, "catsdwan_set_ips_profile", {"name": "MCP-IPS"})
         assert prev["preview"]["action"] == "update"
+        assert (
+            prev["undo"] == "back-out: catsdwan_set_ips_profile with the old values (the preview's `before`)"
+        )
         assert prev["preview"]["changes"] == {"inspectionMode": {"from": "detection", "to": "protection"}}
         await run(c, "catsdwan_set_ips_profile", {"name": "MCP-IPS", "confirm": prev["confirm"]})
         assert put.called
@@ -206,6 +214,7 @@ async def test_url_filtering_checks_categories(api: respx.MockRouter) -> None:
         prev = await run(
             c, "catsdwan_set_url_filtering_profile", {"name": "u", "categories": ["gambling", "games"]}
         )
+    assert prev["undo"].startswith('back-out: catsdwan_delete_security_profile(kind="url-filtering"')
     v = prev["preview"]["values"]
     assert v["webCategories"] == ["gambling", "games"] and v["webCategoriesAction"] == "block"
     assert v["webReputation"] == "moderate-risk"
@@ -219,6 +228,9 @@ async def test_amp_needs_file_types_for_analysis(api: respx.MockRouter) -> None:
         prev = await run(
             c, "catsdwan_set_amp_profile", {"name": "a", "file_analysis": True, "file_types": ["pdf"]}
         )
+    assert prev["undo"].startswith(
+        'back-out: catsdwan_delete_security_profile(kind="advanced-malware-protection"'
+    )
     v = prev["preview"]["values"]
     assert (
         v["matchAllVpn"] is True
@@ -239,6 +251,9 @@ async def test_inspection_profile_resolves_names(api: respx.MockRouter) -> None:
         prev = await run(
             c, "catsdwan_set_inspection_profile", {"name": "aip", "ips": "mcp-ips", "url_filtering": URL_ID}
         )
+    assert prev["undo"].startswith(
+        'back-out: catsdwan_delete_security_profile(kind="advanced-inspection-profile"'
+    )
     v = prev["preview"]["values"]
     assert v == {"tlsDecryptionAction": "neverDecrypt", "intrusionPrevention": f"ref {IPS_ID}",
                  "urlFiltering": f"ref {URL_ID}"}  # fmt: skip

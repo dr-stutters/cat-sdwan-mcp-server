@@ -211,8 +211,15 @@ async def test_set_variables_preview_then_confirm(api: respx.MockRouter) -> None
         assert prev["preview"]["unchanged_variables"] == 7
         assert get.calls[0].request.url.params["device-id"] == BR1
         assert "deploy" in prev["side_effects"][0]
+        # C81: the back-out is this tool again with the old values (banner_motd had none: null clears it)
+        assert prev["undo"] == (
+            'back-out: catsdwan_set_device_variables(group="mcp-test", device="br1", '
+            'values={"banner_motd": null})'
+        )
         done = await run(c, "catsdwan_set_device_variables", {**args, "confirm": prev["confirm"]})
     assert done["status"] == "applied"
+    assert done["undo"]["tool"] == "catsdwan_set_device_variables"
+    assert done["undo"]["args"] == {"group": "mcp-test", "device": "br1", "values": {"banner_motd": None}}
     sent = json.loads(put.calls[0].request.content)
     assert sent["solution"] == "sdwan"
     (dev,) = sent["devices"]
@@ -303,6 +310,8 @@ async def test_deploy_preview_with_cli_preview(api: respx.MockRouter) -> None:
     assert diff["only_intended"] == ["banner motd ^Cnew banner^C"]
     assert "new banner" in dev["cli"] and dev["variables"]["snmp_community"] == "********"
     assert "no undo" in prev["preview"]["rollback"]
+    assert prev["undo"].startswith("back-out: not reversible in one call")
+    assert "catsdwan_config_history(device, diff=true)" in prev["undo"]
 
 
 async def test_deploy_preview_without_cli_preview_api(api: respx.MockRouter) -> None:
@@ -982,3 +991,19 @@ async def test_full_mesh_without_omp_says_unknown(api: respx.MockRouter) -> None
     (warn,) = [w for w in prev["preview"]["warnings"] if "hub status" in w]
     assert "BFD is a full mesh, so BFD cannot tell; OMP routes not read from controller" in warn
     assert warn.endswith("set CATSDWAN_HUB_DEVICES")
+
+
+async def test_set_variables_undo_masks_the_old_secret(api: respx.MockRouter) -> None:
+    """C81: a secret variable's old value is masked in the preview's back-out line and the applied undo."""
+    mock_inventory(api)
+    mock_group(api)
+    mock_variables(api, BR1_VARS)
+    api.put(f"{GROUP}/device/variables").respond(json={})
+    async with Client(writes()) as c:
+        args = {"group": "mcp-test", "device": "br1", "values": {"snmp_community": "n3w-comm"}}
+        prev = await run(c, "catsdwan_set_device_variables", args)
+        done = await run(c, "catsdwan_set_device_variables", {**args, "confirm": prev["confirm"]})
+    assert prev["undo"].startswith("back-out: catsdwan_set_device_variables(") and "********" in prev["undo"]
+    assert done["undo"]["args"]["values"] == {"snmp_community": "********"}
+    text = json.dumps([prev, done])
+    assert "s3cr3t-comm" not in text and "n3w-comm" not in text

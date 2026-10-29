@@ -318,6 +318,8 @@ def register(reg: ToolRegistrar) -> None:
             fingerprint=[[(r.get("id"), r.get("state")) for r in running], src, followers, schedule_id],
             blockers=blockers,
             blast_radius=1,
+            undo="nothing to undo: a backup changes no configuration; the file stays on the Manager's disk "
+            "until it is deleted",
         )
 
         async def apply() -> Any:

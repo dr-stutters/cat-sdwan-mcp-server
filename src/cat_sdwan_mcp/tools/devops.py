@@ -23,6 +23,7 @@ from cat_sdwan_mcp._core import (
     Plan,
     ResponseFormat,
     ToolRegistrar,
+    Undo,
     UpstreamError,
     get_client,
     list_result,
@@ -152,6 +153,30 @@ async def _realtime(app: SdwanApp, rows_: list[dict[str, Any]], what: str) -> di
 
     got = await fan_out(reachable, one)
     return {str(r["system_ip"]): g for r, g in zip(reachable, got, strict=True)}
+
+
+def _software_undo(targets: list[dict[str, Any]], activate: bool) -> Undo | str:
+    """C81 back-out of a software install/activate: the old version is still installed, so activating it
+    again is the rollback (the edges reboot back into it); several old versions need one call each."""
+    if not activate:
+        return (
+            "nothing to undo on the running version: the image is only copied to the edges (it stays in "
+            "their software list until removed)"
+        )
+    old = sorted({str(r.get("version")) for r in targets if r.get("version")})
+    if len(old) == 1:
+        return Undo(
+            "catsdwan_upgrade_software",
+            {
+                "devices": [str(r.get("host") or r.get("chassis")) for r in targets],
+                "version": old[0],
+                "activate": True,
+            },
+        )
+    return (
+        "catsdwan_upgrade_software(devices=<each group of edges>, version=<its old version>, activate=true): "
+        + (", ".join(f"{r.get('host')}: {r.get('version')}" for r in targets) or "old versions unknown")
+    )
 
 
 def register(reg: ToolRegistrar) -> None:
@@ -359,6 +384,8 @@ def register(reg: ToolRegistrar) -> None:
             fingerprint={str(r["chassis"]): [r.get("up_since"), r.get("reachability")] for r in targets},
             blockers=blockers,
             blast_radius=len(targets),
+            undo="not reversible: a reload can't be taken back; the devices come back on their own "
+            "(catsdwan_control_connections shows when)",
         )
 
         async def apply() -> Any:
@@ -539,6 +566,7 @@ def register(reg: ToolRegistrar) -> None:
             },
             blockers=blockers,
             blast_radius=len(targets),
+            undo=_software_undo(targets, activate),
         )
 
         async def apply() -> Any:

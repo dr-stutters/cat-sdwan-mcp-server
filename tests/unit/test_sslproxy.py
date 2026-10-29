@@ -293,6 +293,10 @@ async def test_decryption_parcels(api: respx.MockRouter) -> None:
         prev = await run(c, "catsdwan_set_ssl_decryption", {"name": "mcp-ssl"})
         assert any("no SSL proxy CA yet" in n for n in prev["preview"]["notes"])
         assert prev["preview"]["values"]["minTlsVer"] == "TLSv1.2"
+        assert (
+            prev["undo"]
+            == 'back-out: catsdwan_delete_security_profile(kind="ssl-decryption", name="mcp-ssl")'
+        )
         await run(c, "catsdwan_set_ssl_decryption", {"name": "mcp-ssl", "confirm": prev["confirm"]})
         sent = json.loads(post.calls.last.request.content)
         assert (
@@ -313,6 +317,7 @@ async def test_decryption_parcels(api: respx.MockRouter) -> None:
     v = prof["preview"]["values"]
     assert v["decryptCategories"] == ["gambling"] and v["neverDecryptCategories"] == ["financial-services"]
     assert prof["preview"]["action"] == "create"
+    assert prof["undo"].startswith('back-out: catsdwan_delete_security_profile(kind="ssl-decryption-profile"')
 
 
 async def test_inspection_profile_decrypt_uses_the_profile(api: respx.MockRouter) -> None:
@@ -336,5 +341,8 @@ async def test_inspection_profile_decrypt_uses_the_profile(api: respx.MockRouter
                 "ssl_decryption_profile": "mcp-decrypt",
             },
         )
+    assert prev["undo"].startswith(
+        'back-out: catsdwan_delete_security_profile(kind="advanced-inspection-profile"'
+    )
     v = prev["preview"]["values"]
     assert v["tlsDecryptionAction"] == "decrypt" and v["sslDecryptionProfile"] == f"ref {sslp}"

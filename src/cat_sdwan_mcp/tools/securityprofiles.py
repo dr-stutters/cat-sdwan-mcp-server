@@ -15,6 +15,7 @@ from cat_sdwan_mcp._core import (
     NotFound,
     Plan,
     ToolRegistrar,
+    Undo,
     UpstreamError,
     get_client,
     preview_or_apply,
@@ -103,6 +104,18 @@ def _new_id(answer: Any) -> str | None:
     return None
 
 
+# The tool that creates each kind again (the back-out of catsdwan_delete_security_profile, C81).
+SETTERS = {
+    "intrusion-prevention": "catsdwan_set_ips_profile",
+    "url-filtering": "catsdwan_set_url_filtering_profile",
+    "advanced-malware-protection": "catsdwan_set_amp_profile",
+    "advanced-inspection-profile": "catsdwan_set_inspection_profile",
+    "ssl-decryption": "catsdwan_set_ssl_decryption",
+    "ssl-decryption-profile": "catsdwan_set_ssl_decryption_profile",
+    "security-policy": "catsdwan_set_security_policy",
+}
+
+
 async def plan_unified(
     ctx: Context,
     *,
@@ -134,10 +147,12 @@ async def plan_unified(
         url = path(UNIFIED_PATH, profile=prof["id"], kind=kind, parcel=existing["id"])
         request = f"PUT {url}"
         undo = "this tool again with the old values (`before`)"
+        back: Undo | str = f"{tool} with the old values (the preview's `before`)"
     else:
         url = path(UNIFIED_LIST_PATH, profile=prof["id"], kind=kind)
         request = f"POST {url}"
         undo = f"catsdwan_delete_security_profile(kind={kind!r}, name={name!r})"
+        back = Undo("catsdwan_delete_security_profile", {"kind": kind, "name": name})
     details: dict[str, Any] = {
         "kind": kind,
         "profile": prof.get("name"),
@@ -159,6 +174,7 @@ async def plan_unified(
         fingerprint=[existing["id"] if existing else None, current],
         blockers=blockers,
         blast_radius=1,
+        undo=back,
     )
 
     async def apply() -> Any:
@@ -630,6 +646,12 @@ def register(reg: ToolRegistrar) -> None:
             fingerprint=[emb, existing["id"] if existing else None, current, aip, ssl],
             blockers=blockers,
             blast_radius=1,
+            undo="catsdwan_set_security_policy with the old values (the preview's `before`)"
+            if existing
+            else Undo(
+                "catsdwan_delete_security_profile",
+                {"kind": "security-policy", "name": name, "profile": prof_ref},
+            ),
         )
         policy_body = {"name": name, "description": f"Security policy {name} (catsdwan MCP)", "data": data}
 
@@ -747,6 +769,8 @@ def register(reg: ToolRegistrar) -> None:
             fingerprint=fingerprint,
             blockers=blockers,
             blast_radius=1,
+            undo=f"not reversible in one call: {SETTERS[kind]} with the deleted parcel's settings (read them "
+            f"before the delete: catsdwan_api_call GET {url})",
         )
 
         async def apply() -> Any:

@@ -264,7 +264,14 @@ async def test_set_preview_old_new_reach_and_put_on_confirm(api: respx.MockRoute
     assert p["changes"] == {"consoleBaudRate": {"from": "default: '9600'", "to": "global: '115200'"}}
     assert p["schema_check"] == "passed" and p["reaches"][0]["devices"] == ["br1", "hub1"]
     assert not put.called
+    assert out["undo"].startswith(
+        'back-out: catsdwan_set_feature_parcel(profile="mcp-test-system", parcel="basic", '
+        'values={"consoleBaudRate": {"optionType": "default"'
+    )
     done = await confirmed("catsdwan_set_feature_parcel", args)
+    # C81: the old leaf as it was (a default), so replaying the undo resets the field
+    assert done["undo"]["tool"] == "catsdwan_set_feature_parcel"
+    assert done["undo"]["args"]["values"]["consoleBaudRate"]["optionType"] == "default"
     sent = json.loads(put.calls.last.request.content)
     assert sent["name"] == "mcp-test-basic" and sent["data"]["consoleBaudRate"] == {
         "optionType": "global",
@@ -324,7 +331,12 @@ async def test_set_cli_replace(api: respx.MockRouter) -> None:
     assert p["undo"] == {
         "cli_replace": {"banner motd #{{banner_motd}} (W21)#": "banner motd #{{banner_motd}}#"}
     }
-    await confirmed("catsdwan_set_feature_parcel", args)
+    done = await confirmed("catsdwan_set_feature_parcel", args)
+    assert done["undo"]["args"] == {
+        "profile": "mcp-test",
+        "parcel": "config",
+        "cli_replace": {"banner motd #{{banner_motd}} (W21)#": "banner motd #{{banner_motd}}#"},
+    }
     sent = json.loads(put.calls.last.request.content)
     assert (
         "banner motd #{{banner_motd}} (W21)#" in sent["data"]["config"] and sent["name"] == "mcp-test-config"
@@ -378,7 +390,11 @@ async def test_create_parcel_fills_schema_defaults(api: respx.MockRouter) -> Non
     }
     out = await write("catsdwan_set_feature_parcel", args)
     assert out["status"] == "preview", out.get("blockers")
+    assert out["undo"] == "back-out: catsdwan_api_call(<arguments from the result>)"
     done = await confirmed("catsdwan_set_feature_parcel", args)
+    # the new parcel's id only the POST answer knows: the undo deletes it
+    assert done["undo"]["args"]["method"] == "DELETE"
+    assert done["undo"]["args"]["path"].endswith(f"/system/{SYS}/basic/new-1")
     sent = json.loads(post.calls.last.request.content)
     assert sent["name"] == "mcp-test-basic-2" and sent["data"]["consoleBaudRate"]["value"] == "19200"
     assert done["result"]["parcel_id"] == "new-1"

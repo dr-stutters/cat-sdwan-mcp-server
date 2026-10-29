@@ -354,6 +354,8 @@ def register(reg: ToolRegistrar) -> None:
             ],
             fingerprint=None,
             blast_radius=1,
+            undo="nothing to undo: the archive only adds a file on the device's disk (delete it there "
+            "when it is no longer needed)",
         )
 
         async def apply() -> Any:

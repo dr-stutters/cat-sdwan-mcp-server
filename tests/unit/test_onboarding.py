@@ -445,6 +445,7 @@ async def test_invalidate_then_confirm(api: respx.MockRouter) -> None:
         prev = await run(c, "catsdwan_set_edge_validity", args)
         assert prev["status"] == "preview" and prev["preview"]["tier"] == "dangerous"
         assert prev["preview"]["site"] == "201" and "valid" in prev["preview"]["undo"]
+        assert prev["undo"] == f'back-out: catsdwan_set_edge_validity(chassis="{BR2}", validity="valid")'
         assert not save.called
         done = await run(c, "catsdwan_set_edge_validity", {**args, "confirm": prev["confirm"]})
     assert json.loads(save.calls[0].request.content) == [

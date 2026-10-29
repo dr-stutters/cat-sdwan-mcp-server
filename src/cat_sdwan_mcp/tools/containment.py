@@ -38,6 +38,7 @@ from cat_sdwan_mcp._core import (
     Plan,
     Tier,
     ToolRegistrar,
+    Undo,
     UpstreamError,
     get_client,
     preview_or_apply,
@@ -809,6 +810,10 @@ def register(reg: ToolRegistrar) -> None:
             },
             blockers=blockers,
             blast_radius=len(devices),
+            undo=Undo("catsdwan_set_containment_baseline", {"group": gname, "remove": True})
+            if not remove
+            else f"catsdwan_set_containment_baseline(group='{gname}', remediation=<the prefixes it had>) "
+            "puts the baseline back",
         )
 
         async def apply() -> Any:
@@ -1034,6 +1039,15 @@ def register(reg: ToolRegistrar) -> None:
             },
             blockers=blockers,
             blast_radius=len(devices) if changed else len(unset_devices) if fill_only else 0,
+            # back to the ACL read before the change, or out again when there was none
+            undo=Undo(
+                "catsdwan_set_containment_acl",
+                {"group": gname, "interfaces": current["interfaces"], "remediation": current["remediation"]},
+            )
+            if current
+            else Undo("catsdwan_set_containment_acl", {"group": gname, "remove": True})
+            if not remove
+            else "nothing to put back: there was no containment ACL",
         )
 
         async def apply() -> Any:
@@ -1353,6 +1367,7 @@ def register(reg: ToolRegistrar) -> None:
             },
             blockers=blockers,
             blast_radius=1 if deploy and row else 0,
+            undo=Undo("catsdwan_release_at_edge", {"ip": addr, "deploy": deploy}),
         )
 
         async def apply() -> Any:
@@ -1525,6 +1540,18 @@ def register(reg: ToolRegistrar) -> None:
             },
             blockers=blockers if contained else [],
             blast_radius=len(targets) if deploy and contained else 0,
+            undo=Undo(
+                "catsdwan_contain_at_edge",
+                {
+                    "ip": addr,
+                    "edge": names[0],
+                    "reason": f"contain {addr} again (undo of a release)",
+                    "deploy": deploy,
+                },
+            )
+            if len(names) == 1
+            else f"catsdwan_contain_at_edge(ip='{addr}', edge=<each of {', '.join(names)}>, reason=...) "
+            "contains it again",
         )
 
         async def apply() -> Any:

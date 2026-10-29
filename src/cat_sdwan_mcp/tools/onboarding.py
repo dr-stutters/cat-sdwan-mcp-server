@@ -28,6 +28,7 @@ from cat_sdwan_mcp._core import (
     Plan,
     ResponseFormat,
     ToolRegistrar,
+    Undo,
     UpstreamError,
     get_client,
     list_result,
@@ -638,6 +639,9 @@ def register(reg: ToolRegistrar) -> None:
             fingerprint=fingerprint,
             blockers=blockers,
             blast_radius=1,
+            undo=Undo("catsdwan_set_edge_validity", {"chassis": c, "validity": str(v.get("validity"))})
+            if str(v.get("validity") or "") in ("invalid", "staging")
+            else f"catsdwan_remove_device(chassis={c!r}) takes the edge out of the Manager again (dangerous)",
         )
 
         async def apply() -> Any:
@@ -834,6 +838,9 @@ def register(reg: ToolRegistrar) -> None:
             fingerprint={k: v.get(k) for k in ("validity", "vedgeCertificateState", "system-ip")},
             blockers=blockers,
             blast_radius=1,
+            undo=Undo("catsdwan_set_edge_validity", {"chassis": c, "validity": old})
+            if old in ("valid", "invalid", "staging")
+            else "the previous validity is unknown: set it with catsdwan_set_edge_validity",
         )
 
         async def apply() -> Any:
@@ -992,6 +999,7 @@ def register(reg: ToolRegistrar) -> None:
             },
             blockers=blockers,
             blast_radius=1,
+            undo="not reversible: " + COMES_BACK,
         )
 
         async def apply() -> Any:
