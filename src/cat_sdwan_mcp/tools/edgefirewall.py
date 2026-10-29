@@ -20,6 +20,7 @@ from cat_sdwan_mcp._core import (
     NotFound,
     Plan,
     ToolRegistrar,
+    Undo,
     UpstreamError,
     get_client,
     preview_or_apply,
@@ -389,6 +390,15 @@ def register(reg: ToolRegistrar) -> None:
             },
             blockers=blockers,
             blast_radius=len(_devices(reached)),
+            undo=Undo(
+                "catsdwan_set_security_object",
+                {
+                    "kind": kind,
+                    "name": name.strip(),
+                    **({"values": before} if existing else {"remove": True}),
+                    "profile": po["name"],
+                },
+            ),
         )
 
         async def apply() -> Any:
@@ -687,6 +697,10 @@ def register(reg: ToolRegistrar) -> None:
             },
             blockers=blockers,
             blast_radius=len(_devices(reached)),
+            undo=Undo("catsdwan_set_firewall_policy", {"group": gname, "name": name.strip(), "remove": True})
+            if not existing_ngfw
+            else f"catsdwan_set_firewall_policy(group='{gname}', name='{name.strip()}') with the rules and "
+            "zone pairs of the preview's `before`",
         )
 
         async def apply() -> Any:

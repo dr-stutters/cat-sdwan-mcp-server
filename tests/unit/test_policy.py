@@ -429,6 +429,7 @@ async def test_activate_preview_then_confirm(api: respx.MockRouter) -> None:
         assert details["sites"] == {"100": ["hub1"], "200": ["br1"], "201": ["br2"]}
         assert prev["blast_radius"] == 4
         assert "deactivate" in details["undo"]
+        assert prev["undo"].startswith("back-out: catsdwan_activate_policy(policy=")
         done = (
             await c.call_tool(
                 "catsdwan_activate_policy", {"policy": "mcp-test-policy", "confirm": prev["confirm"]}

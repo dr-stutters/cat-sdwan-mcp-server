@@ -7,7 +7,7 @@ from typing import Any
 
 from fastmcp import Context
 
-from cat_sdwan_mcp._core import Plan, UpstreamError, preview_or_apply
+from cat_sdwan_mcp._core import Plan, Undo, UpstreamError, preview_or_apply
 from cat_sdwan_mcp.access import order_problems
 from cat_sdwan_mcp.changes import ATTACH_CLI_PATH, TEMPLATE_INPUT_PATH, input_rows, text_hash
 from cat_sdwan_mcp.client import SdwanApp
@@ -251,6 +251,14 @@ async def system_path(
         fingerprint={"running": text_hash(running), "template": (existing or {}).get("lastUpdatedOn")},
         blockers=blockers,
         blast_radius=1,
+        # local first again (undo_order passes the lockout guard); old servers' keys can't be read back
+        undo=Undo(
+            "catsdwan_set_external_authentication",
+            {"protocol": protocol, "order": undo_order(before, protocol), "servers": []},
+        )
+        if before[protocol] == "not configured"
+        else f"catsdwan_set_external_authentication(protocol={protocol!r}, "
+        f"order={undo_order(before, protocol)!r}, servers=<the old servers in `before`, with their keys>)",
     )
 
     async def attach(config: str, tid_known: str | None) -> tuple[str, dict[str, Any]]:

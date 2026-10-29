@@ -161,6 +161,8 @@ def register_api_call(mcp: FastMCP[Any], reg: ToolRegistrar) -> None:
                 if tier == "dangerous"
                 else []
             ),
+            undo="no generic inverse for a raw call: GET the object before changing it, then send the "
+            "reverse (DELETE what a POST created, PUT the old body back) with catsdwan_api_call",
         )
         result = await preview_or_apply(
             ctx,

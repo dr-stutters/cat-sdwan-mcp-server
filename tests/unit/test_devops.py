@@ -354,6 +354,9 @@ async def test_upgrade_preview_install_and_activate(api: respx.MockRouter) -> No
         ]
         (dev,) = details["devices"]
         assert dev["site"] == "201" and dev["bootflash_free_mb"] == 3341
+        # C81: the old version is still installed: activating it again is the rollback
+        assert prev["undo"].startswith('back-out: catsdwan_upgrade_software(devices=["br2"], version="')
+        assert prev["undo"].endswith("activate=true)")
         done = (
             await c.call_tool("catsdwan_upgrade_software", {**args, "confirm": prev["confirm"]})
         ).structured_content

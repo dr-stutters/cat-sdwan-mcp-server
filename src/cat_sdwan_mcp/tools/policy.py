@@ -25,6 +25,7 @@ from cat_sdwan_mcp._core import (
     Plan,
     ResponseFormat,
     ToolRegistrar,
+    Undo,
     UpstreamError,
     get_client,
     list_result,
@@ -573,6 +574,15 @@ def register(reg: ToolRegistrar) -> None:
             },
             blockers=blockers,
             blast_radius=len(controllers) + edges,
+            # activating the policy it replaced puts that one back; with none, deactivate this one again
+            undo=Undo(
+                "catsdwan_activate_policy", {"policy": str(others[0].get("policyName")), "action": "activate"}
+            )
+            if action == "activate" and others
+            else Undo(
+                "catsdwan_activate_policy",
+                {"policy": name, "action": "deactivate" if action == "activate" else "activate"},
+            ),
         )
 
         async def apply() -> Any:

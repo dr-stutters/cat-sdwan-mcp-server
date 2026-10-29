@@ -364,6 +364,8 @@ def register(reg: ToolRegistrar) -> None:
                 fingerprint=fingerprint,
                 blockers=blockers,
                 blast_radius=1,
+                undo="nothing to undo: the controller keeps its current certificate until step 3 installs "
+                "a signed one; a new CSR replaces this one",
             )
 
             async def apply_csr() -> Any:
@@ -451,6 +453,8 @@ def register(reg: ToolRegistrar) -> None:
             fingerprint=fingerprint,
             blockers=blockers,
             blast_radius=1,
+            undo="not reversible: the old certificate's key is gone once the new one is installed; a bad "
+            "certificate is fixed by a new CSR and install (this tool again)",
         )
 
         async def apply_install() -> Any:
@@ -512,6 +516,8 @@ def register(reg: ToolRegistrar) -> None:
             side_effects=["each device's trust store is replaced with the Manager's chain"],
             fingerprint=[r.get("fingerprint") or r.get("name") for r in roots],
             blast_radius=len(reachable),
+            undo="nothing to undo: the devices get the Manager's own root chain again; to change it, change "
+            "the Manager's chain and sync again",
         )
 
         async def apply() -> Any:

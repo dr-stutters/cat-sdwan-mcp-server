@@ -9,13 +9,26 @@ from cat_sdwan_mcp._core.testing import (
     assert_prompt_contract,
     assert_surface_budget,
     assert_tool_contract,
+    undo_problems,
 )
 from tests.unit.conftest import make_server
+
+# C81: tools whose Plan (with its undo) is built in a shared helper (tools/securityprofiles.plan_unified), so
+# their own source never says `undo=`; their previews' back-out lines are checked in test_securityprofiles
+# and test_sslproxy.
+PLAN_IN_HELPER = {
+    "catsdwan_set_amp_profile",
+    "catsdwan_set_inspection_profile",
+    "catsdwan_set_ips_profile",
+    "catsdwan_set_ssl_decryption",
+    "catsdwan_set_ssl_decryption_profile",
+    "catsdwan_set_url_filtering_profile",
+}
 
 
 async def test_contract_all_tiers() -> None:
     server = make_server(mcp_enable_writes=True, mcp_enable_dangerous=True)
-    await assert_tool_contract(server, "catsdwan")
+    await assert_tool_contract(server, "catsdwan", undo_allow=PLAN_IN_HELPER)
     await assert_prompt_contract(server, "catsdwan")
 
 
@@ -23,6 +36,15 @@ async def test_contract_read_only() -> None:
     server = make_server()
     await assert_tool_contract(server, "catsdwan")
     await assert_prompt_contract(server, "catsdwan")
+
+
+def test_every_write_tool_sets_plan_undo() -> None:
+    """C81: every write and dangerous tool names its back-out step (an Undo call or a text)."""
+    server = make_server(mcp_enable_writes=True, mcp_enable_dangerous=True)
+    tiers = server._stutters_tiers  # type: ignore[attr-defined]
+    writes = {n for n, t in tiers.items() if getattr(t, "value", t) in ("write", "dangerous")}
+    assert len(writes) >= 42 and writes >= PLAN_IN_HELPER
+    assert undo_problems(server, "catsdwan", allow=PLAN_IN_HELPER) == []
 
 
 async def test_status_tool_reports_the_manager(api: respx.MockRouter) -> None:

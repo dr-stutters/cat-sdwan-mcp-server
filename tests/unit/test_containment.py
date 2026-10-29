@@ -618,8 +618,11 @@ async def test_contain_at_edge_changes_one_device_only(api: respx.MockRouter) ->
     assert p["proof"]["devices_changed"] == ["br1"] and p["proof"]["group_parcels_changed"] == []
     assert list(p["proof"]["other_devices"]) == ["br2"]
     assert p["deployed_to"] == ["br1"] and p["undo"] == f"catsdwan_release_at_edge(ip='{HOST}')"
+    assert out["undo"] == f'back-out: catsdwan_release_at_edge(ip="{HOST}", deploy=true)'
     assert not r["vars_put"].called and not r["deploy"].called
     done = await confirmed("catsdwan_contain_at_edge", args)
+    assert done["undo"]["tool"] == "catsdwan_release_at_edge"
+    assert done["undo"]["args"] == {"ip": HOST, "deploy": True}
     values = put_values(r["vars_put"])
     assert list(values) == [BR1]  # this device only
     before = {v["name"]: v.get("value") for v in l65_variables()["devices"][0]["variables"]}
@@ -741,6 +744,8 @@ async def test_release_resets_exactly_its_slot(api: respx.MockRouter) -> None:
     assert values[BR1]["mcp_contain_2"] == "10.61.200.11"
     assert json.loads(r["deploy"].calls.last.request.content) == {"devices": [{"id": BR1}]}
     assert done["result"]["released"] is True and done["result"]["edges"] == ["br1"]
+    assert out["undo"].startswith(f'back-out: catsdwan_contain_at_edge(ip="{HOST}", edge="br1"')
+    assert done["undo"]["tool"] == "catsdwan_contain_at_edge" and done["undo"]["args"]["edge"] == "br1"
 
 
 async def test_release_of_a_host_not_contained_changes_nothing(api: respx.MockRouter) -> None:

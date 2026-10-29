@@ -22,11 +22,13 @@ from cat_sdwan_mcp._core import (
     NotFound,
     Plan,
     ToolRegistrar,
+    Undo,
     UpstreamError,
     get_client,
     object_result,
     preview_or_apply,
 )
+from cat_sdwan_mcp._core.formatting import MASK
 from cat_sdwan_mcp._core.secrets import register_secret
 from cat_sdwan_mcp.changes import device_brief, preview_text, text_hash
 from cat_sdwan_mcp.client import SdwanApp, _as_list
@@ -113,6 +115,15 @@ NOTHING_PUSHED = (
 
 
 # --- profile and parcel lookup -------------------------------------------------------------------
+
+
+def _has_mask(value: Any) -> bool:
+    """True when a given value is (or holds) the secret mask, as a replayed undo of a secret field does."""
+    if isinstance(value, dict):
+        return any(_has_mask(v) for v in value.values())
+    if isinstance(value, list):
+        return any(_has_mask(v) for v in value)
+    return isinstance(value, str) and value == MASK
 
 
 def _group_profiles(groups: list[dict[str, Any]]) -> dict[str, dict[str, Any]]:
@@ -451,6 +462,12 @@ def register(reg: ToolRegistrar) -> None:
         for secret in secret_values(values, sensitive):
             register_secret(secret)
         changes: dict[str, dict[str, Any]] = {}
+        if masked_given := sorted(p for p, v in values.items() if _has_mask(v)):
+            # a replayed undo (C81) or preview carries a secret as the mask: never store the mask itself
+            blockers.append(
+                f"{', '.join(masked_given)}: {MASK!r} is a masked secret (from a preview or an undo), not a "
+                "value: give the real value or leave the field out"
+            )
         for p, value in values.items():
             fs = field_schema(dschema, p) if dschema else None
             old = get_at(current_data, p)
@@ -527,21 +544,61 @@ def register(reg: ToolRegistrar) -> None:
             "request": req,
             **({"warnings": warnings} if warnings else {}),
         }
+        back: Undo | str
         if creating:
             details["undo"] = "delete the new parcel (catsdwan_api_call DELETE on its path, preview-first)"
-        elif cli_lines and not changes:
-            text = get_at(current_data, "config")
-            undo = cli_undo(text, edits) if isinstance(text, str) else None
-            details["undo"] = (
-                {"cli_replace": undo}
-                if undo
-                else "re-PUT the parcel read before the change (catsdwan_get_feature_parcel shows its CLI)"
-            )
+
+            def delete_new(result: Any) -> dict[str, Any]:
+                pid = result.get("parcel_id") if isinstance(result, dict) else None
+                if not pid:
+                    raise ValueError("the Manager returned no parcel id")
+                url = parcel_url(
+                    PARCEL_PATH, ptype=str(prof["type"]), parcel_type=ptype, profile=prof["id"], parcel=pid
+                )
+                return {"path": url, "method": "DELETE"}
+
+            back = Undo("catsdwan_api_call", delete_new)
         else:
-            details["undo"] = (
-                "catsdwan_set_feature_parcel with the 'from' values (null for a field that was default), or "
-                "re-PUT the parcel read before the change (catsdwan_get_feature_parcel shows it)"
-            )
+            undo_cli: dict[str, str] | None = None
+            if cli_lines:
+                text = get_at(current_data, "config")
+                undo_cli = cli_undo(text, edits) if isinstance(text, str) else None
+            if cli_lines and not changes:
+                details["undo"] = (
+                    {"cli_replace": undo_cli}
+                    if undo_cli
+                    else "re-PUT the parcel read before the change (catsdwan_get_feature_parcel shows its "
+                    "CLI)"
+                )
+            else:
+                details["undo"] = (
+                    "catsdwan_set_feature_parcel with the 'from' values (null for a field that was default), "
+                    "or re-PUT the parcel read before the change (catsdwan_get_feature_parcel shows it)"
+                )
+            if cli_lines and not undo_cli:
+                back = (
+                    "re-PUT the parcel read before the change (catsdwan_get_feature_parcel shows its CLI): "
+                    "no cli_replace turns the new CLI back cleanly"
+                )
+            else:
+                # the old leaves as given (null = default); a secret field's old value stays masked
+                old_values = {
+                    p: (
+                        c["from"]
+                        if c["from"] == MASK
+                        else (None if (o := get_at(current_data, p)) is MISSING else mask_data(o, sensitive))
+                    )
+                    for p, c in changes.items()
+                }
+                back = Undo(
+                    "catsdwan_set_feature_parcel",
+                    {
+                        "profile": profile,
+                        "parcel": parcel,
+                        **({"values": old_values} if old_values else {}),
+                        **({"cli_replace": undo_cli} if undo_cli else {}),
+                    },
+                )
         plan = Plan(
             summary,
             details=details,
@@ -554,6 +611,7 @@ def register(reg: ToolRegistrar) -> None:
             },
             blockers=blockers,
             blast_radius=len(devices),
+            undo=back,
         )
 
         async def apply() -> Any:
@@ -687,6 +745,10 @@ def register(reg: ToolRegistrar) -> None:
             fingerprint={"group": found.get("lastUpdatedOn"), "devices": sorted(in_group)},
             blockers=blockers,
             blast_radius=len(adds) + len(removes),
+            undo=Undo(
+                "catsdwan_associate_config_group",
+                {"group": gname, "add": _names(removes) or None, "remove": _names(adds) or None},
+            ),
         )
 
         async def apply() -> Any:
@@ -844,6 +906,8 @@ def register(reg: ToolRegistrar) -> None:
             },
             blockers=blockers,
             blast_radius=len(rows),
+            undo="not reversible in one call: change the policy group's profiles back and deploy it again; "
+            "catsdwan_config_history(device, diff=true) shows each device's configuration before this deploy",
         )
 
         async def apply() -> Any:

@@ -17,6 +17,7 @@ from cat_sdwan_mcp._core import (
     Plan,
     ResponseFormat,
     ToolRegistrar,
+    Undo,
     UpstreamError,
     get_client,
     list_result,
@@ -487,6 +488,9 @@ def register(reg: ToolRegistrar) -> None:
             ],
             blockers=blockers,
             blast_radius=1,
+            undo=Undo(
+                "catsdwan_set_external_authentication", {"protocol": protocol, "order": before["order"]}
+            ),
         )
 
         async def apply() -> Any:

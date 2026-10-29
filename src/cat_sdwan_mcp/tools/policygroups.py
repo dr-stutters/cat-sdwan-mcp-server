@@ -15,10 +15,12 @@ from pydantic import Field
 
 from cat_sdwan_mcp._core import (
     Confirm,
+    FromResult,
     InvalidRequest,
     NotFound,
     Plan,
     ToolRegistrar,
+    Undo,
     UpstreamError,
     get_client,
     preview_or_apply,
@@ -154,6 +156,7 @@ def register(reg: ToolRegistrar) -> None:
             fingerprint={"groups": sorted(str(g.get("name")) for g in groups), "profiles": body["profiles"]},
             blockers=blockers,
             blast_radius=0,
+            undo=Undo("catsdwan_delete_policy_group", {"group": FromResult("id")}),
         )
 
         async def apply() -> Any:
@@ -266,6 +269,10 @@ def register(reg: ToolRegistrar) -> None:
             },
             blockers=blockers,
             blast_radius=len(adds) + len(removes),
+            undo=Undo(
+                "catsdwan_associate_policy_group",
+                {"group": gname, "add": _names(removes) or None, "remove": _names(adds) or None},
+            ),
         )
 
         async def apply() -> Any:
@@ -363,6 +370,19 @@ def register(reg: ToolRegistrar) -> None:
                 "requests": requests,
                 "undo": "none: create it again (catsdwan_create_policy_group), associate and deploy",
             },
+            undo=(
+                "not reversible: the deleted profiles are gone; build them again, then "
+                "catsdwan_create_policy_group, associate and deploy"
+                if delete_profiles
+                else Undo(
+                    "catsdwan_create_policy_group",
+                    {
+                        "name": gname,
+                        "profiles": [p["name"] for p in profiles],
+                        "description": str(found.get("description") or ""),
+                    },
+                )
+            ),
             side_effects=[
                 "Nothing is pushed: a device that ran the group keeps its policy until another policy group "
                 "is deployed to it.",
