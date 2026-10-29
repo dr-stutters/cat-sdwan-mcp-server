@@ -1,5 +1,5 @@
 {
-  "core_version": "0.19.0",
+  "core_version": "0.20.0",
   "manifest": 1,
   "prefix": "catc",
   "prompts": {
@@ -559,6 +559,49 @@
         "catc",
         "ise"
       ]
+    },
+    "suite_segmentation_audit": {
+      "arguments": [
+        "site",
+        "segments",
+        "intent",
+        "lab",
+        "framework",
+        "servers"
+      ],
+      "references": [
+        "catsdwan_list_devices",
+        "catsdwan_list_config_groups",
+        "catsdwan_get_config_group",
+        "catsdwan_list_policies",
+        "catsdwan_get_policy",
+        "catsdwan_list_policy_groups",
+        "catsdwan_get_firewall_policy",
+        "catsdwan_omp_routes",
+        "ise_list_sgts",
+        "ise_list_ip_sgt_mappings",
+        "ise_list_sgt_vn_vlan",
+        "ise_get_egress_matrix",
+        "fmc_list_access_rules",
+        "fmc_find_address",
+        "fmc_rule_lookup",
+        "fmc_prove_policy",
+        "catc_get_sda_fabric",
+        "catc_list_ip_pools",
+        "catc_get_group_policy_enforcement",
+        "cml_get_layer3_addresses",
+        "cml_check_reachability"
+      ],
+      "rendered": true,
+      "suite": true,
+      "tier": "read",
+      "uses": [
+        "catsdwan",
+        "ise",
+        "fmc",
+        "catc",
+        "cml"
+      ]
     }
   },
   "server": "catc-mcp-server",
@@ -578,6 +621,10 @@
     "catc_add_fabric_device": {
       "tier": "dangerous",
       "title": "Add fabric device"
+    },
+    "catc_add_fabric_wlc": {
+      "tier": "dangerous",
+      "title": "Add fabric WLC"
     },
     "catc_add_ise_server": {
       "tier": "dangerous",
@@ -602,6 +649,10 @@
     "catc_apply_pending_fabric_events": {
       "tier": "dangerous",
       "title": "Apply pending fabric events"
+    },
+    "catc_apply_telemetry_settings": {
+      "tier": "write",
+      "title": "Apply telemetry settings"
     },
     "catc_assign_compliance_policy": {
       "tier": "write",
@@ -827,6 +878,10 @@
       "tier": "dangerous",
       "title": "Deploy template"
     },
+    "catc_deploy_wired_config": {
+      "tier": "dangerous",
+      "title": "Deploy wired config"
+    },
     "catc_deploy_wlc_config": {
       "tier": "dangerous",
       "title": "Deploy WLC config"
@@ -1015,6 +1070,10 @@
       "tier": "read",
       "title": "VLAN topology"
     },
+    "catc_get_wired_config": {
+      "tier": "read",
+      "title": "Wired feature config"
+    },
     "catc_get_wireless_controller": {
       "tier": "read",
       "title": "Wireless controller"
@@ -1046,6 +1105,10 @@
     "catc_issue_recurrence": {
       "tier": "read",
       "title": "Issue recurrence"
+    },
+    "catc_license_summary": {
+      "tier": "read",
+      "title": "Licensing summary"
     },
     "catc_lifecycle_signals": {
       "tier": "read",
@@ -1098,6 +1161,10 @@
     "catc_list_device_interfaces": {
       "tier": "read",
       "title": "List device interfaces"
+    },
+    "catc_list_device_licenses": {
+      "tier": "read",
+      "title": "List device licences"
     },
     "catc_list_device_modules": {
       "tier": "read",
@@ -1211,6 +1278,10 @@
       "tier": "read",
       "title": "List transit networks"
     },
+    "catc_list_udfs": {
+      "tier": "read",
+      "title": "List user-defined fields"
+    },
     "catc_mark_device_for_replacement": {
       "tier": "write",
       "title": "Mark a device for replacement"
@@ -1222,6 +1293,10 @@
     "catc_path_trace": {
       "tier": "read",
       "title": "Path trace"
+    },
+    "catc_ping": {
+      "tier": "read",
+      "title": "Ping from a device"
     },
     "catc_preview_template": {
       "tier": "read",
@@ -1259,6 +1334,10 @@
       "tier": "write",
       "title": "Run compliance check"
     },
+    "catc_run_issue_commands": {
+      "tier": "read",
+      "title": "Run an issue's suggested commands"
+    },
     "catc_run_show_commands": {
       "tier": "read",
       "title": "Run show commands"
@@ -1287,6 +1366,10 @@
       "tier": "write",
       "title": "Set device role"
     },
+    "catc_set_device_udfs": {
+      "tier": "write",
+      "title": "Set user-defined field values on devices"
+    },
     "catc_set_external_authentication": {
       "tier": "dangerous",
       "title": "Turn external authentication on or off"
@@ -1306,6 +1389,10 @@
     "catc_set_fabric_port_channel": {
       "tier": "dangerous",
       "title": "Set fabric port channel"
+    },
+    "catc_set_fabric_ssid_mapping": {
+      "tier": "write",
+      "title": "Set fabric SSID mapping"
     },
     "catc_set_interface": {
       "tier": "dangerous",
@@ -1327,6 +1414,14 @@
       "tier": "write",
       "title": "Set RF profile"
     },
+    "catc_set_udf": {
+      "tier": "write",
+      "title": "Create, update or delete a user-defined field"
+    },
+    "catc_set_wired_feature": {
+      "tier": "write",
+      "title": "Set wired feature"
+    },
     "catc_set_wlan_security": {
       "tier": "write",
       "title": "Set WLAN security"
@@ -1338,6 +1433,10 @@
     "catc_site_health_report": {
       "tier": "read",
       "title": "Site health report"
+    },
+    "catc_site_inventory": {
+      "tier": "read",
+      "title": "Site inventory"
     },
     "catc_snapshot": {
       "tier": "read",
@@ -1366,6 +1465,10 @@
     "catc_top_problems": {
       "tier": "read",
       "title": "Top problem devices or clients"
+    },
+    "catc_traceroute": {
+      "tier": "read",
+      "title": "Traceroute from a device"
     },
     "catc_trigger_lifecycle_scan": {
       "tier": "write",
@@ -1440,5 +1543,5 @@
       "title": "Write memory"
     }
   },
-  "version": "0.20.1"
+  "version": "0.23.0"
 }

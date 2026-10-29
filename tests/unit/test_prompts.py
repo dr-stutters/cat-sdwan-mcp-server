@@ -146,6 +146,8 @@ async def test_prompts_declare_their_servers() -> None:
         "suite_asbuilt_drift": ["netbox", "catc"],
         "suite_decommission_site": ["catsdwan", "catc", "ise", "fmc", "win"],
         "suite_maintenance_window": ["catsdwan", "catc", "ise"],
+        # Core v0.20.0 suite pack.
+        "suite_segmentation_audit": ["catsdwan", "ise", "fmc", "catc", "cml"],
     }
 
 

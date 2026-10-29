@@ -1,5 +1,5 @@
 {
-  "core_version": "0.19.0",
+  "core_version": "0.20.0",
   "manifest": 1,
   "prefix": "ise",
   "prompts": {
@@ -45,6 +45,39 @@
         "catc",
         "fmc",
         "cml",
+        "win"
+      ]
+    },
+    "ise_cert_renewal": {
+      "arguments": [
+        "role",
+        "node",
+        "days",
+        "template",
+        "test_mac",
+        "change_ref"
+      ],
+      "references": [
+        "ise_list_nodes",
+        "ise_list_certificates",
+        "ise_list_csrs",
+        "ise_export_csr",
+        "ise_get_auth_history",
+        "ise_recent_auth_failures",
+        "ise_status",
+        "ise_generate_csr",
+        "ise_import_trusted_cert",
+        "ise_delete_csr",
+        "ise_bind_certificate",
+        "win_adcs_ca_info",
+        "win_list_ca_templates",
+        "win_sign_csr",
+        "win_get_ca_certificate"
+      ],
+      "rendered": true,
+      "tier": "write",
+      "uses": [
+        "ise",
         "win"
       ]
     },
@@ -496,6 +529,49 @@
         "catc",
         "ise"
       ]
+    },
+    "suite_segmentation_audit": {
+      "arguments": [
+        "site",
+        "segments",
+        "intent",
+        "lab",
+        "framework",
+        "servers"
+      ],
+      "references": [
+        "catsdwan_list_devices",
+        "catsdwan_list_config_groups",
+        "catsdwan_get_config_group",
+        "catsdwan_list_policies",
+        "catsdwan_get_policy",
+        "catsdwan_list_policy_groups",
+        "catsdwan_get_firewall_policy",
+        "catsdwan_omp_routes",
+        "ise_list_sgts",
+        "ise_list_ip_sgt_mappings",
+        "ise_list_sgt_vn_vlan",
+        "ise_get_egress_matrix",
+        "fmc_list_access_rules",
+        "fmc_find_address",
+        "fmc_rule_lookup",
+        "fmc_prove_policy",
+        "catc_get_sda_fabric",
+        "catc_list_ip_pools",
+        "catc_get_group_policy_enforcement",
+        "cml_get_layer3_addresses",
+        "cml_check_reachability"
+      ],
+      "rendered": true,
+      "suite": true,
+      "tier": "read",
+      "uses": [
+        "catsdwan",
+        "ise",
+        "fmc",
+        "catc",
+        "cml"
+      ]
     }
   },
   "server": "ise-mcp-server",
@@ -515,6 +591,10 @@
     "ise_apply_anc": {
       "tier": "dangerous",
       "title": "Apply ANC policy to an endpoint"
+    },
+    "ise_approve_guest": {
+      "tier": "write",
+      "title": "Approve or deny a self-registered guest"
     },
     "ise_approve_pxgrid_client": {
       "tier": "write",
@@ -768,6 +848,10 @@
       "tier": "read",
       "title": "Get a network device"
     },
+    "ise_get_patch_readiness": {
+      "tier": "read",
+      "title": "Patch / upgrade / rollback pre-check report"
+    },
     "ise_get_policy_set": {
       "tier": "read",
       "title": "Get a policy set with its rules"
@@ -791,6 +875,10 @@
     "ise_import_config": {
       "tier": "dangerous",
       "title": "Import ISE configuration from an export"
+    },
+    "ise_import_system_certificate": {
+      "tier": "dangerous",
+      "title": "Import a system certificate with its private key"
     },
     "ise_import_trusted_cert": {
       "tier": "write",
@@ -992,6 +1080,14 @@
       "tier": "read",
       "title": "Per-NAD RADIUS latency and timeouts"
     },
+    "ise_notify_guest": {
+      "tier": "write",
+      "title": "Send a guest their account details"
+    },
+    "ise_patch_readiness": {
+      "tier": "write",
+      "title": "Patch / upgrade / rollback readiness"
+    },
     "ise_policy_audit": {
       "tier": "read",
       "title": "Audit ISE policy hygiene"
@@ -1007,6 +1103,10 @@
     "ise_push_trustsec_matrix": {
       "tier": "dangerous",
       "title": "Push TrustSec policy to devices (CoA)"
+    },
+    "ise_pxgrid_direct_status": {
+      "tier": "read",
+      "title": "pxGrid Direct connectors and their sync status"
     },
     "ise_pxgrid_status": {
       "tier": "read",
@@ -1028,9 +1128,17 @@
       "tier": "dangerous",
       "title": "Reprofile an endpoint (CoA)"
     },
+    "ise_reset_guest_password": {
+      "tier": "write",
+      "title": "Reset a guest's password"
+    },
     "ise_reset_hitcounts": {
       "tier": "dangerous",
       "title": "Reset policy hit counters"
+    },
+    "ise_run_snmp_scan": {
+      "tier": "write",
+      "title": "Start, stop, enable or disable SNMP scans"
     },
     "ise_search_spec": {
       "tier": "read",
@@ -1072,6 +1180,10 @@
       "tier": "write",
       "title": "Create or update an endpoint"
     },
+    "ise_set_external_radius_server": {
+      "tier": "write",
+      "title": "Create or update an external RADIUS server"
+    },
     "ise_set_guest_type": {
       "tier": "write",
       "title": "Create or update a guest type"
@@ -1092,9 +1204,17 @@
       "tier": "write",
       "title": "Create or update a custom profiling rule"
     },
+    "ise_set_pxgrid_direct_connector": {
+      "tier": "write",
+      "title": "Create or update a pxGrid Direct connector"
+    },
     "ise_set_pxgrid_settings": {
       "tier": "write",
       "title": "Set the pxGrid approval settings"
+    },
+    "ise_set_radius_server_sequence": {
+      "tier": "write",
+      "title": "Create or update a RADIUS server sequence"
     },
     "ise_set_repository": {
       "tier": "write",
@@ -1107,6 +1227,10 @@
     "ise_set_shell_profile": {
       "tier": "write",
       "title": "Create or update a TACACS+ shell profile"
+    },
+    "ise_set_snmp_scan": {
+      "tier": "write",
+      "title": "Create or update a profiler SNMP scan"
     },
     "ise_set_sponsor_group": {
       "tier": "write",
@@ -1124,6 +1248,10 @@
       "tier": "write",
       "title": "Create or update a TACACS+ server sequence"
     },
+    "ise_set_trusted_cert": {
+      "tier": "write",
+      "title": "Change a trusted certificate's trust and revocation settings"
+    },
     "ise_set_trustsec_settings": {
       "tier": "write",
       "title": "Change TrustSec general settings"
@@ -1131,6 +1259,10 @@
     "ise_snapshot": {
       "tier": "read",
       "title": "Cisco ISE snapshot"
+    },
+    "ise_snmp_scan_history": {
+      "tier": "read",
+      "title": "SNMP scans and their history"
     },
     "ise_status": {
       "tier": "read",
@@ -1147,6 +1279,10 @@
     "ise_test_command_set": {
       "tier": "read",
       "title": "Test a command against TACACS+ command sets"
+    },
+    "ise_test_pxgrid_direct": {
+      "tier": "read",
+      "title": "Test a pxGrid Direct connector"
     },
     "ise_trustsec_device_report": {
       "tier": "read",
@@ -1193,5 +1329,5 @@
       "title": "Why did authentication fail?"
     }
   },
-  "version": "0.20.0"
+  "version": "0.23.0"
 }
