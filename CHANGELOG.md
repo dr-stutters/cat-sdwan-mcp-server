@@ -6,6 +6,24 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+## [0.10.0] - 2026-10-29
+
+### Added
+- #150: workflow prompts default to the CML lab `mcp-lab-sdwan`, configurable with the new `CATSDWAN_CML_LAB`
+  setting.
+
+### Changed
+- #149: `catsdwan_set_ise_integration` defaults the pxGrid client name to an alphanumeric `vmanage<host>`, blocks a
+  non-alphanumeric name in the preview, and explains ISEERRORR0013.
+
+### Fixed
+- #175: `catsdwan_get_aaa` reads a single-tenant Manager's own system AAA (running configuration) instead of
+  reporting 'local only' from the provider-only Remote AAA.
+- #166: `catsdwan_export_site` exports the CLI add-on profile's text (masked, `{{variables}}` kept) and includes its
+  interfaces in transports and service VPNs, warning when the Manager's intended configuration lacks the add-on
+  lines.
+- #168: `catsdwan_hub_failover_drill` passes a dscp (0 and 46) to `catsdwan_explain_path`, so its path step runs.
+
 ## [0.9.0] - 2026-10-28
 
 ### Added
