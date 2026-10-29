@@ -338,6 +338,8 @@ def register(reg: ToolRegistrar) -> None:
             fingerprint=[st.st_dev, st.st_ino, st.st_size, st.st_mtime_ns, digest, sorted(map(str, images))],
             blockers=blockers,
             blast_radius=1,
+            undo="delete the image in the GUI (Maintenance > Software Repository > Virtual Images): this "
+            "server has no delete tool for it",
         )
 
         async def apply() -> Any:

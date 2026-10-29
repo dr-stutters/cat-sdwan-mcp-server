@@ -123,7 +123,9 @@ async def test_create_adds_the_policy_object_profile_and_posts(api: respx.MockRo
     prof = out["preview"]["profiles"]
     assert [p["type"] for p in prof] == ["policy-object", "embedded-security"]
     assert "Default_Policy_Object_Profile" in out["preview"]["warnings"][0]
+    assert out["undo"] == "back-out: catsdwan_delete_policy_group(group=<from the result: id>)"
     done = await confirmed("catsdwan_create_policy_group", args)
+    assert done["undo"]["tool"] == "catsdwan_delete_policy_group" and done["undo"]["args"] == {"group": PGID}
     assert json.loads(post.calls.last.request.content) == {
         "name": "mcp-w8-pg",
         "description": "",
@@ -158,6 +160,9 @@ async def test_associate_add_and_remove(api: respx.MockRouter) -> None:
     assert out["status"] == "preview" and not out.get("blockers"), out.get("blockers")
     assert out["preview"]["devices_before"] == ["hub1"] and out["preview"]["devices_after"] == ["br1"]
     assert out["blast_radius"] == 2
+    assert out["undo"] == (
+        'back-out: catsdwan_associate_policy_group(group="mcp-w8-pg", add=["hub1"], remove=["br1"])'
+    )
     await confirmed("catsdwan_associate_policy_group", args)
     assert json.loads(post.calls.last.request.content) == {"devices": [{"id": BR1}]}
     assert json.loads(delete.calls.last.request.content) == {"devices": [{"id": HUB1}]}
@@ -191,6 +196,12 @@ async def test_delete_refused_while_associated_then_dissociates(api: respx.MockR
     assert json.loads(delete_assoc.calls.last.request.content) == {"devices": [{"id": BR1}]}
     assert delete.called and "deleteProfiles" not in str(delete.calls.last.request.url)
     assert done["result"] == {"dissociated": ["br1"], "deleted": "mcp-w8-pg"}
+    assert done["undo"]["tool"] == "catsdwan_create_policy_group"
+    assert done["undo"]["args"] == {
+        "name": "mcp-w8-pg",
+        "profiles": ["Default_Policy_Object_Profile"],
+        "description": "",
+    }
 
 
 async def test_delete_profiles_spares_shared_profiles(api: respx.MockRouter) -> None:
@@ -203,8 +214,10 @@ async def test_delete_profiles_spares_shared_profiles(api: respx.MockRouter) -> 
 async def test_delete_empty_group_with_its_profiles(api: respx.MockRouter) -> None:
     mock_groups(api, pgroup(profiles=[SEC]))
     delete = api.delete(f"{PGS}/{PGID}").respond(200)
-    await confirmed("catsdwan_delete_policy_group", {"group": "mcp-w8-pg", "delete_profiles": True})
+    done = await confirmed("catsdwan_delete_policy_group", {"group": "mcp-w8-pg", "delete_profiles": True})
     assert delete.calls.last.request.url.params["deleteProfiles"] == "true"
+    assert done["undo"]["back_out"].startswith("not reversible: the deleted profiles are gone")
+    assert "tool" not in done["undo"]
 
 
 @pytest.mark.parametrize("tool", ["catsdwan_create_policy_group", "catsdwan_delete_policy_group"])

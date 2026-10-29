@@ -152,6 +152,16 @@ site) is the hub; when none does, the status is "unknown". The preview's `hub_st
 deploy reports `blast_radius` = its devices, so `MCP_MAX_BLAST_RADIUS` caps it. The Manager has no undo: the
 variables preview lists the old values, and a deploy's preview diff shows the running configuration it replaces.
 
+Every change names its back-out step (core C81 `Plan.undo`): the preview's `undo` line reads `back-out: ...`
+and the applied result carries `undo: {tool, args, back_out}` (secrets masked) for the reversing call, previewed
+like any write. Where an inverse tool exists it is that call with the old values: `catsdwan_set_device_variables`
+with the previous values, `catsdwan_release_at_edge` after `catsdwan_contain_at_edge`, `remove=true` or the old
+values on the containment, firewall, security-object and service tools, `catsdwan_delete_policy_group` (the new
+group's id from the result) after a create, the old login order on `catsdwan_set_external_authentication`, the
+previous version on `catsdwan_upgrade_software`. Deploys say how to get back (`catsdwan_config_history`, then set
+the old values and deploy again); a reboot, a controller upgrade under way or a certificate install says it is
+not reversible; a backup, admin-tech or path trace has nothing to undo.
+
 Typical flow: `catsdwan_get_config_group` (variables) -> `catsdwan_set_device_variables` (preview, confirm) ->
 `catsdwan_deploy_config_group` (preview: per-device CLI and diff; confirm) -> `catsdwan_get_device_config(diff=true)`.
 

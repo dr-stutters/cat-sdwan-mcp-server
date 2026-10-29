@@ -293,6 +293,8 @@ def register(reg: ToolRegistrar) -> None:
             fingerprint=None,
             blockers=blockers,
             blast_radius=len(reachable),
+            undo="nothing to undo: no configuration changes; the trace stops by itself when it expires"
+            + ("" if keep_running else " (and is stopped after the read)"),
         )
 
         async def apply() -> Any:

@@ -21,6 +21,7 @@ from cat_sdwan_mcp._core import (
     NotFound,
     Plan,
     ToolRegistrar,
+    Undo,
     UpstreamError,
     get_client,
     preview_or_apply,
@@ -343,6 +344,23 @@ def _verdict(
     return ". ".join(parts) + "."
 
 
+def _chain_undo(profile: str, vpn: int, service: str, current: dict[str, Any] | None) -> Undo:
+    """C81 back-out of catsdwan_set_service_chain: the old addresses and tracking, or remove a new service."""
+    if current is None:
+        return Undo(
+            "catsdwan_set_service_chain", {"profile": profile, "vpn": vpn, "service": service, "remove": True}
+        )
+    args: dict[str, Any] = {
+        "profile": profile,
+        "vpn": vpn,
+        "service": service,
+        "addresses": current["addresses"],
+    }
+    if isinstance(current.get("tracking"), bool):
+        args["tracking"] = current["tracking"]
+    return Undo("catsdwan_set_service_chain", args)
+
+
 def register(reg: ToolRegistrar) -> None:
     @reg.read(title="SD-WAN service chains")
     async def catsdwan_service_chains(
@@ -543,6 +561,7 @@ def register(reg: ToolRegistrar) -> None:
             fingerprint={"parcel": parcel["raw"].get("lastUpdatedOn"), "services": before},
             blockers=blockers,
             blast_radius=len(devices),
+            undo=_chain_undo(prof["name"], vpn, service, current),
         )
 
         async def apply() -> Any:
@@ -823,6 +842,10 @@ def register(reg: ToolRegistrar) -> None:
             },
             blockers=blockers,
             blast_radius=len(devices),
+            undo=Undo("catsdwan_set_service_steering", {"group": gname, "name": name, "remove": True})
+            if not existing
+            else f"catsdwan_set_service_steering(group={gname!r}, name={name!r}) with the sequences of the "
+            "preview's `before`",
         )
 
         async def apply() -> Any:

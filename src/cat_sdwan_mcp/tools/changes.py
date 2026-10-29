@@ -21,6 +21,7 @@ from cat_sdwan_mcp._core import (
     InvalidRequest,
     Plan,
     ToolRegistrar,
+    Undo,
     UpstreamError,
     current_caller,
     get_client,
@@ -100,6 +101,18 @@ DEPLOY_ROLLBACK = (
     "The Manager has no undo. To roll back, set the previous variable values again "
     "(catsdwan_set_device_variables: its preview shows them) and deploy again; the running configuration "
     "before this change is what the preview's diff shows as '-' lines."
+)
+
+# C81 back-out text for a push: the Manager keeps no previous version to restore in one call.
+DEPLOY_UNDO = (
+    "not reversible in one call: catsdwan_config_history(device, diff=true) shows each device's "
+    "configuration before this deploy; set the previous values back (catsdwan_set_device_variables, "
+    "catsdwan_set_feature_parcel) and deploy the group again"
+)
+TEMPLATE_UNDO = (
+    "not reversible in one call: catsdwan_config_history(device, diff=true) shows each device's "
+    "configuration before this attach; attach the previous template (catsdwan_attach_device_template) "
+    "with its old values"
 )
 
 
@@ -335,6 +348,11 @@ def register(reg: ToolRegistrar) -> None:
             ],
             fingerprint={"group": found.get("lastUpdatedOn"), "variables": current},
             blockers=blockers,
+            # the old values, so the undo is this tool again (core masks a secret variable's value)
+            undo=Undo(
+                "catsdwan_set_device_variables",
+                {"group": gname, "device": host, "values": {n: c["from"] for n, c in changes.items()}},
+            ),
         )
 
         async def apply() -> Any:
@@ -494,6 +512,7 @@ def register(reg: ToolRegistrar) -> None:
             },
             blockers=blockers,
             blast_radius=len(rows),
+            undo=DEPLOY_UNDO,
         )
 
         async def apply() -> Any:
@@ -687,6 +706,7 @@ def register(reg: ToolRegistrar) -> None:
             },
             blockers=blockers,
             blast_radius=len(rows),
+            undo=TEMPLATE_UNDO,
         )
 
         async def apply() -> Any:

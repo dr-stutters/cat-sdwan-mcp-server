@@ -295,6 +295,8 @@ def register(reg: ToolRegistrar) -> None:
             fingerprint=fingerprint,
             blockers=blockers,
             blast_radius=1,
+            undo="not reversible: the Manager keeps one SSL proxy CA and its key never leaves it; a "
+            "replacement is a new CSR (this tool, replace=true) signed by the enterprise CA",
         )
         return await preview_or_apply(
             ctx,

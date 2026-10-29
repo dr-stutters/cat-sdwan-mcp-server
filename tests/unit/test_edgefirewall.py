@@ -246,6 +246,10 @@ async def test_object_create_is_checked_and_posted(api: respx.MockRouter) -> Non
     assert p["after"] == ["user:bob", "group:LAB/Users/Sales"] and p["before"] is None
     assert p["reaches"] == [{"group": "mcp-w8-pg", "devices": ["br1"]}] and out["blast_radius"] == 1
     assert any("no ISE on the Manager" in w for w in p["warnings"])
+    assert out["undo"] == (
+        'back-out: catsdwan_set_security_object(kind="identity", name="bob-only", remove=true, '
+        'profile="Default_Policy_Object_Profile")'
+    )
     done = await confirmed("catsdwan_set_security_object", args)
     sent = json.loads(post.calls.last.request.content)
     assert sent["data"]["entries"][1] == {"userGroup": fw.g("LAB/Users/Sales")}
@@ -264,6 +268,7 @@ async def test_object_replace_and_remove(api: respx.MockRouter) -> None:
     # #126: VPN ids are stored as the LAN VPN parcel names the controller looks up.
     assert out["preview"]["before"] == ["mcp-w8-vpn10"]
     assert out["preview"]["after"] == ["mcp-w8-vpn10", "mcp-w8-vpn20"]
+    assert '"values": ["mcp-w8-vpn10"]' not in out["undo"] and 'values=["mcp-w8-vpn10"]' in out["undo"]
     await confirmed("catsdwan_set_security_object", {"kind": "zone", "name": "lan", "values": ["10", "20"]})
     assert put.called
     assert json.loads(put.calls.last.request.content)["data"]["entries"] == [

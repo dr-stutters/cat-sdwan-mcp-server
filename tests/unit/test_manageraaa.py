@@ -119,6 +119,11 @@ async def test_single_tenant_preview_is_the_system_aaa(api: respx.MockRouter) ->
     assert "attachcli" in p["requests"][2]
     assert p["tier"] == "dangerous" and p["local_fallback"] is True
     assert "servers=[])" in p["undo"] and "order=['local', 'radius', 'tacacs']" in p["undo"]
+    # C81: the back-out step is a real call: the factory order back, local first, no RADIUS server
+    assert prev["undo"] == (
+        'back-out: catsdwan_set_external_authentication(protocol="radius", '
+        'order=["local", "radius", "tacacs"], servers=[])'
+    )
     assert SECRET not in json.dumps(prev)
     assert not routes["admin_radius"].called and not routes["admin_aaa"].called
 
@@ -128,7 +133,14 @@ async def test_single_tenant_confirm_attaches_the_template_and_tests_logins(api:
     login = api.post("/j_security_check").mock(side_effect=[LOGIN_OK, LOGIN_OK])
     async with Client(server()) as c:
         prev = await tool(c, ARGS)
-        done = (await tool(c, {**ARGS, "confirm": prev["confirm"]}))["result"]
+        applied = await tool(c, {**ARGS, "confirm": prev["confirm"]})
+        done = applied["result"]
+    assert applied["undo"]["tool"] == "catsdwan_set_external_authentication"
+    assert applied["undo"]["args"] == {
+        "protocol": "radius",
+        "order": ["local", "radius", "tacacs"],
+        "servers": [],
+    }
     assert login.call_count == 2 and done["outcome"] == "done"
     assert done["test_login_before"]["ok"] and done["test_login"]["ok"]
     body = json.loads(routes["create"].calls[0].request.content)

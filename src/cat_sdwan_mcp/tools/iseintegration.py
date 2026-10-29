@@ -13,6 +13,7 @@ from cat_sdwan_mcp._core import (
     InvalidRequest,
     Plan,
     ToolRegistrar,
+    Undo,
     UpstreamError,
     get_client,
     preview_or_apply,
@@ -207,6 +208,10 @@ def register(reg: ToolRegistrar) -> None:
             ]
             summary = f"Disconnect the Manager from ISE {creds.get('iseServerIP', '')}".rstrip()
             undo = "catsdwan_set_ise_integration(action='connect', ise_host=..., ...) with the old settings"
+            back: Undo | str = (
+                f"catsdwan_set_ise_integration(action='connect', ise_host={creds.get('iseServerIP', '')!r}) "
+                "with the settings in `before`"
+            )
         else:
             user = app.settings.ise_username
             secret = app.settings.ise_password.get_secret_value() if app.settings.ise_password else ""
@@ -406,6 +411,13 @@ def register(reg: ToolRegistrar) -> None:
                 f" with pxGrid client {node!r}" if pxgrid else ""
             )
             undo = "catsdwan_set_ise_integration(action='disconnect')"
+            if creds:  # already connected: the undo is the old settings, not a disconnect
+                back = (
+                    "catsdwan_set_ise_integration(action='connect') with the settings in `before` (the ISE "
+                    "password is this server's CATSDWAN_ISE_PASSWORD)"
+                )
+            else:
+                back = Undo("catsdwan_set_ise_integration", {"action": "disconnect"})
 
         if warnings:
             details["warnings"] = warnings
@@ -430,6 +442,7 @@ def register(reg: ToolRegistrar) -> None:
             ],
             blockers=blockers,
             blast_radius=1,
+            undo=back,
         )
 
         async def apply() -> Any:

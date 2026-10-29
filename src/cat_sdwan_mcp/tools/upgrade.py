@@ -11,9 +11,11 @@ from pydantic import Field
 
 from cat_sdwan_mcp._core import (
     Confirm,
+    FromResult,
     InvalidRequest,
     Plan,
     ToolRegistrar,
+    Undo,
     UpstreamError,
     get_client,
     preview_or_apply,
@@ -111,6 +113,7 @@ def register(reg: ToolRegistrar) -> None:
                 fingerprint=cancel,
                 blockers=[f"no such upgrade: {_err(status)}"] if _err(status) else [],
                 blast_radius=1,
+                undo="schedule the upgrade again: catsdwan_upgrade_controllers(version=..., start=...)",
             )
 
             async def do_cancel() -> Any:
@@ -211,6 +214,11 @@ def register(reg: ToolRegistrar) -> None:
             fingerprint=[available, [(c["host"], c["version"]) for c in order], comp],
             blockers=blockers,
             blast_radius=len(order) or None,
+            # a scheduled upgrade can be cancelled until it starts; a started one has no API rollback
+            undo=Undo("catsdwan_upgrade_controllers", {"cancel": FromResult("process_id")})
+            if when
+            else "not reversible: a started controller upgrade has no rollback in the API; restore the "
+            "Manager from its backup (catsdwan_create_backup before the upgrade)",
         )
 
         async def apply() -> Any:
