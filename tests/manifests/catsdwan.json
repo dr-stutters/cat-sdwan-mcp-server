@@ -721,9 +721,17 @@
       "tier": "write",
       "title": "Create SD-WAN Manager backup"
     },
+    "catsdwan_create_config_group": {
+      "tier": "write",
+      "title": "Create SD-WAN configuration group"
+    },
     "catsdwan_create_policy_group": {
       "tier": "write",
       "title": "Create SD-WAN policy group"
+    },
+    "catsdwan_delete_config_group": {
+      "tier": "write",
+      "title": "Delete SD-WAN configuration group"
     },
     "catsdwan_delete_policy_group": {
       "tier": "write",
