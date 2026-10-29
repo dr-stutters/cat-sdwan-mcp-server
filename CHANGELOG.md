@@ -6,6 +6,19 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+## [0.11.0] - 2026-10-29
+
+### Added
+- #134: `catsdwan_create_config_group` / `catsdwan_delete_config_group`: author configuration groups from new or
+  existing feature profiles or a clone of another group (deep copies parcels), and delete them with the device,
+  deploy and shared-profile checks.
+- Every write tool names its back-out step (core C81 `Plan.undo`): the preview's `back-out:` line and the applied
+  result's `undo` {tool, args} (secrets masked), an inverse call where one exists, otherwise why there is none.
+
+### Changed
+- stutters-mcp-core v0.20.0: the suite prompt `suite_segmentation_audit` (SD-WAN leg), a tool-surface budget test,
+  and an UndoWarning in the contract test.
+
 ## [0.10.0] - 2026-10-29
 
 ### Added
