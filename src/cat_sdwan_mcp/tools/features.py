@@ -117,6 +117,15 @@ NOTHING_PUSHED = (
 # --- profile and parcel lookup -------------------------------------------------------------------
 
 
+def _has_mask(value: Any) -> bool:
+    """True when a given value is (or holds) the secret mask, as a replayed undo of a secret field does."""
+    if isinstance(value, dict):
+        return any(_has_mask(v) for v in value.values())
+    if isinstance(value, list):
+        return any(_has_mask(v) for v in value)
+    return isinstance(value, str) and value == MASK
+
+
 def _group_profiles(groups: list[dict[str, Any]]) -> dict[str, dict[str, Any]]:
     """{profile id: {id, name, type, groups: [group names]}} from the configuration groups."""
     out: dict[str, dict[str, Any]] = {}
@@ -453,6 +462,12 @@ def register(reg: ToolRegistrar) -> None:
         for secret in secret_values(values, sensitive):
             register_secret(secret)
         changes: dict[str, dict[str, Any]] = {}
+        if masked_given := sorted(p for p, v in values.items() if _has_mask(v)):
+            # a replayed undo (C81) or preview carries a secret as the mask: never store the mask itself
+            blockers.append(
+                f"{', '.join(masked_given)}: {MASK!r} is a masked secret (from a preview or an undo), not a "
+                "value: give the real value or leave the field out"
+            )
         for p, value in values.items():
             fs = field_schema(dschema, p) if dschema else None
             old = get_at(current_data, p)

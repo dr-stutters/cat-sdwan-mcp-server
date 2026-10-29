@@ -1003,7 +1003,10 @@ async def test_set_variables_undo_masks_the_old_secret(api: respx.MockRouter) ->
         args = {"group": "mcp-test", "device": "br1", "values": {"snmp_community": "n3w-comm"}}
         prev = await run(c, "catsdwan_set_device_variables", args)
         done = await run(c, "catsdwan_set_device_variables", {**args, "confirm": prev["confirm"]})
+        # replaying the masked undo as is must not store the mask as the community
+        replay = await run(c, "catsdwan_set_device_variables", done["undo"]["args"])
     assert prev["undo"].startswith("back-out: catsdwan_set_device_variables(") and "********" in prev["undo"]
     assert done["undo"]["args"]["values"] == {"snmp_community": "********"}
+    assert replay["status"] == "blocked" and any("masked secret" in b for b in replay["blockers"])
     text = json.dumps([prev, done])
     assert "s3cr3t-comm" not in text and "n3w-comm" not in text

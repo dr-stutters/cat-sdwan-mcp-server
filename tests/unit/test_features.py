@@ -710,6 +710,10 @@ async def test_set_nested_key_path_and_user_password_masked(api: respx.MockRoute
     assert out["preview"]["changes"]["radius[0].server[0].key"] == {"from": "********", "to": "********"}
     done = await confirmed("catsdwan_set_feature_parcel", args)
     assert RADIUS_KEY not in json.dumps(done) and USER_PW not in json.dumps(done)
+    # C81: the undo carries the old secrets masked; replaying it as is is blocked, never stores the mask
+    assert done["undo"]["args"]["values"]["user[0].password"] == "********"
+    replay = await write("catsdwan_set_feature_parcel", done["undo"]["args"])
+    assert replay["status"] == "blocked" and any("masked secret" in b for b in replay["blockers"])
 
 
 async def test_set_aaa_secrets_are_registered_for_log_scrubbing(

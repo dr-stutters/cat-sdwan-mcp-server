@@ -28,6 +28,7 @@ from cat_sdwan_mcp._core import (
     poll_until,
     preview_or_apply,
 )
+from cat_sdwan_mcp._core.formatting import MASK
 from cat_sdwan_mcp.changes import (
     ACTION_STATUS_PATH,
     ATTACH_CLI_PATH,
@@ -323,6 +324,12 @@ def register(reg: ToolRegistrar) -> None:
                 )
                 blockers.append(f"device variables not read: {str(e)[:300]}{hint}")
         merged, changes, unknown = merge_variables(current, values)
+        if masked_given := sorted(str(n) for n, v in values.items() if v == MASK):
+            # a replayed undo (C81) or preview carries a secret as the mask: never store the mask itself
+            blockers.append(
+                f"{', '.join(masked_given)}: {MASK!r} is a masked secret (from a preview or an undo), not a "
+                "value: give the real value or leave the variable out"
+            )
         if current and unknown:
             have = ", ".join(sorted(str(v["name"]) for v in current))
             blockers.append(f"{host} has no variable {', '.join(map(repr, unknown))} (its variables: {have})")
